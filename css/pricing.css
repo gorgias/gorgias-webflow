@@ -72,19 +72,10 @@
     font-size: inherit;
     cursor: inherit;
     line-height: inherit;
+    outline-style:none;
 
     /* Stack above custom arrow */
     z-index: 1;
-
-    /* Remove dropdown arrow in IE10 & IE11 @link https://www.filamentgroup.com/lab/select-css.html */
-        &::-ms-expand {
-            display: none;
-          }
-      
-    /* Remove focus outline, will add on alternate element */
-        outline: none;
-    }
-
   
 .input-newsletter-form{
 	background-image:none !important;
