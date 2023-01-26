@@ -1,0 +1,90 @@
+/* tabs-menu__pricing styling */
+  @media screen and (min-width: 992px) {
+    .tabs-menu__pricing {
+      right: calc(642px/2 - 169px/2);
+    }
+  }
+
+  @media screen and (max-width: 1267px) {
+    #chat-button {
+      bottom: 110px !important;
+    }
+  }
+
+  @media screen and (max-width: 1267px) and (min-width: 992px) {
+    .wrapper-form__pricing.sticky {
+      position: static;
+    }
+    .grid__pricing {
+      margin-right: -20px;
+    }
+    .grid__pricing.headings {
+      position: static;
+    }
+    .grid__pricing.features {
+      overflow: auto;
+    }
+    .blur-bg__pricing {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 1140px) and (min-width: 992px) {
+    #navbar_company {
+      display: none;
+    }
+  }
+
+  .header-nav {
+    position: absolute !important;
+    top: 0;
+    z-index: 100;
+  }
+
+  .tab-pane__pricing.not-clickable, .button_disable, .heading-text-content__pricing {
+    pointer-events: none;
+  }
+
+  /* Learn about this solution to creating custom select styles:
+  @link https://moderncss.dev/custom-select-styles-with-pure-css/ */
+
+  .w-input, .w-select {
+    width: 100%;
+    border: 1px solid var #dddddd;
+    border-radius: 8px;
+    padding: 8px;
+    position: relative;
+    background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/631b040f40f68a03206822ee_arrow_drop_down.svg");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+    /* background-size: 24px; */ 
+  }
+
+  select {
+    /* A reset of styles, including removing the default dropdown arrow */
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+
+    /* Stack above custom arrow */
+    z-index: 1;
+
+    /* Remove dropdown arrow in IE10 & IE11 @link https://www.filamentgroup.com/lab/select-css.html */
+    &::-ms-expand {
+      display: none;
+    }
+
+    /* Remove focus outline, will add on alternate element */
+    outline: none;
+  }
+  
+.input-newsletter-form{
+	background-image:none !important;
+}
