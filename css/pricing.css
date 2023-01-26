@@ -76,6 +76,7 @@
 
     /* Stack above custom arrow */
     z-index: 1;
+}
   
 .input-newsletter-form{
 	background-image:none !important;
