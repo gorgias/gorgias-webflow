@@ -1,4 +1,4 @@
-# gorgias-webflow
+# Organization of the Gorgias custom code
 
 Repo to organize all Webflow custom codes including :
 - JS files
