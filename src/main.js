@@ -1,7 +1,5 @@
 import estimatePrice from './js/pricing'
 
-
-
 var Webflow = Webflow || [];
 Webflow.push(function () {
 
