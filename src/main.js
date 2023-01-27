@@ -5,7 +5,7 @@ var Webflow = Webflow || [];
 Webflow.push(function () {
 
     var path = location.path;
-    if(path == '/pricing'){
+    if(path == '/pricing' || path == '/github-test'){
         
         $(document).ready(estimatePrice);
         $("form[name='wf-form-pricing-form'").change(estimatePrice);
