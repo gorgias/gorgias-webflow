@@ -1,12 +1,13 @@
 import estimatePrice from './js/pricing'
 // test new branch
 
+
 var Webflow = Webflow || [];
 Webflow.push(function () {
 
     var path = location.path;
     
-    // pricing page
+    /* pricing page */
     if(path == '/pricing'){
         
         $(document).ready(estimatePrice);
