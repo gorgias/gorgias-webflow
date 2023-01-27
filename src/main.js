@@ -1,5 +1,4 @@
-import estimatePrice from './js/pricing'
-// test
+// import estimatePrice from './js/pricing'
 
 var Webflow = Webflow || [];
 Webflow.push(function () {
