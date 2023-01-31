@@ -1,5 +1,4 @@
 import estimatePrice from './js/pricing'
-// test new branch
 
 var Webflow = Webflow || [];
 Webflow.push(function () {
@@ -20,5 +19,4 @@ Webflow.push(function () {
         });
     }
 
-    // home page
 })
