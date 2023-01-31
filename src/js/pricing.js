@@ -18,7 +18,6 @@
     var saoDisplayPrice= $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) .heading-text-content__pricing span")[0].textContent.replace('$','').replace('/mo','').replace('+','');
     var saoCost = 0;
     var totalPriceDisplay = planPricing;
-    console.log("totalPriceDisplay " + totalPriceDisplay); 
     var ctaTextDisplay = $("#wf-form-pricing-form a.button")[0].text;
     var ctaHrefDisplay = $("#wf-form-pricing-form a.button")[0].href;
 
