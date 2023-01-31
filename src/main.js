@@ -1,10 +1,12 @@
 import estimatePrice from './js/pricing'
-// dev
+
+
 var Webflow = Webflow || [];
 Webflow.push(function () {
-
     var path = location.path;
-    if(path == '/pricing'){
+
+    // pricing page
+    if(path == '/pricing' || path == '/github-test'){
         
         $(document).ready(estimatePrice);
         $("form[name='wf-form-pricing-form'").change(estimatePrice);
