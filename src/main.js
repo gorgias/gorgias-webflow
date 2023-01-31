@@ -1,6 +1,5 @@
 import estimatePrice from './js/pricing'
 
-
 var Webflow = Webflow || [];
 Webflow.push(function () {
     var path = location.path;
@@ -20,5 +19,4 @@ Webflow.push(function () {
         });
     }
 
-    // home page
 })
