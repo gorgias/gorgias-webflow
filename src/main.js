@@ -3,8 +3,9 @@ import estimatePrice from './js/pricing'
 
 var Webflow = Webflow || [];
 Webflow.push(function () {
-
     var path = location.path;
+
+    // pricing page
     if(path == '/pricing' || path == '/github-test'){
         
         $(document).ready(estimatePrice);
