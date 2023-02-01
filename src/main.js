@@ -6,7 +6,6 @@ var head = document.getElementsByTagName('HEAD')[0]; // Get HTML head element
 
 var Webflow = Webflow || [];
 Webflow.push(function () {
-
     // all pages
     $.getScript( scriptBase + '/src/js/all.js', function(){
         // pricing page
