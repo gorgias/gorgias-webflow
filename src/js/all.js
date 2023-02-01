@@ -1,22 +1,30 @@
 // Function to append a styleSheet hosted on the CDN
-function newCdnStyle(filePath){
-    // Create new link Element
+function newStyle(filePath, position){
+    // filePath should start by '/'.
+    //position should be always 'head' OR 'body'
+    
     var link = document.createElement('link');
-    // set the attributes for link element
     link.rel = 'stylesheet';
     link.type = 'text/css';
     link.href = scriptBase + filePath;
-    // Append link element to HTML head
-    head.appendChild(link);
+    $(position)[0].appendChild(link);
+
 
     
 }
 
 // function to import a js file hosted on the CDN
-function newCdnAsyncScript(filePath){
-    (async () => {
-        import( scriptBase + filePath);
-    })();
+
+function newScript(filePath, position, syncStatus){
+    // filePath should start by '/'.
+    // position should be always 'head' OR 'body'.
+    // syncStatus should be set to 1 if async
+
+    var script = document.createElement('script');
+    script.setAttribute('src',scriptBase + filePath);
+    script.setAttribute("type","text/javascript");
+    script.async = syncStatus;
+    $(position)[0].appendChild(script);    
 }
 
 // cookies functions
