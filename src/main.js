@@ -5,8 +5,13 @@ scriptBase = debug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorg
 
 var Webflow = Webflow || [];
 Webflow.push(function () {
-    // all pages
     $.getScript( scriptBase + '/src/js/all.js', function(){
+
+        newScript('/src/js/cookies.js','body',1);
+
+        newScript('/src/js/sessions.js','body', 0); // set as sync because following script need it to autocomplete field
+        newScript('/src/js/autocompletefields.js','body',1);
+
         // pricing page
         if(path == '/pricing' || path == '/github-test'){
             import('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js');
