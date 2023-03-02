@@ -1,7 +1,13 @@
 var path = window.location.pathname;
 var url = window.location.href;
-var debug = url.includes('debug');
-scriptBase = debug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
+var scriptBase, isDebug = url.includes('debug');
+if (isDebug) {
+    console.log('Debug mode');
+    scriptBase = "http://127.0.0.1:5500";
+}
+else {
+    scriptBase = "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
+}
 
 var Webflow = Webflow || [];
 Webflow.push(function () {
@@ -20,3 +26,4 @@ Webflow.push(function () {
         }
     });
 })
+
