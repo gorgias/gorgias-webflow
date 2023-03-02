@@ -1,0 +1,155 @@
+
+@media screen and (max-width: 991px) {
+  h1>br,
+  h2>br,
+  h3>br,
+  p.after-title br,
+  p.intro br{
+    display: none !important;
+  }
+
+}
+
+button:focus, a:focus, input[type='submit'] {
+  outline: none;
+}
+
+div.twitter-tweet{
+  max-width:350px !important;
+  margin: 15px auto !important;
+}
+
+.w-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.wistia_embed label {
+  margin-bottom:0;
+}
+
+#mutiny-preact h1{
+  letter-spacing: inherit;
+  font-weight:normal;
+}
+
+#mutiny-preact a{
+  letter-spacing: inherit;
+  font-weight:normal;
+}
+#mutiny-preact .fill-0-0-20{
+  background-color: #161616 !important;
+}
+
+body {
+  height: auto;
+}
+
+/*-- Begining of hubspot popup style --*/
+
+.leadinModal-content{
+  padding: 20px!important;
+  background-image: linear-gradient(90deg, #F58D86 0%, #0075FF 100%) !important;
+}
+
+.leadinModal-theme-bottom-left-corner .leadinModal-content{
+  border-radius:0px 10px 10px 0px!important;
+}
+
+.leadinModal-theme-bottom-right-corner .leadinModal-content{
+  border-radius:10px 0px 0px 10px!important;
+}
+
+.leadinModal-content .leadinModal-content-wrapper{
+  background-color: #ffffff!important;
+  border-radius:10px!important;
+}
+
+.leadinModal-content .leadinModal-close{
+  top:15px!important;
+  right: 15px!important;
+}
+
+.leadinModal-content h4{
+  font-weight: bold!important;
+  font-size: 23px!important;
+}
+
+.leadinModal-content .advance-wrapper a{
+  background-color: #0075FF !important;
+  border-radius: 4px!important;
+  font-size: 16px!important;
+  line-height: 24px!important;
+}
+/*-- end of hubspot popup style --*/
+
+/*-- Begining of custom navbar style --*/
+.button__navbar {
+  color: currentColor;
+}
+
+.NAV01_logo_image_svg {
+  color: currentColor;
+}
+
+.navbar-toggle__dropdown {
+  color: currentColor;
+}
+
+.nav_link_generic {
+  color: currentColor;
+}
+
+.navbar-toggle__dropdown, .nav_link_generic {
+  opacity: 75%;
+}
+
+.navbar-toggle__dropdown:hover, .nav_link_generic:hover {
+  opacity: 100%;
+}
+
+.navbar-toggle__dropdown.w-dropdown-toggle.w--open {
+  opacity: 100%;
+}
+
+.mutiny-banner a:hover {
+  opacity: 1 !important;
+}
+/*-- end of custom navbar style --*/
+
+
+/*-- Begining of Animate text with a back and forth color gradient --*/
+.text-highlight-gradient {
+  background-size: 400% 400%;
+  animation: everythingGradient 10s ease infinite;
+  animation-duration: 10s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-fill-mode: none;
+  animation-play-state: running;
+  animation-name: everythingGradient;
+}
+@keyframes everythingGradient { 
+  0% {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 50%;}
+}
+@media not all and (min-resolution:.001dpcm) {
+  @supports (-webkit-appearance:none) and (stroke-color:transparent) { 
+    .text-highlight-gradient { 
+      -webkit-text-fill-color: #ff9090;
+      background-image: none;
+    } 
+  } 
+}
+@media not all and (min-resolution:.001dpcm) {
+  @supports (-webkit-appearance:none) and (stroke-color:transparent) { 
+    .text-highlight-gradient.grey-gradient { 
+      -webkit-text-fill-color: #556885;
+      background-image: none;
+    } 
+  } 
+}
+/*-- End of Animate text with a back and forth color gradient --*/
