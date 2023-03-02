@@ -19,6 +19,7 @@ Webflow.push(function () {
         newScript('/src/js/schema.js','body',1);
         newScript('/src/js/gorgiaschat.js','body',1);
         newStyle('/src/css/all.css','body');
+        newStyle('/src/css/hubspot.css','body');
 
         // pricing page
         if(path == '/pricing' || path == '/github-test'){
