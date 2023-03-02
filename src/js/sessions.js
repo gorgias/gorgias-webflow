@@ -7,7 +7,7 @@ function cookieSessionFromUtmParameter(){
         for (var i = 0; i < vars.length; i++) {
             var pair = vars[i].split("=");
             var paramName = pair[0];
-            var paramValue = pair[1];
+            var paramValue = decodeURIComponent((pair[1]));
 
             //urlParams.push({ paramName: paramValue });
             if (paramName === "email") {
