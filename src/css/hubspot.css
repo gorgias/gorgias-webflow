@@ -1,0 +1,300 @@
+div.submitted-message{
+    height:0 !important;
+    width:0 !important;
+    display:none!important;
+    visibility:hidden !important;
+  }
+  
+  label {
+    margin-bottom: 0px !important;
+  }
+  
+  form.hs-form ul.hs-error-msgs{
+    list-style: none;
+    padding: 0 !important;
+    margin-top: 4px;
+    margin-bottom: 10px;
+  }
+  
+  form.hs-form ul.hs-error-msgs li label{
+    font-size: 12px;
+    line-height: 18px;
+  }
+  
+  .wrapper-flex-hubspot .hs-form {
+    display: flex;
+    gap: 12px;
+  }
+  
+    .wrapper-flex-hubspot .hs-form .hs-form-field.hs-email{
+        position:relative;
+    margin-bottom:28px !important;
+    }
+      
+  .wrapper-flex-hubspot .hs-form .hs-form-field.hs-email .no-list.hs-error-msgs{
+        position: absolute;
+    bottom: -28px;
+    }
+  
+  .wrapper-flex-hubspot.dark-background .hs-input {
+    border: 2px solid white;
+  
+  }
+  
+  div.hs_error_rollup{
+    position:absolute;
+    display:none !important;
+  }
+  
+  .hs_submit.hs-submit {
+    display: block !important;
+  }
+  
+  .hs-button.primary.large, .hs-cta-wrapper .cta_button {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 20px;
+    color: white;
+    border: 2px solid #0075ff;
+    background-color: #0075ff;
+    border-radius: 5px;
+    line-height: 24px;
+    font-weight: 500;
+    font-family: Inter,sans-serif;
+    cursor: pointer;
+    transition: .2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  
+  
+  .hs-button.primary.large:hover, .hs-cta-wrapper .cta_button:hover {
+    color: white;
+    border-color: #0075ff;
+    background-color: #0075ff;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  
+  .thank-you-message .hs-button.primary.large:hover, .hs-cta-wrapper .cta_button:hover {
+    background-color: white;
+    color: #0075ff;
+  }
+  
+  .thank-you-message .hs-button.primary.large:hover, .thank-you-message .hs-cta-wrapper .cta_button:hover {
+    background-color: white;
+    color: #0075ff;
+  }
+  
+  .hs-input {
+    border: none;
+    width: 100%;
+    height: 48px;
+    padding: 12px 16px;
+    color: #161616;
+    border: 2px solid #161616;
+    border-radius: 5px;
+    min-width: 270px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
+  
+  #hubspot-form-1 .hs-input {
+    border: 2px solid white;
+  }
+  
+  div.hs-fieldtype-select select.hs-input {
+    background: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/5e848d055b62341ba998cbc7_arrow%20bottom%20black.svg") no-repeat right;
+    background-position: 95%;
+    background-color: white;
+  }
+  
+  .hbspt-form li .hs-input {
+    box-sizing: border-box;
+    padding: 0;
+    border: none;
+    width: auto;
+    height: auto;
+    min-width: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    margin-right: 12px;
+  }
+  
+  .hbspt-form input[type=checkbox] {
+    -webkit-appearance: checkbox;
+  }
+  
+  .hbspt-form input[type=radio] {
+    -webkit-appearance: radio;
+  }
+  
+  .hbspt-form .inputs-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .hs-form-booleancheckbox-display .hs-input {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .hs-form-booleancheckbox-display .hs-input:checked {
+    background-color: #0075ff;
+  }
+  
+  .hs-form-field {
+    margin-bottom: 12px;
+  }
+  
+  .hs-form.stacked .hs_email {
+    flex: 1 1 0%;
+  }
+  
+  .cta-container.size-normal .hs-input {
+    border-color: white !important;
+  }
+  
+  .div-demo__hero-lp .hs-input {
+    border-color: #161616;
+  }
+  
+  .hs-input:focus-visible {
+    outline: none;
+    border: 2px solid #0075ff;
+  }
+  
+  .no-list.hs-error-msgs.inputs-list {
+    padding: 4px 0 0 20px;
+    color: red;
+    margin-bottom: 0px;
+  }
+  
+  .no-list.hs-error-msgs.inputs-list li {
+    margin-bottom: 0px !important;
+  }
+  
+  .form-signup-top .hs-form {
+    display: grid;
+    grid-auto-rows: minmax(auto,1fr);
+    grid-column-gap: 5px;
+    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr 0.8fr;
+  }
+  
+  .form-signup-top .hs-input {
+    margin-bottom: 0px;
+  }
+  
+  .form-signup-top .hs-submit {
+    margin: 0px;
+    width: 100%;
+  }
+  .hs-form-checkbox {
+    margin-bottom: 3px;
+  }
+  .hbspt-form li .hs-input{
+    margin-right: 6px;
+  }
+  
+  .form-columns-2 .hs-form-field {
+    width: 100% !important;
+  }
+    
+  .form-columns-3 .hs-form-field  {
+    width: 100% !important;
+  }
+    
+  .hs-form-field{
+    width: auto !important;
+  }
+  
+  .grid-hero__2-col .hs-form {
+    display: flex;
+    gap: 8px;
+    max-width: 531px;
+    width: 100%;
+  }
+  /* Mobile landscape CSS */
+  @media (max-width: 767px) {  
+    .hs-input {
+      min-width: auto;
+    }
+  
+    .hs-form.stacked {
+      display: block;
+    }
+    .wrapper-flex-hubspot .hs-form {
+      flex-direction: column;
+    }
+  }
+      
+  /* COLUMS -> Only desktop */
+  @media (min-width: 992px) {
+    
+    .form-columns-2 {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: 10px;
+      grid-auto-rows: minmax(100px, auto);
+    }
+  
+    .form-columns-3 {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: 10px;
+      grid-auto-rows: minmax(100px, auto);
+    }
+  }
+    
+  /* COLUMS -> Only tablet and mobile */
+  @media (max-width: 991px) {
+    
+    .form-columns-2 {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: 10px;
+      grid-auto-rows: minmax(100px, auto);
+    }
+    
+    .form-columns-3 {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: 10px;
+      grid-auto-rows: minmax(100px, auto);
+    }
+  }
+    
+  /* mobile CSS */
+  @media (max-width: 765px) {  
+  
+      .grid-hero__2-col .hs-form {
+        display: block;
+      }
+      .hs-form-field {
+        width: 100% !important;
+      }
+      .hs-input {
+        width: 100% !important;
+      }
+      .hbspt-form li .hs-input {
+        width: auto !important;
+      }
+      .hs_submit {
+        display: block !important;
+      }
+      form.hs-form ul.hs-error-msgs {
+        margin-top: 0px !important;
+        margin-bottom: 10px !important;
+      }
+      .form-signup-top .hs-form {
+        grid-template-columns: 1fr ;
+      }
+      .form-signup-top .hs-input {
+        margin-bottom: 12px;
+      }
+  }
+    
+  
