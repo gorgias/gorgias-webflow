@@ -20,6 +20,8 @@ Webflow.push(function () {
         newScript('/src/js/gorgiaschat.js','body',1);
         newStyle('/src/css/all.css','body');
         newStyle('/src/css/hubspot.css','body');
+        newStyle('/src/css/chilipiper.css','body');
+
 
         // pricing page
         if(path == '/pricing' || path == '/github-test'){

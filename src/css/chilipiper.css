@@ -1,0 +1,18 @@
+.chilipiper-popup.in-custom-element {
+    position:inherit !important;
+    background-color: inherit !important;
+}
+.chilipiper-popup-window{
+    max-height: 570px!important;
+}
+.chilipiper-popup .chilipiper-popup-window .routing-loader{
+    position: inherit !important;
+}
+.wrapper-bg-white__demo {
+    max-width: calc(100vw - 40px);
+}
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+  	.wrapper__hero-demo {
+    	grid-column-gap: 80px;
+    }
+}

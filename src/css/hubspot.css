@@ -265,6 +265,17 @@ div.submitted-message{
       grid-gap: 10px;
       grid-auto-rows: minmax(100px, auto);
     }
+    
+    .hs-input {
+      min-width: auto;
+    }
+
+    .hs-form.stacked {
+      display: block;
+    }
+    .wrapper-flex-hubspot .hs-form {
+      flex-direction: column;
+    }
   }
     
   /* mobile CSS */
