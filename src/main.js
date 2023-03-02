@@ -16,6 +16,7 @@ Webflow.push(function () {
         newScript('/src/js/cookies.js','body',1);
         newScript('/src/js/sessions.js','body', 0); // set as sync because following script need it to autocomplete field
         newScript('/src/js/autocompletefields.js','body',1);
+        newScript('/src/js/schema.js','body',1);
         newScript('/src/js/gorgiaschat.js','body',1);
 
         // pricing page
