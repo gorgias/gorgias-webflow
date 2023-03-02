@@ -25,7 +25,6 @@ function newScript(filePath, position, syncStatus){
     var scriptId = 'js-gorgias-' + filePath.replace("/src/js/","").replace(".js","");
     script.setAttribute('src',scriptBase + filePath);
     script.setAttribute("type","text/javascript");
-    script.setAttribute("type","text/javascript");
     script.setAttribute("id",scriptId);
     if(syncStatus != 1){
         syncStatus = 0;
