@@ -32,18 +32,18 @@ Webflow.push(function () {
         // blog pages
         if(path.includes('/blog/')){
             // [Attributes by Finsweet] Code Highlight
-            newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-codehighlight@1/codehighlight.js','body',1);
+            newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-codehighlight@1/codehighlight.js','head',1);
             // [Attributes by Finsweet] Powerful Rich Text
             newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-richtext@1/richtext.js','head',1);
             // Hubspot CTA
             newScript('https://js.hscta.net/cta/current.js','head',0);
             // [Attributes by Finsweet] Social Share
-            newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-socialshare@1/socialshare.js','body',1);
+            newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-socialshare@1/socialshare.js','head',1);
             // Images zoom in library
-            newScript('https://cdn.jsdelivr.net/npm/medium-zoom@1.0.3/dist/medium-zoom.min.js','body',1);
+            newScript('https://cdn.jsdelivr.net/npm/medium-zoom@1.0.3/dist/medium-zoom.min.js','body',0);
             // custom code
             newStyle('/src/css/blog.css','body');
-            newScript('/src/js/blog.js','head',1);
+            newScript('/src/js/blog.js','body',1);
         }
     });
 })
