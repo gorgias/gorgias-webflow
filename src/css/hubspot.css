@@ -50,7 +50,8 @@ div.submitted-message{
     display: block !important;
   }
   
-  .hs-button.primary.large, .hs-cta-wrapper .cta_button {
+  .hs-button.primary.large,
+  .hs-cta-wrapper div:not(.hubspot__blog-post) .cta_button {
     width: 100%;
     font-size: 16px;
     padding: 10px 20px;
@@ -217,6 +218,13 @@ div.submitted-message{
     max-width: 531px;
     width: 100%;
   }
+
+   /* Hubspot form style - one line */
+   .hubspot__blog-post.max-width.w-embed {
+    margin: 0;
+  }
+
+  
   /* Mobile landscape CSS */
   @media (max-width: 767px) {  
     .hs-input {

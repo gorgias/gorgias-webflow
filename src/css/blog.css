@@ -1,0 +1,224 @@
+<style>
+  /* Get rid of top margin on first element in any rich text element */
+  .w-richtext > :not(div):first-child,
+  .w-richtext > div:first-child > :first-child {
+    margin-top: 0 !important;
+    padding: 0 !important;
+  }
+
+  .rich-text-blog h4 a {
+    font-size: 1.5rem;
+  }
+
+  .rich-text-blog .w-richtext figure.w-richtext-figure-type-image>figcaption a {
+    color: #6a6a6a;
+    font-size: 14px;
+  }
+
+  .rich-text-blog pre {
+    margin: 0;
+    padding: 1.2em 0.8em;
+    border-radius: 8px;
+  }
+
+  .w-embed.w-iframe {
+    width: 100%;
+  }
+
+  /*Change numbered list from 1. to 1) */ 
+  .rich-text-blog ol {
+    list-style: none;
+    counter-reset: my-awesome-counter;
+    padding-left: 0px;
+  }
+  .rich-text-blog ol > li {
+    counter-increment: my-awesome-counter;
+    position: relative;
+    padding-left: 40px;
+  }
+  .rich-text-blog ol > li:before {
+    content: counter(my-awesome-counter) ") ";
+    position: absolute;
+    left: 4px;
+  }
+
+  /* Erase font-size for link when in a heading */
+  .rich-text-blog h2 a, .rich-text-blog h3 a, .rich-text-blog h4 a, .rich-text-blog h5 a {
+    font-size: inherit;
+  }
+
+  .rich-text-blog.w-richtext figure.w-richtext-figure-type-image {
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    clear: both;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .rich-text-blog.w-richtext figure.w-richtext-figure-type-video {
+    padding-bottom: 56.206088992974244% !important;
+  }
+
+  .w-richtext figure.w-richtext-align-center {
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    clear: both;
+    display: block;
+  }
+
+
+  .rich-text-blog.w-richtext figcaption a {
+    font-size: 14px;
+  }
+
+  .rich-text-blog.w-richtext blockquote a, .wrapper-callout a {
+    color: white;
+    text-decoration: underline;
+  }
+
+  .rich-text-blog.w-richtext blockquote a:hover, .wrapper-callout a:hover {
+    color: #ff9090;
+  }
+
+  .wrapper-callout.coral a {
+    color: #161616;
+    text-decoration: underline;
+  }
+
+  .wrapper-callout.coral a:hover {
+    color: white;
+  }
+
+  /* Hubspot form style - one line */
+  .hubspot__blog-post.max-width.w-embed {
+    margin: 0;
+  }
+
+  div.submitted-message{
+    padding: 16px;
+    border: 2px rgba(36, 214, 157, 0.15) solid;
+    border-radius: 12px;
+    font-size: 18px;
+    color: #25be8d;
+    line-height: 1.4em;
+    background-color: #f8fefc;
+  }
+
+  form.hs-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .hs_submit.hs-submit {
+    width: 100%;
+  }
+
+  form.hs-form fieldset label {
+    margin-bottom: 0px !important;
+  }
+
+  form.hs-form fieldset[class*="form-columns"]
+  , form.hs-form div.hs_submit {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  form.hs-form ul.hs-error-msgs{
+    list-style: none;
+    padding: 0 !important;
+    margin-top: 4px;
+  }
+
+  form.hs-form ul.hs-error-msgs li label{
+    font-size:10px;
+    line-height: 16px;
+    margin-bottom: 0;
+  }
+
+  div.hs_error_rollup{
+    position:absolute;
+    display:none !important;
+  }
+
+  .hs-button.primary.large {
+    width: 100%;
+    font-size: 18px;
+    min-height: 52px;
+    padding: 10px 20px;
+    color: white;
+    border: 2px solid #0075ff;
+    background-color: #0075ff;
+    border-radius: 5px;
+    line-height: 24px;
+    font-weight: 400;
+    font-family: Inter,sans-serif;
+    cursor: pointer;
+    transition: .2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  .hs-button.primary.large:hover {
+    border-color: #161616;
+    background-color: #161616;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  .hs-input {
+    border: none;
+    width: 100%;
+    height: 52px;
+    padding: 12px 16px;
+    border: 2px solid #161616;
+    border-radius: 5px;
+    min-width: 270px;
+  }
+
+  .hs-input:focus-visible {
+    outline: none;
+    border: 2px solid #0075ff;
+  }
+
+  .no-list.hs-error-msgs.inputs-list {
+    padding: 4px 0 0 20px;
+    color: red;
+    margin-bottom: 0px;
+  }
+
+  .no-list.hs-error-msgs.inputs-list li {
+    margin-bottom: 0px !important;
+  }
+
+  /* Ipad CSS */
+  @media (max-width: 991px) {  
+    .hs-input {
+      min-width: auto;
+    }
+  }
+
+  /* mobile CSS */
+  @media (max-width: 765px) {  
+    .hs-form-field {
+      width: 100% !important;
+    }
+    .hs-input {
+      width: 100% !important;
+    }
+    .hs_submit {
+    }
+    form.hs-form ul.hs-error-msgs {
+      margin-top: 0px !important;
+    }
+  }
+  
+/* Link inwhite in the blockquote wrapper */
+blockquote a {
+	color : white !important;
+}
+
+</style>
