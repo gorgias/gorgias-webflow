@@ -1,23 +1,11 @@
 // this script is loaded sync on every page of the website, in the head tag, before any other script
 
-// Function to append a styleSheet hosted on the CDN
-function newStyle(filePath, position){
-    // filePath should start by '/'.
-    //position should be always 'head' OR 'body'
-    
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = scriptBase + filePath;
-    $(position)[0].appendChild(link);
-}
-
 // function to import a js file hosted on the CDN
 function newScript(filePath, position, syncStatus){
     // filePath should start by '/' if the file is hosted on our CDH
     // fillePath should start by https:// if it's a 3rd party script
     // position should be always 'head' OR 'body'.
-    // syncStatus should be set to 1 if async
+    // syncStatus should be set to 1 if defer
 
     var script = document.createElement('script');
     var scriptId;
@@ -39,8 +27,20 @@ function newScript(filePath, position, syncStatus){
     if(syncStatus != 1){
         syncStatus = 0;
     }
-    script.async = syncStatus;
+    script.defer = syncStatus;
     $(position)[0].appendChild(script);    
+}
+
+// Function to append a styleSheet hosted on the CDN
+function newStyle(filePath, position){
+    // filePath should start by '/'.
+    //position should be always 'head' OR 'body'
+    
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = scriptBase + filePath;
+    $(position)[0].appendChild(link);
 }
 
 /* BEGINING OF cookies functions */
