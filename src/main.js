@@ -14,6 +14,8 @@ var Webflow = Webflow || [];
 Webflow.push(function () {
 
     newScript('/src/js/autocompletefields.js','body',1); // once hubspot forms are loaded and display
+    newScript('/src/js/demo.js','body',1);
+    newScript('https://js.na.chilipiper.com/marketing.js','body',1);
     newScript('/src/js/schema.js','body',1);
     newScript('/src/js/gorgiaschat.js','body',1);
     newStyle('/src/css/all.css','body');
