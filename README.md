@@ -19,6 +19,22 @@ Repo to organize all Webflow custom codes including :
 - JS files
 - CSS files
 
+## jsDelivr (WIP)
+
+### Purge
+After every update publication, it may takes by default up to 7 days to jsDelivr to update @latest version of files hosted on Github.
+To avoid this, we can purge the URL of the files which have been modified. 2 Options
+- Use https://www.jsdelivr.com/tools/purge
+- Visit https://purge.jsdelivr.net/gh/gorgias/gorgias-webflow@latest/{{file-path}}/{{filename.extension}}
+
+Note: Even with purging, it may take a few hours for jsDelivr to propagate the update to all servers. It means some visitors may not load the last version of the files. To avoid this issue, You can edit temporary the file path of the files in webflow admin in the <head>, until the last version to be deployed. Simply reaplce @latest by the version fo the branch published (e.g. @4992840). You can find the version of the branch by runing to command line git branch -v
+
+## Debug mode
+
+### How to use local repository to develop (wip)
+- add "debug=gorgias" in the URL of the page
+- How it works ? condition in webflow <head> to call local repo vs cdn one 
+- Use Go live feature in Visual studio (wip)
 ## Github Branch naming convention
 
 ### Best practices
@@ -34,4 +50,5 @@ Repo to organize all Webflow custom codes including :
 - fix/{{what-you-fix}} --> Use to fixe a bug. E.g. fix/autocompletion-demo-form-fields
 - new/{{what-you-built-new}} --> Use to add new features. E.g. new/graident-effect-animation-h1
 - refactor/{{what-you-clean}} --> refactor/simplify-script-pricing-page
-
+- refactor/{{what-you-clean}} --> refactor/simplify-script-pricing-page
+- improve/{{what's-your-update}} --> e.g. improve/readme-purge
