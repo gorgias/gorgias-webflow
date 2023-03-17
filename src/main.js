@@ -1,33 +1,28 @@
 var path = window.location.pathname;
 var url = window.location.href;
-var scriptBase, isDebug = url.includes('debug=gorgias');
-if (isDebug) {
-    console.log('Debug mode');
-    scriptBase = "http://127.0.0.1:5500";
-}
-else {
-    scriptBase = "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
-}
+var isDebug = url.includes('debug=gorgias');
+var scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
+
 
 // scripts belows requires Jquery or are not crucial for website work
 var Webflow = Webflow || [];
 Webflow.push(function () {
 
-    newScript('/src/js/autocompletefields.js','body',1); // once hubspot forms are loaded and display
-    newScript('/src/js/demo.js','body',1);
-    newScript('https://js.na.chilipiper.com/marketing.js','body',1);
-    newScript('/src/js/schema.js','body',1);
-    newScript('/src/js/gorgiaschat.js','body',1);
-    newStyle('/src/css/all.css','body');
-    newStyle('/src/css/hubspot.css','body');
-    newStyle('/src/css/chilipiper.css','body');
+    newScript(scriptBase + '/src/js/autocompletefields.js','body',1); // once hubspot forms are loaded and display
+    newScript(scriptBase + '/src/js/demo.js','body',1);
+    newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
+    newScript(scriptBase + '/src/js/schema.js','body',1);
+    newScript(scriptBase + '/src/js/gorgiaschat.js','body',1);
+    newStyle(scriptBase + '/src/css/all.css','body');
+    // newStyle(scriptBase + '/src/css/hubspot.css','head');
+    newStyle(scriptBase + '/src/css/chilipiper.css','body');
 
     // pricing page
     if(path == '/pricing'){
         // [Attributes by Finsweet] Mirrorclick
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
-        newStyle('/src/css/pricing.css','body');
-        newScript('/src/js/pricing.js','head',1);
+        newStyle(scriptBase + '/src/css/pricing.css','body');
+        newScript(scriptBase + '/src/js/pricing.js','head',1);
     }
     // blog pages
     if(path.includes('/blog/')){
@@ -42,8 +37,8 @@ Webflow.push(function () {
         // Images zoom in library
         newScript('https://cdn.jsdelivr.net/npm/medium-zoom@1.0.3/dist/medium-zoom.min.js','body',0);
         // custom code
-        newStyle('/src/css/blog.css','body');
-        newScript('/src/js/blog.js','body',1);
+        newStyle(scriptBase + '/src/css/blog.css','body');
+        newScript(scriptBase + '/src/js/blog.js','body',1);
     }
 })
 

@@ -20,14 +20,26 @@ function autoCompleteInputsForms(){
     if (sessionStorage.domain && sessionStorage.domain.length > 0 ) {
         if($("input[name|='company_domain']").length>0){
             $("input[name|='company_domain']").val(sessionStorage.domain).change();
-            $("input[name|='company_domain']").hide();
+            //$("input[name|='company_domain']").hide();
         }
 
         if($("input[name|='0-2/domain']").length>0){
             $("input[name|='0-2/domain']").val(sessionStorage.domain).change();
-            $("input[name|='0-2/domain']").hide();
+            //$("input[name|='0-2/domain']").hide();
         }
     }
+    if (sessionStorage.company_domain && sessionStorage.company_domain.length > 0 ) {
+        if($("input[name|='company_domain']").length>0){
+            $("input[name|='company_domain']").val(sessionStorage.company_domain).change();
+            //$("input[name|='company_domain']").hide();
+        }
+
+        if($("input[name|='0-2/domain']").length>0){
+            $("input[name|='0-2/domain']").val(sessionStorage.company_domain).change();
+            //$("input[name|='0-2/domain']").hide();
+        }
+    }
+
     if(sessionStorage.gorgias_subdomain){
         if ($("input[name|='account_domain']").length>0) {
             $("input[name|='account_domain']").val(sessionStorage.gorgias_subdomain).change();
@@ -36,7 +48,7 @@ function autoCompleteInputsForms(){
     }
 
     if (sessionStorage.phone) {
-        $("input[name|='phone']").val(sessionStorage.phone)
+        $("input[name|='phone']").val(sessionStorage.phone).change();
     }
     if (sessionStorage.about_us && sessionStorage.about_us.length > 0) { 
         if($("select[name|='about_us']").length>0 ){
