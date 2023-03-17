@@ -2,44 +2,27 @@
 
 // function to import a js file hosted on the CDN
 function newScript(filePath, position, syncStatus){
-    // filePath should start by '/' if the file is hosted on our CDH
     // fillePath should start by https:// if it's a 3rd party script
     // position should be always 'head' OR 'body'.
     // syncStatus should be set to 1 if defer
 
     var script = document.createElement('script');
-    var scriptId;
-    var scriptLink
-    if(filePath.includes('https://')){
-        
-        var filePathArray = filePath.split('/').slice(-2).reverse().pop() + '-' + filePath.split('/').slice(-1).reverse().pop()
-        scriptId = 'js-ext-' + filePathArray.replace(/(\.min)?\.js$|@/g, "").split('/').filter(e => e).slice(-1);
-        scriptLink = filePath;
-    }else{
-        scriptId = 'js-gorgias-' + filePath.replace(/(\.min)?\.js$|@/g, "");
-        scriptLink = scriptBase + filePath;
-    }
-
-    script.setAttribute("id",scriptId);
-    script.setAttribute('src',scriptLink);
+    script.setAttribute('src',filePath);
     script.setAttribute("type","text/javascript");
     
-    if(syncStatus != 1){
-        syncStatus = 0;
-    }
+    if(syncStatus != 1){syncStatus = 0; }
     script.defer = syncStatus;
     $(position)[0].appendChild(script);    
 }
 
 // Function to append a styleSheet hosted on the CDN
 function newStyle(filePath, position){
-    // filePath should start by '/'.
     //position should be always 'head' OR 'body'
     
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
-    link.href = scriptBase + filePath;
+    link.href = filePath;
     $(position)[0].appendChild(link);
 }
 
