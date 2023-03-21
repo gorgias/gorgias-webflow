@@ -1,14 +1,12 @@
-var path = window.location.pathname;
-var url = window.location.href;
-var isDebug = url.includes('debug=gorgias');
-var scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
-
-
 // scripts belows requires Jquery or are not crucial for website work
 var Webflow = Webflow || [];
 Webflow.push(function () {
+    var path = window.location.pathname;
+    var url = window.location.href;
+    var isDebug = url.includes('debug=gorgias');
+    var scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
 
-    newScript(scriptBase + '/src/js/autocompletefields.js','body',1); // once hubspot forms are loaded and display
+    newScript(scriptBase + '/src/js/autocompletefields.js','body',1);
     newScript(scriptBase + '/src/js/demo.js','body',1);
     newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
     newScript(scriptBase + '/src/js/schema.js','body',1);

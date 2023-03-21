@@ -86,18 +86,18 @@ function cookieSessionFromUtmParameter(){
 }
 
 // fetch the IP and store it in variable session
-function getandStoreIp(){
-    if(sessionStorage.getItem('ipVisitor') === null || sessionStorage.getItem('ipVisitor') == ""){
-        $.getJSON( "https://api.ipify.org?format=jsonp&callback=?", function(json) {
-            if(json.ip.length > 0){
-                sessionStorage.setItem('ipVisitor', json.ip);
-            }
-            else{
-                sessionStorage.setItem('ipVisitor', '');
-            }
-        })
-    }
-}
+// function getandStoreIp(){
+//     if(sessionStorage.getItem('ipVisitor') === null || sessionStorage.getItem('ipVisitor') == ""){
+//         $.getJSON( "https://api.ipify.org?format=jsonp&callback=?", function(json) {
+//             if(json.ip.length > 0){
+//                 sessionStorage.setItem('ipVisitor', json.ip);
+//             }
+//             else{
+//                 sessionStorage.setItem('ipVisitor', '');
+//             }
+//         })
+//     }
+// }
 
 cookieSessionFromUtmParameter();
-getandStoreIp();
+//getandStoreIp();
