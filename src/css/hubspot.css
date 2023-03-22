@@ -5,7 +5,7 @@ div.submitted-message{
     visibility:hidden !important;
   }
   
-  label {
+  form.hs-form label {
     margin-bottom: 0px !important;
   }
   
