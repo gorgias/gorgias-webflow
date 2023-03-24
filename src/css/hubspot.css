@@ -177,19 +177,22 @@ div.submitted-message{
     margin-bottom: 0px !important;
   }
   
-  .form-signup-top .hs-form {
+  .form-signup-top .hs-form,
+  .hubspot-form-demo-short .hs-form {
     display: grid;
     grid-auto-rows: minmax(auto,1fr);
     grid-column-gap: 5px;
     grid-template-rows: 1fr auto;
-    grid-template-columns: 1fr 0.8fr;
+    grid-template-columns: 1fr auto;
   }
   
-  .form-signup-top .hs-input {
+  .form-signup-top .hs-input,
+  .hubspot-form-demo-short .hs-input {
     margin-bottom: 0px;
   }
   
-  .form-signup-top .hs-submit {
+  .form-signup-top .hs-submit
+  .hubspot-form-demo-short .hs-submit {
     margin: 0px;
     width: 100%;
   }
@@ -308,10 +311,12 @@ div.submitted-message{
         margin-top: 0px !important;
         margin-bottom: 10px !important;
       }
-      .form-signup-top .hs-form {
+      .form-signup-top .hs-form,
+      .hubspot-form-demo-short .hs-form {
         grid-template-columns: 1fr ;
       }
-      .form-signup-top .hs-input {
+      .form-signup-top .hs-input, 
+      .hubspot-form-demo-short .hs-input {
         margin-bottom: 12px;
       }
   }
