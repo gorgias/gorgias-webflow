@@ -5,22 +5,22 @@ Webflow.push(function () {
     var url = window.location.href;
     var isDebug = url.includes('debug=gorgias');
     var scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
+    var minBase = isDebug ? "" : ".min";
 
-    newScript(scriptBase + '/src/js/autocompletefields.js','body',1);
-    newScript(scriptBase + '/src/js/demo.js','body',1);
+    newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
+    newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
-    newScript(scriptBase + '/src/js/schema.js','body',1);
-    newScript(scriptBase + '/src/js/gorgiaschat.js','body',1);
-    newStyle(scriptBase + '/src/css/all.css','body');
-    // newStyle(scriptBase + '/src/css/hubspot.css','head');
-    newStyle(scriptBase + '/src/css/chilipiper.css','body');
+    newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
+    newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
+    newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
+    newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
 
     // pricing page
     if(path == '/pricing'){
         // [Attributes by Finsweet] Mirrorclick
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
-        newStyle(scriptBase + '/src/css/pricing.css','body');
-        newScript(scriptBase + '/src/js/pricing.js','head',1);
+        newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
+        newScript(scriptBase + '/src/js/pricing'+minBase+'.js','head',1);
     }
     // blog pages
     if(path.includes('/blog/')){
@@ -35,8 +35,8 @@ Webflow.push(function () {
         // Images zoom in library
         newScript('https://cdn.jsdelivr.net/npm/medium-zoom@1.0.3/dist/medium-zoom.min.js','body',0);
         // custom code
-        newStyle(scriptBase + '/src/css/blog.css','body');
-        newScript(scriptBase + '/src/js/blog.js','body',1);
+        newStyle(scriptBase + '/src/css/blog'+minBase+'.css','body');
+        newScript(scriptBase + '/src/js/blog'+minBase+'.js','body',1);
     }
 })
 
