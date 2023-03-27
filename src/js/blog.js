@@ -10,12 +10,13 @@ $('.w-richtext').find('h2').each(function(index) {
 */
 
 // open link in a new tab automatically */
-const links = document.querySelectorAll('.blogpost_wrapper-content a')
+var links = document.querySelectorAll('.blogpost_wrapper-content a')
 links.forEach(link => link.target = "_blank")
 
 // Zoom on images -->
-const images = Array.from(document.querySelectorAll(".blogpost_wrapper-content img"));
+var images = Array.from(document.querySelectorAll(".blogpost_wrapper-content img:not(.hs-cta-img)"));
 if ($(window).width() >= 991) {
+
     images.forEach(img => {
         mediumZoom(img, {
             margin: 0, /* The space outside the zoomed image */
