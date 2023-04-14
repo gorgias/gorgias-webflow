@@ -175,14 +175,14 @@ if (countApparelFashion === 1) {
 }
 
 // WhatsApp
-let elementsWhatsApp = document.querySelectorAll('[features="WhatsApp"]');
+let elementsWhatsApp = document.querySelectorAll('[industry="WhatsApp"]');
 let countWhatsApp = elementsWhatsApp.length;
 if (countWhatsApp === 1) {
   elementsWhatsApp[0].style.display = "none";
 }
 
 // Help Center
-let elementsHelpCenter = document.querySelectorAll('[features="Help Center"]');
+let elementsHelpCenter = document.querySelectorAll('[industry="Help Center"]');
 let countHelpCenter = elementsHelpCenter.length;
 if (countHelpCenter === 1) {
   elementsHelpCenter[0].style.display = "none";
@@ -190,7 +190,7 @@ if (countHelpCenter === 1) {
 
 // Automation Add-on
 let elementsAutomationAddon = document.querySelectorAll(
-  '[features="Automation Add-on"]'
+  '[industry="Automation Add-on"]'
 );
 let countAutomationAddon = elementsAutomationAddon.length;
 if (countAutomationAddon === 1) {
@@ -198,7 +198,7 @@ if (countAutomationAddon === 1) {
 }
 
 // SMS
-let elementsSMS = document.querySelectorAll('[features="SMS"]');
+let elementsSMS = document.querySelectorAll('[industry="SMS"]');
 let countSMS = elementsSMS.length;
 if (countSMS === 1) {
   elementsSMS[0].style.display = "none";
@@ -206,7 +206,7 @@ if (countSMS === 1) {
 
 // Satisfaction survey
 let elementsSatisfactionSurvey = document.querySelectorAll(
-  '[features="Satisfaction survey"]'
+  '[industry="Satisfaction survey"]'
 );
 let countSatisfactionSurvey = elementsSatisfactionSurvey.length;
 if (countSatisfactionSurvey === 1) {
@@ -215,7 +215,7 @@ if (countSatisfactionSurvey === 1) {
 
 // Revenue statistics
 let elementsRevenueStatistics = document.querySelectorAll(
-  '[features="Revenue statistics"]'
+  '[industry="Revenue statistics"]'
 );
 let countRevenueStatistics = elementsRevenueStatistics.length;
 if (countRevenueStatistics === 1) {
@@ -224,7 +224,7 @@ if (countRevenueStatistics === 1) {
 
 // Support performance
 let elementsSupportPerformance = document.querySelectorAll(
-  '[features="Support performance"]'
+  '[industry="Support performance"]'
 );
 let countSupportPerformance = elementsSupportPerformance.length;
 if (countSupportPerformance === 1) {
@@ -233,7 +233,7 @@ if (countSupportPerformance === 1) {
 
 // Live Statistics
 let elementsLiveStatistics = document.querySelectorAll(
-  '[features="Live Statistics"]'
+  '[industry="Live Statistics"]'
 );
 let countLiveStatistics = elementsLiveStatistics.length;
 if (countLiveStatistics === 1) {
@@ -242,7 +242,7 @@ if (countLiveStatistics === 1) {
 
 // Self-service
 let elementsSelfService = document.querySelectorAll(
-  '[features="Self-service"]'
+  '[industry="Self-service"]'
 );
 let countSelfService = elementsSelfService.length;
 if (countSelfService === 1) {
@@ -251,7 +251,7 @@ if (countSelfService === 1) {
 
 // Intents & sentiment detection
 let elementsIntentsSentimentDetection = document.querySelectorAll(
-  '[features="Intents & sentiment detection"]'
+  '[industry="Intents & sentiment detection"]'
 );
 let countIntentsSentimentDetection = elementsIntentsSentimentDetection.length;
 if (countIntentsSentimentDetection === 1) {
@@ -259,14 +259,14 @@ if (countIntentsSentimentDetection === 1) {
 }
 
 // Macros
-let elementsMacros = document.querySelectorAll('[features="Macros"]');
+let elementsMacros = document.querySelectorAll('[industry="Macros"]');
 let countMacros = elementsMacros.length;
 if (countMacros === 1) {
   elementsMacros[0].style.display = "none";
 }
 
 // Rules
-let elementsRules = document.querySelectorAll('[features="Rules"]');
+let elementsRules = document.querySelectorAll('[industry="Rules"]');
 let countRules = elementsRules.length;
 if (countRules === 1) {
   elementsRules[0].style.display = "none";
@@ -274,7 +274,7 @@ if (countRules === 1) {
 
 // Order management
 let elementsOrderManagement = document.querySelectorAll(
-  '[features="Order management"]'
+  '[industry="Order management"]'
 );
 let countOrderManagement = elementsOrderManagement.length;
 if (countOrderManagement === 1) {
@@ -282,7 +282,7 @@ if (countOrderManagement === 1) {
 }
 
 // Views
-let elementsViews = document.querySelectorAll('[features="Views"]');
+let elementsViews = document.querySelectorAll('[industry="Views"]');
 let countViews = elementsViews.length;
 if (countViews === 1) {
   elementsViews[0].style.display = "none";
@@ -290,7 +290,7 @@ if (countViews === 1) {
 
 // Customer Sidebar
 let elementsCustomerSidebar = document.querySelectorAll(
-  '[features="Customer Sidebar"]'
+  '[industry="Customer Sidebar"]'
 );
 let countCustomerSidebar = elementsCustomerSidebar.length;
 if (countCustomerSidebar === 1) {
@@ -299,7 +299,7 @@ if (countCustomerSidebar === 1) {
 
 // Multi-Stores
 let elementsMultiStores = document.querySelectorAll(
-  '[features="Multi-Stores"]'
+  '[industry="Multi-Stores"]'
 );
 let countMultiStores = elementsMultiStores.length;
 if (countMultiStores === 1) {
@@ -307,21 +307,21 @@ if (countMultiStores === 1) {
 }
 
 // Live Chat
-let elementsLiveChat = document.querySelectorAll('[features="Live Chat"]');
+let elementsLiveChat = document.querySelectorAll('[industry="Live Chat"]');
 let countLiveChat = elementsLiveChat.length;
 if (countLiveChat === 1) {
   elementsLiveChat[0].style.display = "none";
 }
 
 // Instagram
-let elementsInstagram = document.querySelectorAll('[features="Instagram"]');
+let elementsInstagram = document.querySelectorAll('[industry="Instagram"]');
 let countInstagram = elementsInstagram.length;
 if (countInstagram === 1) {
   elementsInstagram[0].style.display = "none";
 }
 
 // Email
-let elementsEmail = document.querySelectorAll('[features="Email"]');
+let elementsEmail = document.querySelectorAll('[industry="Email"]');
 let countEmail = elementsEmail.length;
 if (countEmail === 1) {
   elementsEmail[0].style.display = "none";
@@ -329,7 +329,7 @@ if (countEmail === 1) {
 
 // Social Media
 let elementsSocialMedia = document.querySelectorAll(
-  '[features="Social Media"]'
+  '[industry="Social Media"]'
 );
 let countSocialMedia = elementsSocialMedia.length;
 if (countSocialMedia === 1) {
@@ -337,147 +337,147 @@ if (countSocialMedia === 1) {
 }
 
 // Voice
-let elementsVoice = document.querySelectorAll('[features="Voice"]');
+let elementsVoice = document.querySelectorAll('[industry="Voice"]');
 let countVoice = elementsVoice.length;
 if (countVoice === 1) {
   elementsVoice[0].style.display = "none";
 }
 
 // Help Crunch
-let elementsHelpCrunch = document.querySelectorAll('[helpdesk="Help Crunch"]');
+let elementsHelpCrunch = document.querySelectorAll('[industry="Help Crunch"]');
 let countHelpCrunch = elementsHelpCrunch.length;
 if (countHelpCrunch === 1) {
   elementsHelpCrunch[0].style.display = "none";
 }
 
 // Kayako
-let elementsKayako = document.querySelectorAll('[helpdesk="Kayako"]');
+let elementsKayako = document.querySelectorAll('[industry="Kayako"]');
 let countKayako = elementsKayako.length;
 if (countKayako === 1) {
   elementsKayako[0].style.display = "none";
 }
 
 // Trengo
-let elementsTrengo = document.querySelectorAll('[helpdesk="Trengo"]');
+let elementsTrengo = document.querySelectorAll('[industry="Trengo"]');
 let countTrengo = elementsTrengo.length;
 if (countTrengo === 1) {
   elementsTrengo[0].style.display = "none";
 }
 
 // Live agent
-let elementsLiveAgent = document.querySelectorAll('[helpdesk="Live agent"]');
+let elementsLiveAgent = document.querySelectorAll('[industry="Live agent"]');
 let countLiveAgent = elementsLiveAgent.length;
 if (countLiveAgent === 1) {
   elementsLiveAgent[0].style.display = "none";
 }
 
 // Gladly
-let elementsGladly = document.querySelectorAll('[helpdesk="Gladly"]');
+let elementsGladly = document.querySelectorAll('[industry="Gladly"]');
 let countGladly = elementsGladly.length;
 if (countGladly === 1) {
   elementsGladly[0].style.display = "none";
 }
 
 // Rich Panel
-let elementsRichPanel = document.querySelectorAll('[helpdesk="Rich Panel"]');
+let elementsRichPanel = document.querySelectorAll('[industry="Rich Panel"]');
 let countRichPanel = elementsRichPanel.length;
 if (countRichPanel === 1) {
   elementsRichPanel[0].style.display = "none";
 }
 
 // Desk
-let elementsDesk = document.querySelectorAll('[helpdesk="Desk"]');
+let elementsDesk = document.querySelectorAll('[industry="Desk"]');
 let countDesk = elementsDesk.length;
 if (countDesk === 1) {
   elementsDesk[0].style.display = "none";
 }
 
 // Delightchat
-let elementsDelightchat = document.querySelectorAll('[helpdesk="Delightchat"]');
+let elementsDelightchat = document.querySelectorAll('[industry="Delightchat"]');
 let countDelightchat = elementsDelightchat.length;
 if (countDelightchat === 1) {
   elementsDelightchat[0].style.display = "none";
 }
 
 // Zohodesk
-let elementsZohodesk = document.querySelectorAll('[helpdesk="Zohodesk"]');
+let elementsZohodesk = document.querySelectorAll('[industry="Zohodesk"]');
 let countZohodesk = elementsZohodesk.length;
 if (countZohodesk === 1) {
   elementsZohodesk[0].style.display = "none";
 }
 
 // Zendesk
-let elementsZendesk = document.querySelectorAll('[helpdesk="Zendesk"]');
+let elementsZendesk = document.querySelectorAll('[industry="Zendesk"]');
 let countZendesk = elementsZendesk.length;
 if (countZendesk === 1) {
   elementsZendesk[0].style.display = "none";
 }
 
 // Tidio
-let elementsTidio = document.querySelectorAll('[helpdesk="Tidio"]');
+let elementsTidio = document.querySelectorAll('[industry="Tidio"]');
 let countTidio = elementsTidio.length;
 if (countTidio === 1) {
   elementsTidio[0].style.display = "none";
 }
 
 // Tawkto
-let elementsTawkto = document.querySelectorAll('[helpdesk="Tawkto"]');
+let elementsTawkto = document.querySelectorAll('[industry="Tawkto"]');
 let countTawkto = elementsTawkto.length;
 if (countTawkto === 1) {
   elementsTawkto[0].style.display = "none";
 }
 
 // Reamaze
-let elementsReamaze = document.querySelectorAll('[helpdesk="Reamaze"]');
+let elementsReamaze = document.querySelectorAll('[industry="Reamaze"]');
 let countReamaze = elementsReamaze.length;
 if (countReamaze === 1) {
   elementsReamaze[0].style.display = "none";
 }
 
 // LiveChat
-let elementsLiveChat2 = document.querySelectorAll('[helpdesk="LiveChat"]');
+let elementsLiveChat2 = document.querySelectorAll('[industry="LiveChat"]');
 let countLiveChat2 = elementsLiveChat2.length;
 if (countLiveChat2 === 1) {
   elementsLiveChat2[0].style.display = "none";
 }
 
 // Kustomer
-let elementsKustomer = document.querySelectorAll('[helpdesk="Kustomer"]');
+let elementsKustomer = document.querySelectorAll('[industry="Kustomer"]');
 let countKustomer = elementsKustomer.length;
 if (countKustomer === 1) {
   elementsKustomer[0].style.display = "none";
 }
 
 // Intercom
-let elementsIntercom = document.querySelectorAll('[helpdesk="Intercom"]');
+let elementsIntercom = document.querySelectorAll('[industry="Intercom"]');
 let countIntercom = elementsIntercom.length;
 if (countIntercom === 1) {
   elementsIntercom[0].style.display = "none";
 }
 
 // Helpscout
-let elementsHelpscout = document.querySelectorAll('[helpdesk="Helpscout"]');
+let elementsHelpscout = document.querySelectorAll('[industry="Helpscout"]');
 let countHelpscout = elementsHelpscout.length;
 if (countHelpscout === 1) {
   elementsHelpscout[0].style.display = "none";
 }
 
 // HappyFox
-let elementsHappyFox = document.querySelectorAll('[helpdesk="HappyFox"]');
+let elementsHappyFox = document.querySelectorAll('[industry="HappyFox"]');
 let countHappyFox = elementsHappyFox.length;
 if (countHappyFox === 1) {
   elementsHappyFox[0].style.display = "none";
 }
 
 // Front
-let elementsFront = document.querySelectorAll('[helpdesk="Front"]');
+let elementsFront = document.querySelectorAll('[industry="Front"]');
 let countFront = elementsFront.length;
 if (countFront === 1) {
   elementsFront[0].style.display = "none";
 }
 
 // Freshdesk
-let elementsFreshdesk = document.querySelectorAll('[helpdesk="Freshdesk"]');
+let elementsFreshdesk = document.querySelectorAll('[industry="Freshdesk"]');
 let countFreshdesk = elementsFront.length;
 if (countFreshdesk === 1) {
   elementsFreshdesk[0].style.display = "none";
