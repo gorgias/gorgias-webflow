@@ -463,7 +463,7 @@ if (countHelpscout === 1) {
 }
 
 // HappyFox
-let elementsHappyFox = document.querySelectorAll('[industry="HappyFox"]');
+let elementsHappyFox = document.querySelectorAll('[helpdesk="HappyFox"]');
 let countHappyFox = elementsHappyFox.length;
 if (countHappyFox === 1) {
   elementsHappyFox[0].style.display = "none";
