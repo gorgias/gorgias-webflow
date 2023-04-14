@@ -478,14 +478,14 @@ if (countFront === 1) {
 
 // Freshdesk
 let elementsFreshdesk = document.querySelectorAll('[helpdesk="Freshdesk"]');
-let countFreshdesk = elementsFront.length;
+let countFreshdesk = elementsFreshdesk.length;
 if (countFreshdesk === 1) {
   elementsFreshdesk[0].style.display = "none";
 }
 
 // Freshchat
 let elementsFreshchat = document.querySelectorAll('[helpdesk="Freshchat"]');
-let countFreshchat = elementsFront.length;
+let countFreshchat = elementsFreshchat.length;
 if (countFreshchat === 1) {
   elementsFreshchat[0].style.display = "none";
 }
