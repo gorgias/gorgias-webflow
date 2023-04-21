@@ -185,6 +185,10 @@ div.submitted-message{
     grid-template-rows: 1fr auto;
     grid-template-columns: 1fr auto;
   }
+
+  .hubspot-form-demo-short .hs-form.custom-hbs-form {
+    display: block;
+  }
   
   .form-signup-top .hs-input,
   .hubspot-form-demo-short .hs-input {
