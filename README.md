@@ -12,29 +12,31 @@ Instead of embedding our code in the admin interface of webflow, or even directl
 - CDN using JS deliver
 - Critical scripts are loaded from webflow admin interface, in head / sync
 - Other scripts are called from /src/main.js
-- Note: Need to purge CDN cache after repo has been updated
 
 ## Structure of the repo
 Repo to organize all Webflow custom codes including :
 - JS files
 - CSS files
 
-## jsDelivr (WIP)
+## jsDelivr
 
-### Purge
-After every update publication, it may takes by default up to 7 days to jsDelivr to update @latest version of files hosted on Github.
-To avoid this, we can purge the URL of the files which have been modified. 2 Options
-- Use https://www.jsdelivr.com/tools/purge
-- Visit https://purge.jsdelivr.net/gh/gorgias/gorgias-webflow@latest/{{file-path}}/{{filename.extension}}
+After every commit, it may takes by default up to 7 days to jsDelivr to update @latest version of files hosted on Github. To avoid this, JsDelivr offers a purge functionnality, but it doesn't work properly.
 
-Note: Even with purging, it may take a few hours for jsDelivr to propagate the update to all servers. It means some visitors may not load the last version of the files. To avoid this issue, You can edit temporary the file path of the files in webflow admin in the <head>, until the last version to be deployed. Simply reaplce @latest by the version fo the branch published (e.g. @4992840). You can find the version of the branch by runing to command line git branch -v
+To prevent the delay, each time you publish a branch, update the commitVersion in the head of the website admin with the latest branch version published (and don't forget to publish the website)
+- Here is where you can find the latest branch Version in Github: https://share.getcloudapp.com/7KuzZ8gD. You can also You can also run to command line git branch -v
+- Here is where you have to update the commitVersion in Webflow: https://share.getcloudapp.com/mXuDW6nY
+
 
 ## Debug mode
 
-### How to use local repository to develop (wip)
-- add "debug=gorgias" in the URL of the page
-- How it works ? condition in webflow <head> to call local repo vs cdn one 
-- Use Go live feature in Visual studio (wip)
+### How to use local repository to develop
+You can test your local code before deploying by using Visual code Studio and the extension Live server
+- Once the extension is installed, click on the bottom right corner button "Go live": https://share.getcloudapp.com/6quboede
+- It will open http://127.0.0.1:5500/. It means all good, your local code is now runing on a local server. You can close the tab
+- Then, add "?debug=gorgias" in the gorgias URL of the page want to test your local code
+- In the admin of the webflow website (<head> tag -> https://share.getcloudapp.com/7KuzZ8BW), a function replaces all remote repository URLs by the local ones when "?debug=gorgias" is in the URL 
+
+
 ## Github Branch naming convention
 
 ### Best practices
