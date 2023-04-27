@@ -1,7 +1,7 @@
 
 //var Webflow = Webflow || [];
 //Webflow.push(function () {
-    function estimatePrice(a){
+function estimatePrice(a){
     setTimeout(function() {        
     var planPricing = $(".tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .wrapper-flex-right__tab-pane-pricing>.price:not(.discount-old-price)")[0].textContent.replace('$','');
     var planPeriod = $('.tabs-menu__pricing.w-tab-menu>a.w--current')[0].textContent.toLowerCase();
@@ -23,191 +23,191 @@
 
     // automation
     if(planName =='starter' && planPeriod == 'monthly') {
-    aaoCost = 0;
-    aaoDisplayPrice = 'Not available'
+      aaoCost = 0;
+      aaoDisplayPrice = 'Not available'
     }
     else if(planName =='starter' && planPeriod == 'annual') {
-    aaoCost = 0;
-    aaoDisplayPrice = 'Not available'
+      aaoCost = 0;
+      aaoDisplayPrice = 'Not available'
     }
     else if(planName =='basic' && planPeriod == 'monthly') {
-    aaoCost = 30;
-    aaoDisplayPrice = '+$30/mo';
+      aaoCost = 30;
+      aaoDisplayPrice = '+$30/mo';
     }
     else if(planName =='basic' && planPeriod == 'annual') {
-    aaoCost = 25;
-    aaoDisplayPrice = '+$25/mo';
+      aaoCost = 25;
+      aaoDisplayPrice = '+$25/mo';
     }
     else if(planName =='pro' && planPeriod == 'monthly') {
-    aaoCost = 180;
-    aaoDisplayPrice = '+$180/mo';
+      aaoCost = 180;
+      aaoDisplayPrice = '+$180/mo';
     }
     else if(planName =='pro' && planPeriod == 'annual') {
-    aaoCost = 150;
-    aaoDisplayPrice = '+$150/mo';
+      aaoCost = 150;
+      aaoDisplayPrice = '+$150/mo';
     }
     else if(planName =='advanced' && planPeriod == 'monthly') {
-    aaoCost = 450;
-    aaoDisplayPrice = '+$450/mo';
+      aaoCost = 450;
+      aaoDisplayPrice = '+$450/mo';
     }
     else if(planName =='advanced' && planPeriod == 'annual') {
-    aaoCost = 375;
-    aaoDisplayPrice = '+$375/mo';
+      aaoCost = 375;
+      aaoDisplayPrice = '+$375/mo';
     }
     else if(planName =='enterprise' && planPeriod == 'monthly') {
-    aaoCost = 0;
-    aaoDisplayPrice = 'custom';
+      aaoCost = 0;
+      aaoDisplayPrice = 'custom';
     }
     else if(planName =='enterprise' && planPeriod == 'annual') {
-    aaoCost = 0;
-    aaoDisplayPrice = 'custom';
+      aaoCost = 0;
+      aaoDisplayPrice = 'custom';
     }
     if(aaoToggle == false) {
-    aaoCost = 0;
+      aaoCost = 0;
     }
     if(aaoToggle == true) {
-    aaoCost = aaoCost;
-    aaoDisplayPrice = aaoDisplayPrice;
+      aaoCost = aaoCost;
+      aaoDisplayPrice = aaoDisplayPrice;
     }
     if(paoToggle == true) {
-    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").removeClass('hidden');
+      $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").removeClass('hidden');
     }
     if(paoSelect == 1 && planPeriod == 'monthly'){
-    paoCost = 30 ;
-    paoDisplayPrice = '+$30/mo';
+      paoCost = 0 ;
+      paoDisplayPrice = 'Not available';
     }
     else if(paoSelect == 1 && planPeriod == 'annual'){
-    paoCost = 25 ;
-    paoDisplayPrice = '+$25/mo';
+      paoCost = 25 ;
+      paoDisplayPrice = '+$25/mo';
     }
     else if(paoSelect == 2  && planPeriod == 'monthly'){
-    paoCost = 90 ;
-    paoDisplayPrice = '+$90/mo';
+      paoCost = 90 ;
+      paoDisplayPrice = '+$90/mo';
     }
     else if(paoSelect == 2 && planPeriod == 'annual'){
-    paoCost = 75 ;
-    paoDisplayPrice = '+$75/mo';
+      paoCost = 75 ;
+      paoDisplayPrice = '+$75/mo';
     }
     else if(paoSelect == 3  && planPeriod == 'monthly'){
-    paoCost = 135 ;
-    paoDisplayPrice = '+$135/mo';
+      paoCost = 135 ;
+      paoDisplayPrice = '+$135/mo';
     }
     else if(paoSelect == 3 && planPeriod == 'annual'){
-    paoCost = 113 ;
-    paoDisplayPrice = '+$113/mo';
+      paoCost = 113 ;
+      paoDisplayPrice = '+$113/mo';
     }
     else if(paoSelect == 4  && planPeriod == 'monthly'){
-    paoCost = 175;
-    paoDisplayPrice = '+$175/mo';
+      paoCost = 175;
+      paoDisplayPrice = '+$175/mo';
     }
     else if(paoSelect == 4 && planPeriod == 'annual'){
-    paoCost = 146 ;
-    paoDisplayPrice = '+$146/mo';
+      paoCost = 146 ;
+      paoDisplayPrice = '+$146/mo';
     }
     else if(paoSelect == 5  && planPeriod == 'monthly'){
-    paoCost = 250;
-    paoDisplayPrice = '+$250/mo';
+      paoCost = 250;
+      paoDisplayPrice = '+$250/mo';
     }
     else if(paoSelect == 5 && planPeriod == 'annual'){
-    paoCost = 208 ;
-    paoDisplayPrice = '+$208/mo';
+      paoCost = 208 ;
+      paoDisplayPrice = '+$208/mo';
     }
     else if(paoSelect == 6 && planPeriod == 'monthly'){
-    paoCost = 400;
-    paoDisplayPrice = '+$400/mo' ;
+      paoCost = 400;
+      paoDisplayPrice = '+$400/mo' ;
     }
     else if(paoSelect == 6 && planPeriod == 'annual'){
-    paoCost = 333 ;
-    paoDisplayPrice = '+$333/mo';
+      paoCost = 333 ;
+      paoDisplayPrice = '+$333/mo';
     }
     else if(paoSelect == 7){
-    paoCost = 0;
-    paoDisplayPrice = 'custom' ;
+      paoCost = 0;
+      paoDisplayPrice = 'custom' ;
     }
     if(paoToggle == false) {
-    if(planPeriod == 'annual'){
-    paoCost = 0 ;
-    paoDisplayPrice = '+$25/mo';
-    }
-    if(planPeriod == 'monthly'){
-    paoCost = 0 ;
-    paoDisplayPrice = '+$30/mo';  
-    }
-    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").val("1").addClass('hidden');
+      if(planPeriod == 'annual'){
+        paoCost = 0 ;
+        paoDisplayPrice = '+$25/mo';
+      }
+      if(planPeriod == 'monthly'){
+        paoCost = 0 ;
+        paoDisplayPrice = '+$30/mo';  
+      }
+      $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").val("1").addClass('hidden');
     }
     if(saoToggle == true) {
-    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select").removeClass('hidden');
+      $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select").removeClass('hidden');
     }
     if(saoSelect == 1 && planPeriod == 'monthly'){
-    saoCost = 20 ;
-    saoDisplayPrice = '+$20/mo';
+      saoCost = 0 ;
+      saoDisplayPrice = 'Not available';
     }
     if(saoSelect == 1 && planPeriod == 'annual'){
-    saoCost =  17;
-    saoDisplayPrice = '+$17/mo';
+      saoCost =  17;
+      saoDisplayPrice = '+$17/mo';
     }
     else if(saoSelect == 2 && planPeriod == 'monthly'){
-    saoCost = 60 ;
-    saoDisplayPrice = '+$60/mo';
+      saoCost = 60 ;
+      saoDisplayPrice = '+$60/mo';
     }
     if(saoSelect == 2 && planPeriod == 'annual'){
-    saoCost =  50;
-    saoDisplayPrice = '+$50/mo';
+      saoCost =  50;
+      saoDisplayPrice = '+$50/mo';
     }
     else if(saoSelect == 3 && planPeriod == 'monthly'){
-    saoCost = 90 ;
-    saoDisplayPrice = '+$90/mo';
+      saoCost = 90 ;
+      saoDisplayPrice = '+$90/mo';
     }
     if(saoSelect == 3 && planPeriod == 'annual'){
-    saoCost =  75;
-    saoDisplayPrice = '+$75/mo';
+      saoCost =  75;
+      saoDisplayPrice = '+$75/mo';
     }
     else if(saoSelect == 4 && planPeriod == 'monthly'){
-    saoCost = 140;
-    saoDisplayPrice = '+$140/mo';
+      saoCost = 140;
+      saoDisplayPrice = '+$140/mo';
     }
     if(saoSelect == 4 && planPeriod == 'annual'){
-    saoCost =  117;
-    saoDisplayPrice = '+$117/mo';
+      saoCost =  117;
+      saoDisplayPrice = '+$117/mo';
     }
     else if(saoSelect == 5 && planPeriod == 'monthly'){
-    saoCost = 216;
-    saoDisplayPrice = '+$216/mo';
+      saoCost = 216;
+      saoDisplayPrice = '+$216/mo';
     }
     if(saoSelect == 5 && planPeriod == 'annual'){
-    saoCost =  180;
-    saoDisplayPrice = '+$180/mo';
+      saoCost =  180;
+      saoDisplayPrice = '+$180/mo';
     }
     else if(saoSelect == 6 && planPeriod == 'monthly'){
-    saoCost = 408;
-    saoDisplayPrice = '+$408/mo' ;
+      saoCost = 408;
+      saoDisplayPrice = '+$408/mo' ;
     }
     if(saoSelect == 6 && planPeriod == 'annual'){
-    saoCost =  340;
-    saoDisplayPrice = '+$340/mo';
+      saoCost =  340;
+      saoDisplayPrice = '+$340/mo';
     }
     else if(saoSelect == 7){
-    saoCost = 0;
-    saoDisplayPrice = 'custom' ;
+      saoCost = 0;
+      saoDisplayPrice = 'custom' ;
     }
     if(saoToggle == false) {
-    if(planPeriod == 'annual'){
-    saoCost = 0 ;
-    saoDisplayPrice = '+$17/mo';
+      if(planPeriod == 'annual'){
+        saoCost = 0 ;
+        saoDisplayPrice = '+$17/mo';
+      }
+      if(planPeriod == 'monthly'){
+        saoCost = 0 ;
+        saoDisplayPrice = '+$20/mo';  
+      }
+      $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select").val("1").addClass('hidden');
     }
-    if(planPeriod == 'monthly'){
-    saoCost = 0 ;
-    saoDisplayPrice = '+$20/mo';  
-    }
-    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select").val("1").addClass('hidden');
-    }
-    if( planPeriod =='annual' &&  planName == 'starter'){
-    totalPriceDisplay = 'Switch to monthly';
-    ctaTextDisplay = 'Start a free trial';
-    ctaHrefDisplay = 'https://www.gorgias.com/signup?plan_name='+ planName +'&period=' + planPeriod;;
-    $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").removeClass('hidden');
-    $("#wf-form-pricing-form a.button").addClass("button_disable").prop("href","").html(ctaTextDisplay); 
-    $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").addClass('hidden');
+    if( planPeriod =='annual' &&  planName == 'starter') {
+      totalPriceDisplay = 'Switch to monthly';
+      ctaTextDisplay = 'Start a free trial';
+      ctaHrefDisplay = 'https://www.gorgias.com/signup?plan_name='+ planName +'&period=' + planPeriod;;
+      $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").removeClass('hidden');
+      $("#wf-form-pricing-form a.button").addClass("button_disable").prop("href","").html(ctaTextDisplay); 
+      $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").addClass('hidden');
     }
     else if(
     (saoToggle == true && saoSelect == 7)
@@ -251,5 +251,23 @@ $(".wrapper-flex-right__tab-pane-pricing .link").click(function(){
     var planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .heading-tab-pane__pricing')[0].textContent.toLowerCase();
     window.location.href = 'https://www.gorgias.com/demo?plan_name='+ planName +'&period=' + planPeriod;
 });
+
+const pricingTabs = document.getElementsByClassName("tab-pane__pricing");
+const timeTab = document.getElementsByClassName("text-menu__pricing");
+
+  // Loop through each element with class name "tab-pane__pricing"
+  for (let i = 0; i < pricingTabs.length; i++) {
+    // Add a click event listener to the element
+    pricingTabs[i].addEventListener('click', function() {
+      // Your code here to handle the click event
+     if (i === 0) {
+       timeTab[1].style['pointer-events'] = 'none';
+       timeTab[1].style.opacity = '0.4';
+     } else {
+       timeTab[1].style['pointer-events'] = 'auto';
+       timeTab[1].style.opacity = '1';
+     }
+    });
+  }
 
 // })
