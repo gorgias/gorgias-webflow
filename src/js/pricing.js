@@ -276,8 +276,6 @@ const timeTab = document.getElementsByClassName("text-menu__pricing");
      } else {
        timeTab[1].style['pointer-events'] = 'auto';
        timeTab[1].style.opacity = '1';
-       document.getElementsByClassName('w-checkbox wrapper-checkbox__pricing')[1].style['pointer-events'] = 'auto';
-       document.getElementsByClassName('w-checkbox wrapper-checkbox__pricing')[2].style['pointer-events'] = 'auto';
      }
     });
   }
