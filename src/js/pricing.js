@@ -279,6 +279,7 @@ const timeTab = document.getElementsByClassName("text-menu__pricing");
      }
      if (i === 5) {
        document.getElementsByClassName('text-menu__pricing')[0].click()
+       document.getElementsByClassName("tab-pane__pricing")[0].click()
      }   
     });
   }
