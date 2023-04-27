@@ -208,6 +208,9 @@ function estimatePrice(a){
        aaoDisplayPrice = 'Not available';
        $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(1n) .heading-text-content__pricing span").css("color", "#afafaf");
        Array.from(document.getElementsByClassName('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
+    } else {
+        $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(1n) .heading-text-content__pricing span").css("color", "#1a9970");
+        Array.from(document.getElementsByClassName('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
     }
     if( planPeriod =='annual' &&  planName == 'starter') {
       totalPriceDisplay = 'Switch to monthly';
