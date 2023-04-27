@@ -16,7 +16,7 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
 
     // pricing page
-    if(path == '/pricing'){
+    if(path == '/pricing' || path === '/pricing-test/pricing'){
         // [Attributes by Finsweet] Mirrorclick
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
         newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
