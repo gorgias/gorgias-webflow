@@ -128,10 +128,20 @@ function estimatePrice(a){
       if(planPeriod == 'annual'){
         paoCost = 0 ;
         paoDisplayPrice = '+$25/mo';
+          if (saoSelect == 1) { 
+              paoDisplayPrice = 'Not Available'; 
+          } else {
+              paoDisplayPrice = '+$25/mo';
+          }
       }
       if(planPeriod == 'monthly'){
         paoCost = 0 ;
-        paoDisplayPrice = '+$30/mo';  
+        if (saoSelect == 1) { 
+              paoDisplayPrice = 'Not Available'; 
+          } else {
+              paoDisplayPrice = '+$30/mo';  
+          }  
+        
       }
       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").val("1").addClass('hidden');
     }
