@@ -219,7 +219,6 @@ function estimatePrice(a){
       $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").removeClass('hidden');
       $("#wf-form-pricing-form a.button").addClass("button_disable").prop("href","").html(ctaTextDisplay); 
       $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").addClass('hidden');
-      document.getElementsByClassName('text-menu__pricing')[0].click()
     }
     else if(
     (saoToggle == true && saoSelect == 7)
@@ -271,7 +270,6 @@ const timeTab = document.getElementsByClassName("text-menu__pricing");
   for (let i = 0; i < pricingTabs.length; i++) {
     // Add a click event listener to the element
     pricingTabs[i].addEventListener('click', function() {
-      // Your code here to handle the click event
      if (i === 0) {
        timeTab[1].style['pointer-events'] = 'none';
        timeTab[1].style.opacity = '0.4'; 
@@ -279,6 +277,9 @@ const timeTab = document.getElementsByClassName("text-menu__pricing");
        timeTab[1].style['pointer-events'] = 'auto';
        timeTab[1].style.opacity = '1';
      }
+     if (i === 5) {
+       document.getElementsByClassName('text-menu__pricing')[0].click()
+     }   
     });
   }
 
