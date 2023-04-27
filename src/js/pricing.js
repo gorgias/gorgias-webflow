@@ -272,18 +272,12 @@ const timeTab = document.getElementsByClassName("text-menu__pricing");
       // Your code here to handle the click event
      if (i === 0) {
        timeTab[1].style['pointer-events'] = 'none';
-       timeTab[1].style.opacity = '0.4';
-       document.getElementsByClassName('w-checkbox wrapper-checkbox__pricing')[1].style['pointer-events'] = 'none';
-       document.getElementsByClassName('w-checkbox wrapper-checkbox__pricing')[2].style['pointer-events'] = 'none';
-       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) .heading-text-content__pricing span").html('Not available');
-       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) .heading-text-content__pricing span").html('Not available');  
+       timeTab[1].style.opacity = '0.4'; 
      } else {
        timeTab[1].style['pointer-events'] = 'auto';
        timeTab[1].style.opacity = '1';
        document.getElementsByClassName('w-checkbox wrapper-checkbox__pricing')[1].style['pointer-events'] = 'auto';
        document.getElementsByClassName('w-checkbox wrapper-checkbox__pricing')[2].style['pointer-events'] = 'auto';
-       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) .heading-text-content__pricing span").html('+$30/mo');
-       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) .heading-text-content__pricing span").html('+$20/mo'); 
      }
     });
   }
