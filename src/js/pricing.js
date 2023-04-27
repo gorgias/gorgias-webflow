@@ -206,6 +206,8 @@ function estimatePrice(a){
        saoDisplayPrice = 'Not available';
        paoDisplayPrice = 'Not available';
        aaoDisplayPrice = 'Not available';
+       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(1n) .heading-text-content__pricing span").css("color", "#afafaf");
+       Array.from(document.getElementsByClassName('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
     }
     if( planPeriod =='annual' &&  planName == 'starter') {
       totalPriceDisplay = 'Switch to monthly';
