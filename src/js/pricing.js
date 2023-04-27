@@ -219,6 +219,7 @@ function estimatePrice(a){
       $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").removeClass('hidden');
       $("#wf-form-pricing-form a.button").addClass("button_disable").prop("href","").html(ctaTextDisplay); 
       $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").addClass('hidden');
+      document.getElementsByClassName('text-menu__pricing')[0].click()
     }
     else if(
     (saoToggle == true && saoSelect == 7)
