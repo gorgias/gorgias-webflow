@@ -73,8 +73,8 @@ function estimatePrice(a){
       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").removeClass('hidden');
     }
     if(paoSelect == 1 && planPeriod == 'monthly'){
-      paoCost = 0 ;
-      paoDisplayPrice = 'Not available';
+      paoCost = 30 ;
+      paoDisplayPrice = '+$30/mo';
     }
     else if(paoSelect == 1 && planPeriod == 'annual'){
       paoCost = 25 ;
@@ -128,20 +128,11 @@ function estimatePrice(a){
       if(planPeriod == 'annual'){
         paoCost = 0 ;
         paoDisplayPrice = '+$25/mo';
-          if (saoSelect == 1) { 
-              paoDisplayPrice = 'Not Available'; 
-          } else {
-              paoDisplayPrice = '+$25/mo';
-          }
+          paoDisplayPrice = '+$25/mo';
       }
       if(planPeriod == 'monthly'){
         paoCost = 0 ;
-        if (saoSelect == 1) { 
-              paoDisplayPrice = 'Not Available'; 
-          } else {
-              paoDisplayPrice = '+$30/mo';  
-          }  
-        
+        paoDisplayPrice = '+$30/mo';
       }
       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").val("1").addClass('hidden');
     }
@@ -210,6 +201,11 @@ function estimatePrice(a){
         saoDisplayPrice = '+$20/mo';  
       }
       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select").val("1").addClass('hidden');
+    }
+    if(planName =='starter' && planPeriod == 'monthly') {
+       saoDisplayPrice = 'Not available';
+       paoDisplayPrice = 'Not available';
+       aaoDisplayPrice = 'Not available';
     }
     if( planPeriod =='annual' &&  planName == 'starter') {
       totalPriceDisplay = 'Switch to monthly';
