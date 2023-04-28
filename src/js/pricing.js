@@ -140,8 +140,8 @@ function estimatePrice(a){
       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select").removeClass('hidden');
     }
     if(saoSelect == 1 && planPeriod == 'monthly'){
-      saoCost = 0 ;
-      saoDisplayPrice = 'Not available';
+      saoCost = 20 ;
+      saoDisplayPrice = '+$20/mo';
     }
     if(saoSelect == 1 && planPeriod == 'annual'){
       saoCost =  17;
