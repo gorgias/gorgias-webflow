@@ -7,7 +7,7 @@ function estimatePrice(a){
     var planPeriod = $('.tabs-menu__pricing.w-tab-menu>a.w--current')[0].textContent.toLowerCase();
     var planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .heading-tab-pane__pricing')[0].textContent.toLowerCase();
         if (window.location.pathname === '/pages/template-long') {
-          planName = document.getElementsByClassName('tab-pane__pricing w-inline-block w-tab-link w--current')[0].getElementsByClassName('mobile24')[0].innerHTML
+          planName = document.getElementsByClassName('tab-pane__pricing w-inline-block w-tab-link w--current')[0].getElementsByClassName('mobile24')[0].innerHTML.toLowerCase()
         }
     var aaoToggle = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .w-checkbox-input")[0].classList.contains('w--redirected-checked');
     var aaoDisplayPrice= $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .heading-text-content__pricing span")[0].textContent.replace('$','').replace('/mo','').replace('+','');
