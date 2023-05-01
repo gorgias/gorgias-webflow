@@ -21,9 +21,10 @@ Webflow.push(function () {
       || path === '/pages/helpdesk' || path === '/pages/crm') {
         // [Attributes by Finsweet] Mirrorclick
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
-        newScript(scriptBase + '/src/js/splide'+minBase+'.js','head',1)
         newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
         newScript(scriptBase + '/src/js/pricing'+minBase+'.js','head',1);
+        newStyle(scriptBase + '/src/css/splide'+minBase+'.css','body');
+        newScript(scriptBase + '/src/js/splide'+minBase+'.js','body',1)
     }
     // blog pages
     if(path.includes('/blog/')) {
