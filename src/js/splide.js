@@ -1,5 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/js/splide.min.js"></script>
-
 <script>
   var splide = new Splide( '.pages-template_logo-slider' );
   var bar    = splide.root.querySelector( '.my-slider-progress-bar' );
