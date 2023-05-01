@@ -1,4 +1,3 @@
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/css/splide-core.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/js/splide.min.js"></script>
 
 <script>
@@ -61,24 +60,3 @@ for ( let i = 0, splideLength = splides.length; i < splideLength; i++ ) {
 slider();
 
 </script>
-<style>
-
-.splide__track {
-  overflow: visible;
-}
-
-.splide__arrows, .splide__pagination {
-display: none;
-}
-
-.my-slider-progress {
-  background: #2e2a27;
-}
-
-.my-slider-progress-bar {
-  background: #B3B641;
-  height: 4px;
-  transition: width 400ms ease;
-  width: 0;
-}
-</style>
