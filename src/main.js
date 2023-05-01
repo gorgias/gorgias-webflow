@@ -17,15 +17,16 @@ Webflow.push(function () {
 
     // pricing page
     if(path === '/pricing' || path === '/pricing-test/pricing' || path === '/pages/template-long' || path === '/pages/phone' 
-      || path === '/pages/phone' || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
+      || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
       || path === '/pages/helpdesk' || path === '/pages/crm') {
         // [Attributes by Finsweet] Mirrorclick
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
+        newScript(scriptBase + '/src/js/splide'+minBase+'.js','head',1)
         newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
         newScript(scriptBase + '/src/js/pricing'+minBase+'.js','head',1);
     }
     // blog pages
-    if(path.includes('/blog/')){
+    if(path.includes('/blog/')) {
         // [Attributes by Finsweet] Code Highlight
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-codehighlight@1/codehighlight.js','head',1);
         // [Attributes by Finsweet] Powerful Rich Text
