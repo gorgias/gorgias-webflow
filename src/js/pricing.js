@@ -4,11 +4,12 @@
 function estimatePrice(a){
     setTimeout(function() {   
     const path = window.location.pathname;  
+    const templatePagesPaths = (path === '/pages/template-long' || path === '/pages/crm' || path === '/pages/live-chat' || path === '/pages/ticketing-system' ||
+          path === '/pages/helpdesk' || path === '/pages/customer-service');    
     var planPricing = $(".tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .wrapper-flex-right__tab-pane-pricing>.price:not(.discount-old-price)")[0].textContent.replace('$','');
     var planPeriod = $('.tabs-menu__pricing.w-tab-menu>a.w--current')[0].textContent.toLowerCase();
     var planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .heading-tab-pane__pricing')[0].textContent.toLowerCase();
-        if (path === '/pages/template-long' || path === '/pages/crm' || path === '/pages/live-chat' || path === '/pages/ticketing-system' ||
-          path === '/pages/helpdesk' || path === '/pages/customer-service') {
+        if (templatePagesPaths) {
           planName = document.getElementsByClassName('tab-pane__pricing w-inline-block w-tab-link w--current')[0].getElementsByClassName('mobile24')[0].innerHTML.toLowerCase()
         }
     var aaoToggle = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .w-checkbox-input")[0].classList.contains('w--redirected-checked');
@@ -269,8 +270,8 @@ $(".wrapper-flex-right__tab-pane-pricing .link").click(function(){
 
 const pricingTabs = document.getElementsByClassName("tab-pane__pricing");
 const timeTab = document.getElementsByClassName("text-menu__pricing");
-
-  // Loop through each element with class name "tab-pane__pricing"
+if (!templatePagesPaths) {
+    // Loop through each element with class name "tab-pane__pricing"
   for (let i = 0; i < pricingTabs.length; i++) {
     // Add a click event listener to the element
     pricingTabs[i].addEventListener('click', function() {
@@ -287,5 +288,7 @@ const timeTab = document.getElementsByClassName("text-menu__pricing");
      }   
     });
   }
+}
+  
 
 // })
