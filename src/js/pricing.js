@@ -2,11 +2,13 @@
 //var Webflow = Webflow || [];
 //Webflow.push(function () {
 function estimatePrice(a){
-    setTimeout(function() {        
+    setTimeout(function() {   
+    const path = window.location.pathname;  
     var planPricing = $(".tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .wrapper-flex-right__tab-pane-pricing>.price:not(.discount-old-price)")[0].textContent.replace('$','');
     var planPeriod = $('.tabs-menu__pricing.w-tab-menu>a.w--current')[0].textContent.toLowerCase();
     var planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .heading-tab-pane__pricing')[0].textContent.toLowerCase();
-        if (window.location.pathname === '/pages/template-long') {
+        if (path === '/pages/template-long' || path === '/pages/crm' || path === '/pages/live-chat' || path === '/pages/ticketing-system' 
+          path === '/pages/helpdesk' path === '/pages/customer-service') {
           planName = document.getElementsByClassName('tab-pane__pricing w-inline-block w-tab-link w--current')[0].getElementsByClassName('mobile24')[0].innerHTML.toLowerCase()
         }
     var aaoToggle = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .w-checkbox-input")[0].classList.contains('w--redirected-checked');
