@@ -5,8 +5,9 @@ var path = window.location.pathname;
 if(
     path.includes('/l/') || path.includes('/lp/') || path.includes('/lc/') // ads landing pages
     || path.includes('/demo') // demo funnel
-    || path.includes('/signup')) // signup funnels
-    {
+    || path.includes('/signup') // signup funnels
+    || path.includes('/pages/') // landing pages
+    ){
     posthog.onFeatureFlags(function() {
         if (posthog.isFeatureEnabled('all-visitors')) {
             window.posthog.startSessionRecording();
