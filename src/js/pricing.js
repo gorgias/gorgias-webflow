@@ -289,6 +289,43 @@ if (!templatePagesPaths) {
     });
   }
 }
+
+// find if we have selected checkboxes
+const checkBoxes = document.getElementsByClassName('w--redirected-checked')
+const tabsForTemplates = {
+  0: 4,
+  1: 5,
+  2: 6,
+  3: 7,
+  4: 0,
+  5: 1,
+  6: 2,
+  7: 3,
+}
+const tabsForPricing = {
+  1: 6,
+  2: 7,
+  3: 8,
+  4: 9,
+  6: 1,
+  7: 2,
+  8: 3,
+  9: 4,
+}
+
+
+for (let i = 0; i < pricingTabs.length; i++) {
+ // Add a click event listener to the element
+    pricingTabs[i].addEventListener('click', function () {
+      const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
+      pricingTabs[chooseTabs[i]].click()
+      if (checkBoxes.length) {
+        Array.from(checkBoxes).forEach(el => {
+          el.parentNode.nextElementSibling.nextElementSibling.firstChild.click()
+        })
+      }
+    });
+}
   
 
 // })
