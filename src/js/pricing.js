@@ -3,7 +3,7 @@
 //Webflow.push(function () {
 const tPath = window.location.pathname;  
 const templatePagesPaths = (tPath === '/pages/template-long' || tPath === '/pages/crm' || tPath === '/pages/live-chat' || tPath === '/pages/ticketing-system' ||
-      tPath === '/pages/helpdesk' || tPath === '/pages/customer-service');  
+      tPath === '/pages/helpdesk' || tPath === '/pages/customer-service' || tPath === '/pages/customer-service-long');  
 function estimatePrice(a){
     setTimeout(function() {   
     var planPricing = $(".tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .wrapper-flex-right__tab-pane-pricing>.price:not(.discount-old-price)")[0].textContent.replace('$','');
