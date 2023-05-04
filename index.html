@@ -49,7 +49,7 @@
         }
         var script = document.createElement('script');
         var isExtScript = scripts[index].src.includes('//');
-        var isOnLoad = scripts[index].onload.length != 0;
+        var isOnLoad = scripts[index].onload && scripts[index].onload.length != 0;
         scriptBase = isExtScript ? "" : scriptBase;
 
 
