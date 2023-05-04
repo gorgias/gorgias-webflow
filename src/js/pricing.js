@@ -2,8 +2,9 @@
 //var Webflow = Webflow || [];
 //Webflow.push(function () {
 const tPath = window.location.pathname;  
-const templatePagesPaths = (tPath === '/pages/template-long' || tPath === '/pages/crm' || tPath === '/pages/live-chat' || tPath === '/pages/ticketing-system' ||
-      tPath === '/pages/helpdesk' || tPath === '/pages/customer-service' || tPath === '/pages/customer-service-long');  
+const approvedUrlsStage = ['/pages/template-long', '/pages/crm', '/pages/live-chat', '/pages/ticketing-system', '/pages/helpdesk', '/pages/customer-service', '/pages/ticketing-system-long', 
+  '/pages/customer-service-long', '/pages/helpdesk-long', '/pages/live-chat-long', '/pages/crm-long']; 
+const templatePagesPaths = approvedUrlsStage.includes(tPath);
 function estimatePrice(a){
     setTimeout(function() {   
     var planPricing = $(".tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .wrapper-flex-right__tab-pane-pricing>.price:not(.discount-old-price)")[0].textContent.replace('$','');
@@ -303,6 +304,7 @@ const tabsForTemplates = {
   7: 3,
 }
 const tabsForPricing = {
+  0: 1,    
   1: 6,
   2: 7,
   3: 8,
