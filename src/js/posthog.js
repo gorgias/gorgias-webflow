@@ -7,6 +7,7 @@ if(
     || path.includes('/demo') // demo funnel
     || path.includes('/signup') // signup funnels
     || path.includes('/pages/') // landing pages
+    || path.includes('/comparison') // MOFU pages
     ){
     posthog.onFeatureFlags(function() {
         if (posthog.isFeatureEnabled('all-visitors')) {
