@@ -16,7 +16,7 @@ if(
     })
 }
 
-if (path === '/' || path === '/pages/home-draft') {
+if (path === '/pages/home-draft') {
   posthog.onFeatureFlags(() => {
     posthog.feature_flags.override({'customer-logos': 'test'});
     const logosToSelect = document.getElementsByClassName("customer_logo-collection");
