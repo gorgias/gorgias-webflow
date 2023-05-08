@@ -31,6 +31,7 @@ if (path === '/pages/home-draft') {
             "CA": 'canada',
             "FR": 'france',
             "UK": 'united-kingdom',
+            "GB": 'united-kingdom',
             "US": 'united-states'
           };
 
