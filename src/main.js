@@ -23,9 +23,15 @@ Webflow.push(function () {
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
         newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
         newScript(scriptBase + '/src/js/pricing'+minBase+'.js','head',1);
+        
+        // scripts for splide js
+        newStyle('https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/css/splide-core.min.css','head');
+        newStyle(scriptBase + '/src/css/splide'+minBase+'.css','head');
+        newScript('https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/js/splide.min.js','body',1);
+        newScript(scriptBase + '/src/js/splide'+minBase+'.js','body',1)
     }
     // blog pages
-    if(path.includes('/blog/')){
+    if(path.includes('/blog/')) {
         // [Attributes by Finsweet] Code Highlight
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-codehighlight@1/codehighlight.js','head',1);
         // [Attributes by Finsweet] Powerful Rich Text

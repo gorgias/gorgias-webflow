@@ -1,11 +1,18 @@
 
 //var Webflow = Webflow || [];
 //Webflow.push(function () {
+const tPath = window.location.pathname;  
+const approvedUrlsStage = ['/pages/template-long', '/pages/crm', '/pages/live-chat', '/pages/ticketing-system', '/pages/helpdesk', '/pages/customer-service', '/pages/ticketing-system-long', 
+  '/pages/customer-service-long', '/pages/helpdesk-long', '/pages/live-chat-long', '/pages/crm-long']; 
+const templatePagesPaths = approvedUrlsStage.includes(tPath);
 function estimatePrice(a){
-    setTimeout(function() {        
+    setTimeout(function() {   
     var planPricing = $(".tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .wrapper-flex-right__tab-pane-pricing>.price:not(.discount-old-price)")[0].textContent.replace('$','');
     var planPeriod = $('.tabs-menu__pricing.w-tab-menu>a.w--current')[0].textContent.toLowerCase();
     var planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .heading-tab-pane__pricing')[0].textContent.toLowerCase();
+        if (templatePagesPaths) {
+          planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .text24px')[0].textContent.toLowerCase();
+        }
     var aaoToggle = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .w-checkbox-input")[0].classList.contains('w--redirected-checked');
     var aaoDisplayPrice= $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .heading-text-content__pricing span")[0].textContent.replace('$','').replace('/mo','').replace('+','');
     var aaoCost = 0;
@@ -128,7 +135,6 @@ function estimatePrice(a){
       if(planPeriod == 'annual'){
         paoCost = 0 ;
         paoDisplayPrice = '+$25/mo';
-          paoDisplayPrice = '+$25/mo';
       }
       if(planPeriod == 'monthly'){
         paoCost = 0 ;
@@ -265,8 +271,8 @@ $(".wrapper-flex-right__tab-pane-pricing .link").click(function(){
 
 const pricingTabs = document.getElementsByClassName("tab-pane__pricing");
 const timeTab = document.getElementsByClassName("text-menu__pricing");
-
-  // Loop through each element with class name "tab-pane__pricing"
+if (!templatePagesPaths) {
+    // Loop through each element with class name "tab-pane__pricing"
   for (let i = 0; i < pricingTabs.length; i++) {
     // Add a click event listener to the element
     pricingTabs[i].addEventListener('click', function() {
@@ -283,5 +289,45 @@ const timeTab = document.getElementsByClassName("text-menu__pricing");
      }   
     });
   }
+}
+
+// find if we have selected checkboxes
+const checkBoxes = document.getElementsByClassName('w--redirected-checked')
+const tabsForTemplates = {
+  0: 4,
+  1: 5,
+  2: 6,
+  3: 7,
+  4: 0,
+  5: 1,
+  6: 2,
+  7: 3,
+}
+const tabsForPricing = {
+  0: 0,    
+  1: 6,
+  2: 7,
+  3: 8,
+  4: 9,
+  6: 1,
+  7: 2,
+  8: 3,
+  9: 4,
+}
+
+
+for (let i = 0; i < pricingTabs.length; i++) {
+ // Add a click event listener to the element
+    pricingTabs[i].addEventListener('click', function () {
+      const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
+      pricingTabs[chooseTabs[i]].click()
+      if (checkBoxes.length) {
+        Array.from(checkBoxes).forEach(el => {
+          el.parentNode.nextElementSibling.nextElementSibling.firstChild.click()
+        })
+      }
+    });
+}
+  
 
 // })

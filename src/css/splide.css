@@ -1,0 +1,19 @@
+
+.splide__track {
+  overflow: visible;
+}
+
+.splide__arrows, .splide__pagination {
+display: none;
+}
+
+.my-slider-progress {
+  background: #2e2a27;
+}
+
+.my-slider-progress-bar {
+  background: #B3B641;
+  height: 4px;
+  transition: width 400ms ease;
+  width: 0;
+}
