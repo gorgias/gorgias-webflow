@@ -1,333 +1,227 @@
-
-//var Webflow = Webflow || [];
-//Webflow.push(function () {
-const tPath = window.location.pathname;  
 const approvedUrlsStage = ['/pages/template-long', '/pages/crm', '/pages/live-chat', '/pages/ticketing-system', '/pages/helpdesk', '/pages/customer-service', '/pages/ticketing-system-long', 
-  '/pages/customer-service-long', '/pages/helpdesk-long', '/pages/live-chat-long', '/pages/crm-long']; 
-const templatePagesPaths = approvedUrlsStage.includes(tPath);
-function estimatePrice(a){
-    setTimeout(function() {   
-    var planPricing = $(".tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .wrapper-flex-right__tab-pane-pricing>.price:not(.discount-old-price)")[0].textContent.replace('$','');
-    var planPeriod = $('.tabs-menu__pricing.w-tab-menu>a.w--current')[0].textContent.toLowerCase();
-    var planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .heading-tab-pane__pricing')[0].textContent.toLowerCase();
-        if (templatePagesPaths) {
-          planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .text24px')[0].textContent.toLowerCase();
-        }
-    var aaoToggle = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .w-checkbox-input")[0].classList.contains('w--redirected-checked');
-    var aaoDisplayPrice= $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .heading-text-content__pricing span")[0].textContent.replace('$','').replace('/mo','').replace('+','');
-    var aaoCost = 0;
-    var paoToggle = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) .w-checkbox-input")[0].classList.contains('w--redirected-checked');
-    var paoSelect = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select")[0].value;
-    var paoDisplayPrice= $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) .heading-text-content__pricing span")[0].textContent.replace('$','').replace('/mo','').replace('+','');
-    var paoCost = 0;
-    var saoToggle = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) .w-checkbox-input")[0].classList.contains('w--redirected-checked');
-    var saoSelect = $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select")[0].value
-    var saoDisplayPrice= $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) .heading-text-content__pricing span")[0].textContent.replace('$','').replace('/mo','').replace('+','');
-    var saoCost = 0;
-    var totalPriceDisplay = planPricing;
-    var ctaTextDisplay = $("#wf-form-pricing-form a.button")[0].text;
-    var ctaHrefDisplay = $("#wf-form-pricing-form a.button")[0].href;
+'/pages/customer-service-long', '/pages/helpdesk-long', '/pages/live-chat-long', '/pages/crm-long']; 
+// template pages where pricing table is shown
+ const templatePagesPaths = approvedUrlsStage.includes(window.location.pathname);
 
-    // automation
-    if(planName =='starter' && planPeriod == 'monthly') {
-      aaoCost = 0;
-      aaoDisplayPrice = 'Not available'
-    }
-    else if(planName =='starter' && planPeriod == 'annual') {
-      aaoCost = 0;
-      aaoDisplayPrice = 'Not available'
-    }
-    else if(planName =='basic' && planPeriod == 'monthly') {
-      aaoCost = 30;
-      aaoDisplayPrice = '+$30/mo';
-    }
-    else if(planName =='basic' && planPeriod == 'annual') {
-      aaoCost = 25;
-      aaoDisplayPrice = '+$25/mo';
-    }
-    else if(planName =='pro' && planPeriod == 'monthly') {
-      aaoCost = 180;
-      aaoDisplayPrice = '+$180/mo';
-    }
-    else if(planName =='pro' && planPeriod == 'annual') {
-      aaoCost = 150;
-      aaoDisplayPrice = '+$150/mo';
-    }
-    else if(planName =='advanced' && planPeriod == 'monthly') {
-      aaoCost = 450;
-      aaoDisplayPrice = '+$450/mo';
-    }
-    else if(planName =='advanced' && planPeriod == 'annual') {
-      aaoCost = 375;
-      aaoDisplayPrice = '+$375/mo';
-    }
-    else if(planName =='enterprise' && planPeriod == 'monthly') {
-      aaoCost = 0;
-      aaoDisplayPrice = 'custom';
-    }
-    else if(planName =='enterprise' && planPeriod == 'annual') {
-      aaoCost = 0;
-      aaoDisplayPrice = 'custom';
-    }
-    if(aaoToggle == false) {
-      aaoCost = 0;
-    }
-    if(aaoToggle == true) {
-      aaoCost = aaoCost;
-      aaoDisplayPrice = aaoDisplayPrice;
-    }
-    if(paoToggle == true) {
-      $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").removeClass('hidden');
-    }
-    if(paoSelect == 1 && planPeriod == 'monthly'){
-      paoCost = 30 ;
-      paoDisplayPrice = '+$30/mo';
-    }
-    else if(paoSelect == 1 && planPeriod == 'annual'){
-      paoCost = 25 ;
-      paoDisplayPrice = '+$25/mo';
-    }
-    else if(paoSelect == 2  && planPeriod == 'monthly'){
-      paoCost = 90 ;
-      paoDisplayPrice = '+$90/mo';
-    }
-    else if(paoSelect == 2 && planPeriod == 'annual'){
-      paoCost = 75 ;
-      paoDisplayPrice = '+$75/mo';
-    }
-    else if(paoSelect == 3  && planPeriod == 'monthly'){
-      paoCost = 135 ;
-      paoDisplayPrice = '+$135/mo';
-    }
-    else if(paoSelect == 3 && planPeriod == 'annual'){
-      paoCost = 113 ;
-      paoDisplayPrice = '+$113/mo';
-    }
-    else if(paoSelect == 4  && planPeriod == 'monthly'){
-      paoCost = 175;
-      paoDisplayPrice = '+$175/mo';
-    }
-    else if(paoSelect == 4 && planPeriod == 'annual'){
-      paoCost = 146 ;
-      paoDisplayPrice = '+$146/mo';
-    }
-    else if(paoSelect == 5  && planPeriod == 'monthly'){
-      paoCost = 250;
-      paoDisplayPrice = '+$250/mo';
-    }
-    else if(paoSelect == 5 && planPeriod == 'annual'){
-      paoCost = 208 ;
-      paoDisplayPrice = '+$208/mo';
-    }
-    else if(paoSelect == 6 && planPeriod == 'monthly'){
-      paoCost = 400;
-      paoDisplayPrice = '+$400/mo' ;
-    }
-    else if(paoSelect == 6 && planPeriod == 'annual'){
-      paoCost = 333 ;
-      paoDisplayPrice = '+$333/mo';
-    }
-    else if(paoSelect == 7){
-      paoCost = 0;
-      paoDisplayPrice = 'custom' ;
-    }
-    if(paoToggle == false) {
-      if(planPeriod == 'annual'){
-        paoCost = 0 ;
-        paoDisplayPrice = '+$25/mo';
-      }
-      if(planPeriod == 'monthly'){
-        paoCost = 0 ;
-        paoDisplayPrice = '+$30/mo';
-      }
-      $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) select").val("1").addClass('hidden');
-    }
-    if(saoToggle == true) {
-      $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select").removeClass('hidden');
-    }
-    if(saoSelect == 1 && planPeriod == 'monthly'){
-      saoCost = 20 ;
-      saoDisplayPrice = '+$20/mo';
-    }
-    if(saoSelect == 1 && planPeriod == 'annual'){
-      saoCost =  17;
-      saoDisplayPrice = '+$17/mo';
-    }
-    else if(saoSelect == 2 && planPeriod == 'monthly'){
-      saoCost = 60 ;
-      saoDisplayPrice = '+$60/mo';
-    }
-    if(saoSelect == 2 && planPeriod == 'annual'){
-      saoCost =  50;
-      saoDisplayPrice = '+$50/mo';
-    }
-    else if(saoSelect == 3 && planPeriod == 'monthly'){
-      saoCost = 90 ;
-      saoDisplayPrice = '+$90/mo';
-    }
-    if(saoSelect == 3 && planPeriod == 'annual'){
-      saoCost =  75;
-      saoDisplayPrice = '+$75/mo';
-    }
-    else if(saoSelect == 4 && planPeriod == 'monthly'){
-      saoCost = 140;
-      saoDisplayPrice = '+$140/mo';
-    }
-    if(saoSelect == 4 && planPeriod == 'annual'){
-      saoCost =  117;
-      saoDisplayPrice = '+$117/mo';
-    }
-    else if(saoSelect == 5 && planPeriod == 'monthly'){
-      saoCost = 216;
-      saoDisplayPrice = '+$216/mo';
-    }
-    if(saoSelect == 5 && planPeriod == 'annual'){
-      saoCost =  180;
-      saoDisplayPrice = '+$180/mo';
-    }
-    else if(saoSelect == 6 && planPeriod == 'monthly'){
-      saoCost = 408;
-      saoDisplayPrice = '+$408/mo' ;
-    }
-    if(saoSelect == 6 && planPeriod == 'annual'){
-      saoCost =  340;
-      saoDisplayPrice = '+$340/mo';
-    }
-    else if(saoSelect == 7){
-      saoCost = 0;
-      saoDisplayPrice = 'custom' ;
-    }
-    if(saoToggle == false) {
-      if(planPeriod == 'annual'){
-        saoCost = 0 ;
-        saoDisplayPrice = '+$17/mo';
-      }
-      if(planPeriod == 'monthly'){
-        saoCost = 0 ;
-        saoDisplayPrice = '+$20/mo';  
-      }
-      $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) select").val("1").addClass('hidden');
-    }
-    if(planName =='starter' && planPeriod == 'monthly') {
-       saoDisplayPrice = 'Not available';
-       paoDisplayPrice = 'Not available';
-       aaoDisplayPrice = 'Not available';
-       $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(1n) .heading-text-content__pricing span").css("color", "#afafaf");
-       Array.from(document.getElementsByClassName('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
-    } else {
-        $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(1n) .heading-text-content__pricing span").css("color", "#1a9970");
-        Array.from(document.getElementsByClassName('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
-    }
-    if( planPeriod =='annual' &&  planName == 'starter') {
-      totalPriceDisplay = 'Switch to monthly';
-      ctaTextDisplay = 'Start a free trial';
-      ctaHrefDisplay = 'https://www.gorgias.com/signup?plan_name='+ planName +'&period=' + planPeriod;;
-      $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").removeClass('hidden');
-      $("#wf-form-pricing-form a.button").addClass("button_disable").prop("href","").html(ctaTextDisplay); 
-      $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").addClass('hidden');
-    }
-    else if(
-    (saoToggle == true && saoSelect == 7)
-    || (paoSelect == 7 && paoToggle == true )
-    || planName == 'enterprise'
-    ){
-    totalPriceDisplay = 'Custom price';
-    ctaTextDisplay = 'Contact us';
-    ctaHrefDisplay = 'https://www.gorgias.com/demo?plan_name='+ planName +'&period=' + planPeriod;
-    $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").addClass('hidden');
-    $("#wf-form-pricing-form a.button").removeClass("button_disable").prop("href",ctaHrefDisplay).html(ctaTextDisplay);
-    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .heading-text-content__pricing span").prop("href",ctaHrefDisplay)
-    }
-    else {
-    var totalPrice = Number(planPricing) + Number(aaoCost) + Number(paoCost) + Number(saoCost);
-    var parts = totalPrice.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    // var totalPrice = Number(parts.join("."));
-    totalPriceDisplay =  '$' + totalPrice.toLocaleString("en");
-    ctaTextDisplay = 'Start a free trial';
-    ctaHrefDisplay = 'https://www.gorgias.com/signup?plan_name='+ planName +'&period=' + planPeriod;
-    $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").removeClass('hidden');
-    $("#wf-form-pricing-form a.button").removeClass("button_disable").prop("href",ctaHrefDisplay).html(ctaTextDisplay);
-    $("#wf-form-pricing-form .wrapper-button__pricing .options-block *:nth-child(2)").removeClass('hidden');
-    } 
-    $('.wrapper-button__pricing .heading-tab-pane__pricing:not(.fixed-bar)').html(totalPriceDisplay);
-    $('.wrapper-button__pricing .heading-tab-pane__pricing.fixed-bar').html(planName + ' plan');
-    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(3n) .heading-text-content__pricing span").html(saoDisplayPrice);
-    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(2n) .heading-text-content__pricing span").html(paoDisplayPrice);
-    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:first-child .heading-text-content__pricing span").html(aaoDisplayPrice);
-    },300)
+// tab indexes used for matching selected plans on both tabs(annual, monthly)
+const tabsForTemplates = { 0: 4, 1: 5, 2: 6, 3: 7, 4: 0, 5: 1, 6: 2, 7: 3 }
+const tabsForPricing = { 0: 1, 1: 6, 2: 7, 3: 8, 4: 9, 6: 1, 7: 2, 8: 3, 9: 4 }
+const pricingPlans = {
+  0: { name: 'starter', price: 10, index: 0 },
+  1: { name: 'basic', price: 60, index: 1 },
+  2: { name: 'pro', price: 360, index: 2 },
+  3: { name: 'advanced', price: 900, index: 3 },
+  4: { name: 'enterprise', price: 0, index: 4 },
+  5: { name: 'starter', price: 0, index: 5 },
+  6: { name: 'basic', price: 50, index: 6 },
+  7: { name: 'pro', price: 300, index: 7 },
+  8: { name: 'advanced', price: 750, index: 8 },
+  9: { name: 'enterprise', price: 0, index: 9 },
+}
+const pricingPlansTemplates = {
+  0: { name: 'basic', price: 60, index: 0 },
+  1: { name: 'pro', price: 360, index: 1 },
+  2: { name: 'advanced', price: 900, index: 2 },
+  3: { name: 'enterprise', price: 0, index: 3 },
+  4: { name: 'basic', price: 50, index: 4 },
+  5: { name: 'pro', price: 300, index: 5 },
+  6: { name: 'advanced', price: 750, index: 6 },
+  7: { name: 'enterprise', price: 0, index: 7 },
 }
 
-
-$(document).ready(estimatePrice);
-$("form[name='wf-form-pricing-form'").change(estimatePrice);
-$(".tabs-plan__pricing >a").click(estimatePrice);
-$(".tabs-menu__pricing.w-tab-menu>a").click(estimatePrice);
-$(".wrapper-flex-right__tab-pane-pricing .link").click(function(){
-    var planPeriod = $('.tabs-menu__pricing.w-tab-menu>a.w--current')[0].textContent.toLowerCase();
-    var planName = $('.tabs-plan__pricing .w-tab-pane.w--tab-active .tabs-plan__pricing .w--current .heading-tab-pane__pricing')[0].textContent.toLowerCase();
-    window.location.href = 'https://www.gorgias.com/demo?plan_name='+ planName +'&period=' + planPeriod;
-});
-
-const pricingTabs = document.getElementsByClassName("tab-pane__pricing");
-const timeTab = document.getElementsByClassName("text-menu__pricing");
-if (!templatePagesPaths) {
-    // Loop through each element with class name "tab-pane__pricing"
-  for (let i = 0; i < pricingTabs.length; i++) {
-    // Add a click event listener to the element
-    pricingTabs[i].addEventListener('click', function() {
-     if (i === 0) {
-       timeTab[1].style['pointer-events'] = 'none';
-       timeTab[1].style.opacity = '0.4'; 
-     } else {
-       timeTab[1].style['pointer-events'] = 'auto';
-       timeTab[1].style.opacity = '1';
-     }
-     if (i === 5) {
-       document.getElementsByClassName('text-menu__pricing')[0].click()
-       document.getElementsByClassName("tab-pane__pricing")[0].click()
-     }   
-    });
+const planPricingInit = { 0: '$10', 1: '$60', 2: '$360', 3: '$900', 4: 'Contact us', 5: 'Only available for monthly subscription', 6: '$50', 7: '$300', 8: '$750' }
+const planPricingInitTemplate = { 0: '$60', 1: '$360', 2: '$900', 3: 'Contact us', 4: '$50', 5: '$300', 6: '$750' }
+// repeating price constants that will be reused
+const combinedVoice = {
+  monthly: 30,
+  annual: 25
+}
+const combinedSms = {
+  monthly: 20,
+  annual: 17
+}
+// automation, voice, sms data
+const automationPrice = {
+  starter: {
+    monthly: 'Not available',
+    annual: 'Not available'
+  },
+  basic: {
+    monthly: 30,
+    annual: 25
+  },
+  pro: {
+    monthly: 180,
+    annual: 150
+  },
+  advanced: {
+    monthly: 450,
+    annual: 375
+  },
+  enterprise: {
+    monthly: 'custom',
+    annual: 'custom'
   }
 }
-
-// find if we have selected checkboxes
-const checkBoxes = document.getElementsByClassName('w--redirected-checked')
-const tabsForTemplates = {
-  0: 4,
-  1: 5,
-  2: 6,
-  3: 7,
-  4: 0,
-  5: 1,
-  6: 2,
-  7: 3,
+const voicePrice = {
+  starter: {
+    monthly: 'Not available',
+    annual: 'Not available'
+  },
+  basic: combinedVoice,
+  pro: combinedVoice,
+  advanced: combinedVoice,
+  enterprise: combinedVoice,
 }
-const tabsForPricing = {
-  0: 0,    
-  1: 6,
-  2: 7,
-  3: 8,
-  4: 9,
-  6: 1,
-  7: 2,
-  8: 3,
-  9: 4,
+const smsPrice = {
+  starter: {
+    monthly: 'Not available',
+    annual: 'Not available'
+  },
+  basic: combinedSms,
+  pro: combinedSms,
+  advanced: combinedSms,
+  enterprise: combinedSms,
+}
+// automation, voice, sms dropdown data
+const automationDropdownPrice = {
+  1: { monthly: 0, annual: 0},
+  2: { monthly: 90, annual: 75},
+  3: { monthly: 135, annual: 113},
+  4: { monthly: 175, annual: 146},
+  5: { monthly: 250, annual: 208},
+  6: { monthly: 400, annual: 333},
+  7: { monthly: 'custom', annual: 'custom'}
+}
+const voiceDropdownPrice = {
+  1: { monthly: 0, annual: 0},
+  2: { monthly: 90, annual: 75},
+  3: { monthly: 135, annual: 113},
+  4: { monthly: 175, annual: 146},
+  5: { monthly: 250, annual: 208},
+  6: { monthly: 400, annual: 333},
+  7: { monthly: 'custom', annual: 'custom'}
+}
+const smsDropdownPrice = {
+  1: { monthly: 0, annual: 0},
+  2: { monthly: 60, annual: 50},
+  3: { monthly: 90, annual: 75},
+  4: { monthly: 140, annual: 117},
+  5: { monthly: 216, annual: 180},
+  6: { monthly: 408, annual: 340},
+  7: { monthly: 'custom', annual: 'custom'}
+}
+let selectedPlan = templatePagesPaths ? pricingPlansTemplates[1] : pricingPlans[2]
+let selectedPeriod = 'monthly'
+const setPlanPrices = (getEl, pricingTabs, planPeriods) => {
+  const priceTabs = getEl('heading-tab-pane__pricing price')
+  priceTabs[0].innerHTML = planPricingInit[0]
+  priceTabs[1].innerHTML = planPricingInit[1]
+  priceTabs[2].innerHTML = planPricingInit[2]
+  priceTabs[3].innerHTML = planPricingInit[3]
+  priceTabs[5].innerHTML = planPricingInit[6]
+  priceTabs[6].innerHTML = planPricingInit[7]
+  priceTabs[7].innerHTML = planPricingInit[8]
+  getEl('text-link__pricing')[0].innerHTML = planPricingInit[4]
+  getEl('text-link__pricing')[1].innerHTML = planPricingInit[4]
+  planPeriods[0].click()
+  pricingTabs[2].click()
 }
 
+// price calculation begins here
+const estimatePrice = (getEl, getElId) => {
+  const planPeriods = getEl('text-menu__pricing') 
+  const isAutomationToggleActive = getEl('w-checkbox-input')[0].classList.contains('w--redirected-checked')
+  const isVoiceToggleActive = getEl('w-checkbox-input')[1].classList.contains('w--redirected-checked')
+  const isSmsToggleActive = getEl('w-checkbox-input')[2].classList.contains('w--redirected-checked')
+  const automationPriceEl = getElId('pricing-automation')
+  const voicePriceEl = getElId('pricing-phone')
+  const smsPriceEl = getElId('pricing-sms')
+  // const showHideDropdown = (el, show) => show ? el.classList.removeClass('hidden') : el.classList.addClass('hidden') 
+  let ctaTextDisplay = document.querySelectorAll(".button.pricing")[0].innerHTML;
+  let ctaHrefDisplay = document.querySelectorAll(".button.pricing")[0].href;
+  const isEnterprisePlan = selectedPlan.name === 'enterprise'
+  const automationDropdown = getElId('automation-interaction-2')
+  const voiceDropdown = getElId('number-phone-interaction-2')
+  const smsDropdown = getElId('number-sms-interaction-2')
 
-for (let i = 0; i < pricingTabs.length; i++) {
- // Add a click event listener to the element
-    pricingTabs[i].addEventListener('click', function () {
+  if (selectedPlan.name =='starter') {
+    Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
+      automationPriceEl.style.color = "#afafaf";
+      planPeriods[1].style['pointer-events'] = 'none';
+      planPeriods[1].style.opacity = '0.4'; 
+   } else {
+    $("#wf-form-pricing-form .wrapper-master-checkbox__pricing>*:nth-child(1n) .heading-text-content__pricing span").css("color", "#1a9970");
+    Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
+  }
+
+  const automationTotalPrice = isAutomationToggleActive 
+    ? automationDropdownPrice[automationDropdown.value[selectedPeriod]] 
+    : automationPrice[selectedPlan.name][selectedPeriod] 
+  const voiceTotalPrice = isVoiceToggleActive 
+    ? voiceDropdownPrice[voiceDropdown.value[selectedPeriod]] 
+    : voicePrice[selectedPlan.name][selectedPeriod] 
+  const smsTotalPrice = isSmsToggleActive 
+    ? smsDropdownPrice[smsDropdown.value[selectedPeriod]] 
+    : smsPrice[selectedPlan.name][selectedPeriod] 
+  const checkIfString = (el) => typeof el === 'string'
+  const returnValue = (el) =>  checkIfString(el) ? el : '+$' + el + '/mo';
+  console.log(returnValue(voiceTotalPrice))
+  let totalPrice = selectedPlan.price + returnValue(automationTotalPrice) + returnValue(voiceTotalPrice) + returnValue(smsTotalPrice)
+  totalPrice = isEnterprisePlan && 'Custom Price'
+  ctaTextDisplay = isEnterprisePlan ? 'Contact us' : 'Start a free trial'
+  ctaHrefDisplay =  isEnterprisePlan 
+    ? 'https://www.gorgias.com/demo?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
+    : 'https://www.gorgias.com/signup?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
+
+    automationPriceEl.innerHTML = returnValue(automationTotalPrice);
+    voicePriceEl.innerHTML = returnValue(voiceTotalPrice)
+    smsPriceEl.innerHTML = returnValue(smsTotalPrice)
+    getEl('heading-tab-pane__pricing price-form')[0].innerHTML = totalPrice
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const getEl = (val) => document.getElementsByClassName(val)
+  const getElId = (val) => document.getElementById(val)
+  const planPeriods = getEl('text-menu__pricing')
+  const pricingTabs = getEl('tab-pane__pricing')
+  const selects = document.getElementsByTagName('select');
+  // set plan prices
+  setPlanPrices(getEl, pricingTabs, planPeriods)
+
+  // add event listener for when we change period tab from monthly to yearly and viceversa
+  for (let i = 0; i < planPeriods.length; i++) {
+    planPeriods[i].addEventListener('click', function () {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
-      pricingTabs[chooseTabs[i]].click()
+      pricingTabs[chooseTabs[selectedPlan.index]].click()
+      i === 1 ? selectedPeriod === 'annual' : 'monthly'
+
+    });
+  }
+  // add event listener for when we change dropdowns values
+  for (let i = 0; i < selects.length; i++) {
+    selects[i].addEventListener('change', function () {
+      estimatePrice(getEl, getElId)
+    });
+  }
+  // find if we have selected checkboxes
+  const checkBoxes = getEl('w--redirected-checked')
+  for (let i = 0; i < pricingTabs.length; i++) {
+    pricingTabs[i].addEventListener('click', function () {
+      if (i === 0) {
+        planPeriods[1].style['pointer-events'] = 'none';
+        planPeriods[1].style.opacity = '0.4'; 
+      } else {
+        planPeriods[1].style['pointer-events'] = 'auto';
+        planPeriods[1].style.opacity = '1';
+      }
+      selectedPlan = pricingPlans[i]
+      estimatePrice(getEl, getElId)
       if (checkBoxes.length) {
+        // when changing plan we deselect them
         Array.from(checkBoxes).forEach(el => {
           el.parentNode.nextElementSibling.nextElementSibling.firstChild.click()
         })
       }
     });
-}
-  
-
-// })
+  }
+});
