@@ -304,7 +304,7 @@ const tabsForTemplates = {
   7: 3,
 }
 const tabsForPricing = {
-  0: 6,    
+  0: 0,    
   1: 6,
   2: 7,
   3: 8,
