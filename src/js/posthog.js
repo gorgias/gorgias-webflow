@@ -5,8 +5,10 @@ var path = window.location.pathname;
 if(
     path.includes('/l/') || path.includes('/lp/') || path.includes('/lc/') // ads landing pages
     || path.includes('/demo') // demo funnel
-    || path.includes('/signup')) // signup funnels
-    {
+    || path.includes('/signup') // signup funnels
+    || path.includes('/pages/') // landing pages
+    || path.includes('/comparison') // MOFU pages
+    ){
     posthog.onFeatureFlags(function() {
         if (posthog.isFeatureEnabled('all-visitors')) {
             window.posthog.startSessionRecording();
@@ -14,7 +16,7 @@ if(
     })
 }
 
-if (path === '/' || path === '/pages/home-draft') {
+if (path === '/pages/home-draft') {
   posthog.onFeatureFlags(() => {
     posthog.feature_flags.override({'customer-logos': 'test'});
     const logosToSelect = document.getElementsByClassName("customer_logo-collection");
