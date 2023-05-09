@@ -271,25 +271,6 @@ $(".wrapper-flex-right__tab-pane-pricing .link").click(function(){
 
 const pricingTabs = document.getElementsByClassName("tab-pane__pricing");
 const timeTab = document.getElementsByClassName("text-menu__pricing");
-if (!templatePagesPaths) {
-    // Loop through each element with class name "tab-pane__pricing"
-  for (let i = 0; i < pricingTabs.length; i++) {
-    // Add a click event listener to the element
-    pricingTabs[i].addEventListener('click', function() {
-     if (i === 0) {
-       timeTab[1].style['pointer-events'] = 'none';
-       timeTab[1].style.opacity = '0.4'; 
-     } else {
-       timeTab[1].style['pointer-events'] = 'auto';
-       timeTab[1].style.opacity = '1';
-     }
-     if (i === 5) {
-       document.getElementsByClassName('text-menu__pricing')[0].click()
-       document.getElementsByClassName("tab-pane__pricing")[0].click()
-     }   
-    });
-  }
-}
 
 // find if we have selected checkboxes
 const checkBoxes = document.getElementsByClassName('w--redirected-checked')
@@ -315,10 +296,14 @@ const tabsForPricing = {
   9: 4,
 }
 
-
 for (let i = 0; i < pricingTabs.length; i++) {
  // Add a click event listener to the element
     pricingTabs[i].addEventListener('click', function () {
+      if (!templatePagesPaths && i === 5) {
+        timeTab[0].click()
+        pricingTabs[0].click()
+        document.getElementsByClassName("tab-pane__pricing")[0].click()
+      }
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
       pricingTabs[chooseTabs[i]].click()
       if (checkBoxes.length) {
@@ -327,6 +312,14 @@ for (let i = 0; i < pricingTabs.length; i++) {
         })
       }
     });
+}
+const isStarterSelected = pricingTabs[0].classList.contains('w--current')
+for (let i = 0; i < timeTab.length; i++) {
+  timeTab[i].addEventListener('click', function () {
+    if(!templatePagesPaths && i === 1 && isStarterSelected) {
+       pricingTabs[6].click()
+    }
+  }
 }
   
 
