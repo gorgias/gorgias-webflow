@@ -324,5 +324,10 @@ div.submitted-message{
         margin-bottom: 12px;
       }
   }
+
+/*HS CTA - popup*/
+  div[id*='hs-overlay-cta']{
+	transition: opacity 0.1s ease-in !important;
+}
     
   
