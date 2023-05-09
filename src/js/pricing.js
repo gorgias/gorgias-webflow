@@ -319,7 +319,7 @@ for (let i = 0; i < timeTab.length; i++) {
     if(!templatePagesPaths && i === 1 && isStarterSelected) {
        pricingTabs[6].click()
     }
-  }
+  })
 }
   
 
