@@ -290,6 +290,7 @@ const tabsForPricing = {
   2: 7,
   3: 8,
   4: 9,
+  5: 0,
   6: 1,
   7: 2,
   8: 3,
@@ -313,14 +314,11 @@ for (let i = 0; i < pricingTabs.length; i++) {
       }
     });
 }
-const isStarterSelected = pricingTabs[0].classList.contains('w--current')
-for (let i = 0; i < timeTab.length; i++) {
-  timeTab[i].addEventListener('click', function () {
-    if(!templatePagesPaths && i === 1 && isStarterSelected) {
-       pricingTabs[6].click()
-    }
-  })
-}
+timeTab[1].addEventListener('click', function() {
+  if (pricingTabs[0].classList.contains('w--current')) {
+    pricingTabs[6].click()
+  }
+})
   
 
 // })
