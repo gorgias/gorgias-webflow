@@ -1,7 +1,7 @@
 const approvedUrlsStage = ['/pages/template-long', '/pages/crm', '/pages/live-chat', '/pages/ticketing-system', '/pages/helpdesk', '/pages/customer-service', '/pages/ticketing-system-long', 
-  '/pages/customer-service-long', '/pages/helpdesk-long', '/pages/live-chat-long', '/pages/crm-long']; 
+'/pages/customer-service-long', '/pages/helpdesk-long', '/pages/live-chat-long', '/pages/crm-long']; 
 // template pages where pricing table is shown
-const templatePagesPaths = approvedUrlsStage.includes(window.location.pathname);
+ const templatePagesPaths = approvedUrlsStage.includes(window.location.pathname);
 // tab indexes used for matching selected plans on both tabs(annual, monthly)
 const tabsForTemplates = { 0: 4, 1: 5, 2: 6, 3: 7, 4: 0, 5: 1, 6: 2, 7: 3 }
 const tabsForPricing = { 0: 1, 1: 6, 2: 7, 3: 8, 4: 9, 6: 1, 7: 2, 8: 3, 9: 4 }
@@ -110,6 +110,7 @@ const smsDropdownPrice = {
   7: { monthly: 'custom', annual: 'custom'}
 }
 let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[7]
+const isEnterprisePlan = selectedPlan.name === 'enterprise'
 let selectedPeriod = 'monthly'
 const setPlanPrices = (getEl) => {
   const priceTabs = getEl('heading-tab-pane__pricing price')
@@ -121,33 +122,35 @@ const setPlanPrices = (getEl) => {
   
   if (!templatePagesPaths) {
     priceTabs[3].innerHTML = planPricingInit[3] 
+    priceTabs[8].innerHTML = planPricingInit[8] 
   } else {
     priceTabs[4].innerHTML = planPricingInitTemplate[4] 
     priceTabs[7].innerHTML = planPricingInit[8]
   }
 }
-const showHideDropdown = (el, show) => show ? el.classList.remove('hidden') : el.classList.add('hidden') 
-const isStringCustom = (el) => typeof el === 'string' && el === 'custom'
 
 document.addEventListener("DOMContentLoaded", () => {
   const getEl = (val) => document.getElementsByClassName(val)
   const getElId = (val) => document.getElementById(val)
   const planPeriods = getEl('text-menu__pricing')
   const pricingTabs = getEl('tab-pane__pricing')
-  const isEnterprisePlan = selectedPlan.name === 'enterprise'
+  const showHideDropdown = (el, show) => show ? el.classList.remove('hidden') : el.classList.add('hidden') 
+  const isStringCustom = (el) => typeof el === 'string' && el === 'custom'
+  const isString = (el) => typeof el === 'string'
   // set plan prices
   setPlanPrices(getEl, pricingTabs)
 
   const calculateTotalPrice = (automationTotalPrice, voiceTotalPrice, smsTotalPrice) => {
     const totalPriceEl = document.getElementsByClassName('heading-tab-pane__pricing price-form')[0]
-    let totalPrice 
+    let totalPrice = selectedPlan.price
     if (isEnterprisePlan || isStringCustom(automationTotalPrice) || isStringCustom(voiceTotalPrice) || isStringCustom(smsTotalPrice)) {
-      totalPrice =  'Custom price'
+      totalPrice = 'Custom price'
       totalPriceEl.nextSibling.classList.add('hidden')
     } else {
       if (automationTotalPrice) totalPrice += automationTotalPrice
       if (voiceTotalPrice) totalPrice += voiceTotalPrice
       if (smsTotalPrice) totalPrice += smsTotalPrice
+      isString(totalPrice) ? totalPrice : '+$' + totalPrice;
       totalPriceEl.nextSibling.classList.remove('hidden')
     }
     totalPriceEl.innerHTML = totalPrice
@@ -157,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let price = toggle 
       ? dropdownPrice[dropDownValue.value[selectedPeriod]] 
       : basePrice[selectedPlan.name][selectedPeriod] 
-      const displayPrice = typeof price === 'string' ? price : '+$' + price + '/mo';
+      const displayPrice = isString(price) ? price : '+$' + price + '/mo';
       domElement.innerHTML = displayPrice
       return toggle ? price : 0
   }
@@ -198,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
     planPeriods[i].addEventListener('click', function () {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
       pricingTabs[chooseTabs[selectedPlan.index]].click()
-      i === 1 ? selectedPeriod === 'annual' : 'monthly'
+      i === 1 ? selectedPeriod = 'annual' : 'monthly'
 
     });
   }
