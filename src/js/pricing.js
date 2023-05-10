@@ -110,49 +110,51 @@ const smsDropdownPrice = {
   7: { monthly: 'custom', annual: 'custom'}
 }
 let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[7]
-const isEnterprisePlan = selectedPlan.name === 'enterprise'
 let selectedPeriod = 'monthly'
-const setPlanPrices = (getEl) => {
-  const priceTabs = getEl('heading-tab-pane__pricing price')
-  priceTabs[0].innerHTML = templatePagesPaths ? planPricingInitTemplate[0] : planPricingInit[0]
-  priceTabs[1].innerHTML = templatePagesPaths ? planPricingInitTemplate[1] : planPricingInit[1]
-  priceTabs[2].innerHTML = templatePagesPaths ? planPricingInitTemplate[2] : planPricingInit[2]
-  priceTabs[5].innerHTML = templatePagesPaths ? planPricingInitTemplate[5] : planPricingInit[6] 
-  priceTabs[6].innerHTML = templatePagesPaths ? planPricingInitTemplate[6] : planPricingInit[7] 
-  
-  if (!templatePagesPaths) {
-    priceTabs[3].innerHTML = planPricingInit[3] 
-    priceTabs[8].innerHTML = planPricingInit[8] 
-  } else {
-    priceTabs[4].innerHTML = planPricingInitTemplate[4] 
-    priceTabs[7].innerHTML = planPricingInit[8]
-  }
-}
+let automationChecked = false
+let voiceChecked = false
+let smsChecked = false
 
 document.addEventListener("DOMContentLoaded", () => {
   const getEl = (val) => document.getElementsByClassName(val)
   const getElId = (val) => document.getElementById(val)
   const planPeriods = getEl('text-menu__pricing')
   const pricingTabs = getEl('tab-pane__pricing')
-  const showHideDropdown = (el, show) => show ? el.classList.remove('hidden') : el.classList.add('hidden') 
   const isStringCustom = (el) => typeof el === 'string' && el === 'custom'
   const isString = (el) => typeof el === 'string'
-  // set plan prices
-  setPlanPrices(getEl, pricingTabs)
+  // set plan and add on prices
+  const setPlanPrices = (getEl) => {
+    const priceTabs = getEl('heading-tab-pane__pricing price')
+    priceTabs[0].innerHTML = templatePagesPaths ? planPricingInitTemplate[0] : planPricingInit[0]
+    priceTabs[1].innerHTML = templatePagesPaths ? planPricingInitTemplate[1] : planPricingInit[1]
+    priceTabs[2].innerHTML = templatePagesPaths ? planPricingInitTemplate[2] : planPricingInit[2]
+    priceTabs[5].innerHTML = templatePagesPaths ? planPricingInitTemplate[5] : planPricingInit[6] 
+    priceTabs[6].innerHTML = templatePagesPaths ? planPricingInitTemplate[6] : planPricingInit[7] 
+    
+    if (!templatePagesPaths) {
+      priceTabs[3].innerHTML = planPricingInit[3] 
+      priceTabs[7].innerHTML = planPricingInit[8] 
+    } else {
+      priceTabs[4].innerHTML = planPricingInitTemplate[4] 
+      priceTabs[7].innerHTML = planPricingInit[8]
+    }
+  }
+  setPlanPrices(getEl)
 
   const calculateTotalPrice = (automationTotalPrice, voiceTotalPrice, smsTotalPrice) => {
     const totalPriceEl = document.getElementsByClassName('heading-tab-pane__pricing price-form')[0]
     let totalPrice = selectedPlan.price
-    if (isEnterprisePlan || isStringCustom(automationTotalPrice) || isStringCustom(voiceTotalPrice) || isStringCustom(smsTotalPrice)) {
+    
+    if (selectedPlan.name === 'enterprise' || isStringCustom(automationTotalPrice) || isStringCustom(voiceTotalPrice) || isStringCustom(smsTotalPrice)) {
       totalPrice = 'Custom price'
       totalPriceEl.nextSibling.classList.add('hidden')
     } else {
       if (automationTotalPrice) totalPrice += automationTotalPrice
       if (voiceTotalPrice) totalPrice += voiceTotalPrice
-      if (smsTotalPrice) totalPrice += smsTotalPrice
-      isString(totalPrice) ? totalPrice : '+$' + totalPrice;
+      if (smsTotalPrice) totalPrice += smsTotalPrice  
       totalPriceEl.nextSibling.classList.remove('hidden')
     }
+    isString(totalPrice) ? totalPrice : '+$' + totalPrice;
     totalPriceEl.innerHTML = totalPrice
   }
 
@@ -166,17 +168,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const showButtonDisplay = () => {
-    document.querySelectorAll(".button.pricing")[0].innerHTML = isEnterprisePlan ? 'Contact us' : 'Start a free trial'
-    document.querySelectorAll(".button.pricing")[0].href = isEnterprisePlan 
+    document.querySelectorAll(".button.pricing")[0].innerHTML = selectedPlan.name === 'enterprise' ? 'Contact us' : 'Start a free trial'
+    document.querySelectorAll(".button.pricing")[0].href = selectedPlan.name === 'enterprise' 
       ? 'https://www.gorgias.com/demo?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
       : 'https://www.gorgias.com/signup?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
   }
 
+  const toggleDropDowns = () => {
+    
+  }
   // price calculation begins here
   const estimatePrice = () => {
-    const isAutomationToggleActive = getEl('w-checkbox-input')[0].classList.contains('w--redirected-checked')
-    const isVoiceToggleActive = getEl('w-checkbox-input')[1].classList.contains('w--redirected-checked')
-    const isSmsToggleActive = getEl('w-checkbox-input')[2].classList.contains('w--redirected-checked')
+    const showHideDropdown = (el, show) => show ? el.classList.remove('hidden') : el.classList.add('hidden') 
+    // const isAutomationToggleActive = getEl('w-checkbox-input')[0].classList.contains('w--redirected-checked')
+    // const isVoiceToggleActive = getEl('w-checkbox-input')[1].classList.contains('w--redirected-checked')
+    // const isSmsToggleActive = getEl('w-checkbox-input')[2].classList.contains('w--redirected-checked')
     const automationDropdown = getElId('Number-Automation-Addon-Interaction')
     const voiceDropdown = getElId('number-phone-interaction-2')
     const smsDropdown = getElId('number-sms-interaction-2')
@@ -184,9 +190,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const voicePriceEl = getElId('pricing-phone')
     const smsPriceEl = getElId('pricing-sms')
 
-    showHideDropdown(automationDropdown, isAutomationToggleActive)
-    showHideDropdown(voiceDropdown, isVoiceToggleActive) 
-    showHideDropdown(smsDropdown, isSmsToggleActive)
+    showHideDropdown(automationDropdown, automationChecked)
+    showHideDropdown(voiceDropdown, voiceChecked) 
+    showHideDropdown(smsDropdown, smsChecked)
 
     const automationTotalPrice = calculateAddOnsPrices(isAutomationToggleActive, automationDropdownPrice, automationDropdown, automationPrice, automationPriceEl)
     const voiceTotalPrice = calculateAddOnsPrices(isVoiceToggleActive, voiceDropdownPrice, voiceDropdown, voicePrice, voicePriceEl)
@@ -195,6 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
     calculateTotalPrice(automationTotalPrice, voiceTotalPrice, smsTotalPrice)
     showButtonDisplay()
   }
+  // on first time load estimate prices
+  estimatePrice()
   // add event listener for when we change period tab from monthly to yearly and viceversa
   // to select coresponing plan on other tab
   for (let i = 0; i < planPeriods.length; i++) {
@@ -202,9 +210,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
       pricingTabs[chooseTabs[selectedPlan.index]].click()
       i === 1 ? selectedPeriod = 'annual' : 'monthly'
-
     });
   }
+
   // add event listener for when change dropwdown value
   const selects = document.querySelectorAll("select")
   for (let i = 0; i < selects.length; i++) {
@@ -216,6 +224,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkBoxes = document.querySelectorAll(".wrapper-toggle-pricing")
   for (let i = 0; i < checkBoxes.length; i++) {
     checkBoxes[i].addEventListener('click', function () {
+      if (i === 0) automationChecked = !automationChecked
+      if (i === 1) voiceChecked = !voiceChecked
+      if (i === 2) smsChecked = !smsChecked
       estimatePrice()
     });
   }
