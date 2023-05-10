@@ -184,8 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const voiceDropdown = getElId('number-phone-interaction-2')
     const smsDropdown = getElId('number-sms-interaction-2')
     const automationPriceEl = getElId('pricing-automation')
-    const voicePriceEl = document.getEl('green-heading-content-span__pricing')[3]
-    const smsPriceEl = document.getEl('green-heading-content-span__pricing')[5]
+    const voicePriceEl = getEl('green-heading-content-span__pricing')[3]
+    const smsPriceEl = getEl('green-heading-content-span__pricing')[5]
 
     showHideDropdown(automationDropdown, automationChecked)
     showHideDropdown(voiceDropdown, voiceChecked) 
