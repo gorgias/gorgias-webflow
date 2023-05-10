@@ -184,8 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const voiceDropdown = getElId('number-phone-interaction-2')
     const smsDropdown = getElId('number-sms-interaction-2')
     const automationPriceEl = getElId('pricing-automation')
-    const voicePriceEl = getElId('pricing-phone')
-    const smsPriceEl = getElId('pricing-sms')
+    const voicePriceEl = document.querySelector("#wf-form-pricing-form .wrapper-master-checkbox__pricing > *:nth-child(2n) .heading-text-content__pricing span")
+    const smsPriceEl = document.querySelector("#wf-form-pricing-form .wrapper-master-checkbox__pricing > *:nth-child(3n) .heading-text-content__pricing span")
 
     showHideDropdown(automationDropdown, automationChecked)
     showHideDropdown(voiceDropdown, voiceChecked) 
