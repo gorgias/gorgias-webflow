@@ -118,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const planPeriods = getEl('text-menu__pricing')
   const pricingTabs = getEl('tab-pane__pricing')
   const isStringCustom = (el) => typeof el === 'string' && el === 'custom'
-  const isString = (el) => typeof el === 'string'
   // set plan and add on prices
   const setPlanPrices = (getEl) => {
     const priceTabs = getEl('heading-tab-pane__pricing price')
@@ -151,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (smsTotalPrice) totalPrice += smsTotalPrice  
       totalPriceEl.nextSibling.classList.remove('hidden')
     }
-    isString(totalPrice) ? totalPrice : '+$' + totalPrice;
+    typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice;
     totalPriceEl.innerHTML = totalPrice
   }
 
@@ -159,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let price = (dropDownValue.value !== '1')
       ? dropdownPrice[dropDownValue.value][selectedPeriod] 
       : basePrice[selectedPlan.name][selectedPeriod] 
-      const displayPrice = isString(price) ? price : '+$' + price + '/mo';
+      const displayPrice = typeof price === 'string' ? price : '+$' + price + '/mo';
       domElement.innerHTML = displayPrice
       return toggle ? price : 0
   }
@@ -172,7 +171,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // price calculation begins here
   const estimatePrice = () => {
-    const showHideDropdown = (el, show) => show ? el.classList.remove('hidden') : el.classList.add('hidden') 
+      // when starter is selected disable all checkboxes
+    if (selectedPlan.name =='starter') {
+      Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
+      getElId('pricing-automation').style.color = "#afafaf";
+    } 
+    // else {
+    //   Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
+    //   getElId('pricing-automation').css("color", "#1a9970");
+    // }
+    const showHideDropdown = (el, show) => {
+      if(show) {
+        el.classList.remove('hidden')
+      } else {
+        el.classList.add('hidden') 
+        el.val = 1
+      } 
+    }
     const automationDropdown = getElId('Number-Automation-Addon-Interaction')
     const voiceDropdown = getElId('number-phone-interaction-2')
     const smsDropdown = getElId('number-sms-interaction-2')
@@ -196,7 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
     planPeriods[i].addEventListener('click', function () {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
       pricingTabs[chooseTabs[selectedPlan.index]].click()
-      i === 1 ? selectedPeriod = 'annual' : 'monthly'
+      if (i === 0) selectedPeriod = 'monthly' 
+      if (i === 1) selectedPeriod = 'annual' 
       estimatePrice()
     });
   }
@@ -244,13 +260,4 @@ document.addEventListener("DOMContentLoaded", () => {
       pricingTabs[6].click()
     }
   })
-  // when starter is selected disable all checkboxes
-  if (selectedPlan.name =='starter') {
-    Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
-    getElId('pricing-automation').style.color = "#afafaf";
-  } 
-  // else {
-  //   Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
-  //   getElId('pricing-automation').css("color", "#1a9970");
-  // }
 });
