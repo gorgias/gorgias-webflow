@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const calculateAddOnsPrices = (toggle, dropdownPrice, dropDownValue, basePrice, domElement) => {
     let price = toggle 
-      ? dropdownPrice[dropDownValue.value[selectedPeriod]] 
+      ? dropdownPrice[dropDownValue.value][selectedPeriod] 
       : basePrice[selectedPlan.name][selectedPeriod] 
       const displayPrice = isString(price) ? price : '+$' + price + '/mo';
       domElement.innerHTML = displayPrice
@@ -180,9 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // price calculation begins here
   const estimatePrice = () => {
     const showHideDropdown = (el, show) => show ? el.classList.remove('hidden') : el.classList.add('hidden') 
-    // const isAutomationToggleActive = getEl('w-checkbox-input')[0].classList.contains('w--redirected-checked')
-    // const isVoiceToggleActive = getEl('w-checkbox-input')[1].classList.contains('w--redirected-checked')
-    // const isSmsToggleActive = getEl('w-checkbox-input')[2].classList.contains('w--redirected-checked')
     const automationDropdown = getElId('Number-Automation-Addon-Interaction')
     const voiceDropdown = getElId('number-phone-interaction-2')
     const smsDropdown = getElId('number-sms-interaction-2')
