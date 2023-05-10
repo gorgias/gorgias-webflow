@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (smsTotalPrice) totalPrice += smsTotalPrice  
       totalPriceEl.nextSibling.classList.remove('hidden')
     }
-    totalPrice = typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice;
+    totalPrice = typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice
     totalPriceEl.innerHTML = totalPrice
   }
 
@@ -174,10 +174,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // when starter is selected disable all checkboxes
     if (selectedPlan.name =='starter') {
       Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
-      getElId('pricing-automation').style.color = "#afafaf";
+      getElId('pricing-automation').style.color = "#afafaf"
     } else {
       Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
-      getElId('pricing-automation').css("color", "#1a9970");
+      getElId('pricing-automation').style.color = "#1a9970"
     }
     const showHideDropdown = (el, show) => {
       if(show) {
