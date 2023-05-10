@@ -170,10 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ? 'https://www.gorgias.com/demo?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
       : 'https://www.gorgias.com/signup?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
   }
-
-  const toggleDropDowns = () => {
-    
-  }
   // price calculation begins here
   const estimatePrice = () => {
     const showHideDropdown = (el, show) => show ? el.classList.remove('hidden') : el.classList.add('hidden') 
@@ -181,17 +177,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const voiceDropdown = getElId('number-phone-interaction-2')
     const smsDropdown = getElId('number-sms-interaction-2')
     const automationPriceEl = getElId('pricing-automation')
-    const voicePriceEl = document.getEl('green-heading-content-span__pricing')[3]
-    const smsPriceEl = document.getEl('green-heading-content-span__pricing')[5]
-
+    const voicePriceEl = getEl('green-heading-content-span__pricing')[3]
+    const smsPriceEl = getEl('green-heading-content-span__pricing')[5]
     showHideDropdown(automationDropdown, automationChecked)
     showHideDropdown(voiceDropdown, voiceChecked) 
     showHideDropdown(smsDropdown, smsChecked)
-
     const automationTotalPrice = calculateAddOnsPrices(automationChecked, automationDropdownPrice, automationDropdown, automationPrice, automationPriceEl)
     const voiceTotalPrice = calculateAddOnsPrices(voiceChecked, voiceDropdownPrice, voiceDropdown, voicePrice, voicePriceEl)
     const smsTotalPrice = calculateAddOnsPrices(smsChecked, smsDropdownPrice, smsDropdown, smsPrice, smsPriceEl)
-
     calculateTotalPrice(automationTotalPrice, voiceTotalPrice, smsTotalPrice)
     showButtonDisplay()
   }
@@ -207,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
       estimatePrice()
     });
   }
-
   // add event listener for when change dropwdown value
   const selects = document.querySelectorAll("select")
   for (let i = 0; i < selects.length; i++) {
