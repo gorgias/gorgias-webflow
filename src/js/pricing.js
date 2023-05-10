@@ -83,7 +83,6 @@ const smsPrice = {
 }
 // automation, voice, sms dropdown data
 const automationDropdownPrice = {
-  1: { monthly: 0, annual: 0},
   2: { monthly: 90, annual: 75},
   3: { monthly: 135, annual: 113},
   4: { monthly: 175, annual: 146},
@@ -92,7 +91,6 @@ const automationDropdownPrice = {
   7: { monthly: 'custom', annual: 'custom'}
 }
 const voiceDropdownPrice = {
-  1: { monthly: 0, annual: 0},
   2: { monthly: 90, annual: 75},
   3: { monthly: 135, annual: 113},
   4: { monthly: 175, annual: 146},
@@ -101,7 +99,6 @@ const voiceDropdownPrice = {
   7: { monthly: 'custom', annual: 'custom'}
 }
 const smsDropdownPrice = {
-  1: { monthly: 0, annual: 0},
   2: { monthly: 60, annual: 50},
   3: { monthly: 90, annual: 75},
   4: { monthly: 140, annual: 117},
@@ -159,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const calculateAddOnsPrices = (toggle, dropdownPrice, dropDownValue, basePrice, domElement) => {
-    let price = toggle 
+    let price = (dropDownValue.value !== '1')
       ? dropdownPrice[dropDownValue.value][selectedPeriod] 
       : basePrice[selectedPlan.name][selectedPeriod] 
       const displayPrice = isString(price) ? price : '+$' + price + '/mo';
@@ -184,8 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const voiceDropdown = getElId('number-phone-interaction-2')
     const smsDropdown = getElId('number-sms-interaction-2')
     const automationPriceEl = getElId('pricing-automation')
-    const voicePriceEl = getEl('green-heading-content-span__pricing')[3]
-    const smsPriceEl = getEl('green-heading-content-span__pricing')[5]
+    const voicePriceEl = document.getEl('green-heading-content-span__pricing')[3]
+    const smsPriceEl = document.getEl('green-heading-content-span__pricing')[5]
 
     showHideDropdown(automationDropdown, automationChecked)
     showHideDropdown(voiceDropdown, voiceChecked) 
@@ -207,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
       pricingTabs[chooseTabs[selectedPlan.index]].click()
       i === 1 ? selectedPeriod = 'annual' : 'monthly'
+      estimatePrice()
     });
   }
 
