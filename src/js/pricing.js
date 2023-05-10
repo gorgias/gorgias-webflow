@@ -175,15 +175,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (selectedPlan.name =='starter') {
       Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
       getElId('pricing-automation').style.color = '#afafaf'
-      getElId('pricing-sms').style.color = '#afafaf'
-      getElId('pricing-phone').style.color = '#afafaf'
+      getEl('green-heading-content-span__pricing')[3].style.color = '#afafaf'
+      ggetEl('green-heading-content-span__pricing')[5].style.color = '#afafaf'
       
       
     } else {
       Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
       getElId('pricing-automation').style.color = '#1a9970'
-      getElId('pricing-sms').style.color = '#1a9970'
-      getElId('pricing-phone').style.color = '#1a9970'
+      getEl('green-heading-content-span__pricing')[3].style.color = '#1a9970'
+      ggetEl('green-heading-content-span__pricing')[5].style.color = '#1a9970'
     }
     const showHideDropdown = (el, show) => {
       if(show) {
