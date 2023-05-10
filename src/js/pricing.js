@@ -209,7 +209,11 @@ document.addEventListener("DOMContentLoaded", () => {
   for (let i = 0; i < planPeriods.length; i++) {
     planPeriods[i].addEventListener('click', function () {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
-      pricingTabs[chooseTabs[selectedPlan.index]].click()
+      if (i === 1 && !templatePagesPaths) {
+        pricingTabs[0].classList.contains('w--current') && pricingTabs[6].click()        
+      } else {
+        pricingTabs[chooseTabs[selectedPlan.index]].click()
+      }
       if (i === 0) selectedPeriod = 'monthly' 
       if (i === 1) selectedPeriod = 'annual' 
       estimatePrice()
@@ -252,10 +256,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  // when starter is selected, and we click annual tab, redirect to basic plan
-  planPeriods[1].addEventListener('click', function() {
-    if (pricingTabs[0].classList.contains('w--current')) {
-      pricingTabs[6].click()
-    }
-  })
 });
