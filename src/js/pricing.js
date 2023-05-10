@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setPlanPrices(getEl)
 
   const calculateTotalPrice = (automationTotalPrice, voiceTotalPrice, smsTotalPrice) => {
-    const totalPriceEl = document.getElementsByClassName('heading-tab-pane__pricing price-form')[0]
+    const totalPriceEl = getEl('heading-tab-pane__pricing price-form')[0]
     let totalPrice = selectedPlan.price
     
     if (selectedPlan.name === 'enterprise' || isStringCustom(automationTotalPrice) || isStringCustom(voiceTotalPrice) || isStringCustom(smsTotalPrice)) {
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (smsTotalPrice) totalPrice += smsTotalPrice  
       totalPriceEl.nextSibling.classList.remove('hidden')
     }
-    typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice;
+    totalPrice = typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice;
     totalPriceEl.innerHTML = totalPrice
   }
 
@@ -175,17 +175,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (selectedPlan.name =='starter') {
       Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
       getElId('pricing-automation').style.color = "#afafaf";
-    } 
-    // else {
-    //   Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
-    //   getElId('pricing-automation').css("color", "#1a9970");
-    // }
+    } else {
+      Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
+      getElId('pricing-automation').css("color", "#1a9970");
+    }
     const showHideDropdown = (el, show) => {
       if(show) {
         el.classList.remove('hidden')
       } else {
         el.classList.add('hidden') 
-        el.val = 1
+        el.value = '1'
       } 
     }
     const automationDropdown = getElId('Number-Automation-Addon-Interaction')
@@ -239,9 +238,8 @@ document.addEventListener("DOMContentLoaded", () => {
     pricingTabs[i].addEventListener('click', function () {
        // when on annual tab, when clicking starter, redirect to starter on monthly tab
       if (!templatePagesPaths && i === 5) {
-        timeTab[0].click()
+        planPeriods[0].click()
         pricingTabs[0].click()
-        document.getElementsByClassName("tab-pane__pricing")[0].click()
       }
       // set plan and estimate price
       selectedPlan = pricingPlans[i]
