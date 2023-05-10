@@ -194,9 +194,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showHideDropdown(voiceDropdown, voiceChecked) 
     showHideDropdown(smsDropdown, smsChecked)
 
-    const automationTotalPrice = calculateAddOnsPrices(isAutomationToggleActive, automationDropdownPrice, automationDropdown, automationPrice, automationPriceEl)
-    const voiceTotalPrice = calculateAddOnsPrices(isVoiceToggleActive, voiceDropdownPrice, voiceDropdown, voicePrice, voicePriceEl)
-    const smsTotalPrice = calculateAddOnsPrices(isSmsToggleActive, smsDropdownPrice, smsDropdown, smsPrice, smsPriceEl)
+    const automationTotalPrice = calculateAddOnsPrices(automationChecked, automationDropdownPrice, automationDropdown, automationPrice, automationPriceEl)
+    const voiceTotalPrice = calculateAddOnsPrices(voiceChecked, voiceDropdownPrice, voiceDropdown, voicePrice, voicePriceEl)
+    const smsTotalPrice = calculateAddOnsPrices(smsChecked, smsDropdownPrice, smsDropdown, smsPrice, smsPriceEl)
 
     calculateTotalPrice(automationTotalPrice, voiceTotalPrice, smsTotalPrice)
     showButtonDisplay()
