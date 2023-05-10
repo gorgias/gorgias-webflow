@@ -4,7 +4,7 @@ const approvedUrlsStage = ['/pages/template-long', '/pages/crm', '/pages/live-ch
  const templatePagesPaths = approvedUrlsStage.includes(window.location.pathname);
 // tab indexes used for matching selected plans on both tabs(annual, monthly)
 const tabsForTemplates = { 0: 4, 1: 5, 2: 6, 3: 7, 4: 0, 5: 1, 6: 2, 7: 3 }
-const tabsForPricing = { 0: 1, 1: 6, 2: 7, 3: 8, 4: 9, 6: 1, 7: 2, 8: 3, 9: 4 }
+const tabsForPricing = { 0: 6, 1: 6, 2: 7, 3: 8, 4: 9, 6: 1, 7: 2, 8: 3, 9: 4 }
 const pricingPlans = {
   0: { name: 'starter', price: 10, index: 0 },
   1: { name: 'basic', price: 60, index: 1 },
@@ -209,11 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
   for (let i = 0; i < planPeriods.length; i++) {
     planPeriods[i].addEventListener('click', function () {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
-      if (i === 1 && !templatePagesPaths) {
-        pricingTabs[0].classList.contains('w--current') && pricingTabs[6].click()        
-      } else {
-        pricingTabs[chooseTabs[selectedPlan.index]].click()
-      }
+      pricingTabs[chooseTabs[selectedPlan.index]].click()  
       if (i === 0) selectedPeriod = 'monthly' 
       if (i === 1) selectedPeriod = 'annual' 
       estimatePrice()
