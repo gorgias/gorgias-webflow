@@ -46,5 +46,9 @@ Webflow.push(function () {
         newStyle(scriptBase + '/src/css/blog'+minBase+'.css','body');
         newScript(scriptBase + '/src/js/blog'+minBase+'.js','body',1);
     }
+    if(path === '/product-tour'){
+        newScript(scriptBase + '/src/js/producttour'+minBase+'.js','head',1)
+    } 
+
 })
 
