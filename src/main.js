@@ -14,8 +14,7 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
-
-   
+ 
     const allowedPricingPaths = ['/pricing', '/pricing-test/pricing', '/pages/template-long', '/pages/customer-service',
       '/pages/ticketing-system', '/pages/live-chat', '/pages/helpdesk', '/pages/crm']
     const allowedSplidePaths = ['/pages/template-long', '/pages/customer-service',
