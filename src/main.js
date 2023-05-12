@@ -15,15 +15,19 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
 
+   
+    const allowedPricingPaths = ['/pricing', '/pricing-test/pricing', '/pages/template-long', '/pages/customer-service',
+      '/pages/ticketing-system', '/pages/live-chat', '/pages/helpdesk', '/pages/crm']
+    const allowedSplidePaths = ['/pages/template-long', '/pages/customer-service',
+      '/pages/ticketing-system', '/pages/live-chat', '/pages/helpdesk', '/pages/crm']
     // pricing page
-    if(path === '/pricing' || path === '/pricing-test/pricing' || path === '/pages/template-long' 
-      || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
-      || path === '/pages/helpdesk' || path === '/pages/crm') {
+    if (allowedPricingPaths.includes(path)) {
         // [Attributes by Finsweet] Mirrorclick
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
         newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
         newScript(scriptBase + '/src/js/pricing'+minBase+'.js','head',1);
-        
+    }
+    if (allowedSplidePaths.includes(path)) {
         // scripts for splide js
         newStyle('https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/css/splide-core.min.css','head');
         newStyle(scriptBase + '/src/css/splide'+minBase+'.css','head');
