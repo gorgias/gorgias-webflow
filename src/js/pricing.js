@@ -38,51 +38,43 @@ const combinedSms = {
   monthly: 20,
   annual: 17
 }
+const combinedNotAvailable = {
+  monthly: 'Not available',
+  annual: 'Not available'
+}
 // automation, voice, sms data
 const automationPrice = {
-  starter: {
-    monthly: 'Not available',
-    annual: 'Not available'
-  },
-  basic: {
-    monthly: 30,
-    annual: 25
-  },
-  pro: {
-    monthly: 180,
-    annual: 150
-  },
-  advanced: {
-    monthly: 450,
-    annual: 375
-  },
-  enterprise: {
-    monthly: 'custom',
-    annual: 'custom'
-  }
+  starter: combinedNotAvailable,
+  basic: combinedVoice,
+  pro: combinedVoice,
+  advanced: combinedVoice,
+  enterprise: combinedVoice
 }
 const voicePrice = {
-  starter: {
-    monthly: 'Not available',
-    annual: 'Not available'
-  },
+  starter: combinedNotAvailable,
   basic: combinedVoice,
   pro: combinedVoice,
   advanced: combinedVoice,
   enterprise: combinedVoice,
 }
 const smsPrice = {
-  starter: {
-    monthly: 'Not available',
-    annual: 'Not available'
-  },
+  starter: combinedNotAvailable,
   basic: combinedSms,
   pro: combinedSms,
   advanced: combinedSms,
   enterprise: combinedSms,
 }
 // automation, voice, sms dropdown data
-const automationDropdownPrice = {
+const automationDropdownValues = {
+  1: { monthly: 30, annual: 25 },
+  2: { monthly: 180, annual: 150 },
+  3: { monthly: 360, annual: 300 },
+  4: { monthly: 450, annual: 375 },
+  5: { monthly: 900, annual: 795 },
+  6: { monthly: 1500, annual: 1250 },
+  7: { monthly: 'custom', annual: 'custom'}
+}
+const voiceDropdownValues = {
   2: { monthly: 90, annual: 75},
   3: { monthly: 135, annual: 113},
   4: { monthly: 175, annual: 146},
@@ -90,15 +82,7 @@ const automationDropdownPrice = {
   6: { monthly: 400, annual: 333},
   7: { monthly: 'custom', annual: 'custom'}
 }
-const voiceDropdownPrice = {
-  2: { monthly: 90, annual: 75},
-  3: { monthly: 135, annual: 113},
-  4: { monthly: 175, annual: 146},
-  5: { monthly: 250, annual: 208},
-  6: { monthly: 400, annual: 333},
-  7: { monthly: 'custom', annual: 'custom'}
-}
-const smsDropdownPrice = {
+const smsDropdownValues = {
   2: { monthly: 60, annual: 50},
   3: { monthly: 90, annual: 75},
   4: { monthly: 140, annual: 117},
@@ -106,7 +90,7 @@ const smsDropdownPrice = {
   6: { monthly: 408, annual: 340},
   7: { monthly: 'custom', annual: 'custom'}
 }
-let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[7]
+let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[2]
 let selectedPeriod = 'monthly'
 let automationChecked = false
 let voiceChecked = false
@@ -125,8 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     priceTabs[1].innerHTML = templatePagesPaths ? planPricingInitTemplate[1] : planPricingInit[1]
     priceTabs[2].innerHTML = templatePagesPaths ? planPricingInitTemplate[2] : planPricingInit[2]
     priceTabs[5].innerHTML = templatePagesPaths ? planPricingInitTemplate[5] : planPricingInit[6] 
-    priceTabs[6].innerHTML = templatePagesPaths ? planPricingInitTemplate[6] : planPricingInit[7] 
-    
+    priceTabs[6].innerHTML = templatePagesPaths ? planPricingInitTemplate[6] : planPricingInit[7]  
     if (!templatePagesPaths) {
       priceTabs[3].innerHTML = planPricingInit[3] 
       priceTabs[7].innerHTML = planPricingInit[8] 
@@ -169,42 +152,45 @@ document.addEventListener("DOMContentLoaded", () => {
       ? 'https://www.gorgias.com/demo?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
       : 'https://www.gorgias.com/signup?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
   }
+
+  const showHideDropdown = (el, show) => {
+    if(show) {
+      el.classList.remove('hidden')
+    } else {
+      el.classList.add('hidden') 
+      el.value = '1'
+    } 
+  }
   // price calculation begins here
   const estimatePrice = () => {
-      // when starter is selected disable all checkboxes
+    // when starter is selected disable all checkboxes areas
     if (selectedPlan.name =='starter') {
       Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
       getElId('pricing-automation').style.color = '#afafaf'
       getEl('green-heading-content-span__pricing')[3].style.color = '#afafaf'
       getEl('green-heading-content-span__pricing')[5].style.color = '#afafaf'
-      
-      
     } else {
       Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
       getElId('pricing-automation').style.color = '#1a9970'
       getEl('green-heading-content-span__pricing')[3].style.color = '#1a9970'
       getEl('green-heading-content-span__pricing')[5].style.color = '#1a9970'
     }
-    const showHideDropdown = (el, show) => {
-      if(show) {
-        el.classList.remove('hidden')
-      } else {
-        el.classList.add('hidden') 
-        el.value = '1'
-      } 
-    }
+    // get dropdown and price span dom elements
     const automationDropdown = getElId('Number-Automation-Addon-Interaction')
     const voiceDropdown = getElId('number-phone-interaction-2')
     const smsDropdown = getElId('number-sms-interaction-2')
     const automationPriceEl = getElId('pricing-automation')
     const voicePriceEl = getEl('green-heading-content-span__pricing')[3]
     const smsPriceEl = getEl('green-heading-content-span__pricing')[5]
+    // toggle dropdowns
     showHideDropdown(automationDropdown, automationChecked)
     showHideDropdown(voiceDropdown, voiceChecked) 
     showHideDropdown(smsDropdown, smsChecked)
-    const automationTotalPrice = calculateAddOnsPrices(automationChecked, automationDropdownPrice, automationDropdown, automationPrice, automationPriceEl)
-    const voiceTotalPrice = calculateAddOnsPrices(voiceChecked, voiceDropdownPrice, voiceDropdown, voicePrice, voicePriceEl)
-    const smsTotalPrice = calculateAddOnsPrices(smsChecked, smsDropdownPrice, smsDropdown, smsPrice, smsPriceEl)
+    // calculate add-ons prices
+    const automationTotalPrice = calculateAddOnsPrices(automationChecked, automationDropdownValues, automationDropdown, automationPrice, automationPriceEl)
+    const voiceTotalPrice = calculateAddOnsPrices(voiceChecked, voiceDropdownValues, voiceDropdown, voicePrice, voicePriceEl)
+    const smsTotalPrice = calculateAddOnsPrices(smsChecked, smsDropdownValues, smsDropdown, smsPrice, smsPriceEl)
+    // calculate total price and button display
     calculateTotalPrice(automationTotalPrice, voiceTotalPrice, smsTotalPrice)
     showButtonDisplay()
   }
@@ -228,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
       estimatePrice()
     });
   }
-   // add event listener for when enable/disable dropdown
+  // add event listener for when enable/disable dropdown
   const checkBoxes = document.querySelectorAll(".wrapper-toggle-pricing")
   for (let i = 0; i < checkBoxes.length; i++) {
     checkBoxes[i].addEventListener('click', function () {
@@ -242,12 +228,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const activeCheckBoxes = getEl('w--redirected-checked')
   for (let i = 0; i < pricingTabs.length; i++) {
     pricingTabs[i].addEventListener('click', function () {
-       // when on annual tab, when clicking starter, redirect to starter on monthly tab
+      // when on annual tab, when clicking starter, redirect to starter on monthly tab
       if (!templatePagesPaths && i === 5) {
         planPeriods[0].click()
         pricingTabs[0].click()
       }
-      // set plan and estimate price
+      // set selected plan and estimate price
       selectedPlan = pricingPlans[i]
       estimatePrice()
       if (activeCheckBoxes.length) {
