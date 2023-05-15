@@ -99,5 +99,22 @@ function cookieSessionFromUtmParameter(){
 //     }
 // }
 
+
+function cookieSessionCountry(){
+    var sessionLocCode = sessionStorage.getItem('loc_code');
+    if(sessionLocCode){
+        return false;
+    }
+
+    $.ajax({
+        url: 'https://cloudflare.com/cdn-cgi/trace',
+        success: function(data) {
+            const locCode = data.match(/loc=(.+)/)[1].toLowerCase();
+            sessionStorage.setItem('loc_code', locCode);
+        }
+    })
+}
+
 cookieSessionFromUtmParameter();
-//getandStoreIp();
+cookieSessionCountry();
+//getandStoreIp()
