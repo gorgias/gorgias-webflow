@@ -16,37 +16,37 @@ if(
     })
 }
 
-if (path === '/pages/home-draft') {
+if (path === '/pages/home-draft' || path === '/demo') {
   posthog.onFeatureFlags(() => {
-    posthog.feature_flags.override({'customer-logos': 'test'});
-    const logosToSelect = document.getElementsByClassName("customer_logo-collection");
-    
-    if (posthog.getFeatureFlag('customer-logos') === 'test') {
-      $.ajax({
-        url: 'https://cloudflare.com/cdn-cgi/trace',
-        success: function(data) {
-          const country = data.match(/loc=(.+)/)[1];
+    posthog.feature_flags.override({'customer-logos': 'variant'}); // to delete after testing
+
+    if (posthog.getFeatureFlag('customer-logos') === 'variant') {
+        const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
+        const loc_code = sessionStorage.getItem("loc_code");
+
+        if(loc_code && loc_code!=""){
           const countryToWebflowIdentifier = {
-            "AU": 'australia',
-            "CA": 'canada',
-            "FR": 'france',
-            "UK": 'united-kingdom',
-            "GB": 'united-kingdom',
-            "US": 'united-states'
+            "au": 'australia',
+            "ca": 'canada',
+            "fr": 'france',
+            "uk": 'united-kingdom',
+            "gb": 'united-kingdom',
+            "us": 'united-states'
           };
 
-          if (countryToWebflowIdentifier.hasOwnProperty(country)) {
+          if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
             logosToSelect[0].style.display = "none";
             const showLogosByCountry = Array.from(logosToSelect)
-              .find(el => el.classList.contains(countryToWebflowIdentifier[country]));
+              .find(el => el.classList.contains(countryToWebflowIdentifier[loc_code]));
             if (showLogosByCountry) {
               showLogosByCountry.style.display = 'block';
             }
           } else {
-             logosToSelect[0].style.display = 'block';
+            logosToSelect[0].style.display = 'block';
           }
+
         }
-      })
+
     } else {
       logosToSelect[0].style.display = 'block';
       // It's a good idea to let control variant always be the default behaviour,
