@@ -17,11 +17,10 @@ if(
 }
 
 if (path === '/pages/home-draft' || path === '/demo') {
+  const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
   posthog.onFeatureFlags(() => {
     // posthog.feature_flags.override({'customer-logos': 'variant'}); // to comment after testing
-
     if (posthog.getFeatureFlag('customer-logos') === 'variant') {
-        const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
         const loc_code = sessionStorage.getItem("loc_code");
 
         if(loc_code && loc_code!=""){
