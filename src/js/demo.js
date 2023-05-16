@@ -69,8 +69,9 @@ window.addEventListener("message", function(event) {
                 analytics.track("cp_demo_request_routed");
             },
             // successful booking
-            onSuccess: function () { 
+            onSuccess: function (data) { 
                 analytics.track("cp_demo_booked");
+                //displayAddCalendarBtn(data);
             }, 
             // lead is submitted but does not match any queue rules and cannot be routed, thus no calendar is displayed. This is usually when someone is disqualified from booking
             onError: function () {
@@ -81,3 +82,76 @@ window.addEventListener("message", function(event) {
         })  
     }
 });
+
+function displayAddCalendarBtn(data){
+    // inject data from Chilipiper properly    
+    var timestampStart = data.slot.start;
+    var timestampEnd = data.slot.end;
+    var dateStart = new Date(timestampStart);
+    var dayStart = dateStart.getDate(); 
+    var monthStart = ((dateStart.getMonth())+1); 
+    var yearStart =  dateStart.getFullYear(); 
+    var hoursStart =  dateStart.getHours(); 
+    var MinutesStart =  dateStart.getMinutes(); 
+    var SecondsStart =  dateStart.getSeconds();
+    var dateEnd = new Date(timestampEnd);
+    var dayEnd = dateEnd.getDate(); 
+    var monthEnd = ((dateEnd.getMonth())+1); 
+    var yearEnd =  dateEnd.getFullYear(); 
+    var hoursEnd =  dateEnd.getHours(); 
+    var MinutesEnd =  dateEnd.getMinutes(); 
+    var SecondsEnd =  dateEnd.getSeconds(); 
+    if(monthStart < 10){
+        console.log("monthStart < 10");
+        monthStart = '0' + monthStart;
+    }
+    if(dayStart < 10){
+        dayStart = '0' + dayStart;
+    }
+    if(hoursStart < 10){
+        hoursStart = '0' + hoursStart;
+    }
+    if(MinutesStart < 10){
+        MinutesStart = '0' + MinutesStart;
+    }
+    if(SecondsStart < 10){
+        SecondsStart = '0' + SecondsStart;
+    }
+    if(monthEnd < 10){
+        monthEnd = '0' + monthEnd;
+    }
+    if(dayEnd < 10){
+        dayEnd = '0' + dayEnd;
+    }
+    if(hoursEnd < 10){
+        hoursEnd = '0' + hoursEnd;
+    }
+    if(MinutesEnd < 10){
+        MinutesEnd = '0' + MinutesEnd;
+    }
+    if(SecondsEnd < 10){
+        SecondsEnd = '0' + SecondsEnd;
+    }
+    var dateStartFormated = dayStart + "-" + monthStart + '-' + yearStart + " " + hoursStart +":"+ MinutesStart +":"+ SecondsStart;
+    var dateEndFormated = dayEnd + "-" + monthEnd + '-' + yearEnd + " " + hoursEnd +":"+ MinutesEnd +":"+ SecondsEnd;
+    var eventTimezone = "Europe/Paris";
+    var eventTitle = "!!! Need the right title !!!";
+    var eventDescription = "!!! Need the right description !!! ";
+    var eventLocation = "!!! Need the right location !!!";
+    var eventOrganizer = "Julien Marcialis";
+    var eventOrganizerEmail = "julien.marcialis@gorgias.com";
+    var eventAlarm = "60";
+
+    // display the hidden btn button
+    $('.add-to-calendar-btn').css('display','block');
+    $('.add-to-calendar-btn .addeventatc span.start')[0].innerHTML = dateStartFormated;
+    $('.add-to-calendar-btn .addeventatc span.end')[0].innerHTML = dateEndFormated;
+    $('.add-to-calendar-btn .addeventatc span.timezone')[0].innerHTML = eventTimezone;
+    $('.add-to-calendar-btn .addeventatc span.title')[0].innerHTML = eventTitle;
+    $('.add-to-calendar-btn .addeventatc span.description')[0].innerHTML = eventDescription;
+    $('.add-to-calendar-btn .addeventatc span.location')[0].innerHTML = eventLocation;
+    $('.add-to-calendar-btn .addeventatc span.organizer')[0].innerHTML = eventOrganizer;
+    $('.add-to-calendar-btn .addeventatc span.organizer_email')[0].innerHTML = eventOrganizerEmail;
+    $('.add-to-calendar-btn .addeventatc span.alarm')[0].innerHTML = eventAlarm;
+
+}
