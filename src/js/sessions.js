@@ -109,8 +109,11 @@ function cookieSessionCountry(){
     $.ajax({
         url: 'https://cloudflare.com/cdn-cgi/trace',
         success: function(data) {
-            const locCode = data.match(/loc=(.+)/)[1].toLowerCase();
-            sessionStorage.setItem('loc_code', locCode);
+            var locCode = data.match(/loc=(.+)/);
+            if(locCode){
+                locCode = locCode[1].toLowerCase();
+                sessionStorage.setItem('loc_code', locCode);
+            }            
         }
     })
 }
