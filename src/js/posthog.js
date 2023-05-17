@@ -1,25 +1,7 @@
-var path = window.location.pathname;
+//var path = window.location.pathname;
 
-function displayDefaultCustomerLogosList() {
-  setTimeout(function() {
-    var elements = document.getElementsByClassName("customer_logos-collection-wrapper");
-    
-    // Check if none of the elements are displayed
-    var noneDisplayed = true;
-    for (var i = 0; i < elements.length; i++) {
-      if (elements[i].style.display == "block") {
-        noneDisplayed = false;
-        break;
-      }
-    }
-    // If none of the elements are displayed, display the first one
-    if (noneDisplayed) {
-      elements[0].style.display = "block";
-    }
-  }, 4000); // 4 seconds
-}
-
-
+// In case of ad blocker, posthog experiments won't load.
+// You can use /experiments.js file to create a default path
 // Record session for the following pages
 if(
     path.includes('/l/') || path.includes('/lp/') || path.includes('/lc/') // ads landing pages
@@ -35,14 +17,11 @@ if(
     })
 }
 
+
 if (path === '/pages/home-draft' || path === '/demo') {
-  const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
-
+  var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
   if(logosToSelect.length > 0){
-    var displayDefault = 0; 
     posthog.onFeatureFlags(() => {
-
-      displayDefault = 1; 
       // posthog.feature_flags.override({'customer-logos': 'variant'}); // to comment after testing
       if (posthog.getFeatureFlag('customer-logos') === 'variant') {
           const loc_code = sessionStorage.getItem("loc_code");
@@ -81,7 +60,6 @@ if (path === '/pages/home-draft' || path === '/demo') {
       // Clear the overrides for all flags
       // posthog.feature_flags.clearOverrides();
     })
-    displayDefaultCustomerLogosList();
   }
 
 } 

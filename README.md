@@ -54,3 +54,12 @@ You can test your local code before deploying by using Visual code Studio and th
 - refactor/{{what-you-clean}} --> refactor/simplify-script-pricing-page
 - refactor/{{what-you-clean}} --> refactor/simplify-script-pricing-page
 - improve/{{what's-your-update}} --> e.g. improve/readme-purge
+
+
+## Expertiments (WIP)
+We use posthog.com to run experiments. The script /js/posthog.js is loaded in the head of the webflow (from webflow admin backend) end is embeded in segment.com snippet.
+
+In case of adblocker installed on visitor browser, segment snippet won't load. It also means posthog script won't log.
+To prevent unexpected issue on the frontend interface, sometimes you will have to create function to update the DOM in order to fit with the default behavior in case of ad blocker because your XP won't work.
+Because /js/posthog.js won't be loaded, we created /js/experiments.js. You can create functions that will make sure the default behavior of your experiment is triggered
+E.g.: customer logos are by default hidden on webflow. A posthog experiment display only a few of them. If the adblocker is detected, then the posthog experiment won't load customer logos. To by pass this, we have created a function in /js/experiments that will display default logos after 3 seconds in case no logos have been displayed by the posthog scripts.

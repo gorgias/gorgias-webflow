@@ -1,7 +1,9 @@
 // scripts belows requires Jquery or are not crucial for website work
+const path = window.location.pathname;
+
 var Webflow = Webflow || [];
 Webflow.push(function () {
-    var path = window.location.pathname;
+    // var path = window.location.pathname;
     var url = window.location.href;
     var isDebug = url.includes('debug=gorgias');
     var scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
@@ -11,6 +13,7 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
+    newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
