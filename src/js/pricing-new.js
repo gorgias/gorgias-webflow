@@ -96,7 +96,7 @@ let automationChecked = false
 let voiceChecked = false
 let smsChecked = false
 
-document.addEventListener("DOMContentLoaded", () => {
+window.onload = function() {
   const getEl = (val) => document.getElementsByClassName(val)
   const getElId = (val) => document.getElementById(val)
   const planPeriods = getEl('text-menu__pricing')
@@ -244,4 +244,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-});
+};
