@@ -155,9 +155,9 @@ window.onload = function() {
 
   const showHideDropdown = (el, show) => {
     if(show) {
-      el.classList.remove('hidden')
+      el && el.classList.remove('hidden')
     } else {
-      el.classList.add('hidden') 
+      el && el.classList.add('hidden') 
       el.value = '1'
     } 
   }
@@ -177,8 +177,8 @@ window.onload = function() {
     }
     // get dropdown and price span dom elements
     const automationDropdown = getElId('Number-Automation-Addon-Interaction')
-    const voiceDropdown = getElId('number-phone-interaction-2')
-    const smsDropdown = getElId('number-sms-interaction-2')
+    const voiceDropdown = getElId('number-phone-interaction')
+    const smsDropdown = getElId('number-sms-interaction')
     const automationPriceEl = getElId('pricing-automation')
     const voicePriceEl = getEl('green-heading-content-span__pricing')[3]
     const smsPriceEl = getEl('green-heading-content-span__pricing')[5]
