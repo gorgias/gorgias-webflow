@@ -26,7 +26,7 @@ Webflow.push(function () {
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
         newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
         if (window.location.search === '?automation-pricing-new-version') {
-            newScript(scriptBase + '/src/js/pricing-new'+minBase+'.js','head',1);
+            newScript(scriptBase + '/src/js/pricing-new'+minBase+'.js','body');
         } else {
             newScript(scriptBase + '/src/js/pricing'+minBase+'.js','head',1);
         }
