@@ -6,7 +6,8 @@ div.submitted-message{
   }
   
   form.hs-form label {
-    margin-bottom: 0px !important;
+    margin-bottom: 2px !important;
+    font-size: 0.9rem;
   }
   
   form.hs-form ul.hs-error-msgs{
@@ -98,6 +99,21 @@ div.submitted-message{
     min-width: 270px;
     -moz-appearance: none;
     -webkit-appearance: none;
+    font-size: 0.95rem;
+    font-weight: normal;
+  }
+
+  .hs-input::placeholder{
+    color: #6A6A6A;
+  }
+
+  .hs-fieldtype-intl-phone select.hs-input{
+    min-width: 40% !important;
+  }
+  .hs-fieldtype-intl-phone input.hs-input{
+    max-width: 60% !important;
+    min-width: 60% !important;
+
   }
   
   #hubspot-form-1 .hs-input {
@@ -130,6 +146,31 @@ div.submitted-message{
     -webkit-appearance: radio;
   }
   
+  .hs-fieldtype-intl-phone{
+    height: auto;
+    min-width: inherit !important;
+    padding: 0 !important;
+    border: 2px solid #161616 !important;
+  }
+
+  .hs-fieldtype-intl-phone select{
+   /* width: 150px !important;*/
+    /*min-width: 150px !important;*/
+    background: url(https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/5e848d055b62341ba998cbc7_arrow%20bottom%20black.svg) no-repeat right !important;
+    background-position: 90% !important;
+    border-radius: 0px !important;
+    border-right: 1px solid #DDDDDD !important;
+    border-left: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    margin: 2px 0px;
+  }
+  .hs-fieldtype-intl-phone input{
+     border: none !important;
+     border-radius: none !important;
+
+   }
+
   .hbspt-form .inputs-list {
     list-style: none;
     padding-left: 0;
