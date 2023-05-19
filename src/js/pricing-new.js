@@ -68,10 +68,10 @@ const smsPrice = {
 const automationDropdownValues = {
   1: { monthly: 30, annual: 25 },
   2: { monthly: 180, annual: 150 },
-  3: { monthly: 360, annual: 300 },
-  4: { monthly: 450, annual: 375 },
-  5: { monthly: 900, annual: 795 },
-  6: { monthly: 1500, annual: 1250 },
+  3: { monthly: 450, annual: 375 },
+  4: { monthly: 900, annual: 795 },
+  5 { monthly: 1500, annual: 1250 },
+  6: { monthly: 2500, annual: 2250 },
   7: { monthly: 'custom', annual: 'custom'}
 }
 const voiceDropdownValues = {
@@ -183,9 +183,9 @@ window.onload = function() {
     const voicePriceEl = getEl('green-heading-content-span__pricing')[3]
     const smsPriceEl = getEl('green-heading-content-span__pricing')[5]
     // toggle dropdowns
-    showHideDropdown(automationDropdown, automationChecked)
-    showHideDropdown(voiceDropdown, voiceChecked) 
-    showHideDropdown(smsDropdown, smsChecked)
+    automationDropdown && showHideDropdown(automationDropdown, automationChecked)
+    voiceDropdown && showHideDropdown(voiceDropdown, voiceChecked) 
+    smsDropdown && showHideDropdown(smsDropdown, smsChecked)
     // calculate add-ons prices
     const automationTotalPrice = calculateAddOnsPrices(automationChecked, automationDropdownValues, automationDropdown, automationPrice, automationPriceEl)
     const voiceTotalPrice = calculateAddOnsPrices(voiceChecked, voiceDropdownValues, voiceDropdown, voicePrice, voicePriceEl)
