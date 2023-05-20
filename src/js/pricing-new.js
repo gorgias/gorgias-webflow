@@ -70,7 +70,7 @@ const automationDropdownValues = {
   2: { monthly: 180, annual: 150 },
   3: { monthly: 450, annual: 375 },
   4: { monthly: 900, annual: 795 },
-  5 { monthly: 1500, annual: 1250 },
+  5: { monthly: 1500, annual: 1250 },
   6: { monthly: 2500, annual: 2250 },
   7: { monthly: 'custom', annual: 'custom'}
 }
@@ -91,7 +91,7 @@ const smsDropdownValues = {
   7: { monthly: 'custom', annual: 'custom'}
 }
 let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[2]
-let selectedPeriod = 'monthly'
+let selectedPeriod = 'annual'
 let automationChecked = false
 let voiceChecked = false
 let smsChecked = false
