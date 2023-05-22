@@ -71,8 +71,7 @@ const automationDropdownValues = {
   3: { monthly: 450, annual: 375 },
   4: { monthly: 900, annual: 795 },
   5: { monthly: 1500, annual: 1250 },
-  6: { monthly: 2500, annual: 2250 },
-  7: { monthly: 'custom', annual: 'custom'}
+  6: { monthly: 'custom', annual: 'custom'}
 }
 const voiceDropdownValues = {
   2: { monthly: 90, annual: 75},
