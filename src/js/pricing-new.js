@@ -118,6 +118,8 @@ window.onload = function() {
     }
   }
   setPlanPrices(getEl)
+  const automationDescription = document.getElementsByClassName(' subheading-text-content__pricing checkbox-option')[0]
+  automationDescription && (automationDescription.innerHTML = 'Monthly automated interactions')
 
   const calculateTotalPrice = (automationTotalPrice, voiceTotalPrice, smsTotalPrice) => {
     const totalPriceEl = getEl('heading-tab-pane__pricing price-form')[0]
