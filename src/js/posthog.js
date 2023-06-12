@@ -17,6 +17,20 @@ if(
     })
 }
 
+if (path === '/demo-test') {
+  posthog.onFeatureFlags(() => {
+    posthog.feature_flags.override({
+      'layout-test': 'test'
+    })
+    if (posthog.getFeatureFlag('layout-test') === 'test') {
+      const hiddenElementTest = document.getElementsByClassName('page_demo-new-layout')[0]
+      hiddenElementTest && hiddenElementTest.style.display = 'block'
+    } else {
+      const hiddenElementControl = document.getElementsByClassName('page_demo-old-layout')[0]
+      hiddenElementControl && hiddenElementControl.style.display = 'block'
+    }
+  })
+}
 
 if (path === '/pages/home-draft' || path === '/demo') {
   var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
@@ -52,14 +66,11 @@ if (path === '/pages/home-draft' || path === '/demo') {
       } else {
         logosToSelect[0].style.display = 'block';
         logosToSelect[6].style.display = 'block'; //mobile one
-
         // It's a good idea to let control variant always be the default behaviour,
         // so if something goes wrong with flag evaluation, you don't break your app.
       }
-  
       // Clear the overrides for all flags
       // posthog.feature_flags.clearOverrides();
     })
   }
-
 } 
