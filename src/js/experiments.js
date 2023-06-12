@@ -22,3 +22,11 @@ if (path === '/pages/home-draft' || path === '/demo') {
       displayDefaultCustomerLogosList(logosToSelect);
   }
 }
+
+if (path === '/demo-test') {
+  // in case of add blocker show old layout since both are hidden
+  setTimeout(function() {
+    const hiddenElementTest = document.getElementsByClassName('page_demo-old-layout')[0]
+    hiddenElementTest.style.display = 'block'
+  }, 3000)
+}
