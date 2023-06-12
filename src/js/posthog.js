@@ -24,10 +24,10 @@ if (path === '/demo-test') {
     })
     if (posthog.getFeatureFlag('layout-test') === 'test') {
       const hiddenElementTest = document.getElementsByClassName('page_demo-new-layout')[0]
-      hiddenElementTest && hiddenElementTest.style.display = 'block'
+      hiddenElementTest.style.display = 'block'
     } else {
       const hiddenElementControl = document.getElementsByClassName('page_demo-old-layout')[0]
-      hiddenElementControl && hiddenElementControl.style.display = 'block'
+      hiddenElementControl.style.display = 'block'
     }
   })
 }
