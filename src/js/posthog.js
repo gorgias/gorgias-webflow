@@ -32,7 +32,7 @@ if (path === '/demo-test') {
   })
 }
 
-if (path === '/pages/home-draft' || path === '/demo') {
+if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
   var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
   if(logosToSelect.length > 0){
     posthog.onFeatureFlags(() => {
