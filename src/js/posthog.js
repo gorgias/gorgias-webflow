@@ -1,4 +1,4 @@
-var path = window.location.pathname;
+// var path = window.location.pathname;
 
 // In case of ad blocker, posthog experiments won't load.
 // You can use /experiments.js file to create a default path
