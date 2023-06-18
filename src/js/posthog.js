@@ -59,6 +59,9 @@ if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
             } else {
               logosToSelect[0].style.display = 'block';
               logosToSelect[6].style.display = 'block'; //mobile one
+              if (path === '/demo-test') {
+                logosToSelect[12].style.display = 'block'
+              }  
             }
   
           }
