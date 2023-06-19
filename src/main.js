@@ -57,7 +57,7 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/producttour'+minBase+'.js','head',1)
     } 
 
-    if(path.includes('/wip/julien' || path.includes('/signup-2')){
+    if(path.includes('/wip/julien') || path.includes('/signup-2')){
         newScript(scriptBase + '/src/js/signup'+minBase+'.js','head',1);
         newStyle(scriptBase + '/src/css/signup'+minBase+'.css','body');
 
