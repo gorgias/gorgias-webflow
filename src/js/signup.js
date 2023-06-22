@@ -64,6 +64,12 @@ $(document).ready(function() {
     }
   });
 
+  $('#Email-3').change(function() {
+    emailWarningDiv.text('')
+    $(this).css('border', '2px solid #161616')
+    $(this).removeClass('error-input').removeClass('warning-input')
+  });
+
   $('#signup-user-form input[name="Name"]').on('blur', function() {
     var fullName = $(this).val();
     var nameValidation = validateFullName(fullName);
@@ -75,6 +81,12 @@ $(document).ready(function() {
       $('#fullnameWarning').text('').addClass("valid-text").removeClass('error-text').removeClass('warning-text');
       $(this).addClass('valid-input').removeClass('warning-input').removeClass('error-input');
     }
+  });
+
+  $('#Name-3').change(function() {
+    fullnameWarningDiv.text('')
+    $(this).css('border', '2px solid #161616')
+    $(this).removeClass('error-input').removeClass('warning-input')
   });
 
   $('#signup-user-form input[name="Password"]').on('input', function() {
@@ -150,6 +162,8 @@ $(document).ready(function() {
       // $(this).addClass('warning-input');
       passwordWrapper.style.border = '2px solid #FDAB40'
     }
+
+    $('#psw').css('border, 'none')
   });
 
   // change password field type on click to display / hide the input
@@ -224,20 +238,4 @@ $(document).ready(function() {
       return;
     }
   }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-   // when typing in input hide errors
-    const emailInput = document.getElementById('Email-3');
-    emailInput.addEventListener('input', function(event) {
-      document.getElementById('emailWarning').innerHTML = ''
-      document.getElementById('Email-3').style.border = '2px solid #161616'
-      document.getElementById('Email-3').classList.remove('error-input')
-    });
-    const nameInput = document.getElementById('Name-3');
-    nameInput.addEventListener('input', function(event) {
-      document.getElementById('fullnameWarning').innerHTML = ''
-      document.getElementById('Name-3').style.border = '2px solid #161616'
-      document.getElementById('Name-3').classList.remove('error-input')
-    });
 });
