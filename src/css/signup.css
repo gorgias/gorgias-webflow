@@ -3,25 +3,23 @@ input:hover {
   outline: none;
 }
 
-#emailWarning,
-#fullnameWarning {
-  font-size: 12px;
-}
-
 .valid-text {
   color: #24D69D;
+  font-size: 12px;
 }
 
 .warning-text {
   color: #FDAB40;
+  font-size: 12px;
 }
 
 .error-text {
   color: #F24F66;
+  font-size: 12px;
 }
 
 .valid-input {
-  border: 1px solid #161616;
+  border: 2px solid #161616;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
   background-repeat: no-repeat;
   background-position: 95%;
@@ -30,7 +28,7 @@ input:hover {
 }
 
 .warning-input {
-  border: 1px solid #FDAB40;
+  border: 2px solid #FDAB40;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854bbe24d8b37e6b636f_smallerror.svg");
   background-repeat: no-repeat;
   background-position: 95%;
@@ -39,7 +37,7 @@ input:hover {
 }
 
 .error-input {
-  border: 1px solid #D6384D;
+  border: 2px solid #D6384D;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854c6767342ea44089b6_error.svg");
   background-repeat: no-repeat;
   background-position: 95%;
