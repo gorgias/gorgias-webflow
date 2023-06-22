@@ -223,17 +223,21 @@ $(document).ready(function() {
     if (!isValid) {
       return;
     }
+  }
+});
 
-    // when typing in input hide errors
+document.addEventListener('DOMContentLoaded', function() {
+   // when typing in input hide errors
     const emailInput = document.getElementById('Email-3');
     emailInput.addEventListener('input', function(event) {
-      emailWarningDiv.text('')
-      emailWarningDiv.css('border', '2px solid #161616')
+      document.getElementById('emailWarning').innerHTML = ''
+      document.getElementById('Email-3').style.border = '2px solid #161616'
+      document.getElementById('Email-3').classList.remove('error-input')
     });
     const nameInput = document.getElementById('Name-3');
     nameInput.addEventListener('input', function(event) {
-      fullnameWarningDiv.text('')
-      fullnameWarningDiv.css('border', '2px solid #161616')
+      document.getElementById('fullnameWarning').innerHTML = ''
+      document.getElementById('Name-3').style.border = '2px solid #161616'
+      document.getElementById('Name-3').classList.remove('error-input')
     });
-  }
 });
