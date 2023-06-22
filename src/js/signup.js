@@ -4,9 +4,9 @@ $(document).ready(function() {
   var emailWarningDiv = $('<div id = "emailWarning"></div>');
   var fullnameWarningDiv = $('<div id = "fullnameWarning"></div>');
   emailWarningDiv.insertAfter('#signup-user-form input[type="email"]');
-  emailWarningDiv.style.fontSize = '12px';
+  emailWarningDiv.css('font-size', '12px')
   fullnameWarningDiv.insertAfter('#signup-user-form input[name="Name"]');
-  fullnameWarningDiv.style.fontSize = '12px';
+  fullnameWarningDiv.css('font-size', '12px')
 
   // $('#wf-form-Signup-2-Form').attr('novalidate','novalidate')
   //$('#wf-form-Signup-2-Form').attr('formnovalidate','novalidate')
