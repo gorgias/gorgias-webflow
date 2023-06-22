@@ -76,7 +76,7 @@ $(document).ready(function() {
 
   $('#signup-user-form input[name="Password"]').on('input', function() {
     var password = $(this).val();
-
+    $('#psw').css('border', 'none')
     // Check password length
     if (password.length >= 8) {
       $('#signup-user-form ul li#length').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
@@ -179,7 +179,6 @@ $(document).ready(function() {
       email.removeClass('warning-input');
       email.addClass('error-input');
       $('#emailWarning').text(errorEmail.message).addClass("error-text").removeClass('warning-text').removeClass('valid-text');
-
     }
 
     var fullName = $('#signup-user-form input[name="Name"]');
@@ -215,9 +214,6 @@ $(document).ready(function() {
     }
 
     if (errorPasswordUppercase == true || errorPasswordLowercase == true || errorPasswordNumber == true || errorPasswordLength == true) {
-      // password.addClass('error-input');
-      // password.removeClass('valid-input');
-      // password.removeClass('warning-input');
       passwordWrapper.style.border = '2px solid #F24F66'
     }
 
