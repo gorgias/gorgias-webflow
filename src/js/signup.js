@@ -141,6 +141,7 @@ $(document).ready(function() {
       $(this).addClass('valid-input');
       $(this).removeClass('error-input');
       $(this).removeClass('warning-input');
+      passwordWrapper.style.border = '2px solid #161616'
     } else {
       // $(this).removeClass('valid-input');
       // $(this).removeClass('error-input');
@@ -149,7 +150,7 @@ $(document).ready(function() {
     }
 
     $('#psw').css('border', 'none')
-    $('#psw').removeClass('warning-input')
+    $('#psw').removeClass('warning-input').removeClass('error-input').removeClass('valid-input')
   });
 
   // change password field type on click to display / hide the input
