@@ -141,7 +141,7 @@ $(document).ready(function() {
       $(this).addClass('valid-input');
       $(this).removeClass('error-input');
       $(this).removeClass('warning-input');
-      passwordWrapper.style.border = '2px solid #161616'
+      passwordWrapper.style.border = '2px solid #24D69D'
     } else {
       // $(this).removeClass('valid-input');
       // $(this).removeClass('error-input');
