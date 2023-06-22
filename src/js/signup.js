@@ -19,39 +19,44 @@ $(document).ready(function() {
   function validateEmail(email) {
     var regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (email == '') {
-      return 'We need your email to create your account';
+      return { status: 'error', message: 'We need your email to create your account' };
     } else if (!regex.test(email)) {
-      return 'Oups, seems your email is not correct';
+      return { status: 'error', message: 'Your email is not correct' };
     } else if (!isProfessionalEmail(email)) {
-      return 'Keep a good work-life balance, use a professional email';
+      return { status: 'warning', message: 'Keep a good work-life balance, use a professional email' };
     }
-    return '';
+    return { status: 'success', message: null };
   }
 
   function isProfessionalEmail(email) {
     // Custom logic to determine if the email is professional or not
     // You can use regular expressions or any other method
     // Here's a simple example using a predefined list of professional email domains
-    var notProfessionalDomains = ['gmail.com', 'outlook.com'];
+    var professionalDomains = ['gmail.com', 'outlook.com'];
     var domain = email.split('@')[1];
-    return !notProfessionalDomains.includes(domain);
+    return professionalDomains.includes(domain);
   }
 
   function validateFullName(fullName) {
     var regex = /^[a-zA-Z\s]+$/;
     if (!regex.test(fullName)) {
-      return 'We need your fullname to create your account';
+      return { status: 'error', message: 'We need your fullname to create your account' };
     }
-    return '';
+    return { status: 'success', message: null };
   }
 
   $('#signup-user-form input[type="email"]').on('blur', function() {
     var email = $(this).val();
-    var error = validateEmail(email);
-    if (error) {
-      $('#emailWarning').text(error).addClass("warning-text").removeClass('error-text').removeClass('valid-text');
+    var validation = validateEmail(email);
+    if (validation.status === 'error') {
+      $('#emailWarning').text(validation.message).addClass("error-text").removeClass('warning-text').removeClass('valid-text');
+      $(this).removeClass('valid-input').removeClass('warning-input').addClass('error-input');
+    }
+    if (validation.status === 'warning') {
+      $('#emailWarning').text(validation.message).addClass("warning-text").removeClass('error-text').removeClass('valid-text');
       $(this).removeClass('valid-input').removeClass('error-input').addClass('warning-input');
-    } else {
+    }
+    if (validation.status === 'success'){
       $('#emailWarning').text('').addClass("valid-text").removeClass('error-text').removeClass('warning-text');
       $(this).addClass('valid-input');
       $(this).removeClass('warning-input');
@@ -61,15 +66,14 @@ $(document).ready(function() {
 
   $('#signup-user-form input[name="Name"]').on('blur', function() {
     var fullName = $(this).val();
-    var error = validateFullName(fullName);
+    var nameValidation = validateFullName(fullName);
 
-    if (error) {
-      $('#fullnameWarning').text(error).addClass("warning-text").removeClass('error-text').removeClass('valid-text');
-      $(this).removeClass('valid-input').removeClass('error-input').addClass('warning-input');
+    if (nameValidation.status === 'error') {
+      $('#fullnameWarning').text(nameValidation.message).addClass("error-text").removeClass('warning-text').removeClass('valid-text');
+      $(this).removeClass('valid-input').removeClass('warning-input').addClass('error-input');
     } else {
       $('#fullnameWarning').text('').addClass("valid-text").removeClass('error-text').removeClass('warning-text');
       $(this).addClass('valid-input').removeClass('warning-input').removeClass('error-input');
-
     }
   });
 
