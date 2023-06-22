@@ -163,7 +163,7 @@ $(document).ready(function() {
       passwordWrapper.style.border = '2px solid #FDAB40'
     }
 
-    $('#psw').css('border, 'none')
+    $('#psw').css('border', 'none')
   });
 
   // change password field type on click to display / hide the input
