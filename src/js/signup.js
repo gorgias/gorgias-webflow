@@ -4,6 +4,7 @@ $(document).ready(function() {
   var fullnameWarningDiv = $('<div id = "fullnameWarning"></div>');
   emailWarningDiv.insertAfter('#signup-user-form input[type="email"]');
   fullnameWarningDiv.insertAfter('#signup-user-form input[name="Name"]');
+  $('#psw').css('border', 'none')
 
   // $('#wf-form-Signup-2-Form').attr('novalidate','novalidate')
   //$('#wf-form-Signup-2-Form').attr('formnovalidate','novalidate')
@@ -76,7 +77,6 @@ $(document).ready(function() {
 
   $('#signup-user-form input[name="Password"]').on('input', function() {
     var password = $(this).val();
-    $('#psw').css('border', 'none')
     // Check password length
     if (password.length >= 8) {
       $('#signup-user-form ul li#length').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
