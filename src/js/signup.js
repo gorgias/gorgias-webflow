@@ -173,22 +173,22 @@ $(document).ready(function() {
 
     var email = $('#signup-user-form input[type="email"]');
     var errorEmail = validateEmail(email.val());
-    if (errorEmail) {
+    if (errorEmail.status === 'error') {
       email.removeClass('valid-input');
       email.removeClass('warning-input');
       email.addClass('error-input');
-      $('#emailWarning').text(errorEmail).addClass("error-text").removeClass('warning-text').removeClass('valid-text');
+      $('#emailWarning').text(errorEmail.message).addClass("error-text").removeClass('warning-text').removeClass('valid-text');
 
     }
 
     var fullName = $('#signup-user-form input[name="Name"]');
     var errorFullName = validateFullName(fullName.val());
-    if (errorFullName) {
+    if (errorFullName.status === 'error') {
       fullName.removeClass('valid-input');
       fullName.removeClass('warning-input');
       fullName.addClass('error-input');
-      $('#fullnameWarning').text(errorFullName);
-      $('#fullnameWarning').text(errorEmail).addClass("error-text").removeClass('warning-text').removeClass('valid-text');
+      // $('#fullnameWarning').text(errorFullName);
+      $('#fullnameWarning').text(errorFullName.message).addClass("error-text").removeClass('warning-text').removeClass('valid-text');
     }
 
     var password = $('#signup-user-form input[name="Password"]');
