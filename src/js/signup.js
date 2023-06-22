@@ -64,7 +64,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#Email-3').change(function() {
+  $('#signup-user-form input[type="email"]').on('change', function() {
     emailWarningDiv.text('')
     $(this).css('border', '2px solid #161616')
     $(this).removeClass('error-input').removeClass('warning-input')
@@ -83,7 +83,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#Name-3').change(function() {
+  $('#signup-user-form input[name="Name"]').on('change', function() {
     fullnameWarningDiv.text('')
     $(this).css('border', '2px solid #161616')
     $(this).removeClass('error-input').removeClass('warning-input')
