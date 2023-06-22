@@ -5,18 +5,21 @@ input:hover {
 
 .valid-text {
   color: #24D69D;
+  font-size: 12px;
 }
 
 .warning-text {
   color: #FDAB40;
+  font-size: 12px;
 }
 
 .error-text {
   color: #F24F66;
+  font-size: 12px;
 }
 
 .valid-input {
-  border: 1px solid #161616;
+  border: 2px solid #161616;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
   background-repeat: no-repeat;
   background-position: 95%;
@@ -25,7 +28,7 @@ input:hover {
 }
 
 .warning-input {
-  border: 1px solid #FDAB40;
+  border: 2px solid #FDAB40;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854bbe24d8b37e6b636f_smallerror.svg");
   background-repeat: no-repeat;
   background-position: 95%;
@@ -34,9 +37,34 @@ input:hover {
 }
 
 .error-input {
-  border: 1px solid #D6384D;
+  border: 2px solid #D6384D;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854c6767342ea44089b6_error.svg");
   background-repeat: no-repeat;
   background-position: 95%;
+  background-size: 16px;
+}
+
+input[type='password'] {
+  background-position: 90%;
+}
+.passwword-condition-valid {
+  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/648ac25767378a0b04a2a69a_Icon-size.svg');
+  background-repeat: no-repeat;
+  background-size: 16px;
+  color: inherit;
+
+}
+
+.passwword-condition-warning {
+  color: #FDAB40;
+  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/648ae86c64f542cb9f9cfc6c_OCR-A_char_Exclamation_Mark%201%20(1).svg');
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+
+.passwword-condition-error {
+  color: #D6384D;
+  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/648ac53b388022dcf43288a3_close%20red.svg');
+  background-repeat: no-repeat;
   background-size: 16px;
 }

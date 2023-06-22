@@ -1,12 +1,10 @@
 $(document).ready(function() {
-
   // Create the new div element for email warning and insert it after the email field
   var emailWarningDiv = $('<div id = "emailWarning"></div>');
   var fullnameWarningDiv = $('<div id = "fullnameWarning"></div>');
   emailWarningDiv.insertAfter('#signup-user-form input[type="email"]');
-  emailWarningDiv.css('font-size', '12px')
   fullnameWarningDiv.insertAfter('#signup-user-form input[name="Name"]');
-  fullnameWarningDiv.css('font-size', '12px')
+  $('#psw').css('border', 'none')
 
   // $('#wf-form-Signup-2-Form').attr('novalidate','novalidate')
   //$('#wf-form-Signup-2-Form').attr('formnovalidate','novalidate')
@@ -64,12 +62,6 @@ $(document).ready(function() {
     }
   });
 
-  $('#signup-user-form input[type="email"]').on('change', function() {
-    emailWarningDiv.text('')
-    $(this).css('border', '2px solid #161616')
-    $(this).removeClass('error-input').removeClass('warning-input')
-  });
-
   $('#signup-user-form input[name="Name"]').on('blur', function() {
     var fullName = $(this).val();
     var nameValidation = validateFullName(fullName);
@@ -83,15 +75,8 @@ $(document).ready(function() {
     }
   });
 
-  $('#signup-user-form input[name="Name"]').on('change', function() {
-    fullnameWarningDiv.text('')
-    $(this).css('border', '2px solid #161616')
-    $(this).removeClass('error-input').removeClass('warning-input')
-  });
-
   $('#signup-user-form input[name="Password"]').on('input', function() {
     var password = $(this).val();
-
     // Check password length
     if (password.length >= 8) {
       $('#signup-user-form ul li#length').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
@@ -156,6 +141,7 @@ $(document).ready(function() {
       $(this).addClass('valid-input');
       $(this).removeClass('error-input');
       $(this).removeClass('warning-input');
+      passwordWrapper.style.border = '2px solid #24D69D'
     } else {
       // $(this).removeClass('valid-input');
       // $(this).removeClass('error-input');
@@ -164,6 +150,7 @@ $(document).ready(function() {
     }
 
     $('#psw').css('border', 'none')
+    $('#psw').removeClass('warning-input').removeClass('error-input').removeClass('valid-input')
   });
 
   // change password field type on click to display / hide the input
@@ -192,7 +179,6 @@ $(document).ready(function() {
       email.removeClass('warning-input');
       email.addClass('error-input');
       $('#emailWarning').text(errorEmail.message).addClass("error-text").removeClass('warning-text').removeClass('valid-text');
-
     }
 
     var fullName = $('#signup-user-form input[name="Name"]');
@@ -228,9 +214,6 @@ $(document).ready(function() {
     }
 
     if (errorPasswordUppercase == true || errorPasswordLowercase == true || errorPasswordNumber == true || errorPasswordLength == true) {
-      // password.addClass('error-input');
-      // password.removeClass('valid-input');
-      // password.removeClass('warning-input');
       passwordWrapper.style.border = '2px solid #F24F66'
     }
 
