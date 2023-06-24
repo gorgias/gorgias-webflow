@@ -51,10 +51,8 @@ function showLogos(logosToSelect) {
 // If the PostHog script hasn't loaded yet, it will wait for the script to load and trigger the callback when it becomes available.
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
-  posthog.onFeatureFlags(() => {
-    // Override the 'layout-test' feature flag
-    console.log(posthog, 'posthog here')
-    console.log(posthog.feature_flags, 'posthog feature_flags here')
+  const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
+  logosToSelect.length > 0 && posthog.onFeatureFlags(() => {
     posthog.feature_flags && posthog.feature_flags.override({
       'layout-test': 'test'
     })
@@ -72,7 +70,7 @@ function handleFeatureFlagsDemoTest() {
 
 // Callback function to handle feature flags for /pages/home-draft, /demo, and /demo-test paths
 function handleFeatureFlagsCommon() {
-  var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
+  const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   if (logosToSelect.length > 0) {
     posthog.onFeatureFlags(() => {
       posthog.feature_flags.override({
