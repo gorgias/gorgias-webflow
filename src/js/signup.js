@@ -96,29 +96,29 @@ $(document).ready(function() {
     var password = $(this).val();
     // Check password length
     if (password.length >= 8) {
-      $('#signup-user-form ul li#pwd-message-length').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
+      $('#signup-user-form ul li#pwd-message-length').addClass('password-condition-valid').removeClass('password-condition-warning').removeClass('password-condition-error');
     } else {
-      $('#signup-user-form ul li#pwd-message-length').removeClass('passwword-condition-valid');
+      $('#signup-user-form ul li#pwd-message-length').removeClass('password-condition-valid');
     }
 
     // check uppercase
     if (uppercaseRegex.test(password)) {
-      $('#signup-user-form ul li#pwd-message-uppercase').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
+      $('#signup-user-form ul li#pwd-message-uppercase').addClass('password-condition-valid').removeClass('password-condition-warning').removeClass('password-condition-error');
     } else {
-      $('#signup-user-form ul li#pwd-message-uppercase').removeClass('passwword-condition-valid');
+      $('#signup-user-form ul li#pwd-message-uppercase').removeClass('password-condition-valid');
     }
     // check lowercase
     if (lowercaseRegex.test(password)) {
-      $('#signup-user-form ul li#pwd-message-lowercase').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
+      $('#signup-user-form ul li#pwd-message-lowercase').addClass('password-condition-valid').removeClass('password-condition-warning').removeClass('password-condition-error');
     } else {
-      $('#signup-user-form ul li#pwd-message-lowercase').removeClass('passwword-condition-valid');
+      $('#signup-user-form ul li#pwd-message-lowercase').removeClass('password-condition-valid');
     }
 
     // check number
     if (numberRegex.test(password)) {
-      $('#signup-user-form ul li#pwd-message-number').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
+      $('#signup-user-form ul li#pwd-message-number').addClass('password-condition-valid').removeClass('paswword-condition-warning').removeClass('password-condition-error');
     } else {
-      $('#signup-user-form ul li#pwd-message-number').removeClass('passwword-condition-valid');
+      $('#signup-user-form ul li#pwd-message-number').removeClass('password-condition-valid');
     }
   });
 
@@ -127,27 +127,27 @@ $(document).ready(function() {
 
     // Check password length
     if (password.length >= 8) {
-      $('#signup-user-form ul li#pwd-message-length').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
+      $('#signup-user-form ul li#pwd-message-length').addClass('password-condition-valid').removeClass('password-condition-warning').removeClass('password-condition-error');
     } else {
-      $('#signup-user-form ul li#pwd-message-length').removeClass('passwword-condition-valid').removeClass('passwword-condition-error').addClass('passwword-condition-warning');
+      $('#signup-user-form ul li#pwd-message-length').removeClass('password-condition-valid').removeClass('password-condition-error').addClass('password-condition-warning');
     }
     // check uppercase
     if (uppercaseRegex.test(password)) {
-      $('#signup-user-form ul li#pwd-message-uppercase').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
+      $('#signup-user-form ul li#pwd-message-uppercase').addClass('password-condition-valid').removeClass('password-condition-warning').removeClass('password-condition-error');
     } else {
-      $('#signup-user-form ul li#pwd-message-uppercase').removeClass('passwword-condition-valid').removeClass('passwword-condition-error').addClass('passwword-condition-warning');
+      $('#signup-user-form ul li#pwd-message-uppercase').removeClass('password-condition-valid').removeClass('password-condition-error').addClass('password-condition-warning');
     }
     // check lowercase
     if (lowercaseRegex.test(password)) {
-      $('#signup-user-form ul li#pwd-message-lowercase').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
+      $('#signup-user-form ul li#pwd-message-lowercase').addClass('password-condition-valid').removeClass('password-condition-warning').removeClass('password-condition-error');
     } else {
-      $('#signup-user-form ul li#pwd-message-lowercase').removeClass('passwword-condition-valid').removeClass('passwword-condition-error').addClass('passwword-condition-warning');
+      $('#signup-user-form ul li#pwd-message-lowercase').removeClass('password-condition-valid').removeClass('password-condition-error').addClass('password-condition-warning');
     }
     // check number
     if (numberRegex.test(password)) {
-      $('#signup-user-form ul li#pwd-message-number').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
+      $('#signup-user-form ul li#pwd-message-number').addClass('password-condition-valid').removeClass('password-condition-warning').removeClass('password-condition-error');
     } else {
-      $('#signup-user-form ul li#pwd-message-number').removeClass('passwword-condition-valid').removeClass('passwword-condition-error').addClass('passwword-condition-warning');
+      $('#signup-user-form ul li#pwd-message-number').removeClass('password-condition-valid').removeClass('password-condition-error').addClass('password-condition-warning');
     }
 
     if (password.length >= 8 &&
@@ -206,19 +206,19 @@ $(document).ready(function() {
     var errorPasswordNumber = !numberRegex.test(password.val());
     var errorPasswordLength = password.val().length < 8;
     if (errorPasswordUppercase) {
-      $('#signup-user-form ul li#pwd-message-uppercase').addClass('passwword-condition-error').removeClass('passwword-condition-warning').removeClass('passwword-condition-valid');
+      $('#signup-user-form ul li#pwd-message-uppercase').addClass('password-condition-error').removeClass('password-condition-warning').removeClass('password-condition-valid');
       isValid = false;
     }
     if (errorPasswordLowercase) {
-      $('#signup-user-form ul li#pwd-message-lowercase').addClass('passwword-condition-error').removeClass('passwword-condition-warning').removeClass('passwword-condition-valid');
+      $('#signup-user-form ul li#pwd-message-lowercase').addClass('password-condition-error').removeClass('password-condition-warning').removeClass('password-condition-valid');
       isValid = false;
     }
     if (errorPasswordNumber) {
-      $('#signup-user-form ul li#pwd-message-number').addClass('passwword-condition-error').removeClass('passwword-condition-warning').removeClass('passwword-condition-valid');
+      $('#signup-user-form ul li#pwd-message-number').addClass('password-condition-error').removeClass('password-condition-warning').removeClass('password-condition-valid');
       isValid = false;
     }
     if (errorPasswordLength) {
-      $('#signup-user-form ul li#pwd-message-length').addClass('passwword-condition-error').removeClass('passwword-condition-warning').removeClass('passwword-condition-valid');
+      $('#signup-user-form ul li#pwd-message-length').addClass('password-condition-error').removeClass('password-condition-warning').removeClass('password-condition-valid');
       isValid = false;
     }
 
