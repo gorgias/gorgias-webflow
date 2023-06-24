@@ -3,18 +3,45 @@
 // In case of ad blocker, posthog experiments won't load.
 // You can use /experiments.js file to create a default path
 // Record session for the following pages
-if(
-    path.includes('/l/') || path.includes('/lp/') || path.includes('/lc/') // ads landing pages
-    || path.includes('/demo') // demo funnel
-    || path.includes('/signup') // signup funnels
-    || path.includes('/pages/') // landing pages
-    || path.includes('/comparison') // MOFU pages
-    ){
-    posthog.onFeatureFlags(function() {
+if (
+  path.includes('/l/') || path.includes('/lp/') || path.includes('/lc/') // ads landing pages
+  || path.includes('/demo') // demo funnel
+  || path.includes('/signup') // signup funnels
+  || path.includes('/pages/') // landing pages
+  || path.includes('/comparison') // MOFU pages
+) {
+  posthog.onFeatureFlags(function() {
     if (posthog.isFeatureEnabled('all-visitors')) {
-        window.posthog.startSessionRecording();
+      window.posthog.startSessionRecording();
     }
-    })
+  })
+}
+
+function showLogos() {
+  const loc_code = sessionStorage.getItem("loc_code");
+
+  if (loc_code && loc_code != "") {
+    const countryToWebflowIdentifier = {
+      "au": 'australia',
+      "ca": 'canada',
+      "fr": 'france',
+      "uk": 'united-kingdom',
+      "gb": 'united-kingdom',
+      "us": 'united-states'
+    };
+
+    if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
+      logosToSelect[0].style.display = "none";
+      const showLogosByCountry = Array.from(logosToSelect).filter(el => el.classList.contains(countryToWebflowIdentifier[loc_code]));
+      showLogosByCountry.forEach(el => {
+        el.style.display = 'block';
+      });
+    } else {
+      logosToSelect[0].style.display = 'block';
+      logosToSelect[6].style.display = 'block'; //mobile one
+    }
+  }
+
 }
 // This code will execute the handleFeatureFlags function when the PostHog script is available. 
 // It will then override the feature flag and execute the corresponding code based on the value of the feature flag.
@@ -29,11 +56,11 @@ function handleFeatureFlagsDemoTest() {
         'layout-test': 'test'
       })
       if (posthog.getFeatureFlag('layout-test') === 'test') {
-        const hiddenElementTest = document.getElementsByClassName('page_demo-new-layout')[0]
-        hiddenElementTest.style.display = 'block'
+        showLogos()
       } else {
-        const hiddenElementControl = document.getElementsByClassName('page_demo-old-layout')[0]
-        hiddenElementControl.style.display = 'block'
+        setTimeout(function() {
+          window.location = 'https://gorgiasio.webflow.io/demo'
+        }, 1000)    
       }
     })
   } else {
@@ -53,32 +80,7 @@ function handleFeatureFlagsCommon() {
           'customer-logos': 'variant'
         }); // to comment after testing
         if (posthog.getFeatureFlag('customer-logos') === 'variant') {
-          const loc_code = sessionStorage.getItem("loc_code");
-
-          if (loc_code && loc_code != "") {
-            const countryToWebflowIdentifier = {
-              "au": 'australia',
-              "ca": 'canada',
-              "fr": 'france',
-              "uk": 'united-kingdom',
-              "gb": 'united-kingdom',
-              "us": 'united-states'
-            };
-
-            if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
-              logosToSelect[0].style.display = "none";
-              const showLogosByCountry = Array.from(logosToSelect).filter(el => el.classList.contains(countryToWebflowIdentifier[loc_code]));
-              showLogosByCountry.forEach(el => {
-                el.style.display = 'block';
-              });
-            } else {
-              logosToSelect[0].style.display = 'block';
-              logosToSelect[6].style.display = 'block'; //mobile one
-              if (path === '/demo-test') {
-                logosToSelect[12].style.display = 'block'
-              }
-            }
-          }
+          showLogos()
         } else {
           logosToSelect[0].style.display = 'block';
           logosToSelect[6].style.display = 'block'; //mobile one
@@ -86,7 +88,7 @@ function handleFeatureFlagsCommon() {
           // so if something goes wrong with flag evaluation, you don't break your app.
         }
         // Clear the overrides for all flags
-        // posthog.feature_flags.clearOverrides();
+        posthog.feature_flags.clearOverrides();
       })
     }
   } else {
