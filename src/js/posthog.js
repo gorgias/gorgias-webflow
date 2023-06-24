@@ -22,7 +22,7 @@ if (
 }
 
 function showLogos() {
-  const loc_code = sessionStorage.getItem("loc_code");
+  const loc_code = sessionStorage.getItem("loc_code")
 
   if (loc_code && loc_code != "") {
     const countryToWebflowIdentifier = {
@@ -32,17 +32,17 @@ function showLogos() {
       "uk": 'united-kingdom',
       "gb": 'united-kingdom',
       "us": 'united-states'
-    };
+    }
 
     if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
-      logosToSelect[0].style.display = "none";
-      const showLogosByCountry = Array.from(logosToSelect).filter(el => el.classList.contains(countryToWebflowIdentifier[loc_code]));
+      logosToSelect[0].style.display = "none"
+      const showLogosByCountry = Array.from(logosToSelect).filter(el => el.classList.contains(countryToWebflowIdentifier[loc_code]))
       showLogosByCountry.forEach(el => {
-        el.style.display = 'block';
-      });
+        el.style.display = 'block'
+      })
     } else {
-      logosToSelect[0].style.display = 'block';
-      logosToSelect[6].style.display = 'block'; //mobile one
+      logosToSelect[0].style.display = 'block'
+      logosToSelect[6].style.display = 'block' //mobile one
     }
   }
 }
@@ -64,13 +64,13 @@ function handleFeatureFlagsDemoTest() {
       }, 1000)
     }
     // Clear the overrides for all flags
-    posthog.feature_flags.clearOverrides();
+    posthog.feature_flags.clearOverrides()
   })
 }
 
 // Callback function to handle feature flags for /pages/home-draft, /demo, and /demo-test paths
 function handleFeatureFlagsCommon() {
-  var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
+  var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   if (logosToSelect.length > 0) {
     posthog.onFeatureFlags(() => {
       posthog.feature_flags.override({
@@ -79,34 +79,18 @@ function handleFeatureFlagsCommon() {
       if (posthog.getFeatureFlag('customer-logos') === 'variant') {
         showLogos()
       } else {
-        logosToSelect[0].style.display = 'block';
-        logosToSelect[6].style.display = 'block'; //mobile one
+        logosToSelect[0].style.display = 'block'
+        logosToSelect[6].style.display = 'block' //mobile one
         // It's a good idea to let control variant always be the default behaviour,
         // so if something goes wrong with flag evaluation, you don't break your app.
       }
       // Clear the overrides for all flags
-      posthog.feature_flags.clearOverrides();
+      posthog.feature_flags.clearOverrides()
     })
   }
 }
 
-// Check the path variable and execute the appropriate code
-if (path === '/demo-test') {
-  // Check if PostHog script has loaded
-  if (typeof posthog !== 'undefined' && posthog) {
-    // PostHog script has already loaded, trigger the callback immediately
-    handleFeatureFlagsDemoTest();
-  } else {
-    // PostHog script hasn't loaded yet, add an event listener to trigger the callback
-    document.addEventListener('posthog-loaded', handleFeatureFlagsDemoTest);
-  }
-} else if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
-  // Check if PostHog script has loaded
-  if (typeof posthog !== 'undefined' && posthog) {
-    // PostHog script has already loaded, trigger the callback immediately
-    handleFeatureFlagsCommon();
-  } else {
-    // PostHog script hasn't loaded yet, add an event listener to trigger the callback
-    document.addEventListener('posthog-loaded', handleFeatureFlagsCommon);
-  }
+if (typeof posthog !== 'undefined') {
+  if (path === '/demo-test') handleFeatureFlagsDemoTest()
+  if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') handleFeatureFlagsCommon()
 }
