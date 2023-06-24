@@ -21,7 +21,7 @@ if (
   })
 }
 
-function showLogos() {
+function showLogos(logosToSelect) {
   const loc_code = sessionStorage.getItem("loc_code")
 
   if (loc_code && loc_code != "") {
@@ -59,7 +59,7 @@ function handleFeatureFlagsDemoTest() {
       'layout-test': 'test'
     })
     if (posthog.getFeatureFlag('layout-test') === 'test') {
-      showLogos()
+      showLogos(logosToSelect)
     } else {
       setTimeout(function() {
         window.location = 'https://gorgiasio.webflow.io/demo'
@@ -79,7 +79,7 @@ function handleFeatureFlagsCommon() {
         'customer-logos': 'variant'
       }); // to comment after testing
       if (posthog.getFeatureFlag('customer-logos') === 'variant') {
-        showLogos()
+        showLogos(logosToSelect)
       } else {
         logosToSelect[0].style.display = 'block'
         logosToSelect[6].style.display = 'block' //mobile one
