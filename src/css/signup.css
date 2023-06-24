@@ -22,7 +22,7 @@ input:hover {
   border: 2px solid #24D69D;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
   background-repeat: no-repeat;
-  background-position: 95%;
+  background-position: 97%;
   background-size: 20px;
 }
 
@@ -30,7 +30,7 @@ input:hover {
   border: 2px solid #FDAB40;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854bbe24d8b37e6b636f_smallerror.svg");
   background-repeat: no-repeat;
-  background-position: 95%;
+  background-position: 97%;
   background-size: 20px;
 }
 
@@ -38,12 +38,14 @@ input:hover {
   border: 2px solid #D6384D;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854c6767342ea44089b6_error.svg");
   background-repeat: no-repeat;
-  background-position: 95%;
+  background-position: 97%;
   background-size: 16px;
 }
+
 .valid-input-pass {
   border: 2px solid #24D69D;
 }
+
 .error-input-pass {
   border: 2px solid #D6384D;
 }
