@@ -116,7 +116,7 @@ $(document).ready(function() {
 
     // check number
     if (numberRegex.test(password)) {
-      $('#signup-user-form ul li#pwd-message-number').addClass('password-condition-valid').removeClass('paswword-condition-warning').removeClass('password-condition-error');
+      $('#signup-user-form ul li#pwd-message-number').addClass('password-condition-valid').removeClass('password-condition-warning').removeClass('password-condition-error');
     } else {
       $('#signup-user-form ul li#pwd-message-number').removeClass('password-condition-valid');
     }
