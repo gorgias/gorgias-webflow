@@ -53,6 +53,8 @@ function showLogos() {
 function handleFeatureFlagsDemoTest() {
   posthog.onFeatureFlags(() => {
     // Override the 'layout-test' feature flag
+    console.log(posthog, 'posthog here')
+    console.log(posthog.feature_flags, 'posthog feature_flags here')
     posthog.feature_flags.override({
       'layout-test': 'test'
     })
