@@ -93,7 +93,7 @@ function handleFeatureFlagsCommon() {
 // Check the path variable and execute the appropriate code
 if (path === '/demo-test') {
   // Check if PostHog script has loaded
-  if (typeof posthog !== 'undefined' && posthog && typeof posthog.feature_flags !== 'undefined') {
+  if (typeof posthog !== 'undefined' && posthog) {
     // PostHog script has already loaded, trigger the callback immediately
     handleFeatureFlagsDemoTest();
   } else {
@@ -102,7 +102,7 @@ if (path === '/demo-test') {
   }
 } else if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
   // Check if PostHog script has loaded
-  if (typeof posthog !== 'undefined' && posthog && typeof posthog.feature_flags !== 'undefined') {
+  if (typeof posthog !== 'undefined' && posthog) {
     // PostHog script has already loaded, trigger the callback immediately
     handleFeatureFlagsCommon();
   } else {
