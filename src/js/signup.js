@@ -4,7 +4,6 @@ $(document).ready(function() {
   var fullnameWarningDiv = $('<div id = "fullnameWarning"></div>');
   emailWarningDiv.insertAfter('#signup-user-form input[type="email"]');
   fullnameWarningDiv.insertAfter('#signup-user-form input[name="Name"]');
-  $('#psw').css('border', 'none')
 
   // $('#wf-form-Signup-2-Form').attr('novalidate','novalidate')
   //$('#wf-form-Signup-2-Form').attr('formnovalidate','novalidate')
