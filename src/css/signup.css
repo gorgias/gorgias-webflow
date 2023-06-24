@@ -19,12 +19,11 @@ input:hover {
 }
 
 .valid-input {
-  border: 2px solid #161616;
+  border: 2px solid #24D69D;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
   background-repeat: no-repeat;
   background-position: 95%;
   background-size: 20px;
-
 }
 
 .warning-input {
@@ -33,7 +32,6 @@ input:hover {
   background-repeat: no-repeat;
   background-position: 95%;
   background-size: 20px;
-
 }
 
 .error-input {
@@ -43,16 +41,18 @@ input:hover {
   background-position: 95%;
   background-size: 16px;
 }
-
-input[type='password'] {
-  background-position: 90%;
+.valid-input-pass {
+  border: 2px solid #24D69D;
 }
+.error-input-pass {
+  border: 2px solid #D6384D;
+}
+
 .passwword-condition-valid {
   background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/648ac25767378a0b04a2a69a_Icon-size.svg');
   background-repeat: no-repeat;
   background-size: 16px;
   color: inherit;
-
 }
 
 .passwword-condition-warning {
