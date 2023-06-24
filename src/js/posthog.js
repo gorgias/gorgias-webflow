@@ -88,5 +88,5 @@ function handleFeatureFlagsCommon() {
 
 if (typeof posthog !== 'undefined') {
   if (path === '/demo-test') handleFeatureFlagsDemoTest()
-  if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') handleFeatureFlagsCommon()
+  if (path === '/pages/home-draft' || path === '/demo') handleFeatureFlagsCommon()
 }
