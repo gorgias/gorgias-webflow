@@ -106,8 +106,7 @@ $(document).ready(function() {
 
   $('#signup-user-form input[name="Password"]').on('focusout', function() {
     var password = $(this).val();
-    const passwordWrapper = document.getElementsByClassName('input-wrapper')[0]
-
+    
     // Check password length
     if (password.length >= 8) {
       $('#signup-user-form ul li#length').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
@@ -140,16 +139,11 @@ $(document).ready(function() {
       $(this).addClass('valid-input');
       $(this).removeClass('error-input');
       $(this).removeClass('warning-input');
-      passwordWrapper.style.border = '2px solid #24D69D'
     } else {
-      // $(this).removeClass('valid-input');
-      // $(this).removeClass('error-input');
-      // $(this).addClass('warning-input');
-      passwordWrapper.style.border = '2px solid #FDAB40'
+       $(this).removeClass('valid-input');
+       $(this).addClass('error-input');
+       $(this).removeClass('warning-input');
     }
-
-    $('#psw').css('border', 'none')
-    $('#psw').removeClass('warning-input').removeClass('error-input').removeClass('valid-input')
   });
 
   // change password field type on click to display / hide the input
