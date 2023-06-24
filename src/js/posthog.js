@@ -45,68 +45,55 @@ function showLogos() {
       logosToSelect[6].style.display = 'block'; //mobile one
     }
   }
-
 }
 // This code will execute the handleFeatureFlags function when the PostHog script is available. 
 // It will then override the feature flag and execute the corresponding code based on the value of the feature flag.
 // If the PostHog script hasn't loaded yet, it will wait for the script to load and trigger the callback when it becomes available.
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
-  // Check if PostHog script is available
-  if (typeof posthog !== 'undefined' && posthog && typeof posthog.feature_flags !== 'undefined') {
-    posthog.onFeatureFlags(() => {
-      // Override the 'layout-test' feature flag
-      posthog.feature_flags.override({
-        'layout-test': 'test'
-      })
-      if (posthog.getFeatureFlag('layout-test') === 'test') {
-        showLogos()
-      } else {
-        setTimeout(function() {
-          window.location = 'https://gorgiasio.webflow.io/demo'
-        }, 1000)
-      }
-      // Clear the overrides for all flags
-      posthog.feature_flags.clearOverrides();
+  posthog.onFeatureFlags(() => {
+    // Override the 'layout-test' feature flag
+    posthog.feature_flags.override({
+      'layout-test': 'test'
     })
-  } else {
-    // PostHog script is not available yet
-    console.log('PostHog script is not available yet');
-  }
+    if (posthog.getFeatureFlag('layout-test') === 'test') {
+      showLogos()
+    } else {
+      setTimeout(function() {
+        window.location = 'https://gorgiasio.webflow.io/demo'
+      }, 1000)
+    }
+    // Clear the overrides for all flags
+    posthog.feature_flags.clearOverrides();
+  })
 }
 
 // Callback function to handle feature flags for /pages/home-draft, /demo, and /demo-test paths
 function handleFeatureFlagsCommon() {
-  // Check if PostHog script is available
-  if (typeof posthog !== 'undefined' && posthog && typeof posthog.feature_flags !== 'undefined') {
-    var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
-    if (logosToSelect.length > 0) {
-      posthog.onFeatureFlags(() => {
-        posthog.feature_flags.override({
-          'customer-logos': 'variant'
-        }); // to comment after testing
-        if (posthog.getFeatureFlag('customer-logos') === 'variant') {
-          showLogos()
-        } else {
-          logosToSelect[0].style.display = 'block';
-          logosToSelect[6].style.display = 'block'; //mobile one
-          // It's a good idea to let control variant always be the default behaviour,
-          // so if something goes wrong with flag evaluation, you don't break your app.
-        }
-        // Clear the overrides for all flags
-        posthog.feature_flags.clearOverrides();
-      })
-    }
-  } else {
-    // PostHog script is not available yet
-    console.log('PostHog script is not available yet');
+  var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
+  if (logosToSelect.length > 0) {
+    posthog.onFeatureFlags(() => {
+      posthog.feature_flags.override({
+        'customer-logos': 'variant'
+      }); // to comment after testing
+      if (posthog.getFeatureFlag('customer-logos') === 'variant') {
+        showLogos()
+      } else {
+        logosToSelect[0].style.display = 'block';
+        logosToSelect[6].style.display = 'block'; //mobile one
+        // It's a good idea to let control variant always be the default behaviour,
+        // so if something goes wrong with flag evaluation, you don't break your app.
+      }
+      // Clear the overrides for all flags
+      posthog.feature_flags.clearOverrides();
+    })
   }
 }
 
 // Check the path variable and execute the appropriate code
 if (path === '/demo-test') {
   // Check if PostHog script has loaded
-  if (typeof posthog !== 'undefined') {
+  if (typeof posthog !== 'undefined' && posthog && typeof posthog.feature_flags !== 'undefined') {
     // PostHog script has already loaded, trigger the callback immediately
     handleFeatureFlagsDemoTest();
   } else {
@@ -115,7 +102,7 @@ if (path === '/demo-test') {
   }
 } else if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
   // Check if PostHog script has loaded
-  if (typeof posthog !== 'undefined') {
+  if (typeof posthog !== 'undefined' && posthog && typeof posthog.feature_flags !== 'undefined') {
     // PostHog script has already loaded, trigger the callback immediately
     handleFeatureFlagsCommon();
   } else {
