@@ -55,7 +55,7 @@ function handleFeatureFlagsDemoTest() {
   logosToSelect.length > 0 && posthog.onFeatureFlags(() => {
     posthog.feature_flags && posthog.feature_flags.override({
       'layout-test': 'test'
-    })
+    }) // to comment after testing
     if (posthog.getFeatureFlag('layout-test') === 'test') {
       showLogos(logosToSelect)
     } else {
@@ -63,8 +63,6 @@ function handleFeatureFlagsDemoTest() {
         window.location = 'https://gorgiasio.webflow.io/demo'
       }, 1000)
     }
-    // Clear the overrides for all flags
-    posthog.feature_flags.clearOverrides()
   })
 }
 
@@ -84,8 +82,6 @@ function handleFeatureFlagsCommon() {
         // It's a good idea to let control variant always be the default behaviour,
         // so if something goes wrong with flag evaluation, you don't break your app.
       }
-      // Clear the overrides for all flags
-      posthog.feature_flags.clearOverrides()
     })
   }
 }
