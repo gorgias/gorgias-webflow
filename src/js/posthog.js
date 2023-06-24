@@ -55,7 +55,7 @@ function handleFeatureFlagsDemoTest() {
     // Override the 'layout-test' feature flag
     console.log(posthog, 'posthog here')
     console.log(posthog.feature_flags, 'posthog feature_flags here')
-    posthog.feature_flags.override({
+    posthog.feature_flags && posthog.feature_flags.override({
       'layout-test': 'test'
     })
     if (posthog.getFeatureFlag('layout-test') === 'test') {
