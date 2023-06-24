@@ -16,13 +16,25 @@ $(document).ready(function() {
   function validateEmail(email) {
     var regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (email == '') {
-      return { status: 'error', message: 'We need your email to create your account' };
+      return {
+        status: 'error',
+        message: 'We need your email to create your account'
+      };
     } else if (!regex.test(email)) {
-      return { status: 'error', message: 'Your email is not correct' };
+      return {
+        status: 'error',
+        message: 'Your email is not correct'
+      };
     } else if (!isProfessionalEmail(email)) {
-      return { status: 'warning', message: 'Keep a good work-life balance, use a professional email' };
+      return {
+        status: 'warning',
+        message: 'Keep a good work-life balance, use a professional email'
+      };
     }
-    return { status: 'success', message: null };
+    return {
+      status: 'success',
+      message: null
+    };
   }
 
   function isProfessionalEmail(email) {
@@ -37,9 +49,15 @@ $(document).ready(function() {
   function validateFullName(fullName) {
     var regex = /^[a-zA-Z\s]+$/;
     if (!regex.test(fullName)) {
-      return { status: 'error', message: 'We need your fullname to create your account' };
+      return {
+        status: 'error',
+        message: 'We need your fullname to create your account'
+      };
     }
-    return { status: 'success', message: null };
+    return {
+      status: 'success',
+      message: null
+    };
   }
 
   $('#signup-user-form input[type="email"]').on('blur', function() {
@@ -53,7 +71,7 @@ $(document).ready(function() {
       $('#emailWarning').text(validation.message).addClass("warning-text").removeClass('error-text').removeClass('valid-text');
       $(this).removeClass('valid-input').removeClass('error-input').addClass('warning-input');
     }
-    if (validation.status === 'success'){
+    if (validation.status === 'success') {
       $('#emailWarning').text('').addClass("valid-text").removeClass('error-text').removeClass('warning-text');
       $(this).addClass('valid-input');
       $(this).removeClass('warning-input');
@@ -106,7 +124,7 @@ $(document).ready(function() {
 
   $('#signup-user-form input[name="Password"]').on('focusout', function() {
     var password = $(this).val();
-    
+
     // Check password length
     if (password.length >= 8) {
       $('#signup-user-form ul li#length').addClass('passwword-condition-valid').removeClass('passwword-condition-warning').removeClass('passwword-condition-error');
@@ -136,13 +154,11 @@ $(document).ready(function() {
       uppercaseRegex.test(password) &&
       lowercaseRegex.test(password) &&
       numberRegex.test(password)) {
-      $(this).addClass('valid-input');
-      $(this).removeClass('error-input');
-      $(this).removeClass('warning-input');
+      $(this).addClass('valid-input-pass');
+      $(this).removeClass('error-input-pass');
     } else {
-       $(this).removeClass('valid-input');
-       $(this).addClass('error-input');
-       $(this).removeClass('warning-input');
+      $(this).removeClass('valid-input-pass');
+      $(this).addClass('error-input-pass');
     }
   });
 
@@ -155,7 +171,7 @@ $(document).ready(function() {
       $('#signup-user-form input[name="Password"]').attr('type', 'password')
     }
   })
-    
+
   // form submission checker
   let form = document.getElementById('wf-form-Signup-2-Form');
   form.addEventListener('submit', handlerCallback, true);
@@ -207,7 +223,8 @@ $(document).ready(function() {
     }
 
     if (errorPasswordUppercase == true || errorPasswordLowercase == true || errorPasswordNumber == true || errorPasswordLength == true) {
-      passwordWrapper.style.border = '2px solid #F24F66'
+      isValid = false;
+      password.addClass('error-input-pass')
     }
 
     if (!isValid) {
