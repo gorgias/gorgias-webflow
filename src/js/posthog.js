@@ -71,7 +71,7 @@ function handleFeatureFlagsCommon() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   if (logosToSelect.length > 0) {
     posthog.onFeatureFlags(() => {
-      posthog.feature_flags.override({
+      posthog.feature_flags && posthog.feature_flags.override({
         'customer-logos': 'variant'
       }); // to comment after testing
       if (posthog.getFeatureFlag('customer-logos') === 'variant') {
