@@ -49,11 +49,11 @@ function showLogos(logosToSelect) {
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
-  logosToSelect.length > 0 && posthog.onFeatureFlags(() => {
-    console.log(posthog, 'posthog')
+  posthog.onFeatureFlags(() => {
     posthog.feature_flags && posthog.feature_flags.override({
       'layout-test': 'test'
     }) // to comment after testing
+    console.log(posthog.getFeatureFlag('layout-test'), get feature')
     if (posthog.getFeatureFlag('layout-test') === 'test') {
       showLogos(logosToSelect)
     } else {
