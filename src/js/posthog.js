@@ -83,7 +83,7 @@ function handleFeatureFlagsCommon() {
   }
 }
 
-if (typeof posthog !== 'undefined') {
+if (posthog.__loaded) {
   if (path === '/demo-test') handleFeatureFlagsDemoTest()
   if (path === '/pages/home-draft' || path === '/demo') handleFeatureFlagsCommon()
 }
