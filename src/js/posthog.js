@@ -53,7 +53,7 @@ function handleFeatureFlagsDemoTest() {
     posthog.feature_flags && posthog.feature_flags.override({
       'layout-test': 'test'
     }) // to comment after testing
-    console.log(posthog.getFeatureFlag('layout-test'), get feature')
+    console.log(posthog.getFeatureFlag('layout-test'), 'get feature')
     if (posthog.getFeatureFlag('layout-test') === 'test') {
       showLogos(logosToSelect)
     } else {
