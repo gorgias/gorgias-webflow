@@ -50,9 +50,9 @@ function showLogos(logosToSelect) {
 function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   posthog.onFeatureFlags(() => {
-    posthog.overrideFeatureFlags({
-      'layout-test': 'test',
-    })
+    posthog.setFeatureFlags({
+      'layout-test': 'test', // Set the 'layout-test' feature flag to 'test' variant
+    });
     if (posthog.getFeatureFlag('layout-test') === 'test') {
       showLogos(logosToSelect)
     } else {
