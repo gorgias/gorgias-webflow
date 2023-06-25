@@ -49,11 +49,7 @@ function showLogos(logosToSelect) {
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
-  posthog.on('ready', function() {
     posthog.onFeatureFlags(() => {
-      posthog.feature_flags.override({
-        'layout-test': 'test'
-      }) // to comment after testing
       if (posthog.getFeatureFlag('layout-test') === 'test') {
         showLogos(logosToSelect)
       } else {
@@ -62,7 +58,6 @@ function handleFeatureFlagsDemoTest() {
         }, 1000)
       }
     })
-  })
 }
 
 // Callback function to handle feature flags for /pages/home-draft, /demo, and /demo-test paths
@@ -70,7 +65,7 @@ function handleFeatureFlagsCommon() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   if (logosToSelect.length > 0) {
     posthog.onFeatureFlags(() => {
-      posthog.feature_flags && posthog.feature_flags.override({
+      posthog.feature_flags.override({
         'customer-logos': 'variant'
       }); // to comment after testing
       if (posthog.getFeatureFlag('customer-logos') === 'variant') {
