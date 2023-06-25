@@ -49,17 +49,19 @@ function showLogos(logosToSelect) {
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
-  posthog.onFeatureFlags(() => {
-    posthog.feature_flags.override({
-      'layout-test': 'test'
-    }) // to comment after testing
-    if (posthog.getFeatureFlag('layout-test') === 'test') {
-      showLogos(logosToSelect)
-    } else {
-      setTimeout(function() {
-        // window.location = 'https://gorgiasio.webflow.io/demo'
-      }, 1000)
-    }
+  posthog.on('ready', function() {
+    posthog.onFeatureFlags(() => {
+      posthog.feature_flags.override({
+        'layout-test': 'test'
+      }) // to comment after testing
+      if (posthog.getFeatureFlag('layout-test') === 'test') {
+        showLogos(logosToSelect)
+      } else {
+        setTimeout(function() {
+          // window.location = 'https://gorgiasio.webflow.io/demo'
+        }, 1000)
+      }
+    })
   })
 }
 
