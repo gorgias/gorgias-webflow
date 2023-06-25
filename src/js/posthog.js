@@ -50,14 +50,11 @@ function showLogos(logosToSelect) {
 function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   posthog.onFeatureFlags(() => {
-    posthog.setFeatureFlags({
-      'layout-test': 'test', // Set the 'layout-test' feature flag to 'test' variant
-    });
     if (posthog.getFeatureFlag('layout-test') === 'test') {
       showLogos(logosToSelect)
     } else {
       setTimeout(function() {
-        // window.location = 'https://gorgiasio.webflow.io/demo'
+        window.location = 'https://gorgiasio.webflow.io/demo'
       }, 1000)
     }
   })
