@@ -48,22 +48,11 @@ function showLogos(logosToSelect) {
 }
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
-  posthog.identify('layout-test-11')
-  // This avoids the delay between the library loading and feature flags becoming available to use.
-
-  posthog.init('{phc_7jtAWdcjtRRnv8DIpwknSCsdFvXY5oV51qAbpvo2Xd4}', {
-    api_host: 'https://app.posthog.com',
-    bootstrap: {
-      distinctID: 'layout-test-11',
-      featureFlags: {
-        'layout-test': 'test'
-      },
-    }
-  })
-
-  console.log(posthog.getFeatureFlag('layout-test'), 'here test variant')
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   posthog.onFeatureFlags(() => {
+    posthog.feature_flags.override({
+      'layout-test': 'test', 
+    });
     if (posthog.getFeatureFlag('layout-test') === 'test') {
       showLogos(logosToSelect)
     } else {
