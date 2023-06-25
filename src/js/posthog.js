@@ -46,13 +46,11 @@ function showLogos(logosToSelect) {
     }
   }
 }
-// This code will execute the handleFeatureFlags function when the PostHog script is available. 
-// It will then override the feature flag and execute the corresponding code based on the value of the feature flag.
-// If the PostHog script hasn't loaded yet, it will wait for the script to load and trigger the callback when it becomes available.
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   logosToSelect.length > 0 && posthog.onFeatureFlags(() => {
+    console.log(posthog, 'posthog')
     posthog.feature_flags && posthog.feature_flags.override({
       'layout-test': 'test'
     }) // to comment after testing
@@ -60,7 +58,7 @@ function handleFeatureFlagsDemoTest() {
       showLogos(logosToSelect)
     } else {
       setTimeout(function() {
-        window.location = 'https://gorgiasio.webflow.io/demo'
+        // window.location = 'https://gorgiasio.webflow.io/demo'
       }, 1000)
     }
   })
