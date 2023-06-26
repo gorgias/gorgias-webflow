@@ -16,7 +16,7 @@ function displayDefaultCustomerLogosList(logosToSelect) {
   }, 3000); // 3 seconds
 }
 
-if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
+if (path === '/pages/home-draft' || path === '/demo') {
   var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
   if(logosToSelect.length > 0){
       displayDefaultCustomerLogosList(logosToSelect);
@@ -24,9 +24,11 @@ if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
 }
 
 if (path === '/demo-test') {
-  // in case of add blocker show old layout since both are hidden
+  // in case of add blocker show new layout since it is hidden
   setTimeout(function() {
-    const hiddenElementTest = document.getElementsByClassName('page_demo-old-layout')[0]
+    const hiddenElementTest = document.getElementsByClassName('page_demo-new-layout')[0]
     hiddenElementTest.style.display = 'block'
-  }, 3000)
+    displayDefaultCustomerLogosList()
+  }, 2000)
+  
 }
