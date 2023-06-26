@@ -36,7 +36,7 @@ function handleFeatureFlagsDemoTest() {
     } else {
       setTimeout(function() {
         window.location = 'https://gorgiasio.webflow.io/demo'
-      }, 1000)
+      }, 100)
     }
   })
 }
