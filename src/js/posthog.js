@@ -34,9 +34,7 @@ function handleFeatureFlagsDemoTest() {
     if (posthog.getFeatureFlag('layout-test') === 'test') {
       showLogos(logosToSelect)
     } else {
-      setTimeout(function() {
-        window.location = 'https://gorgiasio.webflow.io/demo'
-      }, 100)
+      window.location = 'https://gorgiasio.webflow.io/demo'
     }
   })
 }
