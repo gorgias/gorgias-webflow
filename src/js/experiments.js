@@ -26,9 +26,10 @@ if (path === '/pages/home-draft' || path === '/demo') {
 if (path === '/demo-test') {
   // in case of add blocker show new layout since it is hidden
   setTimeout(function() {
+    const logos = document.getElementsByClassName("customer_logos-collection-wrapper");
     const hiddenElementTest = document.getElementsByClassName('page_demo-new-layout')[0]
     hiddenElementTest.style.display = 'block'
-    displayDefaultCustomerLogosList()
+    displayDefaultCustomerLogosList(logos)
   }, 2000)
   
 }
