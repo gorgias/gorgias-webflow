@@ -32,7 +32,12 @@ function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   posthog.onFeatureFlags(() => {
     if (posthog.getFeatureFlag('layout-test') === 'test') {
-      showLogos(logosToSelect)
+      const layout = document.getElementsByClassName('page_demo-new-layout')[0]
+      if (layout) {
+        layout.style.display = 'block'
+        showLogos(logosToSelect)
+      }
+      
     } else {
       window.location = 'https://gorgiasio.webflow.io/demo'
     }
