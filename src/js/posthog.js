@@ -2,6 +2,30 @@
 
 // In case of ad blocker, posthog experiments won't load.
 // You can use /experiments.js file to create a default path
+
+// checks if the posthog.onFeatureFlags event listener is available. 
+// If it is available, the Promise resolves. If it is not available, the posthog.reloadFeatureFlags() method is called to reload the feature flags. 
+// After reloading, it checks again if the event listener is now available. 
+// If it is, the Promise resolves. If it is still not available, the Promise rejects with an error message.
+
+function checkAndReloadFeatureFlags() {
+  return new Promise((resolve, reject) => {
+    if (typeof posthog.onFeatureFlags === 'function') {
+      resolve()
+    } else {
+      posthog.reloadFeatureFlags().then(() => {
+        if (typeof posthog.onFeatureFlags === 'function') {
+          resolve()
+        } else {
+          reject('Unable to reload feature flags.')
+        }
+      }).catch((error) => {
+        reject('Error reloading feature flags: ' + error)
+      })
+    }
+  });
+}
+
 function showLogos(logosToSelect) {
   const loc_code = sessionStorage.getItem("loc_code")
 
@@ -27,40 +51,52 @@ function showLogos(logosToSelect) {
     }
   }
 }
+
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
-  posthog.onFeatureFlags(() => {
-    if (posthog.getFeatureFlag('layout-test') === 'test') {
-      const layout = document.getElementsByClassName('page_demo-new-layout')[0]
-      if (layout) {
-        layout.style.display = 'block'
-        showLogos(logosToSelect)
-      }
-      
-    } else {
-      window.location = 'https://gorgiasio.webflow.io/demo'
-    }
-  })
+  checkAndReloadFeatureFlags()
+    .then(() => {
+      posthog.onFeatureFlags(() => {
+        if (posthog.getFeatureFlag('layout-test') === 'test') {
+          const layout = document.getElementsByClassName('page_demo-new-layout')[0]
+          if (layout) {
+            layout.style.display = 'block'
+            showLogos(logosToSelect)
+          }
+        } else {
+          window.location = 'https://gorgiasio.webflow.io/demo'
+        }
+      })
+    })
+    .catch((error) => {
+      console.error(error)
+    })
 }
 
 // Callback function to handle feature flags for /pages/home-draft, /demo, and /demo-test paths
 function handleFeatureFlagsCommon() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
   if (logosToSelect.length > 0) {
-    posthog.onFeatureFlags(() => {
-      // posthog.feature_flags.override({
-      // 'customer-logos': 'variant'
-      // }); // to comment after testing
-      if (posthog.getFeatureFlag('customer-logos') === 'variant') {
-        showLogos(logosToSelect)
-      } else {
-        logosToSelect[0].style.display = 'block'
-        logosToSelect[6].style.display = 'block' //mobile one
-        // It's a good idea to let control variant always be the default behaviour,
-        // so if something goes wrong with flag evaluation, you don't break your app.
-      }
-    })
+    checkAndReloadFeatureFlags()
+      .then(() => {
+        posthog.onFeatureFlags(() => {
+          // posthog.feature_flags.override({
+          // 'customer-logos': 'variant'
+          // }); // to comment after testing
+          if (posthog.getFeatureFlag('customer-logos') === 'variant') {
+            showLogos(logosToSelect)
+          } else {
+            logosToSelect[0].style.display = 'block'
+            logosToSelect[6].style.display = 'block' //mobile one
+            // It's a good idea to let control variant always be the default behaviour,
+            // so if something goes wrong with flag evaluation, you don't break your app.
+          }
+        })
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 }
 
@@ -79,10 +115,16 @@ if (posthog.__loaded) {
     ||
     path.includes('/comparison') // MOFU pages
   ) {
-    posthog.onFeatureFlags(function() {
-      if (posthog.isFeatureEnabled('all-visitors')) {
-        window.posthog.startSessionRecording();
-      }
-    })
+    checkAndReloadFeatureFlags()
+      .then(() => {
+        posthog.onFeatureFlags(function() {
+          if (posthog.isFeatureEnabled('all-visitors')) {
+            window.posthog.startSessionRecording();
+          }
+        })
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 }
