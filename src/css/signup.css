@@ -3,40 +3,73 @@ input:hover {
   outline: none;
 }
 
-.valid-text {
+.message-valid {
   color: #24D69D;
 }
 
-.warning-text {
+.message-warning {
   color: #FDAB40;
 }
 
-.error-text {
+.message-error {
   color: #F24F66;
 }
 
-.valid-input {
-  border: 1px solid #161616;
+
+#signup-user-form input,
+#signup-account-form input {
+  background-repeat: no-repeat;
+  background-position: 95%;
+  background-size: 20px;
+}
+
+#signup-user-form input[name='password'] {
+  background-position: 90%;
+}
+
+.field-valid {
+  border: 2px solid #161616;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
-  background-repeat: no-repeat;
-  background-position: 95%;
-  background-size: 20px;
+
 
 }
 
-.warning-input {
-  border: 1px solid #FDAB40;
+.field-warning {
+  border: 2px solid #FDAB40;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854bbe24d8b37e6b636f_smallerror.svg");
-  background-repeat: no-repeat;
-  background-position: 95%;
-  background-size: 20px;
-
 }
 
-.error-input {
-  border: 1px solid #D6384D;
+.field-error {
+  border: 2px solid #D6384D;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854c6767342ea44089b6_error.svg");
-  background-repeat: no-repeat;
-  background-position: 95%;
-  background-size: 16px;
+}
+
+.field-message-container{
+  position: absolute;
+  font-size: 12px;
+}
+
+li.message-warning{
+  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/64946f7790917ecedccee179_warning-orange.svg');
+  color:#FDAB40;
+}
+
+li.message-error{
+  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/648ac53b388022dcf43288a3_close%20red.svg');
+  color: #F24F66;
+}
+
+li.message-valid{
+  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/64946e5589be146aea616d27_valid-green.svg');
+  color: inherit;
+  color: #24D69D;
+}
+
+#signup_button-message-container{
+  text-align: center;
+  width: 100%;
+}
+
+#account_domain-message-container{
+  bottom:8px;
 }
