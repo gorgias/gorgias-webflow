@@ -3,70 +3,114 @@ input:hover {
   outline: none;
 }
 
-.valid-text {
+.message-valid {
   color: #24D69D;
   font-size: 12px;
 }
 
-.warning-text {
+.message-warning {
   color: #FDAB40;
   font-size: 12px;
 }
 
-.error-text {
+.message-error {
   color: #F24F66;
   font-size: 12px;
 }
 
+#signup-user-form input,
+#signup-account-form input {
 .valid-input {
   border: 2px solid #161616;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
-  background-repeat: no-repeat;
-  background-position: 97%;
-  background-size: 20px;
 }
 
-.warning-input {
-  border: 2px solid #FDAB40;
+#signup-user-form input[name='password'] {
+  background-position: 90%;
+}
+
+.field-valid {
+  border-color:#161616;
+  background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
+}
+
+.text-valid {
+  background-repeat: no-repeat;
+  background-position: 100%;
+  background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
+}
+
+.field-warning {
+  border-color: #FDAB40;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854bbe24d8b37e6b636f_smallerror.svg");
-  background-repeat: no-repeat;
-  background-position: 97%;
-  background-size: 20px;
 }
 
-.error-input {
-  border: 2px solid #D6384D;
+.field-error {
+  border-color: #D6384D;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854c6767342ea44089b6_error.svg");
-  background-repeat: no-repeat;
-  background-position: 97%;
-  background-size: 16px;
 }
 
-.valid-input-pass {
-  border: 2px solid #161616;
+
 }
 
-.error-input-pass {
-  border: 2px solid #D6384D;
+.field-message-container{
+  position: absolute;
+  font-size: 12px;
+  line-height: 1.5;
+
 }
 
-.password-condition-valid {
-  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/648ac25767378a0b04a2a69a_Icon-size.svg');
-  background-repeat: no-repeat;
-  background-size: 16px;
-  color: inherit;
+li.message-warning{
+  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/64946f7790917ecedccee179_warning-orange.svg');
+  color:#FDAB40;
 }
 
-.password-condition-warning {
-  color: #FDAB40;
-  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/648ae86c64f542cb9f9cfc6c_OCR-A_char_Exclamation_Mark%201%20(1).svg');
-  background-repeat: no-repeat;
-  background-size: 16px;
-}
-
-.password-condition-error {
-  color: #D6384D;
+li.message-error{
   background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/648ac53b388022dcf43288a3_close%20red.svg');
-  background-repeat: no-repeat;
-  background-size: 16px;
+  color: #F24F66;
+}
+
+li.message-valid{
+  background-image: url('https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/64946e5589be146aea616d27_valid-green.svg');
+  color: inherit;
+  color: #24D69D;
+}
+
+#signup_button-message-container{
+  text-align: center;
+  width: 100%;
+}
+
+#account_domain-message-container{
+  bottom:14px;
+}
+
+.form-input-append{
+  background-image: none !important;
+}
+
+
+@keyframes trembling {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.warning-message-trembling {
+  animation: trembling 0.5s infinite;
 }
