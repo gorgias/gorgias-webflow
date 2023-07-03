@@ -1,5 +1,7 @@
 const email_key = 'email';
 const fullname_key = 'fullname';
+const plan_name_key = 'plan_name';
+const plan_period_key = 'period';
 const password_key = 'password';
 const company_domain_key = 'company_domain';
 const account_domain_key = 'account_domain';
@@ -9,15 +11,13 @@ var passwordField = $('#signup-user-form input[name="'+ password_key + '"]') || 
 var accountDomainEditButton = $('a#account-domain-edit-button') || "";
 var accountDomainEditWrapper = $('#account-domain-edit-wrapper') || "";
 var accountDomainWrapper = $('#account-domain-wrapper') || "";
+var accountDomainLoaderWrapper = $('#account-domain-loader-wrapper') || "";
+var accountDomainEditLoaderWrapper = $('#account-domain-edit-loader-wrapper') || "";
+
 var accountDomainSaveButton = $('a#account-domain-save-button') || "";
 var accountDomainText = $('#account-domain-text') || "";
+var accountDomainSubdomainString = $('#account-subdomain-string') || "";
 var accountDomainTextInfoWrapper = $('#account-domain-info-wrapper') || "";
-
-
-
-
-
-
 var companyDomainField = $('#signup-account-form input[name="' + company_domain_key + '"]') || "";
 var accountDomainField = $('#signup-account-form input[name="' + account_domain_key + '"]') || "";
 var signupButton = $('input[id="signup-button"]') || "";
@@ -25,12 +25,14 @@ var signupButtonLoading = $('#signup-button-loading') || "";
 var ssoGoogleButton = $('a[id="sso-button-google"]') || "";
 var userForm = $('form#signup-user-form');
 var accountForm = $('form#signup-account-form');
+var accountFormLoadingWrapper = $('div#account-form-loading-wrapper');
 const token_key = 'x-account-manager-session-token';
 
 
 const classErrorField = 'field-error';
 const classWarningField = 'field-warning';
 const classValidField = 'field-valid';
+const classValidText = 'text-valid';
 const classErrorMessage = 'message-error';
 const classWarningMessage = 'message-warning';
 const btnWaitString = 'Please wait';
@@ -77,40 +79,67 @@ function getFieldStatusStorage (fieldName){
   return window.localStorage.getItem(fieldName  + '-status');
 }
 
-// 3 fields status
-// 1) warning: orange color, used when the focus on a field is left and the rules are not meet
-// 2) error: color red: used when the form is submitted but some fields didn't pass the verifications
-// 3) valid: color: green: used when the fields are valid
+// Used to manage the field status and messaging: valid (green), warning (pre-form submission:orange), alert (post-form submission: red)
 function handleFieldStatus (field,status,messaging){
-
   var fieldName = field[0].name;
-
-  setFieldStatusStorage(fieldName,status)
+  var fieldType = field[0].type;
+  setFieldStatusStorage(fieldName,status);
 
   if(status == 'warning'){
+    if(fieldType != 'submit') {
       field.removeClass(classErrorField).removeClass(classValidField).addClass(classWarningField);
-      field.next("div[id*='-message-container']").removeClass(classErrorMessage).removeClass(classValidMessage).addClass(classWarningMessage);
+    }
+    field.next("div[id*='-message-container']").removeClass(classErrorMessage).removeClass(classValidMessage).addClass(classWarningMessage);
   }
- else if(status == 'error'){
+  else if(status == 'error'){
+    if(fieldType != 'submit') {
       field.removeClass(classValidField).removeClass(classWarningField).addClass(classErrorField);
-      field.next("div[id*='-message-container']").removeClass(classWarningMessage).removeClass(classValidMessage).addClass(classErrorMessage);
+    }
+    field.next("div[id*='-message-container']").removeClass(classWarningMessage).removeClass(classValidMessage).addClass(classErrorMessage);
 
   }
   else if(status == 'valid'){
+    if(fieldType != 'submit') {
       field.removeClass(classErrorField).removeClass(classWarningField).addClass(classValidField);
+    }
+    if(fieldName == account_domain_key){
+      accountDomainText.addClass(classValidText);
+    }
   }
-
+  
   // all but password: we don't empty the message container in case the messaging is the same as the initial one
   if (fieldName != password_key) {
-
     var initialMessage= field.next("div[id*='-message-container']").innerHTML || "";
-    if(initialMessage && initialMessage!= "" && messaging != initialMessage){
+    if(initialMessage && initialMessage != "" && messaging != initialMessage){
       field.next("div[id*='-message-container']").empty().append(messaging);
     }
     else{
+      console.log(field.next("div[id*='-message-container']"))
       field.next("div[id*='-message-container']").empty().append(messaging);
     }
   }
+  if( fieldName == account_domain_key ) {
+    if(status == 'warning'){
+      console.log(status);
+      field.nextAll().filter('.form-input-append').first().removeClass(classValidField).removeClass(classErrorField).addClass(classWarningField);
+    }
+    else if(status == 'error'){
+      console.log(status);
+
+      field.nextAll().filter('.form-input-append').first().removeClass(classValidField).removeClass(classWarningField).addClass(classErrorField);
+    }
+    else if(status == 'valid'){
+      console.log(status);
+      field.nextAll().filter('.form-input-append').first().removeClass(classErrorField).removeClass(classWarningField).addClass(classValidField);
+    }
+
+  }
+
+  field.next("div[id*='-message-container']").addClass('warning-message-trembling')
+  setTimeout(function(){
+    field.next("div[id*='-message-container']").removeClass('warning-message-trembling');
+
+  },300);
 }
 
 function handleFormStatus (form,status,messaging){  
@@ -124,7 +153,7 @@ function handleFormStatus (form,status,messaging){
   else if(status == 'valid'){
   }
   
-  signupButton.next("div[id*='-message-container']").append(messaging);
+  signupButton.next("div[id*='-message-container']").empty().append(messaging);
 }
 
 // used to remove any field warning or error
@@ -132,6 +161,12 @@ function resetFieldStatus (field){
 
   // field.removeClass(classValidField).removeClass(classWarningField).removeClass(classErrorField);
   field.next("div[id*='-message-container']").removeClass(classErrorMessage).removeClass(classValidMessage).removeClass(classWarningMessage).empty();
+  field.removeClass(classErrorField).removeClass(classValidField).removeClass(classWarningField).empty();
+
+  if(field == account_domain_key){
+    accountDomainText.removeClass(classValidText);
+  }
+
 }
 
 // used to fetch the sessionToken and update the SSO link
@@ -192,18 +227,25 @@ function processURLSearchParams () {
   var searchParams = new URLSearchParams(window.location.search)
   var sessionToken = searchParams.get(token_key)
   var sessionEmail = searchParams.get(email_key.toLowerCase());
-  var sessionfullname = searchParams.get(fullname_key.toLowerCase())
+  var sessionEmail = searchParams.get(email_key.toLowerCase());
+  var sessionfullname = searchParams.get(fullname_key.toLowerCase());
+  var sessionPlanName = searchParams.get(plan_name_key.toLowerCase());
+  var sessionPlanPeriod = searchParams.get(plan_period_key.toLowerCase());
   if (sessionToken) {
       window.localStorage.setItem(session_token_key, sessionToken)
       updateLinksForSession(sessionToken)
   }
-
   if(sessionEmail){
     emailField.val(sessionEmail);
   }
   if(sessionfullname){
     fullnameField.val(sessionfullname);
-
+  }
+  if(sessionPlanName){
+    window.localStorage.setItem(plan_name_key, sessionPlanName)
+  }
+  if(sessionPlanPeriod){
+    window.localStorage.setItem(plan_period_key, sessionPlanPeriod)
   }
 
 }
@@ -245,7 +287,7 @@ function emailVerify(verifyStatus){
       email: emailField.val(),
       password: emailField.val()
     }
-    const API_VALIDATION_ENDPOINT = '/user/validation';
+    var API_VALIDATION_ENDPOINT = '/user/validation';
     post(
       API_VALIDATION_ENDPOINT,
       validationData,
@@ -287,8 +329,7 @@ function emailVerify(verifyStatus){
   }
 }
 
-
-
+// used to extract a domain from an URL
 function extractDomain(url) {
 
   // Convert url to string if it's not already a string
@@ -323,85 +364,141 @@ function extractDomain(url) {
   return domain;
 }
 
-function accountDomainVerify(verifyStatus){
+// used to verify the domainField using a custom cloud function. The CF return an incremented domain in case the domain set originally is not available.
+function accountDomainVerify(verifyStatus, domain, prefilled){
 
-  var verifyMessage = "";
-  var API_BASE_URL = "https://us-central1-gorgias-growth-production.cloudfunctions.net/check_helpdesk_domain";
-  var data = {'account_name_predicted':'gorgias' //accountDomainField.val()
-  };
-
-  var settings = {
-    "url": API_BASE_URL,
-    "method": "POST",
-    "crossDomain": "true",
-    "headers": {
-      "Content-Type":"application/json",
-      "X-PINGOVER": "pingpong"
-    },
-    "data": JSON.stringify(data)
-  };
+  resetFieldStatus(accountDomainField);
   
-  $.ajax(settings)
-  // cloud function failed
-  .fail(function (response) {
-    console.log("cloud function fail");
-    console.log(response);
-  })
-  .done(function (response) {
-    console.log("cloud function done");
-    console.log(response);
+  var account_domain_submitted = domain;
 
-  })
-  .always(function (jqXHR, textStatus, errorThrown) {
-    console.log("cloud function always");
-    console.log(jqXHR);
+  // happen on keyup trigger : $this is an input, not the input value
+  if(typeof account_domain_submitted != 'string'){
+    account_domain_submitted = account_domain_submitted.val();
+  }
+  var verifyStatus = verifyStatus;
+  var verifyMessage = "";
 
-    var response = {
+  // Before calling the cloud function, Check if the accoun_domain has been already submitted
+   // If it already exists, retrieve the existing data and append the new key/value
+   var accountSubdomainsApproved = JSON.parse(localStorage.getItem('account-subdomains-approved'));
+  if (localStorage.getItem('account-subdomains-approved') === null || !accountSubdomainsApproved.hasOwnProperty(account_domain_submitted) ) {
+    var API_BASE_URL = "https://us-central1-gorgias-growth-production.cloudfunctions.net/check_helpdesk_domain";
+    var data = {'account_name_predicted':account_domain_submitted};
+    var settings = {
+      "url": API_BASE_URL,
+      "method": "POST",
+      "crossDomain": "true",
+      "headers": {
+        "Content-Type":"application/json"
+      },
+      "data": JSON.stringify(data),
+      beforeSend:
+      function( xhr ) {
+        accountDomainLoaderWrapper.removeClass('hidden');
+        accountDomainEditLoaderWrapper.removeClass('hidden');
+        accountDomainSubdomainString.addClass('skeleton-text');
+      }
+    };
+    var APIresponse;
+    
+    $.ajax(settings)
+    // cloud function failed
+    .fail(function (response) {
+      APIresponse = {
+        domain_exist:false,
+        account_domain: ''
+      }
+    })
+    .done(function (response) {
+      APIresponse = {
+        domain_exist:false,
+        account_domain: response.account_domain
+      }      
+      // Check if "account-subdomains-approved" exists in local storage
+      if (localStorage.getItem('account-subdomains-approved') === null) {
+        // If it doesn't exist, set it with the initial key/value
+        var data = {};
+        data[account_domain_submitted] = APIresponse.account_domain
+        localStorage.setItem('account-subdomains-approved', JSON.stringify(data));
+      }
+      else {
+        // If it already exists, retrieve the existing data and append the new key/value
+        accountSubdomainsApproved[account_domain_submitted] = APIresponse.account_domain;
+        localStorage.setItem('account-subdomains-approved', JSON.stringify(accountSubdomainsApproved));
+        verifyStatus = 'valid';
+      }
+
+    })
+    .always(function (jqXHR, textStatus, errorThrown) {
+      if( prefilled == true) {
+        accountDomainPrefilled(APIresponse, verifyStatus);
+      }
+      accountDomainLoaderWrapper.addClass('hidden');
+      accountDomainEditLoaderWrapper.addClass('hidden');
+      accountDomainSubdomainString.removeClass('skeleton-text');
+
+      handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
+
+
+      return verifyStatus;
+    });
+  }
+  else{
+
+    var approvedSubdomains =  JSON.parse(localStorage.getItem('account-subdomains-approved'));
+    var recommendedSubdomain = approvedSubdomains[account_domain_submitted];  
+
+    response = {
       domain_exist:false,
-      account_domain: 'gorgias-4',
-      incrementation: 4
-
+      account_domain: recommendedSubdomain
     }
 
-    accountDomainPrefilled(response);
- 
-  });
+    if( prefilled == true) {
+      accountDomainPrefilled(response, verifyStatus);
+    }
+    else{
+
+      if(accountDomainField.val() === recommendedSubdomain){
+        verifyStatus = 'valid';
+      }
+      else{
+        verifyMessage = 'Workspace domain not available. Recommendation: '+ recommendedSubdomain ;
+      }
+    
+      handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
+    }
+
+    return verifyStatus;
+  }
 
 
-  function accountDomainPrefilled(response){
+  function accountDomainPrefilled(response, verifyStatus){
 
     var domain_exist = response.domain_exist;
     var account_domain = response.account_domain;
-    accountDomainText.empty().text( account_domain + ".gorgias.com");
-    accountDomainField.val(account_domain);
 
+    // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
+    if(domain_exist == true) {
+      verifyMessage = "This workspace is not available, try another one"
+      accountDomainWrapper.addClass('hidden');
+      accountDomainEditWrapper.removeClass('hidden');
+    }
 
     if(!account_domain || account_domain == ''){
-      accountDomainTextInfoWrapper.removeClass('hidden');;
+      accountDomainWrapper.addClass('hidden');
       accountDomainEditWrapper.removeClass('hidden');
-      accountDomainTextInfoWrapper.removeClass('hidden');
-
     }
 
     else{
-      accountDomainTextInfoWrapper.removeClass('hidden');
-      accountDomainWrapper.removeClass('hidden');
+      verifyStatus = 'valid';
       accountDomainField.val(account_domain);
-      accountDomainText.empty().text( account_domain + ".gorgias.com");
-
-
+      accountDomainSubdomainString.empty().text(account_domain);
+      accountDomainLoaderWrapper.addClass('hidden');
+      accountDomainSubdomainString.removeClass('skeleton-text'); 
     }
 
-      // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
-      if(domain_exist == true) {
-        verifyMessage = "This workspace is not available, try another one"
-      }
+    handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
 
-            // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
-            if(domain_exist == true) {
-              verifyMessage = "This workspace is not available, try another one"
-      
-            }
 
   }
 
@@ -445,6 +542,7 @@ function accountDomainVerify(verifyStatus){
     */
   }
 
+// used to verfiy the domain field is not empty and with the right format
 function companyDomainVerify(verifyStatus){
   // resetFieldStatus(emailField);
   var regexCompanyDomain = /^(?:(?:https?:\/\/)?(?:www\.)?)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?$/;
@@ -461,12 +559,16 @@ function companyDomainVerify(verifyStatus){
 
   // if company Domain field is valid, we're going to prefilled the account domain field and input by extracting the company domain
   if(verifyStatus == 'valid'){
-    var extractedDomain = extractDomain(companyDomainField.val());
- 
+    //display the loader, account domain sections
+    accountDomainLoaderWrapper.removeClass('hidden');
+    accountDomainTextInfoWrapper.removeClass('hidden');
 
-    // then, before displaying the account domain field or input; we're going to verify it
-    // if it returns an error (shouldn't happen) - then we'll display the input directly to allow to edit the account domain, otherwise we'll display the default field prefilled
-    accountDomainVerify('warning');
+    if(accountDomainEditWrapper.hasClass('hidden')){
+      accountDomainWrapper.removeClass('hidden');
+    }
+    // extract the domain from company domain and check the account domain
+    var extractedDomain = extractDomain(companyDomainField.val());
+    accountDomainVerify('warning', extractedDomain, true);
   }
 
   handleFieldStatus(companyDomainField,verifyStatus,verifyMessage)
@@ -552,6 +654,7 @@ function passwordVerify(verifyStatus){
 
 }
 
+// used to create or get the anymousId if it exist
 function getOrCreateAnonymousId (anonymousId) {
   if (typeof analytics.user === 'function') {
       if (anonymousId) {
@@ -562,31 +665,42 @@ function getOrCreateAnonymousId (anonymousId) {
   }
 }
 
- // manage errors responses from the account manager API
+ // used to manage errors responses from the account manager API
 function handleErrors(response) {
+  var verifyStatus = 'error';
+
   if (response) {
       if (response.responseJSON) {
-        for (const fieldName of Object.keys(response.responseJSON)) {
-          const errors = response.responseJSON[fieldName]
-          const inputField = $('input[name=' + fieldName + ']')
-          
+        console.log(response.responseJSON)
+        for (const field of Object.keys(response.responseJSON)) {
+          const error = response.responseJSON[field]
+          const inputField = $('input[name=' + field + ']')
+          var stringToCheck = 'Company website or helpdesk website already exists or is reserved';
+          var errorCheck = JSON.stringify(error).includes(stringToCheck);
+
+          if(errorCheck == true){
+            handleFieldStatus(companyDomainField,verifyStatus,"This URL is already linked to an existing workspace. Try a new one or login");
+            handleFieldStatus(accountDomainField,verifyStatus,"This workspace is reserved.  Try a new one");
+          }   
+
           // stylized the input when there is an error
-          if (inputField.length) {
-          
+          if (inputField.length > 0) {
             // insert an error messaging before the field
-            for (const errorMsg of errors) {
-              handleFieldStatus(inputField,"error",messaging);
+            for (const errorMsg of error) {
+              handleFieldStatus(inputField,verifyStatus,error);
             }
           }
-          else {
-            handleFieldStatus(signupButton,"error","An unexpected error occurred. Please try again.")
-          }
-        
+    
         }
+
+      }
+      else {
+        handleFieldStatus(signupButton,"error","An unexpected error occurred. Please try again.")
       }
     }
   }
   
+// used to init the form used (step 1)
 function signupUserFormHandler(form) {
   var API_INIT_ENDPOINT = '/user/init'
   var initParams = { 'anonymous_id': getOrCreateAnonymousId() }
@@ -630,6 +744,7 @@ function signupUserFormHandler(form) {
     )
 }
 
+// used to init the form account (step 2)
 function signupAccountFormHandler(form){
   var API_INIT_ENDPOINT = '/account/init';
 
@@ -682,12 +797,12 @@ function onSubmitStart(form, button) {
   // once submission end - reset the submission button status and enable fields
 function onSubmitEnd(form, button) {
     form.find('input').prop("disabled", false);
-    button.addClass('hidden');
-    signupButtonLoading.removeClass('hidden');
+    button.removeClass('hidden');
+    signupButtonLoading.addClass('hidden');
 
 }
 
-// function to create user (step 1)
+// function to create user using account manager API (step 1)
 function onSubmitUserSignupForm(response) {
   const formData =
     {
@@ -721,17 +836,52 @@ function onSubmitUserSignupForm(response) {
     }
   )
 }
-  // unable all fields -> they are disable by default with script the head of the page before to prevent too early field completion or form submission while all scripts are not loaded. 
+
+// unable all fields -> they are disable by default with script the head of the page before to prevent too early field completion or form submission while all scripts are not loaded. 
 function Enablefields (){
   $("input").prop("disabled", false);
   signupButton.prop("disabled", false);
   ssoGoogleButton.prop("disabled", false);
 }
 
+// used to reset the storage fields. We 
 function resetLocalStorageFields () {
   window.localStorage.removeItem(email_key + '-status');
   window.localStorage.removeItem(password_key + '-status');
   window.localStorage.removeItem(fullname_key + '-status');
+}
+
+// function to create the account using account manager API (step 2)
+function onSubmitAccountSignupForm(formData) {
+  var API_VALIDATION_ENDPOINT = '/account/submit';
+  accountFormLoadingWrapper.removeClass('hidden')
+  accountForm.addClass('hidden');
+
+  post(
+    API_VALIDATION_ENDPOINT,
+    formData,
+    // success
+    function (data) {
+      window.location = data.redirect_url
+    },
+    //error
+      function (response) {
+        handleErrors(response)
+        // remove the disable attribute + reset the styl of the button
+        onSubmitEnd(accountForm, signupButton)
+          // Hide the webflow animation turned with webflow interaction feature when click on form submission button
+        // resetFieldStatus(accountDomainField);
+        // resetFieldStatus(companyDomainField);
+        accountDomainText.remove(classValidText);
+        accountDomainWrapper.addClass('hidden');
+        accountDomainEditWrapper.removeClass('hidden');
+        accountFormLoadingWrapper.addClass('hidden')
+        accountForm.removeClass('hidden');
+    },
+    //complete
+    function (){
+    }
+  )
 }
 
 // once page is fully loaded
@@ -740,71 +890,82 @@ Webflow.push(function () {
   resetLocalStorageFields();
   Enablefields();
 
+  // listen click on the edito button of the domain field (step 2)
   accountDomainEditButton.on('click',function(){
-    accountDomainEditWrapper.css('display','block');
-    accountDomainWrapper.css('display','none');
+    accountDomainEditWrapper.removeClass('hidden');
+    accountDomainWrapper.addClass('hidden');
   })
-  
+
+  // listen click on the save button of the domain field (step 2)
   accountDomainSaveButton.on('click',function(){
 
+    var accountDomainSatus = accountDomainVerify('warning',accountDomainField.val(), false);
+    if(accountDomainSatus == 'valid'){
+      accountDomainEditWrapper.addClass('hidden');
+      accountDomainWrapper.removeClass('hidden');
+      accountDomainSubdomainString.empty().text(accountDomainField.val());
 
-    var accountDomainVerifiedStatus = accountDomainVerify('warning');
-
-    if(accountDomainVerifiedStatus == 'valid'){
-      accountDomainEditWrapper.css('display','none');
-      accountDomainWrapper.css('display','block');
     }
-  })
+  });
 
-  // checking the fields after any blur event
+  // checking the email field when leaving the field
   emailField.on('blur', function() {
     emailVerify('warning');
   })
+
+  // checking the company domain field when leaving the field
   companyDomainField.on('blur', function() {
     companyDomainVerify('warning');
   })
 
+  // checking the company domain field when 1s after a keyup event
   companyDomainField.keyup(function() {
     clearTimeout(delayTimer); // Clear the previous timer, if any
     delayTimer = setTimeout(function() {
       companyDomainVerify('warning');
-    }, 1500); 
+    }, 1000); 
   });
 
-  accountDomainField.on('blur', function() {
-    accountDomainVerify('warning');
-  })
-  
+  // checking the account domain field when 1s after a keyup event
+  accountDomainField.keyup(function() {
+    clearTimeout(delayTimer); // Clear the previous timer, if any
+    delayTimer = setTimeout(function() {
+      accountDomainVerify('warning',accountDomainField.val(), false);
+    }, 1000); 
+  });
 
-  // checking the fields after any blur event
-  emailField.on('blur', function() {
-    emailVerify('warning');
+  // checking the account domain field when leaving the field
+  accountDomainField.on('blur', function() {
+    accountDomainVerify('warning',$(this).val(), false);
   })
   
+  // checking the full name field when leaving the field
   fullnameField.on('blur', function() {
     fullnameVerify('warning');
   })
   
+  // checking the password field when leaving the field
   passwordField.on('blur', function(){
     passwordVerify('warning');
   })
   
-  //checking the fields after key up event for all field exept password
+  // checking the email field when 1s after a keyup event
   emailField.keyup(function() {
     clearTimeout(delayTimer); // Clear the previous timer, if any
     delayTimer = setTimeout(function() {
       emailVerify('warning');
-    }, 1500); 
+    }, 1000); 
   });
   
+    // checking the fullname field when 1s after a keyup event
   fullnameField.keyup(function() {
     clearTimeout(delayTimer);
     delayTimer = setTimeout(function() {
       fullnameVerify('warning');
-    }, 1500); 
+    }, 1000); 
   });
   
-  // for password field we want live validation, no delay
+  // checking password field without delay right after typing
   passwordField.on('input', function(){
     passwordVerify('warning');
   })
@@ -874,12 +1035,52 @@ Webflow.push(function () {
 
 
   })
+ 
+  // Used to trigger the function that will create the user through account manager API Once the captach is completed (step 1)
+  window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm;
 
-  // Once the captach is completed, then trigger the function to create user
-  window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm
-
-
+  // submission account form (step 2)
   accountForm.submit(function (event){
+    event.preventDefault();
+    event.stopPropagation();
+    
+   
+    var form = $(this);
+    var accountDomainStatus = getFieldStatusStorage(account_domain_key);
+    var companyDomainStatus = getFieldStatusStorage(company_domain_key);
+    var status = 'error';
+    var messaging = 'Please check fields with error, then submit'
+
+    if (accountDomainStatus !== 'valid' || companyDomainStatus !== 'valid') {
+      companyDomainVerify(status);
+      accountDomainVerify(status,companyDomainField.val(),false);
+      handleFormStatus (form,status,messaging);
+
+      return false; 
+    }
+
+    else{
+      status = 'valid';
+      window.localStorage.removeItem(account_domain_key + '-status');
+      window.localStorage.removeItem(company_domain_key + '-status');
+
+
+      let formData = {
+        company_domain: companyDomainField.val(),
+        account_domain: accountDomainField.val()
+    
+      }
+      if(window.localStorage.getItem(plan_name_key)
+        && window.localStorage.getItem(plan_name_key) == 'starter'
+        && window.localStorage.getItem(plan_period_key) 
+        && window.localStorage.getItem(plan_period_key) == 'monthly') {
+        formData['account_subscription'] = {
+            helpdesk: 'starter-monthly-usd-4'
+        }
+      }
+      onSubmitStart(accountForm, signupButton)
+      onSubmitAccountSignupForm(formData);
+    }
   })
 
 })

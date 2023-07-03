@@ -28,25 +28,31 @@ input:hover {
 }
 
 .field-valid {
-  border: 2px solid #161616;
+  border-color:#161616;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
+}
 
-
+.text-valid {
+  background-repeat: no-repeat;
+  background-position: 100%;
+  background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854b5cf942a94a122851_check_circle.svg");
 }
 
 .field-warning {
-  border: 2px solid #FDAB40;
+  border-color: #FDAB40;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854bbe24d8b37e6b636f_smallerror.svg");
 }
 
 .field-error {
-  border: 2px solid #D6384D;
+  border-color: #D6384D;
   background-image: url("https://uploads-ssl.webflow.com/5e4ff204e7b6f80e402d407a/6488854c6767342ea44089b6_error.svg");
 }
 
 .field-message-container{
   position: absolute;
   font-size: 12px;
+  line-height: 1.5;
+
 }
 
 li.message-warning{
@@ -71,5 +77,35 @@ li.message-valid{
 }
 
 #account_domain-message-container{
-  bottom:8px;
+  bottom:14px;
+}
+
+.form-input-append{
+  background-image: none !important;
+}
+
+
+@keyframes trembling {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.warning-message-trembling {
+  animation: trembling 0.5s infinite;
 }
