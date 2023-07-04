@@ -494,7 +494,8 @@ if (countFreshchat === 1) {
 // now we show all published elements from webflow
 // and filter if we have any duplicates in the dropdown elements list
 
-const listElements = document.getElementById('w-dropdown-list-20').getElementsByClassName('w-dyn-item')
+const elContainer = document.getElementById('w-dropdown-list-20')
+const listElements = elContainer && elContainer.getElementsByClassName('w-dyn-item')
 // filter the ones already hidden
 const filteredEmptyList = Array.from(listElements).filter(li => !li.firstElementChild.classList.contains('w-condition-invisible'))
 
