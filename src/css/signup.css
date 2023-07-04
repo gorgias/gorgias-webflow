@@ -1,3 +1,15 @@
+input {
+  background-repeat: no-repeat;
+}
+
+input[name='fullname'],
+input[name='email'],
+input[name='company_domain'],
+input[name='account_domain']{
+
+  background-position: 98% 50%;
+}
+
 input:focus,
 input:hover {
   outline: none;
