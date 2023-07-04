@@ -1,3 +1,5 @@
+const localPath = window.location.pathname
+
 function displayDefaultCustomerLogosList(logosToSelect) {
   setTimeout(function() {
     
@@ -16,18 +18,14 @@ function displayDefaultCustomerLogosList(logosToSelect) {
   }, 3000); // 3 seconds
 }
 
-if (typeof path === 'undefined') {
-  var path = window.location.pathname; // Define the path variable
-}
-
-if (path === '/pages/home-draft' || path === '/demo') {
+if (localPath === '/pages/home-draft' || localPath === '/demo') {
   var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
   if(logosToSelect.length > 0){
       displayDefaultCustomerLogosList(logosToSelect);
   }
 }
 
-if (path === '/demo-test') {
+if (localPath === '/demo-test') {
   // in case of add blocker show new layout since it is hidden
   setTimeout(function() {
     const logos = document.getElementsByClassName("customer_logos-collection-wrapper");
