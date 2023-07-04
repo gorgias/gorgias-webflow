@@ -16,6 +16,8 @@ function displayDefaultCustomerLogosList(logosToSelect) {
   }, 3000); // 3 seconds
 }
 
+var path = typeof path !== 'undefined' ? path : window.location.pathname
+
 if (path === '/pages/home-draft' || path === '/demo') {
   var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
   if(logosToSelect.length > 0){
@@ -31,5 +33,4 @@ if (path === '/demo-test') {
     hiddenElementTest.style.display = 'block'
     displayDefaultCustomerLogosList(logos)
   }, 2000)
-  
 }
