@@ -377,10 +377,20 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
   }
   var verifyStatus = verifyStatus;
   var verifyMessage = "";
+  
 
   // Before calling the cloud function, Check if the accoun_domain has been already submitted
    // If it already exists, retrieve the existing data and append the new key/value
-   var accountSubdomainsApproved = JSON.parse(localStorage.getItem('account-subdomains-approved'));
+
+  try {
+    var accountSubdomainsApproved = JSON.parse(localStorage.getItem('account-subdomains-approved'));
+  } catch (error) {
+    var accountSubdomainsApproved = {}
+    localStorage.removeItem('account-subdomains-approved');
+  }
+
+
+  
   if (localStorage.getItem('account-subdomains-approved') === null || !accountSubdomainsApproved.hasOwnProperty(account_domain_submitted) ) {
     var API_BASE_URL = "https://us-central1-gorgias-growth-production.cloudfunctions.net/check_helpdesk_domain";
     var data = {'account_name_predicted':account_domain_submitted};
