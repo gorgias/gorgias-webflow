@@ -14,6 +14,7 @@ function displayDefaultCustomerLogosList(logosToSelect) {
     // If none of the elements are displayed, display the first one
     if (noneDisplayed) {
       logosToSelect[0].style.display = "block";
+      logosToSelect[6].style.display = "block"; // for mobile
     }
   }, 3000); // 3 seconds
 }
