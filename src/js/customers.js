@@ -493,27 +493,28 @@ if (countFreshchat === 1) {
 // since we changed cms for helpdesk elements
 // now we show all published elements from webflow
 // and filter if we have any duplicates in the dropdown elements list
-
-const elContainer = document.getElementById('w-dropdown-list-20')
-const listElements = elContainer && elContainer.getElementsByClassName('w-dyn-item')
-// filter the ones already hidden
-const filteredEmptyList = Array.from(listElements).filter(li => !li.firstElementChild.classList.contains('w-condition-invisible'))
-
-// Create an array to store unique span names
-const spanNames = []
-
-// Iterate over the elements
-for (let i = 0; i < filteredEmptyList.length; i++) {
-  // Get the span element within each element
-  if (filteredEmptyList[i]) {
-    // Get the span name
-    const spanName = filteredEmptyList[i].querySelector('span').innerHTML
-    if (spanNames.includes(spanName)) {
-      // Remove the duplicate element from the DOM
-      filteredEmptyList[i].remove()
-    } else {
-      // Add the span name to the array
-      spanNames.push(spanName)
+window.onload = function() {
+  const elContainer = document.getElementById('w-dropdown-list-20')
+  const listElements = elContainer && elContainer.getElementsByClassName('w-dyn-item')
+  // filter the ones already hidden
+  const filteredEmptyList = Array.from(listElements).filter(li => !li.firstElementChild.classList.contains('w-condition-invisible'))
+  
+  // Create an array to store unique span names
+  const spanNames = []
+  
+  // Iterate over the elements
+  for (let i = 0; i < filteredEmptyList.length; i++) {
+    // Get the span element within each element
+    if (filteredEmptyList[i]) {
+      // Get the span name
+      const spanName = filteredEmptyList[i].querySelector('span').innerHTML
+      if (spanNames.includes(spanName)) {
+        // Remove the duplicate element from the DOM
+        filteredEmptyList[i].remove()
+      } else {
+        // Add the span name to the array
+        spanNames.push(spanName)
+      }
     }
   }
-}
+};
