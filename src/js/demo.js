@@ -1,7 +1,7 @@
 // demo functions
 window.addEventListener("message", function(event) {
     // when form is ready
-    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && event.data.id === "ef92ccce-92bd-4010-847a-793f56b6b353") {
+    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
   
         // if url contains reamaze --> autocomplete current_helpdesk field if it exist and then and hide it
         if($('div.hs_demo_current_helpdesk').length  && location.href.includes('reamaze') == true){
@@ -59,10 +59,10 @@ function q(a){return function(){ChiliPiper[a].q=(ChiliPiper[a].q||[]).concat([ar
 
 // form submitted
 window.addEventListener("message", function(event) {
-    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmit' && event.data.id === "ef92ccce-92bd-4010-847a-793f56b6b353") {
+    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmit' && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
         
         ChiliPiper.submit("gorgias", "inbound-router",{
-            formId:'hsForm_ef92ccce-92bd-4010-847a-793f56b6b353',
+            formId:'hsForm_6dd387bc-abfa-42cd-ba76-73aa3575b6f8',
             domElement: "#wrapper-chilipiper-embed",
             // lead's submission has been received by Chili Piper and a routing attempt has been made, whether successful or not
             onRouted: function () {
