@@ -272,7 +272,7 @@ function emailVerify(verifyStatus){
     handleFieldStatus(emailField,verifyStatus,verifyMessage);
     return verifyStatus;
   } else if (!regexEmail.test(emailField.val())) {
-    verifyMessage =  'Your email is not correct';
+    verifyMessage =  'The email you entered is incomplete';
     handleFieldStatus(emailField,verifyStatus,verifyMessage);
     return verifyStatus;
   }
