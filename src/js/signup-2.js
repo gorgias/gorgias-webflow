@@ -862,6 +862,8 @@ function onSubmitAccountSignupForm(formData) {
     formData,
     // success
     function (data) {
+      // before redirecting, remove local storage to avoid confusion in case of resigning up
+      localStorage.removeItem('account-subdomains-approved');
       window.location = data.redirect_url
     },
     //error
