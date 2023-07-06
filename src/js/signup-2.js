@@ -25,7 +25,8 @@ var signupButtonLoading = $('#signup-button-loading') || "";
 var ssoGoogleButton = $('a[id="sso-button-google"]') || "";
 var userForm = $('form#signup-user-form');
 var accountForm = $('form#signup-account-form');
-var accountFormLoadingWrapper = $('div#account-form-loading-wrapper');
+var accountFormWrapper = $('#signup-account-form-wrapper');
+var accountFormLoadingWrapper = $('div#signup-account-form-loading-wrapper');
 const token_key = 'x-account-manager-session-token';
 
 
@@ -272,7 +273,7 @@ function emailVerify(verifyStatus){
     handleFieldStatus(emailField,verifyStatus,verifyMessage);
     return verifyStatus;
   } else if (!regexEmail.test(emailField.val())) {
-    verifyMessage =  'Your email is not correct';
+    verifyMessage =  'The email you entered is incomplete';
     handleFieldStatus(emailField,verifyStatus,verifyMessage);
     return verifyStatus;
   }
@@ -377,10 +378,20 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
   }
   var verifyStatus = verifyStatus;
   var verifyMessage = "";
+  
 
   // Before calling the cloud function, Check if the accoun_domain has been already submitted
    // If it already exists, retrieve the existing data and append the new key/value
-   var accountSubdomainsApproved = JSON.parse(localStorage.getItem('account-subdomains-approved'));
+
+  try {
+    var accountSubdomainsApproved = JSON.parse(localStorage.getItem('account-subdomains-approved'));
+  } catch (error) {
+    var accountSubdomainsApproved = {}
+    localStorage.removeItem('account-subdomains-approved');
+  }
+
+
+  
   if (localStorage.getItem('account-subdomains-approved') === null || !accountSubdomainsApproved.hasOwnProperty(account_domain_submitted) ) {
     var API_BASE_URL = "https://us-central1-gorgias-growth-production.cloudfunctions.net/check_helpdesk_domain";
     var data = {'account_name_predicted':account_domain_submitted};
@@ -855,13 +866,15 @@ function resetLocalStorageFields () {
 function onSubmitAccountSignupForm(formData) {
   var API_VALIDATION_ENDPOINT = '/account/submit';
   accountFormLoadingWrapper.removeClass('hidden')
-  accountForm.addClass('hidden');
+  accountFormWrapper.addClass('hidden');
 
   post(
     API_VALIDATION_ENDPOINT,
     formData,
     // success
     function (data) {
+      // before redirecting, remove local storage to avoid confusion in case of resigning up
+      localStorage.removeItem('account-subdomains-approved');
       window.location = data.redirect_url
     },
     //error
@@ -876,7 +889,7 @@ function onSubmitAccountSignupForm(formData) {
         accountDomainWrapper.addClass('hidden');
         accountDomainEditWrapper.removeClass('hidden');
         accountFormLoadingWrapper.addClass('hidden')
-        accountForm.removeClass('hidden');
+        accountFormWrapper.removeClass('hidden');
     },
     //complete
     function (){
