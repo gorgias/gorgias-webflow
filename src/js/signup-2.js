@@ -25,7 +25,8 @@ var signupButtonLoading = $('#signup-button-loading') || "";
 var ssoGoogleButton = $('a[id="sso-button-google"]') || "";
 var userForm = $('form#signup-user-form');
 var accountForm = $('form#signup-account-form');
-var accountFormLoadingWrapper = $('div#account-form-loading-wrapper');
+var accountFormWrapper = $('#signup-account-form-wrapper');
+var accountFormLoadingWrapper = $('div#signup-account-form-loading-wrapper');
 const token_key = 'x-account-manager-session-token';
 
 
@@ -865,7 +866,7 @@ function resetLocalStorageFields () {
 function onSubmitAccountSignupForm(formData) {
   var API_VALIDATION_ENDPOINT = '/account/submit';
   accountFormLoadingWrapper.removeClass('hidden')
-  accountForm.addClass('hidden');
+  accountFormWrapper.addClass('hidden');
 
   post(
     API_VALIDATION_ENDPOINT,
@@ -888,7 +889,7 @@ function onSubmitAccountSignupForm(formData) {
         accountDomainWrapper.addClass('hidden');
         accountDomainEditWrapper.removeClass('hidden');
         accountFormLoadingWrapper.addClass('hidden')
-        accountForm.removeClass('hidden');
+        accountFormWrapper.removeClass('hidden');
     },
     //complete
     function (){
