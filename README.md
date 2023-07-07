@@ -1,40 +1,40 @@
 # Custom code for gorgias.com (hosted on webflow)
 
 ## About The Project
-This repository contains all the custom code (JS or CSS) that we need on gorgias.com
-Instead of embedding our code in the admin interface of webflow, or even directly in the body of pages indvidually using webflow embed element, we decided to centralize it in one place
+This repository contains all the custom code (JS or CSS) used on gorgias.com
+While gorgias.com is built with webflow, a low code CMS platform, it requires sometimes to add custom code for some specific use cases. You can always add [Embed custom code through webflow](https://university.webflow.com/lesson/custom-code-embed), but it's not a code practise at scale: It's hard to maintain as we don't know where is what, and it doesn't allow streamline collaboration.
+
+So as alternative, we built this github repository to centralize all of our custom code
 
 ### Benefits
-- easily maintain the custom
-- Increase website performance: not repeated code, better usage of cach
+- the custom code is easier to maintain
+- Multiple stackholders can work in parallel
+- It increases website performance: not repeated code, better usage of cache, etc.
 
-## How does it work? (WIP)
-- CDN using JS deliver
-- Critical scripts are loaded from webflow admin interface, in head / sync
-- Other scripts are called from /src/main.js
+## How does it work?
+1. The code is stored on this Github repository
+2. We use jdDelivr as CDN to deploy our repo
+3. the critical scripts are loaded directly the head of our website, within the webflow admin backoffice [here](https://webflow.com/dashboard/sites/gorgiasio/code)
+4. Critical scripts are loaded from webflow admin , in the <head> in order to not load async. 
+5. For non-critical scripts are called from /src/main.js, which is loaded async, for performances purposes.
+4. In this head, we also have a routing logic that allow us to work on local and test our code releasing (more info in the above section "How to use local repository to develop?")
 
-## Structure of the repo
-Repo to organize all Webflow custom codes including :
-- JS files
-- CSS files
+### jsDelivr & Deployement
+After every branch merges, it can take take up to 7 days to jsDelivr to update @latest version of files hosted on Github. To avoid this, JsDelivr offers a purge functionnality. That being said, it can still take a few hours.
 
-## jsDelivr
-
-After every commit, it may takes by default up to 7 days to jsDelivr to update @latest version of files hosted on Github. To avoid this, JsDelivr offers a purge functionnality, but it doesn't work properly.
-
-To prevent the delay, each time you publish a branch, update the commitVersion in the head of the website admin with the latest branch version published (and don't forget to publish the website)
+So after each branch merge, it requires to execute manually the 2 following steps
+1. Purge the CDN version of the files you've updated (format: https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest/{{path}}/{{file}}.min.ext)
+2. Update the "commitVersion" variable in the head of the website through the webflow admin [here](https://webflow.com/dashboard/sites/gorgiasio/code) with the latest branch version published (and don't forget to publish the website).
 - Here is where you can find the latest branch Version in Github: https://share.getcloudapp.com/7KuzZ8gD. You can also You can also run to command line git branch -v
 - Here is where you have to update the commitVersion in Webflow: https://share.getcloudapp.com/mXuDW6nY
 
 
-## Debug mode
-
 ### How to use local repository to develop
-You can test your local code before deploying by using Visual code Studio and the extension Live server
+You can test your local code before deployement by using Visual code Studio and the extension Live server
 - Once the extension is installed, click on the bottom right corner button "Go live": https://share.getcloudapp.com/6quboede
-- It will open http://127.0.0.1:5500/. It means all good, your local code is now runing on a local server. You can close the tab
-- Then, add "?debug=gorgias" in the gorgias URL of the page want to test your local code
-- In the admin of the webflow website (<head> tag -> https://share.getcloudapp.com/7KuzZ8BW), a function replaces all remote repository URLs by the local ones when "?debug=gorgias" is in the URL 
+- It will open http://127.0.0.1:5500/. It means your local code is now runing on a local server. You can close the tab.
+- Then, add "?debug=gorgias" in the gorgias URL page of the page want to test with your local code. This trick will load your local files instead of the CDN ones.
+- Once ever
 
 
 ## Github Branch naming convention
@@ -56,10 +56,9 @@ You can test your local code before deploying by using Visual code Studio and th
 - improve/{{what's-your-update}} --> e.g. improve/readme-purge
 
 
-## Expertiments (WIP)
-We use posthog.com to run experiments. The script /js/posthog.js is loaded in the head of the webflow (from webflow admin backend) end is embeded in segment.com snippet.
+## Expertiments and A/B testing
+We run A/B testing our our website to learn and improve website performances. We use posthog.com to run experiments. The script /js/posthog.js is loaded in the head of the webflow (from webflow admin backoffice) end is embeded in segment.com snippet in order to avoid any tracking or flicker issue.
 
-In case of adblocker installed on visitor browser, segment snippet won't load. It also means posthog script won't log.
-To prevent unexpected issue on the frontend interface, sometimes you will have to create function to update the DOM in order to fit with the default behavior in case of ad blocker because your XP won't work.
-Because /js/posthog.js won't be loaded, we created /js/experiments.js. You can create functions that will make sure the default behavior of your experiment is triggered
-E.g.: customer logos are by default hidden on webflow. A posthog experiment display only a few of them. If the adblocker is detected, then the posthog experiment won't load customer logos. To by pass this, we have created a function in /js/experiments that will display default logos after 3 seconds in case no logos have been displayed by the posthog scripts.
+That being said - if adblockers are installed on a a visitor browser, there is a risk for Segment snippet to not load. In that case, it also means posthog script won't log.
+Depending of the A/B testing purposes, it can create unexpected issue on the frontend.  To by path this issue, we have created /js/experiments.js. This is where you will create functions that will handle the default behavior (so in case of the ads-blocker is triggers)
+E.g.: We have a list of customer logos hidden by default in webflow. A posthog experiment display only a few of them. If the adblocker is detected, then the posthog experiment won't load customer logos. To bypass this, we have created a function in /js/experiments that will display default logos after 3 seconds in case no logos have been displayed by the posthog scripts.
