@@ -638,7 +638,6 @@ function handleErrors(response) {
 
   if (response) {
       if (response.responseJSON) {
-        console.log(response.responseJSON)
         for (const field of Object.keys(response.responseJSON)) {
           const error = response.responseJSON[field]
           const inputField = $('input[name=' + field + ']')
@@ -723,28 +722,19 @@ function signupAccountFormHandler(form){
       if (data.redirect_url) {
         window.location = '/signup-2'
       }
-      /*
+      
       if (data.shopify) {
-        const companyDomainInput = $(COMPANY_DOMAIN_INPUT_SELECTOR)
-        const accountDomainInput = $(ACCOUNT_DOMAIN_INPUT_SELECTOR)
-        if (!companyDomainInput.val() && data.shopify.domain) { companyDomainInput.val(data.shopify.domain) }
-        if (!accountDomainInput.val() && data.shopify.name) { accountDomainInput.val(data.shopify.name) }
+        if (!companyDomainField.val() && data.shopify.domain) { companyDomainField.val(data.shopify.domain) }
+        if (!accountDomainField.val() && data.shopify.name) { accountDomainField.val(data.shopify.name) }
       }
       if (data.sso) {
-        const companyDomainInput = $(COMPANY_DOMAIN_INPUT_SELECTOR)
-        // in case the previous step come from SSO, if the company domain field is empty but we retreive the company domain from previous SSO step, then let's autocomplete the field
-        // question: How do we do that on the backend, what's the logic?
-        if (!companyDomainInput.val() && data.sso.company_domain) { companyDomainInput.val(data.sso.company_domain) }
-        // in case the previous step come from SSO, if the account domain field is empty but we retreive the account domain from previous SSO step, then let's autocomplete the field
-        // question: How is it possible since the account is not yet created?
-        const accountDomainInput = $(ACCOUNT_DOMAIN_INPUT_SELECTOR)
-        if (!accountDomainInput.val() && data.sso.account_domain) { accountDomainInput.val(data.sso.account_domain) }
+        if (!companyDomainField.val() && data.sso.company_domain) { companyDomainField.val(data.sso.company_domain) }
+        if (!accountDomainField.val() && data.sso.account_domain) { accountDomainField.val(data.sso.account_domain) }
       }
-      // question: what are the data passed in GORGIAS_INIT_CALLBACK
       if (typeof window.GORGIAS_INIT_CALLBACK === 'function') {
         window.GORGIAS_INIT_CALLBACK(data);
       }
-      */
+  
     },
     // error
     function(response){
