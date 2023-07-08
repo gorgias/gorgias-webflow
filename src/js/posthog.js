@@ -17,6 +17,7 @@ if(
     })
 }
 
+if (path === '/demo-test') handleFeatureFlagsDemoTest()
 
 if (path === '/pages/home-draft' || path === '/demo') {
   var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
@@ -61,5 +62,43 @@ if (path === '/pages/home-draft' || path === '/demo') {
       // posthog.feature_flags.clearOverrides();
     })
   }
-
 } 
+
+// Callback function to handle feature flags for /demo-test path
+function handleFeatureFlagsDemoTest() {
+  const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
+
+  posthog.onFeatureFlags(() => {
+    if (posthog.getFeatureFlag('layout-test') === 'test') {
+      const layout = document.getElementsByClassName('page_demo-new-layout')[0]
+      if (layout) {
+        layout.style.display = 'block'
+        const loc_code = sessionStorage.getItem("loc_code")
+
+        if (loc_code && loc_code != "") {
+          const countryToWebflowIdentifier = {
+            "au": 'australia',
+            "ca": 'canada',
+            "fr": 'france',
+            "uk": 'united-kingdom',
+            "gb": 'united-kingdom',
+            "us": 'united-states'
+          }
+
+          if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
+            logosToSelect[0].style.display = "none"
+            const showLogosByCountry = Array.from(logosToSelect).filter(el => el.classList.contains(countryToWebflowIdentifier[loc_code]))
+            showLogosByCountry.forEach(el => {
+              el.style.display = 'block'
+            })
+          } else {
+            logosToSelect[0].style.display = 'block'
+            logosToSelect[6].style.display = 'block' //mobile one
+          }
+        }
+      }
+    } else {
+      window.location = 'https://gorgiasio.webflow.io/demo'
+    }
+  })
+}
