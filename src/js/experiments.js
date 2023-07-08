@@ -12,11 +12,12 @@ function displayDefaultCustomerLogosList(logosToSelect) {
     // If none of the elements are displayed, display the first one
     if (noneDisplayed) {
       logosToSelect[0].style.display = "block";
+      logosToSelect[6].style.display = "block"; // for mobile
     }
   }, 3000); // 3 seconds
 }
 
-if (path === '/pages/home-draft' || path === '/demo') {
+if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
   var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
   if(logosToSelect.length > 0){
       displayDefaultCustomerLogosList(logosToSelect);
