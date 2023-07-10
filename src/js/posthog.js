@@ -67,38 +67,43 @@ if (path === '/pages/home-draft' || path === '/demo') {
 // Callback function to handle feature flags for /demo-test path
 function handleFeatureFlagsDemoTest() {
   const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
-
-  posthog.onFeatureFlags(() => {
-    if (posthog.getFeatureFlag('layout-test') === 'test') {
-      const layout = document.getElementsByClassName('page_demo-new-layout')[0]
-      if (layout) {
-        layout.style.display = 'block'
-        const loc_code = sessionStorage.getItem("loc_code")
-
-        if (loc_code && loc_code != "") {
-          const countryToWebflowIdentifier = {
-            "au": 'australia',
-            "ca": 'canada',
-            "fr": 'france',
-            "uk": 'united-kingdom',
-            "gb": 'united-kingdom',
-            "us": 'united-states'
+  checkAndReloadFeatureFlags()
+    .then(() => {
+      posthog.onFeatureFlags(() => {
+        if (posthog.getFeatureFlag('layout-test') === 'test') {
+          const layout = document.getElementsByClassName('page_demo-new-layout')[0]
+          if (layout) {
+            layout.style.display = 'block'
+            showLogos(logosToSelect)
           }
-
-          if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
-            logosToSelect[0].style.display = "none"
-            const showLogosByCountry = Array.from(logosToSelect).filter(el => el.classList.contains(countryToWebflowIdentifier[loc_code]))
-            showLogosByCountry.forEach(el => {
-              el.style.display = 'block'
-            })
-          } else {
-            logosToSelect[0].style.display = 'block'
-            logosToSelect[6].style.display = 'block' //mobile one
-          }
+        } else {
+          window.location = 'https://gorgiasio.webflow.io/demo'
         }
-      }
+      })
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+}
+// checks if the posthog.onFeatureFlags event listener is available. 
+// If it is available, the Promise resolves. If it is not available, the posthog.reloadFeatureFlags() method is called to reload the feature flags. 
+// After reloading, it checks again if the event listener is now available. 
+// If it is, the Promise resolves. If it is still not available, the Promise rejects with an error message.
+
+function checkAndReloadFeatureFlags() {
+  return new Promise((resolve, reject) => {
+    if (typeof posthog.onFeatureFlags === 'function') {
+      resolve()
     } else {
-      window.location = 'https://gorgiasio.webflow.io/demo'
+      posthog.reloadFeatureFlags().then(() => {
+        if (typeof posthog.onFeatureFlags === 'function') {
+          resolve()
+        } else {
+          reject('Unable to reload feature flags.')
+        }
+      }).catch((error) => {
+        reject('Error reloading feature flags: ' + error)
+      })
     }
-  })
+  });
 }
