@@ -5,6 +5,17 @@ const plan_period_key = 'period';
 const password_key = 'password';
 const company_domain_key = 'company_domain';
 const account_domain_key = 'account_domain';
+const TOKEN_KEY = 'x-account-manager-session-token';
+const classErrorField = 'field-error';
+const classWarningField = 'field-warning';
+const classValidField = 'field-valid';
+const classValidText = 'text-valid';
+const classErrorMessage = 'message-error';
+const classWarningMessage = 'message-warning';
+const btnWaitString = 'Please wait';
+const classValidMessage = 'message-valid';
+const SIGNUP_ACCOUNT_FORM_PAGE = '/signup-2/account';
+
 var emailField = $('#signup-user-form input[name="'+ email_key + '"]') || "";
 var fullnameField = $('#signup-user-form input[name="'+ fullname_key + '"]') || "";
 var passwordField = $('#signup-user-form input[name="'+ password_key + '"]') || "";
@@ -13,7 +24,6 @@ var accountDomainEditWrapper = $('#account-domain-edit-wrapper') || "";
 var accountDomainWrapper = $('#account-domain-wrapper') || "";
 var accountDomainLoaderWrapper = $('#account-domain-loader-wrapper') || "";
 var accountDomainEditLoaderWrapper = $('#account-domain-edit-loader-wrapper') || "";
-
 var accountDomainSaveButton = $('a#account-domain-save-button') || "";
 var accountDomainText = $('#account-domain-text') || "";
 var accountDomainSubdomainString = $('#account-subdomain-string') || "";
@@ -27,17 +37,6 @@ var userForm = $('form#signup-user-form');
 var accountForm = $('form#signup-account-form');
 var accountFormWrapper = $('#signup-account-form-wrapper');
 var accountFormLoadingWrapper = $('div#signup-account-form-loading-wrapper');
-const token_key = 'x-account-manager-session-token';
-
-const classErrorField = 'field-error';
-const classWarningField = 'field-warning';
-const classValidField = 'field-valid';
-const classValidText = 'text-valid';
-const classErrorMessage = 'message-error';
-const classWarningMessage = 'message-warning';
-const btnWaitString = 'Please wait';
-const classValidMessage = 'message-valid';
-const SIGNUP_ACCOUNT_FORM_PAGE = '/signup-2/account';
 
 var delayTimer;
 
@@ -66,7 +65,7 @@ function initiateMessageContainer (){
 
   $.each(fields, function(index, value) {    
       if(value.length){
-          $('<div id = "' + index + '-message-container" class="field-message-container" style="position:absolute;"></div>').insertAfter(value);
+          $('<div id = "' + index + '-message-container" class="field-message-container"></div>').insertAfter(value);
       }
   })    
 }
@@ -169,12 +168,12 @@ function resetFieldStatus (field){
 // used to fetch the sessionToken and update the SSO link
 function updateLinksForSession(sessionToken) {
 
-    if (!sessionToken) { sessionToken = window.localStorage.getItem(token_key) }
+    if (!sessionToken) { sessionToken = window.localStorage.getItem(TOKEN_KEY) }
     if (!sessionToken) { return }
     $("a.session-link").each(function () {
         const link = $(this)
         const href = new URL(link.attr("href"))
-        href.searchParams.set(token_key, sessionToken)
+        href.searchParams.set(TOKEN_KEY, sessionToken)
         link.attr("href", href.toString())
     })
 }
@@ -194,9 +193,9 @@ function post (endpoint, data, success, error, complete) {
       },
       crossDomain: true,
       beforeSend: function (jqXHR) {
-          const sessionToken = window.localStorage.getItem(token_key)
+          const sessionToken = window.localStorage.getItem(TOKEN_KEY)
           if (sessionToken) {
-              jqXHR.setRequestHeader(token_key, sessionToken)
+              jqXHR.setRequestHeader(TOKEN_KEY, sessionToken)
           }
       },
       success: function (data, status, jqXHR) {
@@ -206,9 +205,9 @@ function post (endpoint, data, success, error, complete) {
         if (typeof complete === 'function') {
           complete(jqXHR);
         }
-        const sessionToken = jqXHR.getResponseHeader(token_key)
+        const sessionToken = jqXHR.getResponseHeader(TOKEN_KEY)
         if (sessionToken) {
-          window.localStorage.setItem(token_key, sessionToken)
+          window.localStorage.setItem(TOKEN_KEY, sessionToken)
           updateLinksForSession(sessionToken)
         }
           
@@ -221,15 +220,14 @@ function post (endpoint, data, success, error, complete) {
 // used to to fetch url parameters, set a session token key as local storage and prefilled fields using url parameters
 function processURLSearchParams () {
 
-  var searchParams = new URLSearchParams(window.location.search)
-  var sessionToken = searchParams.get(token_key)
-  var sessionEmail = searchParams.get(email_key.toLowerCase());
-  var sessionEmail = searchParams.get(email_key.toLowerCase());
-  var sessionfullname = searchParams.get(fullname_key.toLowerCase());
-  var sessionPlanName = searchParams.get(plan_name_key.toLowerCase());
-  var sessionPlanPeriod = searchParams.get(plan_period_key.toLowerCase());
+  let searchParams = new URLSearchParams(window.location.search)
+  let sessionToken = searchParams.get(TOKEN_KEY)
+  let sessionEmail = searchParams.get(email_key.toLowerCase());
+  let sessionfullname = searchParams.get(fullname_key.toLowerCase());
+  let sessionPlanName = searchParams.get(plan_name_key.toLowerCase());
+  let sessionPlanPeriod = searchParams.get(plan_period_key.toLowerCase());
   if (sessionToken) {
-      window.localStorage.setItem(session_token_key, sessionToken)
+      window.localStorage.setItem(session_TOKEN_KEY, sessionToken)
       updateLinksForSession(sessionToken)
   }
   if(sessionEmail){
@@ -401,8 +399,8 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
       "data": JSON.stringify(data),
       beforeSend:
       function( xhr ) {
-        accountDomainLoaderWrapper.removeClass('hidden');
-        accountDomainEditLoaderWrapper.removeClass('hidden');
+        accountDomainLoaderWrapper.show();
+        accountDomainEditLoaderWrapper.show();
         accountDomainSubdomainString.addClass('skeleton-text');
       }
     };
@@ -422,26 +420,20 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
         account_domain: response.account_domain
       }      
       // Check if "account-subdomains-approved" exists in local storage
-      if (localStorage.getItem('account-subdomains-approved') === null) {
-        // If it doesn't exist, set it with the initial key/value
-        var data = {};
-        data[account_domain_submitted] = APIresponse.account_domain
-        localStorage.setItem('account-subdomains-approved', JSON.stringify(data));
-      }
-      else {
-        // If it already exists, retrieve the existing data and append the new key/value
-        accountSubdomainsApproved[account_domain_submitted] = APIresponse.account_domain;
-        localStorage.setItem('account-subdomains-approved', JSON.stringify(accountSubdomainsApproved));
-        verifyStatus = 'valid';
-      }
+      var data = localStorage.getItem('account-subdomains-approved') || {};
+      JSON.parse(data);
+      data[account_domain_submitted] = APIresponse.account_domain;
+      localStorage.setItem('account-subdomains-approved', JSON.stringify(data));
+      verifyStatus = 'valid';
+
 
     })
     .always(function (jqXHR, textStatus, errorThrown) {
       if( prefilled == true) {
         accountDomainPrefilled(APIresponse, verifyStatus);
       }
-      accountDomainLoaderWrapper.addClass('hidden');
-      accountDomainEditLoaderWrapper.addClass('hidden');
+      accountDomainLoaderWrapper.hide();
+      accountDomainEditLoaderWrapper.hide();
       accountDomainSubdomainString.removeClass('skeleton-text');
 
       handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
@@ -487,20 +479,20 @@ function accountDomainPrefilled(response, verifyStatus){
   // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
   if(domain_exist == true) {
     verifyMessage = "This workspace is not available, try another one"
-    accountDomainWrapper.addClass('hidden');
-    accountDomainEditWrapper.removeClass('hidden');
+    accountDomainWrapper.hide();
+    accountDomainEditWrapper.show();
   }
 
   if(!account_domain || account_domain == ''){
-    accountDomainWrapper.addClass('hidden');
-    accountDomainEditWrapper.removeClass('hidden');
+    accountDomainWrapper.hide();
+    accountDomainEditWrapper.show();
   }
 
   else{
     verifyStatus = 'valid';
     accountDomainField.val(account_domain);
     accountDomainSubdomainString.empty().text(account_domain);
-    accountDomainLoaderWrapper.addClass('hidden');
+    accountDomainLoaderWrapper.hide();
     accountDomainSubdomainString.removeClass('skeleton-text'); 
   }
 
@@ -527,11 +519,11 @@ function companyDomainVerify(verifyStatus){
   // if company Domain field is valid, we're going to prefilled the account domain field and input by extracting the company domain
   if(verifyStatus == 'valid'){
     //display the loader, account domain sections
-    accountDomainLoaderWrapper.removeClass('hidden');
-    accountDomainTextInfoWrapper.removeClass('hidden');
+    accountDomainLoaderWrapper.show();
+    accountDomainTextInfoWrapper.show();
 
     if(accountDomainEditWrapper.hasClass('hidden')){
-      accountDomainWrapper.removeClass('hidden');
+      accountDomainWrapper.show();
     }
     // extract the domain from company domain and check the account domain
     var extractedDomain = extractDomain(companyDomainField.val());
@@ -734,13 +726,6 @@ function signupAccountFormHandler(form){
       if (typeof window.GORGIAS_INIT_CALLBACK === 'function') {
         window.GORGIAS_INIT_CALLBACK(data);
       }
-  
-    },
-    // error
-    function(response){
-    },
-    //complete
-    function (){
     }
   )
 }
@@ -748,14 +733,14 @@ function signupAccountFormHandler(form){
 // once submission start - clean all alert messaging and customize the button (disable + update value) an disable all fields to avoid update
 function onSubmitStart(form, button) {
   form.find('input').prop("disabled", true);
-  button.addClass('hidden').css('dislplay','none');
-  signupButtonLoading.removeClass('hidden');
+  button.hide();
+  signupButtonLoading.show();
 }
   // once submission end - reset the submission button status and enable fields
 function onSubmitEnd(form, button) {
     form.find('input').prop("disabled", false);
-    button.removeClass('hidden');
-    signupButtonLoading.addClass('hidden');
+    button.show();
+    signupButtonLoading.hide();
 
 }
 
@@ -811,8 +796,8 @@ function resetLocalStorageFields () {
 // function to create the account using account manager API (step 2)
 function onSubmitAccountSignupForm(formData) {
   var API_VALIDATION_ENDPOINT = '/account/submit';
-  accountFormLoadingWrapper.removeClass('hidden')
-  accountFormWrapper.addClass('hidden');
+  accountFormLoadingWrapper.show()
+  accountFormWrapper.hide();
 
   post(
     API_VALIDATION_ENDPOINT,
@@ -832,10 +817,10 @@ function onSubmitAccountSignupForm(formData) {
         // resetFieldStatus(accountDomainField);
         // resetFieldStatus(companyDomainField);
         accountDomainText.remove(classValidText);
-        accountDomainWrapper.addClass('hidden');
-        accountDomainEditWrapper.removeClass('hidden');
-        accountFormLoadingWrapper.addClass('hidden')
-        accountFormWrapper.removeClass('hidden');
+        accountDomainWrapper.hide();
+        accountDomainEditWrapper.show();
+        accountFormLoadingWrapper.hide()
+        accountFormWrapper.show();
     },
     //complete
     function (){
@@ -852,8 +837,8 @@ Webflow.push(function () {
 
   // listen click on the edito button of the domain field (step 2)
   accountDomainEditButton.on('click',function(){
-    accountDomainEditWrapper.removeClass('hidden');
-    accountDomainWrapper.addClass('hidden');
+    accountDomainEditWrapper.show();
+    accountDomainWrapper.hide();
   })
 
   // listen click on the save button of the domain field (step 2)
@@ -861,8 +846,8 @@ Webflow.push(function () {
 
     var accountDomainSatus = accountDomainVerify('warning',accountDomainField.val(), false);
     if(accountDomainSatus == 'valid'){
-      accountDomainEditWrapper.addClass('hidden');
-      accountDomainWrapper.removeClass('hidden');
+      accountDomainEditWrapper.hide();
+      accountDomainWrapper.show();
       accountDomainSubdomainString.empty().text(accountDomainField.val());
 
     }
@@ -932,11 +917,12 @@ Webflow.push(function () {
   
   // used to display / hide the password field content using the button within the field
   $('#transformButton').on('click', function() {
-    currentType = $('#signup-user-form input[name="' + password_key+ '"]').attr('type');
+    currentType = passwordField.attr('type');
+    
     if (currentType === 'password') {
-      $('#signup-user-form input[name="' + password_key+ '"]').attr('type', 'text')
+      passwordField.attr('type', 'text')
     } else {
-      $('#signup-user-form input[name="' + password_key+ '"]').attr('type', 'password')
+      passwordField.attr('type', 'password')
     }
   })
 
@@ -962,9 +948,9 @@ Webflow.push(function () {
     signupButton.next("div[id*='-message-container']").empty();
 
     var form = $(this);
-    var fullnameStatus = getFieldStatusStorage(fullname_key);
-    var emailStatus = getFieldStatusStorage(email_key);
-    var passwordStatus = getFieldStatusStorage(password_key);
+    var fullnameStatus = getFieldStatusStorage(fullname_key + '-status');
+    var emailStatus = getFieldStatusStorage(email_key + '-status');
+    var passwordStatus = getFieldStatusStorage(password_key + '-status');
     var status = 'error';
     var messaging = 'Please check fields with error, then submit'
     
@@ -979,11 +965,8 @@ Webflow.push(function () {
     }
     else{
       status = 'valid';
-      window.localStorage.removeItem(email_key + '-status');
-      window.localStorage.removeItem(password_key + '-status');
-      window.localStorage.removeItem(fullname_key + '-status');
-
-
+      resetLocalStorageFields();
+    
       const DATADOG_BOT_USER_AGENT = 'Datadog/Synthetics';
       if (navigator.userAgent === DATADOG_BOT_USER_AGENT) {
         onSubmitUserSignupForm();
