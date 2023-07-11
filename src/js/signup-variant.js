@@ -15,6 +15,7 @@ const classWarningMessage = 'message-warning';
 const btnWaitString = 'Please wait';
 const classValidMessage = 'message-valid';
 const SIGNUP_ACCOUNT_FORM_PAGE = '/signup-2/account';
+const SIGNUP_FORM_PAGE = '/signup-2';
 
 var emailField = $('#signup-user-form input[name="'+ email_key + '"]') || "";
 var fullnameField = $('#signup-user-form input[name="'+ fullname_key + '"]') || "";
@@ -712,7 +713,7 @@ function signupAccountFormHandler(form){
     //success
     function (data) {
       if (data.redirect_url) {
-        window.location = '/signup-2'
+        window.location =  SIGNUP_FORM_PAGE;
       }
       
       if (data.shopify) {
