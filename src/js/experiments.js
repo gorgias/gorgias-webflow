@@ -1,6 +1,5 @@
 function displayDefaultCustomerLogosList(logosToSelect) {
-  setTimeout(function() {
-    
+  setTimeout(function () {
     // Check if none of the elements are displayed
     var noneDisplayed = true;
     for (var i = 0; i < logosToSelect.length; i++) {
@@ -17,9 +16,11 @@ function displayDefaultCustomerLogosList(logosToSelect) {
   }, 3000); // 3 seconds
 }
 
-if (path === '/pages/home-draft' || path === '/demo' || path === '/demo-test') {
-  var logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper");
-  if(logosToSelect.length > 0){
-      displayDefaultCustomerLogosList(logosToSelect);
+if (path === "/pages/home-draft" || path === "/demo" || path === "/demo-2") {
+  var logosToSelect = document.getElementsByClassName(
+    "customer_logos-collection-wrapper"
+  );
+  if (logosToSelect.length > 0) {
+    displayDefaultCustomerLogosList(logosToSelect);
   }
 }
