@@ -12,7 +12,7 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
     if(path === "/demo") {
     newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
-} else {
+} else if(path==="/demo-2") {
     newScript(scriptBase + '/src/js/demo2'+minBase+'.js','body',1);
 }
 
