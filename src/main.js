@@ -10,7 +10,12 @@ Webflow.push(function () {
     var minBase = isDebug ? "" : ".min";
 
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
+    if(path === "/demo") {
     newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
+} else {
+    newScript(scriptBase + '/src/js/demo2'+minBase+'.js','body',1);
+}
+
     newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
