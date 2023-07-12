@@ -136,10 +136,10 @@ window.addEventListener("message", function (event) {
   if (
     event.data.type === "hsFormCallback" &&
     event.data.eventName === "onFormSubmit" &&
-    event.data.id === "ef92ccce-92bd-4010-847a-793f56b6b353"
+    event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8"
   ) {
     ChiliPiper.submit("gorgias", "inbound-router", {
-      formId: "hsForm_ef92ccce-92bd-4010-847a-793f56b6b353",
+      formId: "hsForm_6dd387bc-abfa-42cd-ba76-73aa3575b6f8",
       domElement: "#wrapper-chilipiper-embed",
       // lead's submission has been received by Chili Piper and a routing attempt has been made, whether successful or not
       onRouted: function () {
