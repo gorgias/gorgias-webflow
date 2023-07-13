@@ -25,9 +25,9 @@ if (path === "/pages/home-draft" || path === "/demo") {
   const logosToSelect = document.getElementsByClassName(
     "customer_logos-collection-wrapper"
   )
-  // first we hide main wrapper in order to have smooth transition if posthog redirects to demo-2
-  const mainWrapper = document.getElementsByClassName('main-wrapper')[0]
-  mainWrapper && (mainWrapper.style.display = 'none')
+  // first we show main wrapper in order to have smooth transition if posthog redirects to demo-2
+  // main wrapper is hidden from webflow
+  const mainWrapper = document.getElementsByClassName('demo_main-wrapper')[0]
   
   if (logosToSelect.length > 0) {
     checkAndReloadFeatureFlags()
