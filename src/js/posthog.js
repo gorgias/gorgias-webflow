@@ -40,11 +40,12 @@ if (path === "/pages/home-draft" || path === "/demo") {
             logosToSelect[0].style.display = "block"
             logosToSelect[6].style.display = "block" //mobile one
           }
-          if (posthog.getFeatureFlag("test_funnel_demo-2") === "test") {
-            window.location = "https://www.gorgias.com/demo-2"
-          } else {
+          // if (posthog.getFeatureFlag("test_funnel_demo-2") === "test") {
+          //   window.location = "https://www.gorgias.com/demo-2"
+          // } else {
+            
             showLogos(logosToSelect)
-          }
+          // }
           // after posthog chooses which route we show again
           mainWrapper && (mainWrapper.style.display = 'block')
         })
