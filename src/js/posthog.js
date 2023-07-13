@@ -22,22 +22,26 @@ if (
 if (path === "/demo-2") showLogos()
 
 if (path === "/pages/home-draft" || path === "/demo") {
+  const logosToSelect = document.getElementsByClassName(
+    "custogimer_logos-collection-wrapper"
+  )
   if (logosToSelect.length > 0) {
     checkAndReloadFeatureFlags()
       .then(() => {
         posthog.onFeatureFlags(() => {
           // posthog.feature_flags.override({'customer-logos': 'variant'}); // to comment after testing
           if (posthog.getFeatureFlag("customer-logos") === "variant") {
-            showLogos()
+            showLogos(logosToSelect)
           } else {
-            showDefaultLogos()
+            logosToSelect && (logosToSelect[0].style.display = "block")
+            logosToSelect && (logosToSelect[6].style.display = "block") //mobile one
           }
         })
         posthog.onFeatureFlags(() => {
           if (posthog.getFeatureFlag("test_funnel_demo-2") === "test") {
             window.location = "https://www.gorgias.com/demo-2"
           } else {
-            showLogos()
+            showLogos(logosToSelect)
           }
         })
       })
@@ -73,18 +77,13 @@ function checkAndReloadFeatureFlags() {
   });
 }
 
-function showDefaultLogos() {
-  const logosToSelect = document.getElementsByClassName(
+function showLogos(logosToSelect) {
+  if (!logosToSelect) {
+    const logosToSelect = document.getElementsByClassName(
     "custogimer_logos-collection-wrapper"
-  )
-  logosToSelect && (logosToSelect[0].style.display = "block")
-  logosToSelect && (logosToSelect[6].style.display = "block") //mobile one
-}
-
-function showLogos() {
-  const logosToSelect = document.getElementsByClassName(
-    "custogimer_logos-collection-wrapper"
-  )
+    )
+  }
+  
   const loc_code = sessionStorage.getItem("loc_code")
 
   if (loc_code && loc_code != "") {
@@ -106,7 +105,8 @@ function showLogos() {
         el.style.display = "block"
       })
     } else {
-      showDefaultLogos()
+      logosToSelect && (logosToSelect[0].style.display = "block")
+      logosToSelect && (logosToSelect[6].style.display = "block") //mobile one
     }
   }
 }
