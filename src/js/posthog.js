@@ -23,7 +23,7 @@ if (path === "/demo-2") showLogos()
 
 if (path === "/pages/home-draft" || path === "/demo") {
   const logosToSelect = document.getElementsByClassName(
-    "custogimer_logos-collection-wrapper"
+    "customer_logos-collection-wrapper"
   )
   if (logosToSelect.length > 0) {
     checkAndReloadFeatureFlags()
@@ -80,7 +80,7 @@ function checkAndReloadFeatureFlags() {
 function showLogos(logosToSelect) {
   if (!logosToSelect) {
     const logosToSelect = document.getElementsByClassName(
-    "custogimer_logos-collection-wrapper"
+    "customer_logos-collection-wrapper"
     )
   }
   
