@@ -36,8 +36,6 @@ if (path === "/pages/home-draft" || path === "/demo") {
             logosToSelect && (logosToSelect[0].style.display = "block")
             logosToSelect && (logosToSelect[6].style.display = "block") //mobile one
           }
-        })
-        posthog.onFeatureFlags(() => {
           if (posthog.getFeatureFlag("test_funnel_demo-2") === "test") {
             window.location = "https://gorgiasio.webflow.io/demo-2"
           } else {
