@@ -27,7 +27,7 @@ if (path === "/pages/home-draft" || path === "/demo") {
   )
   // first we hide main wrapper in order to have smooth transition if posthog redirects to demo-2
   const mainWrapper = document.getElementsByClassName('main-wrapper')[0]
-  mainWrapper.style.display = 'none'
+  mainWrapper && (mainWrapper.style.display = 'none')
   
   if (logosToSelect.length > 0) {
     checkAndReloadFeatureFlags()
@@ -46,7 +46,7 @@ if (path === "/pages/home-draft" || path === "/demo") {
             showLogos(logosToSelect)
           }
           // after posthog chooses which route we show again
-          mainWrapper.style.display = 'block'
+          mainWrapper && (mainWrapper.style.display = 'block')
         })
       })
       .catch((error) => {
