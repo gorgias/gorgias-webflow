@@ -18,7 +18,7 @@ function displayDefaultCustomerLogosList(logosToSelect) {
 
 if (path === "/pages/home-draft" || path === "/demo" || path === "/demo-2") {
   // in case posthog does not load we still need to show main wrapper on demo page
-  const mainWrapperDemo = document.getElementsByClassName('main-wrapper')[0]
+  const mainWrapperDemo = document.getElementsByClassName('demo_main-wrapper')[0]
   mainWrapperDemo && (mainWrapperDemo.style.display = 'block')
   
   var logosToSelect = document.getElementsByClassName(
