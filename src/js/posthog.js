@@ -12,81 +12,41 @@ if (
   path.includes("/pages/") || // landing pages
   path.includes("/comparison") // MOFU pages
 ) {
-  posthog.onFeatureFlags(function () {
+  posthog.onFeatureFlags(function() {
     if (posthog.isFeatureEnabled("all-visitors")) {
-      window.posthog.startSessionRecording();
+      window.posthog.startSessionRecording()
     }
-  });
+  })
 }
 
-if (path === "/demo-2") handleFeatureFlagsDemoTest();
+if (path === "/demo-2") showLogos()
 
 if (path === "/pages/home-draft" || path === "/demo") {
-  var logosToSelect = document.getElementsByClassName(
-    "custogimer_logos-collection-wrapper"
-  );
   if (logosToSelect.length > 0) {
-    posthog.onFeatureFlags(() => {
-      // posthog.feature_flags.override({'customer-logos': 'variant'}); // to comment after testing
-      if (posthog.getFeatureFlag("customer-logos") === "variant") {
-        const loc_code = sessionStorage.getItem("loc_code");
-
-        if (loc_code && loc_code != "") {
-          const countryToWebflowIdentifier = {
-            au: "australia",
-            ca: "canada",
-            fr: "france",
-            uk: "united-kingdom",
-            gb: "united-kingdom",
-            us: "united-states",
-          };
-
-          if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
-            logosToSelect[0].style.display = "none";
-            const showLogosByCountry = Array.from(logosToSelect).filter((el) =>
-              el.classList.contains(countryToWebflowIdentifier[loc_code])
-            );
-            showLogosByCountry.forEach((el) => {
-              el.style.display = "block";
-            });
+    checkAndReloadFeatureFlags()
+      .then(() => {
+        posthog.onFeatureFlags(() => {
+          // posthog.feature_flags.override({'customer-logos': 'variant'}); // to comment after testing
+          if (posthog.getFeatureFlag("customer-logos") === "variant") {
+            showLogos()
           } else {
-            logosToSelect[0].style.display = "block";
-            logosToSelect[6].style.display = "block"; //mobile one
+            showDefaultLogos()
           }
-        }
-      } else {
-        logosToSelect[0].style.display = "block";
-        logosToSelect[6].style.display = "block"; //mobile one
-
-        // It's a good idea to let control variant always be the default behaviour,
-        // so if something goes wrong with flag evaluation, you don't break your app.
-      }
-
-      // Clear the overrides for all flags
-      // posthog.feature_flags.clearOverrides();
-    });
+        })
+        posthog.onFeatureFlags(() => {
+          if (posthog.getFeatureFlag("test_funnel_demo-2") === "test") {
+            window.location = "https://www.gorgias.com/demo-2"
+          } else {
+            showLogos()
+          }
+        })
+      })
+      .catch((error) => {
+        console.error(error);
+      })
   }
 }
 
-// Callback function to handle feature flags for /demo-test path
-function handleFeatureFlagsDemoTest() {
-  const logosToSelect = document.getElementsByClassName(
-    "customer_logos-collection-wrapper"
-  );
-  checkAndReloadFeatureFlags()
-    .then(() => {
-      posthog.onFeatureFlags(() => {
-        if (posthog.getFeatureFlag("layout-test") === "test") {
-          showLogos(logosToSelect);
-        } else {
-          window.location = "https://gorgiasio.webflow.io/demo";
-        }
-      });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
 // checks if the posthog.onFeatureFlags event listener is available.
 // If it is available, the Promise resolves. If it is not available, the posthog.reloadFeatureFlags() method is called to reload the feature flags.
 // After reloading, it checks again if the event listener is now available.
@@ -112,8 +72,20 @@ function checkAndReloadFeatureFlags() {
     }
   });
 }
-function showLogos(logosToSelect) {
-  const loc_code = sessionStorage.getItem("loc_code");
+
+function showDefaultLogos() {
+  const logosToSelect = document.getElementsByClassName(
+    "custogimer_logos-collection-wrapper"
+  )
+  logosToSelect[0].style.display = "block";
+  logosToSelect[6].style.display = "block"; //mobile one
+}
+
+function showLogos() {
+  const logosToSelect = document.getElementsByClassName(
+    "custogimer_logos-collection-wrapper"
+  )
+  const loc_code = sessionStorage.getItem("loc_code")
 
   if (loc_code && loc_code != "") {
     const countryToWebflowIdentifier = {
@@ -123,19 +95,18 @@ function showLogos(logosToSelect) {
       uk: "united-kingdom",
       gb: "united-kingdom",
       us: "united-states",
-    };
+    }
 
     if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
-      logosToSelect[0].style.display = "none";
+      logosToSelect[0].style.display = "none"
       const showLogosByCountry = Array.from(logosToSelect).filter((el) =>
         el.classList.contains(countryToWebflowIdentifier[loc_code])
-      );
+      )
       showLogosByCountry.forEach((el) => {
-        el.style.display = "block";
-      });
+        el.style.display = "block"
+      })
     } else {
-      logosToSelect[0].style.display = "block";
-      logosToSelect[6].style.display = "block"; //mobile one
+      showDefaultLogos()
     }
   }
 }
