@@ -76,8 +76,9 @@ function checkAndReloadFeatureFlags() {
 }
 
 function showLogos(logosToSelect) {
+  let logos = logosToSelect
   if (!logosToSelect) {
-    const logosToSelect = document.getElementsByClassName(
+    logos = document.getElementsByClassName(
     "customer_logos-collection-wrapper"
     )
   }
@@ -95,7 +96,7 @@ function showLogos(logosToSelect) {
     }
 
     if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
-      logosToSelect[0].style.display = "none"
+      logos[0].style.display = "none"
       const showLogosByCountry = Array.from(logosToSelect).filter((el) =>
         el.classList.contains(countryToWebflowIdentifier[loc_code])
       )
@@ -103,8 +104,8 @@ function showLogos(logosToSelect) {
         el.style.display = "block"
       })
     } else {
-      logosToSelect[0].style.display = "block"
-      logosToSelect[6].style.display = "block" //mobile one
+      logos[0].style.display = "block"
+      logos[6].style.display = "block" //mobile one
     }
   }
 }
