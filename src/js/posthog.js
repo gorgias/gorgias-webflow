@@ -77,8 +77,8 @@ function showDefaultLogos() {
   const logosToSelect = document.getElementsByClassName(
     "custogimer_logos-collection-wrapper"
   )
-  logosToSelect[0].style.display = "block";
-  logosToSelect[6].style.display = "block"; //mobile one
+  logosToSelect && (logosToSelect[0].style.display = "block")
+  logosToSelect && (logosToSelect[6].style.display = "block") //mobile one
 }
 
 function showLogos() {
