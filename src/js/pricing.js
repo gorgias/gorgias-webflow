@@ -102,6 +102,9 @@ window.onload = function() {
   const getElId = (val) => document.getElementById(val)
   const planPeriods = getEl('text-menu__pricing')
   const pricingTabs = getEl('tab-pane__pricing')
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
   const isStringCustom = (el) => typeof el === 'string' && el === 'custom'
   // set plan and add on prices
   const setPlanPrices = (getEl) => {
@@ -137,14 +140,14 @@ window.onload = function() {
       totalPriceEl.nextSibling.classList.remove('hidden')
     }
     totalPrice = typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice
-    totalPriceEl.innerHTML = totalPrice
+    totalPriceEl.innerHTML = formatNumberWithCommas(totalPrice)
   }
 
   const calculateAddOnsPrices = (toggle, dropdownPrice, dropDownValue, basePrice, domElement) => {
     let price = (dropDownValue.value !== '1')
       ? dropdownPrice[dropDownValue.value][selectedPeriod] 
       : basePrice[selectedPlan.name][selectedPeriod] 
-      const displayPrice = typeof price === 'string' ? price : '+$' + price + '/mo';
+      const displayPrice = typeof price === 'string' ? price : '+$' + formatNumberWithCommas(price) + '/mo';
       domElement.innerHTML = displayPrice
       return toggle ? price : 0
   }
@@ -163,6 +166,22 @@ window.onload = function() {
       el && el.classList.add('hidden') 
       el.value = '1'
     } 
+  }
+  const showHideElementByVisibility = (el, show) => {
+    if (show) {
+      el.style.visibility = "visible";
+    } else {
+      el.style.visibility = "hidden";
+    }
+  };
+  function resetDropdowns() {
+    // Reset add-ons dropdown values
+    const automationDropdown = getElId("Number-Automation-Addon-Interaction");
+    const voiceDropdown = getElId("number-phone-interaction");
+    const smsDropdown = getElId("number-sms-interaction");
+    automationDropdown.value = "1";
+    voiceDropdown.value = "1";
+    smsDropdown.value = "1";
   }
   // price calculation begins here
   const estimatePrice = () => {
@@ -186,9 +205,15 @@ window.onload = function() {
     const voicePriceEl = getEl('green-heading-content-span__pricing')[3]
     const smsPriceEl = getEl('green-heading-content-span__pricing')[5]
     // toggle dropdowns
-    automationDropdown && showHideDropdown(automationDropdown, automationChecked)
-    voiceDropdown && showHideDropdown(voiceDropdown, voiceChecked) 
-    smsDropdown && showHideDropdown(smsDropdown, smsChecked)
+    // automationDropdown && showHideDropdown(automationDropdown, automationChecked)
+    // voiceDropdown && showHideDropdown(voiceDropdown, voiceChecked) 
+    // smsDropdown && showHideDropdown(smsDropdown, smsChecked)
+
+    // toggle dropdowns by visibility
+    automationDropdown && showHideElementByVisibility(automationDropdown, automationChecked);
+    voiceDropdown && showHideElementByVisibility(voiceDropdown, voiceChecked);
+    smsDropdown && showHideElementByVisibility(smsDropdown, smsChecked);
+
     // calculate add-ons prices
     const automationTotalPrice = calculateAddOnsPrices(automationChecked, automationDropdownValues, automationDropdown, automationPrice, automationPriceEl)
     const voiceTotalPrice = calculateAddOnsPrices(voiceChecked, voiceDropdownValues, voiceDropdown, voicePrice, voicePriceEl)
@@ -207,6 +232,9 @@ window.onload = function() {
       pricingTabs[chooseTabs[selectedPlan.index]].click()  
       if (i === 0) selectedPeriod = 'monthly' 
       if (i === 1) selectedPeriod = 'annual' 
+      // Reset add-ons dropdown values
+      resetDropdowns();
+
       estimatePrice()
     });
   }
@@ -238,6 +266,7 @@ window.onload = function() {
       }
       // set selected plan and estimate price
       selectedPlan = pricingPlans[i]
+      resetDropdowns();
       estimatePrice()
       if (activeCheckBoxes.length) {
         // when changing plan we deselect them
