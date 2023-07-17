@@ -124,6 +124,8 @@ window.onload = function() {
   }
   setPlanPrices(getEl)
   const automationDescription = document.getElementsByClassName(' subheading-text-content__pricing checkbox-option')[0]
+  const voiceDescription = document.getElementsByClassName(" subheading-text-content__pricing checkbox-option")[1];
+  const smsDescription = document.getElementsByClassName(" subheading-text-content__pricing checkbox-option")[2];
   automationDescription && (automationDescription.innerHTML = 'Monthly automated interactions')
 
   const calculateTotalPrice = (automationTotalPrice, voiceTotalPrice, smsTotalPrice) => {
@@ -213,6 +215,11 @@ window.onload = function() {
     automationDropdown && showHideElementByVisibility(automationDropdown, automationChecked);
     voiceDropdown && showHideElementByVisibility(voiceDropdown, voiceChecked);
     smsDropdown && showHideElementByVisibility(smsDropdown, smsChecked);
+
+    // toggle dropdowns descriptions by visibility
+    automationDescription && showHideElementByVisibility(automationDescription, automationChecked);
+    voiceDescription && showHideElementByVisibility(voiceDescription, voiceChecked);
+    smsDescription && showHideElementByVisibility(smsDescription, smsChecked);
 
     // calculate add-ons prices
     const automationTotalPrice = calculateAddOnsPrices(automationChecked, automationDropdownValues, automationDropdown, automationPrice, automationPriceEl)
