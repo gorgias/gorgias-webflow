@@ -91,7 +91,7 @@ const smsDropdownValues = {
   6: { monthly: 408, annual: 340},
   7: { monthly: 'custom', annual: 'custom'}
 }
-let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[2]
+let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[7]
 let selectedPeriod = 'annual'
 let automationChecked = false
 let voiceChecked = false
