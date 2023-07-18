@@ -20,6 +20,10 @@ if (
 }
 
 if (path === "/demo-test-wider") {
+  if (!posthog.__loaded) {
+    const oldLayoutDemo = document.getElementsByClassName('page_demo-old-layout')[0]
+    oldLayoutDemo.style.display = 'block'
+  }
   const logosToSelect = document.getElementsByClassName(
     "customer_logos-collection-wrapper"
   )
