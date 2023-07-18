@@ -10,21 +10,24 @@ Webflow.push(function () {
     var minBase = isDebug ? "" : ".min";
 
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
-    if(path === "/demo") {
-    newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
-    } else if(path === "/demo-2") {
-      newScript(scriptBase + '/src/js/demo2'+minBase+'.js','body',1);
-    }
-
     newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
+    
+    // demo pages
+    if (path === "/demo") {
+      newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
+    } else if(path === "/demo-2") {
+      newScript(scriptBase + '/src/js/demo2'+minBase+'.js','body',1);
+    } else if(path === "/demo-test-wider") {
+      newScript(scriptBase + '/src/js/demo-combined'+minBase+'.js','body',1);  
+    }
 
     // pricing page
-    if(path === '/pricing' || path === '/pricing-test/pricing' || path === '/pages/template-long' 
+    if (path === '/pricing' || path === '/pricing-test/pricing' || path === '/pages/template-long' 
       || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
       || path === '/pages/helpdesk' || path === '/pages/crm') {
         // [Attributes by Finsweet] Mirrorclick
@@ -39,7 +42,7 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/splide'+minBase+'.js','body',1)
     }
     // blog pages
-    if(path.includes('/blog/')) {
+    if (path.includes('/blog/')) {
         // [Attributes by Finsweet] Code Highlight
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-codehighlight@1/codehighlight.js','head',1);
         // [Attributes by Finsweet] Powerful Rich Text
@@ -54,15 +57,14 @@ Webflow.push(function () {
         newStyle(scriptBase + '/src/css/blog'+minBase+'.css','body');
         newScript(scriptBase + '/src/js/blog'+minBase+'.js','body',1);
     }
-    if(path === '/product-tour'){
+    
+    if (path === '/product-tour'){
         newScript(scriptBase + '/src/js/producttour'+minBase+'.js','head',1)
     } 
 
-    if(path.includes('/signup-2')){
+    if (path.includes('/signup-2')){
         newScript(scriptBase + '/src/js/signup-2'+minBase+'.js','head',1);
         newStyle(scriptBase + '/src/css/signup'+minBase+'.css','body');
-
     }
-
 })
 
