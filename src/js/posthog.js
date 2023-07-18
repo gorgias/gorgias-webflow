@@ -19,7 +19,32 @@ if (
   })
 }
 
-if (path === "/demo-2") showLogos()
+if (path === "/demo-test-wider") {
+  const logosToSelect = document.getElementsByClassName(
+    "customer_logos-collection-wrapper"
+  )
+  if (logosToSelect.length > 0) {
+    checkAndReloadFeatureFlags()
+      .then(() => {
+        posthog.onFeatureFlags(() => {
+          if (posthog.getFeatureFlag("test_funnel_demo-2") === "test") {
+            // if posthog chooses test flag we show new layout and treat logic for logos
+            const newLayoutDemo = document.getElementsByClassName('page_demo-new-layout')[0]
+            newLayoutDemo.style.display = 'block'
+            showLogos(logosToSelect, true)
+          } else {
+            // if posthog chooses control flag we show old layout and treat logic for logos
+            const oldLayoutDemo = document.getElementsByClassName('page_demo-old-layout')[0]
+            oldLayoutDemo.style.display = 'block'
+            showLogos(logosToSelect)
+          }
+        })
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }
+}
 
 if (path === "/pages/home-draft" || path === "/demo") {
   const logosToSelect = document.getElementsByClassName(
@@ -27,8 +52,7 @@ if (path === "/pages/home-draft" || path === "/demo") {
   )
   // first we show main wrapper in order to have smooth transition if posthog redirects to demo-2
   // main wrapper is hidden from webflow
-  const mainWrapper = document.getElementsByClassName('demo_main-wrapper')[0]
-  
+
   if (logosToSelect.length > 0) {
     checkAndReloadFeatureFlags()
       .then(() => {
@@ -40,14 +64,6 @@ if (path === "/pages/home-draft" || path === "/demo") {
             logosToSelect[0].style.display = "block"
             logosToSelect[6].style.display = "block" //mobile one
           }
-          // if (posthog.getFeatureFlag("test_funnel_demo-2") === "test") {
-          //   window.location = "https://www.gorgias.com/demo-2"
-          // } else {
-            
-            showLogos(logosToSelect)
-          // }
-          // after posthog chooses which route we show again
-          mainWrapper && (mainWrapper.style.display = 'block')
         })
       })
       .catch((error) => {
@@ -82,16 +98,9 @@ function checkAndReloadFeatureFlags() {
   });
 }
 
-function showLogos(logosToSelect) {
-  let logos = logosToSelect
-  if (!logosToSelect) {
-    logos = document.getElementsByClassName(
-    "customer_logos-collection-wrapper"
-    )
-  }
-  
+function showLogos(logos, newLayout) {
+  // we add parameter newLayout to see if it is new or old demo layout we are showing logos for
   const loc_code = sessionStorage.getItem("loc_code")
-
   if (loc_code && loc_code != "") {
     const countryToWebflowIdentifier = {
       au: "australia",
@@ -103,16 +112,26 @@ function showLogos(logosToSelect) {
     }
 
     if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
-      logos[0].style.display = "none"
-      const showLogosByCountry = Array.from(logosToSelect).filter((el) =>
+      if (newLayout) {
+        logos[12].style.display = "none"
+      } else {
+        logos[0].style.display = "none"
+      }
+      
+      const showLogosByCountry = Array.from(logos).filter((el) =>
         el.classList.contains(countryToWebflowIdentifier[loc_code])
       )
       showLogosByCountry.forEach((el) => {
         el.style.display = "block"
       })
+
     } else {
-      logos[0].style.display = "block"
-      logos[6].style.display = "block" //mobile one
+      if (newLayout) {
+        logos[12].style.display = "block"
+      } else {
+        logos[0].style.display = "block"
+        logos[6].style.display = "block" //mobile one
+      }
     }
   }
 }
