@@ -10,9 +10,9 @@ window.addEventListener("message", (event) => {
 
 // old layout form submitted
 window.addEventListener("message", (event) => {
-  if (event.data.type === 'hsFormCallback' && 
-  event.data.eventName === 'onFormSubmit' && 
-  event.data.id === "ef92ccce-92bd-4010-847a-793f56b6b353") {
+  if (event.data.type === 'hsFormCallback' &&
+    event.data.eventName === 'onFormSubmit' &&
+    event.data.id === "ef92ccce-92bd-4010-847a-793f56b6b353") {
     chiliPaperSubmit('hsForm_ef92ccce-92bd-4010-847a-793f56b6b353')
   }
 });
@@ -28,75 +28,6 @@ window.addEventListener("message", (event) => {
     getUtmParameters()
   }
 });
-
-window.addEventListener("message", (event) => {
-  if (event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
-    if (typeof event.data === "object") {
-      document.getElementsByClassName(
-        "new-demo-form-component newdemo"
-      )[0].style.maxWidth = "100%";
-      const anim = document.getElementsByClassName("demo_video-wrapper")[0];
-      const progress = document.getElementsByClassName(
-        "new-signup_form-progress-innerbar"
-      )[0];
-      const demoWrapper = document.getElementsByClassName("demo_step-wrapper")[0];
-      const progressWrapper = document.getElementsByClassName(
-        "new-signup_form-progress-bar"
-      )[0];
-      const title1 = document.getElementsByClassName("new-demo_form-title")[0];
-      title1.innerHTML = "Tell us about yourself";
-      const title2 = document.getElementsByClassName("new-demo_form-title")[1];
-      title2.style.display = "block";
-
-      if (event.data.eventName === "onFormSubmit") {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-
-        // when submitting form we hide progress elements
-        // and we display animation
-        demoWrapper.style.display = "none";
-        progressWrapper.style.display = "none";
-        anim.style.display = "block";
-        document.getElementsByClassName(
-          "new-demo-form-component"
-        )[0].style.display = "none";
-      }
-      if (event.data.eventName === "onFormError") {
-        // in case of errors we hide animation
-        anim.style.display = "none";
-      }
-      if (event.data.action === "SetIframeSize") {
-        document.getElementsByClassName(
-          "new-demo-form-component"
-        )[0].style.display = "block";
-        // when iframe loads we make progress bar full width
-        // and also we hide animation
-        demoWrapper.style.display = "flex";
-        progressWrapper.style.display = "block";
-        progress.style.width = "100%";
-        anim.style.display = "none";
-        document.getElementById("loadImg").style.display = "none";
-        title1.style.fontWeight = "400";
-        title2.style.fontWeight = "900";
-        progressWrapper.style.marginBottom = "40px";
-      }
-      if (event.data.action === "availability-loaded") {
-        title2.style.fontWeight = "900";
-        if (window.innerWidth < 992) {
-          document.getElementsByClassName(
-            "demo_content-wrapper"
-          )[0].style.overflow = "auto";
-          document.getElementsByClassName(
-            "demo_logo-form-wrapper"
-          )[0].style.overflow = "auto";
-          document.getElementById("loadImg").style.display = "none";
-        }
-      }
-    }
-  }
-})
 
 // new layout form submitted form submitted
 window.addEventListener("message", (event) => {
@@ -287,4 +218,76 @@ function chiliPaperSubmit(chilipaperFormId) {
     // onClose: function () { console.log("onCloseChiliPiper") }, // This will call a function when a lead is submitted and is displayed the option to book (meaning the lead has qualified for a meeting), but exits the booking module.
     injectRootCss: true,
   });
+}
+
+// specific functionality for new demo form
+window.onload = () => {
+  window.addEventListener("message", (event) => {
+    if (event.data.eventName === "onFormReady" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
+      if (typeof event.data === "object") {
+        document.getElementsByClassName(
+          "new-demo-form-component newdemo"
+        )[0].style.maxWidth = "100%";
+        const anim = document.getElementsByClassName("demo_video-wrapper")[0];
+        const progress = document.getElementsByClassName(
+          "new-signup_form-progress-innerbar"
+        )[0];
+        const demoWrapper = document.getElementsByClassName("demo_step-wrapper")[0];
+        const progressWrapper = document.getElementsByClassName(
+          "new-signup_form-progress-bar"
+        )[0];
+        const title1 = document.getElementsByClassName("new-demo_form-title")[0];
+        title1.innerHTML = "Tell us about yourself";
+        const title2 = document.getElementsByClassName("new-demo_form-title")[1];
+        title2.style.display = "block";
+
+        if (event.data.eventName === "onFormSubmit") {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+
+          // when submitting form we hide progress elements
+          // and we display animation
+          demoWrapper.style.display = "none";
+          progressWrapper.style.display = "none";
+          anim.style.display = "block";
+          document.getElementsByClassName(
+            "new-demo-form-component"
+          )[0].style.display = "none";
+        }
+        if (event.data.eventName === "onFormError") {
+          // in case of errors we hide animation
+          anim.style.display = "none";
+        }
+        if (event.data.action === "SetIframeSize") {
+          document.getElementsByClassName(
+            "new-demo-form-component"
+          )[0].style.display = "block";
+          // when iframe loads we make progress bar full width
+          // and also we hide animation
+          demoWrapper.style.display = "flex";
+          progressWrapper.style.display = "block";
+          progress.style.width = "100%";
+          anim.style.display = "none";
+          document.getElementById("loadImg").style.display = "none";
+          title1.style.fontWeight = "400";
+          title2.style.fontWeight = "900";
+          progressWrapper.style.marginBottom = "40px";
+        }
+        if (event.data.action === "availability-loaded") {
+          title2.style.fontWeight = "900";
+          if (window.innerWidth < 992) {
+            document.getElementsByClassName(
+              "demo_content-wrapper"
+            )[0].style.overflow = "auto";
+            document.getElementsByClassName(
+              "demo_logo-form-wrapper"
+            )[0].style.overflow = "auto";
+            document.getElementById("loadImg").style.display = "none";
+          }
+        }
+      }
+    }
+  })
 }
