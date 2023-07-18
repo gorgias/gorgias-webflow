@@ -236,7 +236,14 @@ window.onload = function() {
   for (let i = 0; i < planPeriods.length; i++) {
     planPeriods[i].addEventListener('click', function () {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
-      pricingTabs[chooseTabs[selectedPlan.index]].click()  
+
+      // check if we are still in the annual or monthly tab before changing the pricing tabs 
+      if(selectedPeriod === "annual" && i !== 1){
+        pricingTabs[chooseTabs[selectedPlan.index]].click()
+      }
+      if(selectedPeriod === "monthly" && i !== 0){
+        pricingTabs[chooseTabs[selectedPlan.index]].click()
+      }
       if (i === 0) selectedPeriod = 'monthly' 
       if (i === 1) selectedPeriod = 'annual' 
       // Reset add-ons dropdown values
