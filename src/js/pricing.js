@@ -238,10 +238,10 @@ window.onload = function() {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
 
       // check if we are still in the annual or monthly tab before changing the pricing tabs 
-      if(selectedPeriod === "annual" && i !== 1){
+      if(selectedPeriod === "annual" && i === 0){
         pricingTabs[chooseTabs[selectedPlan.index]].click()
       }
-      if(selectedPeriod === "monthly" && i !== 0){
+      if(selectedPeriod === "monthly" && i === 1){
         pricingTabs[chooseTabs[selectedPlan.index]].click()
       }
       if (i === 0) selectedPeriod = 'monthly' 
