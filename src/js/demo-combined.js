@@ -225,9 +225,9 @@ window.onload = () => {
   window.addEventListener("message", (event) => {
     if (event.data.eventName === "onFormReady" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
       if (typeof event.data === "object") {
-        document.getElementsByClassName(
-          "new-demo-form-component newdemo"
-        )[0].style.maxWidth = "100%";
+        // document.getElementsByClassName(
+        //  "new-demo-form-component newdemo"
+        // )[0].style.maxWidth = "100%";
         const anim = document.getElementsByClassName("demo_video-wrapper")[0];
         const progress = document.getElementsByClassName(
           "new-signup_form-progress-innerbar"
