@@ -223,7 +223,7 @@ function chiliPaperSubmit(chilipaperFormId) {
 // specific functionality for new demo form
 window.onload = () => {
   window.addEventListener("message", (event) => {
-    if (event.data.eventName === "onFormReady" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
+    if (event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
       if (typeof event.data === "object") {
         // document.getElementsByClassName(
         //  "new-demo-form-component newdemo"
