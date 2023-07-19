@@ -37,7 +37,7 @@ if (path === "/pages/home-draft" || path === "/demo") {
   }
 }
 
-if (path === "/demo-test") {
+if (path === "/demo-test-wider") {
   const logosToSelect = document.getElementsByClassName(
     "customer_logos-collection-wrapper"
   )
