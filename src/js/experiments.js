@@ -1,5 +1,17 @@
-function displayDefaultCustomerLogosList(logosToSelect) {
+function displayDefaultCustomerLogosList(logosToSelect, checkLayouts) {
   setTimeout(function() {
+
+    if (checkLayouts) {
+      // in case posthog does not load we still need to show old demo layout on the page
+      const oldLayoutDemo = document.getElementsByClassName('page_demo-old-layout')
+      const displayValueOld = oldLayoutDemo && (window.getComputedStyle(oldLayoutDemo[0]).getPropertyValue('display'))
+      const newLayoutDemo = document.getElementsByClassName('page_demo-new-layout')
+      const displayValueNew = newLayoutDemo && (window.getComputedStyle(newLayoutDemo[0]).getPropertyValue('display'))
+      if (displayValueOld === 'none' && displayValueNew === 'none') {
+        oldLayoutDemo[0].style.display = 'block'
+      }
+    }
+    
     // Check if none of the elements are displayed
     var noneDisplayed = true;
     for (var i = 0; i < logosToSelect.length; i++) {
@@ -25,14 +37,11 @@ if (path === "/pages/home-draft" || path === "/demo") {
   }
 }
 
-if (path === "/demo-test-wider") {
-  // first we show old layout and then select logos
-  const oldLayoutDemo = document.getElementsByClassName('page_demo-old-layout')[0]
-  oldLayoutDemo.style.display = 'block'
+if (path === "/demo-test") {
   const logosToSelect = document.getElementsByClassName(
     "customer_logos-collection-wrapper"
   )
   if (logosToSelect.length > 0) {
-    displayDefaultCustomerLogosList(logosToSelect)
+    displayDefaultCustomerLogosList(logosToSelect, true)
   }
 }
