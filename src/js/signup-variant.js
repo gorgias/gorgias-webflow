@@ -422,11 +422,19 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
       }      
       // Check if "account-subdomains-approved" exists in local storage
       var data = localStorage.getItem('account-subdomains-approved') || {};
-      JSON.parse(data);
-      data[account_domain_submitted] = APIresponse.account_domain;
-      localStorage.setItem('account-subdomains-approved', JSON.stringify(data));
-      verifyStatus = 'valid';
+      var dataObject;
 
+      try {
+        dataObject = JSON.parse(data);
+
+      } catch (error) {
+        dataObject = {};
+      }
+      
+      dataObject[account_domain_submitted] = APIresponse.account_domain;
+      localStorage.setItem('account-subdomains-approved', JSON.stringify(dataObject));
+      verifyStatus = 'valid';
+      var verifyMessage = "";
 
     })
     .always(function (jqXHR, textStatus, errorThrown) {
@@ -476,6 +484,7 @@ function accountDomainPrefilled(response, verifyStatus){
 
   var domain_exist = response.domain_exist;
   var account_domain = response.account_domain;
+  var verifyMessage = "";
 
   // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
   if(domain_exist == true) {
