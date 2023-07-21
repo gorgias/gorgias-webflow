@@ -27,8 +27,12 @@ if (path === "/demo-test-wider") {
     checkAndReloadFeatureFlags()
       .then(() => {
         posthog.onFeatureFlags(() => {
+           // if posthog chooses test flag we show new layout and treat logic for logos
           if (posthog.getFeatureFlag("test_funnel_demo-2") === "test") {
-            // if posthog chooses test flag we show new layout and treat logic for logos
+            // we remove old layout because of chilipaper id #wrapper-chilipiper-embed
+            // which has multiple id instances and will not load the chilipaper iframe
+            removeElementsByClassName('page_demo-old-layout')
+            // we show new layout and logogs
             const newLayoutDemo = document.getElementsByClassName('page_demo-new-layout')[0]
             newLayoutDemo.style.display = 'block'
             showLogos(logosToSelect, true)
@@ -131,6 +135,27 @@ function showLogos(logos, newLayout) {
       } else {
         logos[0].style.display = "block"
         logos[6].style.display = "block" //mobile one
+      }
+    }
+  }
+}
+
+function removeElementsByClassName(className) {
+  const elementsToRemove = document.getElementsByClassName(className);
+
+  // Check if elements with the specified class exist
+  if (elementsToRemove.length > 0) {
+    // Use the `remove()` method if supported, otherwise use `removeChild()`
+    if (typeof elementsToRemove[0].remove === 'function') {
+      // Use the `remove()` method (newer browsers)
+      for (const element of elementsToRemove) {
+        element.remove();
+      }
+    } else {
+      // Use the `removeChild()` method (older browsers)
+      for (const element of elementsToRemove) {
+        const parentElement = element.parentNode;
+        parentElement.removeChild(element);
       }
     }
   }
