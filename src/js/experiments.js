@@ -3,12 +3,19 @@ function displayDefaultCustomerLogosList(logosToSelect, checkLayouts) {
 
     if (checkLayouts) {
       // in case posthog does not load we still need to show old demo layout on the page
-      const oldLayoutDemo = document.getElementsByClassName('page_demo-old-layout')
-      const displayValueOld = oldLayoutDemo && (window.getComputedStyle(oldLayoutDemo[0]).getPropertyValue('display'))
-      const newLayoutDemo = document.getElementsByClassName('page_demo-new-layout')
-      const displayValueNew = newLayoutDemo && (window.getComputedStyle(newLayoutDemo[0]).getPropertyValue('display'))
+      const oldLayoutDemo = document.getElementsByClassName('page_demo-old-layout');
+      const oldLayoutElement = oldLayoutDemo[0]; // Get the first element if it exists
+      const displayValueOld = oldLayoutElement ? window.getComputedStyle(oldLayoutElement).getPropertyValue('display') : null;
+      
+      const newLayoutDemo = document.getElementsByClassName('page_demo-new-layout');
+      const newLayoutElement = newLayoutDemo[0]; // Get the first element if it exists
+      const displayValueNew = newLayoutElement ? window.getComputedStyle(newLayoutElement).getPropertyValue('display') : null;
+      
       if (displayValueOld === 'none' && displayValueNew === 'none') {
-        oldLayoutDemo[0].style.display = 'block'
+        // Make sure the oldLayoutElement is valid before setting its style
+        if (oldLayoutElement) {
+          oldLayoutElement.style.display = 'block';
+        }
       }
     }
     
