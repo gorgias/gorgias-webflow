@@ -116,11 +116,7 @@ function showLogos(logos, newLayout) {
     }
 
     if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
-      if (newLayout) {
-        logos[12].style.display = "none"
-      } else {
-        logos[0].style.display = "none"
-      }
+      logos[0].style.display = "none"
       
       const showLogosByCountry = Array.from(logos).filter((el) =>
         el.classList.contains(countryToWebflowIdentifier[loc_code])
@@ -131,7 +127,7 @@ function showLogos(logos, newLayout) {
 
     } else {
       if (newLayout) {
-        logos[12].style.display = "block"
+        logos[0].style.display = "block"
       } else {
         logos[0].style.display = "block"
         logos[6].style.display = "block" //mobile one
