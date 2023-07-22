@@ -221,75 +221,75 @@ function chiliPaperSubmit(chilipaperFormId) {
 }
 
 // specific functionality for new demo form
-window.onload = () => {
-  window.addEventListener("message", (event) => {
-    // get all html elements that need changing
-    const anim = document.getElementsByClassName("demo_video-wrapper")[0];
-    const progress = document.getElementsByClassName(
-      "new-signup_form-progress-innerbar"
-    )[0];
-    const demoWrapper = document.getElementsByClassName("demo_step-wrapper")[0];
-    const progressWrapper = document.getElementsByClassName(
-      "new-signup_form-progress-bar"
-    )[0];
-    const title1 = document.getElementsByClassName("new-demo_form-title")[0];
-    const title2 = document.getElementsByClassName("new-demo_form-title")[1];
 
-    // when the form is ready we modify titles
-    if (event.data.eventName === "onFormReady" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
-      document.getElementsByClassName("new-demo-form-component newdemo")[0].style.maxWidth = "100%";
-      title1.innerHTML = "Tell us about yourself";
-      title2.style.display = "block";
-    }
-    // if form has on error we hide animation
-    if (event.data.eventName === "onFormError" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
-      // in case of errors we hide animation
-      anim.style.display = "none";
-    }
-    // when submitting we scroll top and show animation
-    if (event.data.eventName === "onFormSubmit" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+window.addEventListener("message", (event) => {
+  // get all html elements that need changing
+  const anim = document.getElementsByClassName("demo_video-wrapper")[0];
+  const progress = document.getElementsByClassName(
+    "new-signup_form-progress-innerbar"
+  )[0];
+  const demoWrapper = document.getElementsByClassName("demo_step-wrapper")[0];
+  const progressWrapper = document.getElementsByClassName(
+    "new-signup_form-progress-bar"
+  )[0];
+  const title1 = document.getElementsByClassName("new-demo_form-title")[0];
+  const title2 = document.getElementsByClassName("new-demo_form-title")[1];
 
-      // when submitting form we hide progress elements
-      // and we display animation
-      demoWrapper.style.display = "none";
-      progressWrapper.style.display = "none";
-      anim.style.display = "block";
+  // when the form is ready we modify titles
+  if (event.data.eventName === "onFormReady" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
+    document.getElementsByClassName("new-demo-form-component newdemo")[0].style.maxWidth = "100%";
+    title1.innerHTML = "Tell us about yourself";
+    title2.style.display = "block";
+  }
+  // if form has on error we hide animation
+  if (event.data.eventName === "onFormError" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
+    // in case of errors we hide animation
+    anim.style.display = "none";
+  }
+  // when submitting we scroll top and show animation
+  if (event.data.eventName === "onFormSubmit" && event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8") {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    // when submitting form we hide progress elements
+    // and we display animation
+    demoWrapper.style.display = "none";
+    progressWrapper.style.display = "none";
+    anim.style.display = "block";
+    document.getElementsByClassName(
+      "new-demo-form-component"
+    )[0].style.display = "none";
+  }
+  // when loading chilipaper iframe we hide animation, fill progress bar, change titles fonts
+  if (event.data.action === "SetIframeSize") {
+    document.getElementsByClassName(
+      "new-demo-form-component"
+    )[0].style.display = "block";
+    // when iframe loads we make progress bar full width
+    // and also we hide animation
+    demoWrapper.style.display = "flex";
+    progressWrapper.style.display = "block";
+    progress.style.width = "100%";
+    anim.style.display = "none";
+    document.getElementById("loadImg").style.display = "none";
+    title1.style.fontWeight = "400";
+    title2.style.fontWeight = "900";
+    progressWrapper.style.marginBottom = "40px";
+  }
+  // when calendar has loaded - some css fixes
+  if (event.data.action === "availability-loaded") {
+    title2.style.fontWeight = "900";
+    if (window.innerWidth < 992) {
       document.getElementsByClassName(
-        "new-demo-form-component"
-      )[0].style.display = "none";
-    }
-    // when loading chilipaper iframe we hide animation, fill progress bar, change titles fonts
-    if (event.data.action === "SetIframeSize") {
+        "demo_content-wrapper"
+      )[0].style.overflow = "auto";
       document.getElementsByClassName(
-        "new-demo-form-component"
-      )[0].style.display = "block";
-      // when iframe loads we make progress bar full width
-      // and also we hide animation
-      demoWrapper.style.display = "flex";
-      progressWrapper.style.display = "block";
-      progress.style.width = "100%";
-      anim.style.display = "none";
+        "demo_logo-form-wrapper"
+      )[0].style.overflow = "auto";
       document.getElementById("loadImg").style.display = "none";
-      title1.style.fontWeight = "400";
-      title2.style.fontWeight = "900";
-      progressWrapper.style.marginBottom = "40px";
     }
-    // when calendar has loaded - some css fixes
-    if (event.data.action === "availability-loaded") {
-      title2.style.fontWeight = "900";
-      if (window.innerWidth < 992) {
-        document.getElementsByClassName(
-          "demo_content-wrapper"
-        )[0].style.overflow = "auto";
-        document.getElementsByClassName(
-          "demo_logo-form-wrapper"
-        )[0].style.overflow = "auto";
-        document.getElementById("loadImg").style.display = "none";
-      }
-    }
-  })
-}
+  }
+})
+
