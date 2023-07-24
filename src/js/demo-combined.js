@@ -47,7 +47,7 @@ window.addEventListener("message", (event) => {
     event.data.eventName === 'onFormSubmit' && 
     event.data.id === "6dd387bc-abfa-42cd-ba76-73aa3575b6f8"
   ) {
-    chiliPaperSubmit('hsForm_6dd387bc-abfa-42cd-ba76-73aa3575b6f')
+    chiliPaperSubmit('hsForm_6dd387bc-abfa-42cd-ba76-73aa3575b6f8')
   }
 });
 
