@@ -16,16 +16,12 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
-    
     // demo pages
-    if (path === "/demo") {
-      newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
-    } else if(path === "/demo-2") {
-      newScript(scriptBase + '/src/js/demo2'+minBase+'.js','body',1);
-    } else if(path === "/demo-test-wider") {
+    if (path === "/demo-test-wider") {
       newScript(scriptBase + '/src/js/demo-combined'+minBase+'.js','body',1);  
+    } else {
+      newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     }
-
     // pricing page
     if (path === '/pricing' || path === '/pricing-test/pricing' || path === '/pages/template-long' 
       || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
