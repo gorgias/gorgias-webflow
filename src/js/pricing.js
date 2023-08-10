@@ -1,7 +1,7 @@
 const approvedUrlsStage = ['/pages/template-long', '/pages/crm', '/pages/live-chat', '/pages/ticketing-system', '/pages/helpdesk', '/pages/customer-service', '/pages/ticketing-system-long', 
-'/pages/customer-service-long', '/pages/helpdesk-long', '/pages/live-chat-long', '/pages/crm-long']; 
+'/pages/customer-service-long', '/pages/helpdesk-long', '/pages/live-chat-long', '/pages/crm-long']
 // template pages where pricing table is shown
- const templatePagesPaths = approvedUrlsStage.includes(window.location.pathname);
+ const templatePagesPaths = approvedUrlsStage.includes(window.location.pathname)
 // tab indexes used for matching selected plans on both tabs(annual, monthly)
 const tabsForTemplates = { 0: 4, 1: 5, 2: 6, 3: 7, 4: 0, 5: 1, 6: 2, 7: 3 }
 const tabsForPricing = { 0: 6, 1: 6, 2: 7, 3: 8, 4: 9, 6: 1, 7: 2, 8: 3, 9: 4 }
@@ -122,6 +122,10 @@ window.onload = function() {
   setPlanPrices(getEl)
   const automationDescription = document.getElementsByClassName(' subheading-text-content__pricing checkbox-option')[0]
   automationDescription && (automationDescription.innerHTML = 'Monthly automated interactions')
+ 
+  function capitalizeFirstLetter(inputString) {
+    return `${inputString.charAt(0).toUpperCase()}${inputString.slice(1)}`;
+  }
 
   const calculateTotalPrice = (automationTotalPrice, voiceTotalPrice, smsTotalPrice) => {
     const totalPriceEl = getEl('heading-tab-pane__pricing price-form')[0]
@@ -138,6 +142,8 @@ window.onload = function() {
     }
     totalPrice = typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice
     totalPriceEl.innerHTML = totalPrice
+    // add mobile plan name 
+    getElId('name-plan').innerHTML = capitalizeFirstLetter(selectedPlan.name)
   }
 
   const calculateAddOnsPrices = (toggle, dropdownPrice, dropDownValue, basePrice, domElement) => {
