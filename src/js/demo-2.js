@@ -106,12 +106,12 @@ window.addEventListener("message", (event) => {
     anim.style.display = "none";
     document.getElementById("loadImg").style.display = "none";
     title1.style.fontWeight = "400";
-    title2.style.fontWeight = "900";
+    title2.style.fontWeight = "600";
     progressWrapper.style.marginBottom = "40px";
   }
   // when calendar has loaded - some css fixes
   if (event.data.action === "availability-loaded") {
-    title2.style.fontWeight = "900";
+    title2.style.fontWeight = "600";
     if (window.innerWidth < 992) {
       document.getElementsByClassName(
         "demo_content-wrapper"
@@ -292,3 +292,57 @@ function displayAddCalendarBtn(data) {
     eventOrganizerEmail;
   $(".add-to-calendar-btn .addeventatc span.alarm")[0].innerHTML = eventAlarm;
 }
+
+function customizedCustomerLogos () {
+  if (path === "/demo" || path === "/demo-2") {
+      // customer logo list
+      const logosToSelect = document.getElementsByClassName("customer_logos-collection-wrapper")
+  
+      // if customer logo list exist on the page
+      if (logosToSelect.length > 0) {
+  
+          // location code of the visitor
+          const loc_code = sessionStorage.getItem("loc_code")
+  
+          // if we now the visitor location
+          if (loc_code && loc_code != "") {
+  
+              // mapping of the location code with the country full name
+              const countryToWebflowIdentifier = {
+                au: "australia",
+                ca: "canada",
+                fr: "france",
+                uk: "united-kingdom",
+                gb: "united-kingdom",
+                us: "united-states",
+              }
+  
+              // if the localisation code of hte visitor match with one from the mapping
+              if (countryToWebflowIdentifier.hasOwnProperty(loc_code)) {
+                  // then we hide the default list of customer
+                  logosToSelect[0].style.display = "none";
+  
+                  // select the appropriate list of logos
+                  const showLogosByCountry = Array.from(logosToSelect).filter((el) =>
+                      el.classList.contains(countryToWebflowIdentifier[loc_code])
+                  )
+                  // display the appropriate list of logos
+                  showLogosByCountry.forEach((el) => {
+                      el.style.display = "block"
+                  })
+              } else {
+  
+                  if (path === "/demo") {
+                      logos[0].style.display = "block"
+                      logos[6].style.display = "block" //mobile one
+                  }
+                  else {
+                      logos[0].style.display = "block"
+                  }
+              }
+          }
+      }
+  }
+}
+
+customizedCustomerLogos();

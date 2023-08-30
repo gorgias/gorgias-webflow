@@ -4,6 +4,7 @@
 }
 .chilipiper-popup-window{
     max-height: 570px!important;
+    width: 100% !important;
 }
 .chilipiper-popup .chilipiper-popup-window .routing-loader{
     position: inherit !important;

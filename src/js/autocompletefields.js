@@ -49,6 +49,10 @@ function autoCompleteInputsForms(){
 
     if (sessionStorage.phone) {
         $("input[name|='phone']").val(sessionStorage.phone).change();
+        $("input[type|='tel']").val(sessionStorage.phone).change();
+    }
+    if (sessionStorage.number_of_agents) {
+        $("input[name|='number_of_agents']").val(sessionStorage.number_of_agents).change();
     }
     if (sessionStorage.about_us && sessionStorage.about_us.length > 0) { 
         if($("select[name|='about_us']").length>0 ){
@@ -61,23 +65,21 @@ function autoCompleteInputsForms(){
         }
     }
     if (sessionStorage.ecommerce_platform) {
+
         // For select input, let's do a map between string and value
         var ecommercePlateformSelect = new Map()
-        .set('shopify', '1')
-        .set('shopify plus', '2')
-        .set('shopify_plus', '2')
-        .set('bigcommerce', '6')
-        .set('magento', '3')
-        .set('magento_2', '3')
-        .set('woocommerce', '4')
-        .set('other', '5')
-        .set('6', '6')
-
-        $("select[name|='ecommerce_platform']").val(ecommercePlateformSelect.get(sessionStorage.ecommerce_platform)).change();
-        if($("select[name|='ecommerce_platform']").val().length > 0){
-            $('div[input-container="ecommerce_platform"]').hide();
+        .set('Shopify', 'shopify')
+        .set('magento_2', 'Magento 2')
+        .set('salesforce_commerce_cloud', 'Salesforce commerce cloud')
+        .set('bigcommerce', 'Bigcommerce')
+        .set('woocommerce', 'WooCommerce')
+        .set('other', 'Other')
+        if($("select[name*='ecommerce_platform']").length>0){
+            $("select[name*='ecommerce_platform']").val(sessionStorage.ecommerce_platform).change();
         }
     }
+
+
 }
 
 window.addEventListener('message', event => {
