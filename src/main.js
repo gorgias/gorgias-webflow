@@ -12,13 +12,13 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
     newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
-    newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
+    // newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
     // demo pages
-    if (path === "/demo-test-wider") {
-      newScript(scriptBase + '/src/js/demo-combined'+minBase+'.js','body',1);  
+    if (path === '/demo-2') {
+      newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
     } else {
       newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     }
