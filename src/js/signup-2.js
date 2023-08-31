@@ -365,7 +365,7 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
 
   resetFieldStatus(accountDomainField);
   
-  var account_domain_submitted = domain;
+  var account_domain_submitted = domain.trim().toLowerCase();
 
   // happen on keyup trigger : $this is an input, not the input value
   if(typeof account_domain_submitted != 'string'){
@@ -1035,8 +1035,8 @@ Webflow.push(function () {
 
 
       let formData = {
-        company_domain: companyDomainField.val(),
-        account_domain: accountDomainField.val()
+        company_domain: companyDomainField.val().trim().toLowerCase(),
+        account_domain: accountDomainField.val().trim().toLowerCase()
     
       }
       if(window.localStorage.getItem(plan_name_key)
