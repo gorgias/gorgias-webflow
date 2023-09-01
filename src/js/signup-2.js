@@ -14,21 +14,8 @@ const classErrorMessage = 'message-error';
 const classWarningMessage = 'message-warning';
 const btnWaitString = 'Please wait';
 const classValidMessage = 'message-valid';
-const SIGNUP_ACCOUNT_FORM_PAGE = () => {
-  if (path.includes('staging')) {
-    return '/staging-signup-2/account';
-  } else {
-    return '/signup-2/account';
-  }
-}
-
-const SIGNUP_FORM_PAGE = () => {
-  if (path.includes('staging')) {
-    return '/staging-signup-2';
-  } else {
-    return '/signup-2';
-  }
-}
+const SIGNUP_ACCOUNT_FORM_PAGE = path.includes('staging') ? '/staging-signup-2/account' : '/signup-2/account';
+const SIGNUP_FORM_PAGE = path.includes('staging') ? '/staging-signup-2' : '/signup-2';
 
 var emailField = $('#signup-user-form input[name="'+ email_key + '"]') || "";
 var fullnameField = $('#signup-user-form input[name="'+ fullname_key + '"]') || "";
@@ -741,7 +728,7 @@ function signupAccountFormHandler(form){
     //success
     function (data) {
       if (data.redirect_url) {
-        window.location =  SIGNUP_FORM_PAGE;
+        window.location =  SIGNUP_FORM_PAGE + window.location.search;
       }
       
       if (data.shopify) {
