@@ -244,6 +244,60 @@ div.submitted-message{
   .hs-form-checkbox {
     margin-bottom: 3px;
   }
+  .hs-fieldtype-checkbox ul.multi-container li.hs-form-checkbox label input[type="checkbox"] {
+    display: none;
+  }
+
+  .hs-fieldtype-checkbox ul.multi-container li.hs-form-checkbox {
+    color: #6A6A6A;
+  }
+
+
+
+  .hs-fieldtype-checkbox ul.multi-container li.hs-form-checkbox label input[type="checkbox"] + span {
+    position: relative;
+    padding-left: 30px; /* Add space for the custom checkbox */
+    cursor: pointer;
+  }
+
+  .hs-fieldtype-checkbox ul.multi-container li.hs-form-checkbox label input[type="checkbox"] + span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 15px; /* Width of the custom checkbox */
+    height: 15px; /* Height of the custom checkbox */
+    border: 2px solid #161616;
+    border-radius: 5px;
+    /*background-color: #fff; /* Background color when unchecked */
+  }
+
+
+  .hs-fieldtype-checkbox ul.multi-container li.hs-form-checkbox label input[type="checkbox"]:checked + span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 15px; /* Width of the custom checkbox */
+    height: 15px; /* Height of the custom checkbox */
+    border: 2px solid #161616;
+    border-radius: 5px;
+    /*background-color: #fff; /* Background color when unchecked */
+  }
+
+
+  .hs-fieldtype-checkbox ul.multi-container li.hs-form-checkbox label input[type="checkbox"]:checked + span {
+    background-image: url(/src/img/checkbox-mark.svg);
+    background-repeat: no-repeat;
+    background-position: 0 center;
+  }
+  .hs-fieldtype-checkbox ul.multi-container li.hs-form-checkbox label input[type="checkbox"]:checked + span::before {
+  }
+
+  .hs-fieldtype-checkbox ul.multi-container li.hs-form-checkbox label input[type="checkbox"]:checked + span {
+    color: #161616; /* Text color when checked */
+  }
+  
   .hbspt-form li .hs-input{
     margin-right: 6px;
   }
@@ -289,6 +343,13 @@ div.submitted-message{
       
   /* COLUMS -> Only desktop */
   @media (min-width: 992px) {
+
+    div[class*='demo-form'] .form-columns-2 {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: 10px;
+      grid-auto-rows: minmax(100px, auto);
+    }
     
     .form-columns-2 {
       display: grid;
