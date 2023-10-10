@@ -30,6 +30,31 @@ window.addEventListener("message", function(event) {
             $('input[name=demo_utm_campaign]').val('').change();
         }
 
+
+        if(sessionStorage.getItem("product_interest")) {
+
+            if(sessionStorage.getItem("product_interest").indexOf('convert')>= 0){
+                if($('div[class*=demo-form] form input[name=demo_product_interest][value=convert]')){
+                    $('div[class*=demo-form] form input[name=demo_product_interest][value=convert]').prop("checked", true).change();
+                }
+            }
+
+            if(sessionStorage.getItem("product_interest").indexOf('automate')>= 0){
+                if($('div[class*=demo-form] form input[name=demo_product_interest][value=automate]')){
+                    $('div[class*=demo-form] form input[name=demo_product_interest][value=automate]').prop("checked", true).change();
+                }
+            }
+
+            if(sessionStorage.getItem("product_interest").indexOf('helpdesk')>= 0){
+                if($('div[class*=demo-form] form input[name=demo_product_interest][value=helpdesk]')){
+                    $('div[class*=demo-form] form input[name=demo_product_interest][value=helpdesk]').prop("checked", true).change();
+                }
+            }
+
+        }
+
+
+
         if (utmSourceParam.length > 0) {
         $('input[name=demo_utm_source]').val(utmSourceParam).change();
         }
@@ -101,7 +126,6 @@ function displayAddCalendarBtn(data){
     var MinutesEnd =  dateEnd.getMinutes(); 
     var SecondsEnd =  dateEnd.getSeconds(); 
     if(monthStart < 10){
-        console.log("monthStart < 10");
         monthStart = '0' + monthStart;
     }
     if(dayStart < 10){
