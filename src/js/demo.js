@@ -30,28 +30,24 @@ window.addEventListener("message", function(event) {
             $('input[name=demo_utm_campaign]').val('').change();
         }
 
-
-        if(sessionStorage.getItem("product_interest")) {
-
-            if(sessionStorage.getItem("product_interest").indexOf('convert')>= 0){
-                if($('div[class*=demo-form] form input[name=demo_product_interest][value=convert]')){
-                    $('div[class*=demo-form] form input[name=demo_product_interest][value=convert]').prop("checked", true).change();
+        /*
+        if (sessionStorage.getItem("product_interest")) {
+            var productInterests = JSON.parse(sessionStorage.getItem("product_interest"));
+            var productInterestMap = {
+              'convert': 'convert',
+              'automate': 'automate',
+              'helpdesk': 'helpdesk'
+            };
+          
+            for (var i = 0; i < productInterests.length; i++) {
+                var interest = productInterests[i].trim();
+          
+                if (productInterestMap.hasOwnProperty(interest)) {
+                    $('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']').prop("checked", "checked");
                 }
             }
-
-            if(sessionStorage.getItem("product_interest").indexOf('automate')>= 0){
-                if($('div[class*=demo-form] form input[name=demo_product_interest][value=automate]')){
-                    $('div[class*=demo-form] form input[name=demo_product_interest][value=automate]').prop("checked", true).change();
-                }
-            }
-
-            if(sessionStorage.getItem("product_interest").indexOf('helpdesk')>= 0){
-                if($('div[class*=demo-form] form input[name=demo_product_interest][value=helpdesk]')){
-                    $('div[class*=demo-form] form input[name=demo_product_interest][value=helpdesk]').prop("checked", true).change();
-                }
-            }
-
         }
+        */
 
 
 
