@@ -100,6 +100,10 @@ function cookieSessionFromUtmParameter(){
 // }
 
 
+
+
+
+
 function cookieSessionCountry(){
     var sessionLocCode = sessionStorage.getItem('loc_code');
     if(sessionLocCode){
@@ -118,6 +122,65 @@ function cookieSessionCountry(){
     })
 }
 
+
+function productInterest() {
+    var sessionStorageName = 'product_interest';
+    var interests = {
+      'convert': {
+        pathConditions: ['convert'],
+        searchConditions: ['convert']
+      },
+      'automate': {
+        pathConditions: ['automate', 'automation'],
+        searchConditions: ['automate', 'automation']
+      },
+      'helpdesk': {
+        pathConditions: ['helpdesk'],
+        searchConditions: ['helpdesk']
+      }
+    };
+  
+    var sessionProductInterest = sessionStorage.getItem(sessionStorageName);
+    var existing_interest = [];
+  
+    // Check if there are already product interests stored in session. If so, store them in an array.
+    if (sessionProductInterest) {
+      var sessionArray = JSON.parse(sessionProductInterest);
+      existing_interest.push.apply(existing_interest, sessionArray);
+    }
+  
+    // Iterate through the interests and conditions.
+    for (var interest in interests) {
+      if (interests.hasOwnProperty(interest)) {
+        var conditions = interests[interest];
+        
+        // Check path conditions.
+        if (conditions.pathConditions.some(function(condition) {
+          return location.pathname.toLowerCase().indexOf(condition) >= 0;
+        })) {
+          // Check if the interest was not already detected previously.
+          if (existing_interest.indexOf(interest) === -1) {
+            existing_interest.push(interest);
+          }
+        }
+  
+        // Check search conditions.
+        if (conditions.searchConditions.some(function(condition) {
+          return location.search.toLowerCase().indexOf(condition) >= 0;
+        })) {
+          // Check if the interest was not already detected previously.
+          if (existing_interest.indexOf(interest) === -1) {
+            existing_interest.push(interest);
+          }
+        }
+      }
+    }
+  
+    // Update the session storage with the updated interests array.
+    sessionStorage.setItem(sessionStorageName, JSON.stringify(existing_interest));
+  }
+
 cookieSessionFromUtmParameter();
 cookieSessionCountry();
+productInterest();
 //getandStoreIp()
