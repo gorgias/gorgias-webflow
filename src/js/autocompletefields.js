@@ -29,19 +29,6 @@ function autoCompleteInputsForms(){
         }
     }
 
-    if (sessionStorage.number_of_agents && sessionStorage.number_of_agents.length > 0 ) {
-        if($("input[name|='number_of_agents']").length>0){
-            $("input[name|='number_of_agents']").val(sessionStorage.number_of_agents).change();
-            //$("input[name|='number_of_agents']").hide();
-        }
-
-        if($("input[name|='0-2/domain']").length>0){
-            $("input[name|='0-2/domain']").val(sessionStorage.domain).change();
-            //$("input[name|='0-2/domain']").hide();
-        }
-    }
-
-
     if (sessionStorage.company_domain && sessionStorage.company_domain.length > 0 ) {
         if($("input[name|='company_domain']").length>0){
             $("input[name|='company_domain']").val(sessionStorage.company_domain).change();
