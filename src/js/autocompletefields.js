@@ -28,6 +28,7 @@ function autoCompleteInputsForms(){
             //$("input[name|='0-2/domain']").hide();
         }
     }
+
     if (sessionStorage.company_domain && sessionStorage.company_domain.length > 0 ) {
         if($("input[name|='company_domain']").length>0){
             $("input[name|='company_domain']").val(sessionStorage.company_domain).change();

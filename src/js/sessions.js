@@ -19,6 +19,9 @@ function cookieSessionFromUtmParameter(){
             else if (paramName === "last_name") {
                 sessionStorage.setItem('last_name', paramValue);
             }
+            else if (paramName === "number_of_agents") {
+              sessionStorage.setItem('number_of_agents', paramValue);
+          }
             else if (paramName === "name") {
                 sessionStorage.setItem('name', paramValue);
             }
