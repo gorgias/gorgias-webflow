@@ -99,30 +99,6 @@ function cookieSessionFromUtmParameter(){
 //     }
 // }
 
-
-
-
-
-
-function cookieSessionCountry(){
-    var sessionLocCode = sessionStorage.getItem('loc_code');
-    if(sessionLocCode){
-        return false;
-    }
-
-    $.ajax({
-        url: 'https://cloudflare.com/cdn-cgi/trace',
-        success: function(data) {
-            var locCode = data.match(/loc=(.+)/);
-            if(locCode){
-                locCode = locCode[1].toLowerCase();
-                sessionStorage.setItem('loc_code', locCode);
-            }            
-        }
-    })
-}
-
-
 function productInterest() {
     var sessionStorageName = 'product_interest';
     var interests = {
@@ -181,6 +157,5 @@ function productInterest() {
   }
 
 cookieSessionFromUtmParameter();
-cookieSessionCountry();
 productInterest();
 //getandStoreIp()
