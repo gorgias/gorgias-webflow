@@ -55,6 +55,25 @@ function autoCompleteInputsForms(){
     if (sessionStorage.number_of_agents) {
         $("input[name|='number_of_agents']").val(sessionStorage.number_of_agents).change();
     }
+
+    if (sessionStorage.getItem("product_interest")) {
+        var productInterests = JSON.parse(sessionStorage.getItem("product_interest"));
+        var productInterestMap = {
+            'convert': 'convert',
+            'automate': 'automate',
+            'helpdesk': 'helpdesk'
+        };
+        
+        for (var i = 0; i < productInterests.length; i++) {
+            var interest = productInterests[i].trim();
+        
+            if (productInterestMap.hasOwnProperty(interest)) {
+                document.querySelector('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']').click();
+            }
+        }
+    }
+
+
     if (sessionStorage.about_us && sessionStorage.about_us.length > 0) { 
         if($("select[name|='about_us']").length>0 ){
             $("select[name|='about_us']").val(sessionStorage.about_us).change();
