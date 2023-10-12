@@ -68,7 +68,10 @@ function autoCompleteInputsForms(){
             var interest = productInterests[i].trim();
         
             if (productInterestMap.hasOwnProperty(interest)) {
-                document.querySelector('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']').click();
+                if(document.querySelector('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']')){
+                    document.querySelector('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']').click();
+            
+                }
             }
         }
     }
