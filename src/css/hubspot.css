@@ -49,6 +49,7 @@ div.submitted-message{
   
   .hs_submit.hs-submit {
     display: block !important;
+    padding-top: 7px;
   }
   
   .hs-button.primary.large,
