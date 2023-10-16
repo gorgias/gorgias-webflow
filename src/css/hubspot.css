@@ -49,6 +49,9 @@ div.submitted-message{
   
   .hs_submit.hs-submit {
     display: block !important;
+  }
+
+  .demo-form-hubspot-cp .hs_submit.hs-submit {
     padding-top: 7px;
   }
   
