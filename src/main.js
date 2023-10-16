@@ -17,10 +17,9 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
     // demo pages
+    newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     if (path === '/demo-2' || path === '/wip/demo') {
       newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
-    } else {
-      newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     }
     // pricing page
     if (path === '/pricing' || path === '/pricing-test/pricing' || path === '/pages/template-long' 
