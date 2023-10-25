@@ -50,8 +50,8 @@ function cookieSessionFromUtmParameter(){
                 sessionStorage.setItem('utm_source_session', paramValue);
         
             }
-            else if(paramName === "demo_utm_term")  {
-                sessionStorage.setItem('demo_utm_term_session', paramValue);
+            else if(paramName === "utm_term")  {
+                sessionStorage.setItem('utm_term_session', paramValue);
         
             }
             else if(paramName === "utm_medium")  {
