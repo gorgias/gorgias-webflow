@@ -88,12 +88,7 @@ window.addEventListener("message", function(event) {
             formName = 'demo_customer'
             cpRouterName = "inbound_router_customer"; 
         }
-        console.log("eventId:" + eventId);
-        console.log("formName:" + formName);
-        console.log("cpTenantDomain:" + cpTenantDomain);
-        console.log("cpRouterName:" + cpRouterName);
-        console.log("submittedValues:" + submittedValues);
-        console.log(submittedValues);
+
         ChiliPiper.submit(cpTenantDomain, cpRouterName,{
             map: true,
             lead: submittedValues,
@@ -102,20 +97,16 @@ window.addEventListener("message", function(event) {
             // submission received by CP & routing attempt has been made, whether successful or not
             onRouted: function () {
                 analytics.track("cp_"+ formName +"_request_routed");
-                console.log('onRouted');
-
             },
             // successful booking
             onSuccess: function (data) { 
                 analytics.track("cp_" + formName + "_booked");
-                console.log('onSuccess');
 
             }, 
             // submission received but does not match any queue rules and cannot be routed, thus no calendar is displayed.
             // This is usually when someone is disqualified from booking
             onError: function () {
                 analytics.track("cp_" + formName + "_demo_request_failed");
-                console.log('onError');
             }, 
             injectRootCss: true
         })  
