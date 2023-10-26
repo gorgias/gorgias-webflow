@@ -33,7 +33,6 @@ window.addEventListener("message", function(event) {
         else{
             $('input[name=demo_utm_campaign]').val('').change();
             $('input[name=cross_sell_utm_campaign]').val('').change();
-
         }
 
         if (utmSourceParam.length > 0) {
@@ -44,18 +43,15 @@ window.addEventListener("message", function(event) {
         else{
             $('input[name=demo_utm_source]').val('').change();
             $('input[name=cross_sell_utm_source]').val('').change();
-
         }
 
         if (utmMediumParam.length > 0) {
             $('input[name=demo_utm_medium]').val(utmMediumParam).change();
             $('input[name=cross_sell_utm_medium]').val(utmMediumParam).change();
-
         }
         else{
             $('input[name=demo_utm_medium]').val('').change();
             $('input[name=cross_sell_utm_medium]').val('').change();
-
         }
 
         if (demoUtmTerm.length > 0) {
@@ -89,7 +85,6 @@ window.addEventListener("message", function(event) {
         var cpTenantDomain;
         var cpRouterName;
         cpTenantDomain = "gorgias"; 
-        console.log(submittedValues);
 
         // demo form for prospect (on /demo and /demo-2)
         if(eventId === demoLeadFormId) {
