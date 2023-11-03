@@ -56,10 +56,14 @@ window.addEventListener("message", function(event) {
 
         if (demoUtmTerm.length > 0) {
         $('input[name=demo_utm_term]').val(demoUtmTerm).change();
+        $('input[name=cross_sell_utm_term]').val(demoUtmTerm).change();
+
         }
 
         else{
             $('input[name=demo_utm_term]').val('').change();
+            $('input[name=cross_sell_utm_term]').val('').change();
+
         }
      }
 });
