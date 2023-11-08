@@ -14,7 +14,7 @@ body.is-ebook div.submitted-message{
 } 
 
 body.is-ebook div.submitted-message *{
-  line-height: 1rem !important;
+  line-height: 1.1875rem !important;
 
 }
 
