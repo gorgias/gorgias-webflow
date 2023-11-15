@@ -203,11 +203,15 @@ body.is-ebook div.submitted-message a:hover{
 
    }
 
-  .hbspt-form .inputs-list {
+  .hbspt-form .inputs-list,
+  .hs-form ul.inputs-list {
     list-style: none;
     padding-left: 0;
     margin-bottom: 0;
     padding-bottom: 0;
+  }
+  .hs-form ul.inputs-list li{
+    line-height: 120%;
   }
   
   .hs-form-booleancheckbox-display .hs-input {
