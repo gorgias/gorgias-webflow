@@ -1,5 +1,6 @@
 const demoLeadFormId = 'ef92ccce-92bd-4010-847a-793f56b6b353';
 const demoCustomerFormId = 'b7cf896e-d7b3-4f50-a5c1-21459faa6322';
+const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
 
 // demo functions
 window.addEventListener("message", function(event) {
@@ -71,8 +72,7 @@ window.addEventListener("message", function(event) {
 // chilipiper function 
 function q(a){return function(){ChiliPiper[a].q=(ChiliPiper[a].q||[]).concat([arguments])}}window.ChiliPiper=window.ChiliPiper||"submit scheduling showCalendar submit widget bookMeeting".split(" ").reduce(function(a,b){a[b]=q(b);return a},{});
 
-
-// form submitted is a demo form
+// form submitted is a demo form (lead) of customer demo
 window.addEventListener("message", function(event) {
     if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoCustomerFormId )) {
 
@@ -114,6 +114,13 @@ window.addEventListener("message", function(event) {
             onSuccess: function (data) { 
                 analytics.track("cp_" + formName + "_booked");
 
+                if(formName == 'demo'){
+                    $('.wrapper-post-demo-booked').removeClass('is-hidden');
+                    $('.wrapper-chilipiper-embed').height('250px');
+                    $('.demo_step-wrapper').css('display','none');
+                    $('.demo-new_status-bar').css('display','none');
+                }
+
             }, 
             // submission received but does not match any queue rules and cannot be routed, thus no calendar is displayed.
             // This is usually when someone is disqualified from booking
@@ -125,74 +132,11 @@ window.addEventListener("message", function(event) {
     }
 });
 
-function displayAddCalendarBtn(data){
-    // inject data from Chilipiper properly    
-    var timestampStart = data.slot.start;
-    var timestampEnd = data.slot.end;
-    var dateStart = new Date(timestampStart);
-    var dayStart = dateStart.getDate(); 
-    var monthStart = ((dateStart.getMonth())+1); 
-    var yearStart =  dateStart.getFullYear(); 
-    var hoursStart =  dateStart.getHours(); 
-    var MinutesStart =  dateStart.getMinutes(); 
-    var SecondsStart =  dateStart.getSeconds();
-    var dateEnd = new Date(timestampEnd);
-    var dayEnd = dateEnd.getDate(); 
-    var monthEnd = ((dateEnd.getMonth())+1); 
-    var yearEnd =  dateEnd.getFullYear(); 
-    var hoursEnd =  dateEnd.getHours(); 
-    var MinutesEnd =  dateEnd.getMinutes(); 
-    var SecondsEnd =  dateEnd.getSeconds(); 
-    if(monthStart < 10){
-        monthStart = '0' + monthStart;
+// form submitted is a post demo form
+window.addEventListener("message", function(event) {
+    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == postDemoFormId )) {
+        $('.post-demo-booked-heading').addClass('is-hidden');
+        $('.demo-form-hubspot-post-booking').addClass('is-hidden');
+        $('.post-demo-booked-confirmation').removeClass('is-hidden');
     }
-    if(dayStart < 10){
-        dayStart = '0' + dayStart;
-    }
-    if(hoursStart < 10){
-        hoursStart = '0' + hoursStart;
-    }
-    if(MinutesStart < 10){
-        MinutesStart = '0' + MinutesStart;
-    }
-    if(SecondsStart < 10){
-        SecondsStart = '0' + SecondsStart;
-    }
-    if(monthEnd < 10){
-        monthEnd = '0' + monthEnd;
-    }
-    if(dayEnd < 10){
-        dayEnd = '0' + dayEnd;
-    }
-    if(hoursEnd < 10){
-        hoursEnd = '0' + hoursEnd;
-    }
-    if(MinutesEnd < 10){
-        MinutesEnd = '0' + MinutesEnd;
-    }
-    if(SecondsEnd < 10){
-        SecondsEnd = '0' + SecondsEnd;
-    }
-    var dateStartFormated = dayStart + "-" + monthStart + '-' + yearStart + " " + hoursStart +":"+ MinutesStart +":"+ SecondsStart;
-    var dateEndFormated = dayEnd + "-" + monthEnd + '-' + yearEnd + " " + hoursEnd +":"+ MinutesEnd +":"+ SecondsEnd;
-    var eventTimezone = "Europe/Paris";
-    var eventTitle = "!!! Need the right title !!!";
-    var eventDescription = "!!! Need the right description !!! ";
-    var eventLocation = "!!! Need the right location !!!";
-    var eventOrganizer = "Julien Marcialis";
-    var eventOrganizerEmail = "julien.marcialis@gorgias.com";
-    var eventAlarm = "60";
-
-    // display the hidden btn button
-    $('.add-to-calendar-btn').css('display','block');
-    $('.add-to-calendar-btn .addeventatc span.start')[0].innerHTML = dateStartFormated;
-    $('.add-to-calendar-btn .addeventatc span.end')[0].innerHTML = dateEndFormated;
-    $('.add-to-calendar-btn .addeventatc span.timezone')[0].innerHTML = eventTimezone;
-    $('.add-to-calendar-btn .addeventatc span.title')[0].innerHTML = eventTitle;
-    $('.add-to-calendar-btn .addeventatc span.description')[0].innerHTML = eventDescription;
-    $('.add-to-calendar-btn .addeventatc span.location')[0].innerHTML = eventLocation;
-    $('.add-to-calendar-btn .addeventatc span.organizer')[0].innerHTML = eventOrganizer;
-    $('.add-to-calendar-btn .addeventatc span.organizer_email')[0].innerHTML = eventOrganizerEmail;
-    $('.add-to-calendar-btn .addeventatc span.alarm')[0].innerHTML = eventAlarm;
-
-}
+});
