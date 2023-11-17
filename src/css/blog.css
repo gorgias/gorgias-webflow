@@ -1,4 +1,3 @@
-<style>
   /* Get rid of top margin on first element in any rich text element */
   .w-richtext > :not(div):first-child,
   .w-richtext > div:first-child > :first-child {
@@ -209,16 +208,8 @@
     .hs-input {
       width: 100% !important;
     }
-    .hs_submit {
-    }
+
     form.hs-form ul.hs-error-msgs {
       margin-top: 0px !important;
     }
   }
-  
-/* Link inwhite in the blockquote wrapper */
-blockquote a {
-	color : white !important;
-}
-
-</style>
