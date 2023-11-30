@@ -21,10 +21,13 @@ document.getElementById('gorgias-chat-widget-install-v3').addEventListener("load
 /* END: Track chat widget open event */
 
 // Use this script to customize the chat button.
-var initGorgiasChatPromise = (window.GorgiasChat) ? window.GorgiasChat.init() : new Promise(function (resolve) { window.addEventListener('gorgias-widget-loaded', function () { resolve();})});
+var initGorgiasChatPromise = (window.GorgiasChat) ? window.GorgiasChat.init() : new Promise(function (resolve) {
+  window.addEventListener('gorgias-widget-loaded', function () { resolve();})
+});
 
-
-
+initGorgiasChatPromise.then(async () => {
+  GorgiasChat.disableAttachments()
+})
 
 /*
 // personnalize chat
