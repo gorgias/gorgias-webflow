@@ -24,7 +24,7 @@ Webflow.push(function () {
     // pricing page
     if (path === '/pricing' || path === '/pricing-test/pricing' || path === '/pages/template-long' 
       || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
-      || path === '/pages/helpdesk' || path === '/pages/crm') {
+      || path === '/pages/helpdesk' || path === '/pages/crm' || path === '/wip/pricing') {
         // [Attributes by Finsweet] Mirrorclick
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
         newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
