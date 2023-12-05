@@ -248,7 +248,7 @@ window.onload = function() {
       if (activeCheckBoxes.length) {
         // when changing plan we deselect them
         Array.from(activeCheckBoxes).forEach(el => {
-          el.parentNode.nextElementSibling.nextElementSibling.firstChild.click()
+          el.closest("label").parentElement.querySelector(".wrapper-toggle-pricing").click();
         })
       }
     });
