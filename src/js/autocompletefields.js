@@ -13,6 +13,7 @@ function autoCompleteInputsForms(){
     if (sessionStorage.first_name || sessionStorage.last_name) {
         $("input[name|='name']").val([sessionStorage.first_name, sessionStorage.last_name].join(" "))
     }
+
     else if (sessionStorage.name) {
         $("input[name|='name']").val(sessionStorage.name).change();
     }
@@ -52,6 +53,7 @@ function autoCompleteInputsForms(){
         $("input[name|='phone']").val(sessionStorage.phone).change();
         $("input[type|='tel']").val(sessionStorage.phone).change();
     }
+
     if (sessionStorage.number_of_agents) {
         $("input[name|='number_of_agents']").val(sessionStorage.number_of_agents).change();
     }
@@ -64,18 +66,35 @@ function autoCompleteInputsForms(){
             'helpdesk': 'helpdesk'
         };
         
-        for (var i = 0; i < productInterests.length; i++) {
-            var interest = productInterests[i].trim();
-        
-            if (productInterestMap.hasOwnProperty(interest)) {
-                if(document.querySelector('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']')){
-                    document.querySelector('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']').click();
-            
+
+        var productInterestInput = document.querySelector('div[class*=demo-form] form input[name=demo_product_interest]');
+        // when a multiple checkbox property in an HS form is hidden, it's not a checkbox field anymore, so we need to pass the data differently
+        if (productInterestInput && productInterestInput.type === 'hidden') {
+            var productInterestValues = "";
+            for (var i = 0; i < productInterests.length; i++) {
+                productInterestMap[interest]
+                var interest = productInterests[i].trim();
+                if (productInterestMap.hasOwnProperty(interest)) {
+                    productInterestValues = productInterestValues + ";" + productInterestMap[interest]
+                }
+            }
+            $('div[class*=demo-form] form input[name=demo_product_interest]').val(productInterestValues);
+        }
+        // multiple checkbox property in an HS form is NOT hidden, then we can complete the multiple checkboxed fields accordingly
+        else {
+            for (var i = 0; i < productInterests.length; i++) {
+                var interest = productInterests[i].trim();
+                if (productInterestMap.hasOwnProperty(interest)) {
+                    if(document.querySelector('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']')){
+                        document.querySelector('div[class*=demo-form] form input[name=demo_product_interest][value=' + productInterestMap[interest] + ']').click();
+                
+                    }
+    
                 }
             }
         }
+        
     }
-
 
     if (sessionStorage.about_us && sessionStorage.about_us.length > 0) { 
         if($("select[name|='about_us']").length>0 ){
@@ -87,6 +106,7 @@ function autoCompleteInputsForms(){
             $("select[name|='0-2/source_form']").hide();
         }
     }
+
     if (sessionStorage.ecommerce_platform) {
 
         // For select input, let's do a map between string and value
@@ -102,7 +122,6 @@ function autoCompleteInputsForms(){
         }
     }
 
-
 }
 
 window.addEventListener('message', event => {
@@ -110,3 +129,5 @@ window.addEventListener('message', event => {
         autoCompleteInputsForms();
     }
 });
+
+
