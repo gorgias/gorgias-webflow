@@ -67,7 +67,7 @@ function autoCompleteInputsForms(){
         };
         
 
-        var productInterestInput = document.querySelector('div[class*=demo-form] form input[name=demo_product_interest]');
+        var productInterestInput = document.querySelector('div[class*=demo-form] form input[name=demo_lead_product_interest]');
         // when a multiple checkbox property in an HS form is hidden, it's not a checkbox field anymore, so we need to pass the data differently
         if (productInterestInput && productInterestInput.type === 'hidden') {
             var productInterestValues = "";
@@ -78,7 +78,7 @@ function autoCompleteInputsForms(){
                     productInterestValues = productInterestValues + ";" + productInterestMap[interest]
                 }
             }
-            $('div[class*=demo-form] form input[name=demo_product_interest]').val(productInterestValues);
+            $('div[class*=demo-form] form input[name=demo_lead_product_interest]').val(productInterestValues);
         }
         // multiple checkbox property in an HS form is NOT hidden, then we can complete the multiple checkboxed fields accordingly
         else {
