@@ -245,12 +245,17 @@ window.onload = function() {
       // set selected plan and estimate price
       selectedPlan = pricingPlans[i]
       estimatePrice()
-      if (activeCheckBoxes.length) {
-        // when changing plan we deselect them
-        Array.from(activeCheckBoxes).forEach(el => {
-          el.closest("label").parentElement.querySelector(".wrapper-toggle-pricing").click();
-        })
+
+      // reset toggles only when the starter or enterprise plans are clicked
+      if(i === 0 | i === 4 | i === 5 | i === 9){
+        resetToggles(activeCheckBoxes)
       }
     });
+  }
+  // function to reset toggles
+  const resetToggles = (activeCheckboxes)=>{
+    Array.from(activeCheckboxes).forEach(el => {
+      el.closest("label").parentElement.querySelector(".wrapper-toggle-pricing").click();
+    })
   }
 };
