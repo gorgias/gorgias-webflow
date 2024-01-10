@@ -44,7 +44,7 @@ const combinedNotAvailable = {
 }
 // automation, voice, sms data
 const automationPrice = {
-  starter: combinedNotAvailable,
+  starter: combinedVoice,
   basic: combinedVoice,
   pro: combinedVoice,
   advanced: combinedVoice,
@@ -172,10 +172,14 @@ window.onload = function() {
   }
   // price calculation begins here
   const estimatePrice = () => {
-    // when starter is selected disable all checkboxes areas
+    // when starter is selected disable all checkboxes areas except for automate
     if (selectedPlan.name =='starter') {
-      Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'none')
-      getElId('pricing-automation').style.color = '#afafaf'
+      Array.from(getEl('wrapper-master-select__pricing')).forEach((el,index) => {
+        if(index !== 0){
+          el.style['pointer-events'] = 'none'
+        }
+      })
+      // getElId('pricing-automation').style.color = '#afafaf'
       getEl('green-heading-content-span__pricing')[3].style.color = '#afafaf'
       getEl('green-heading-content-span__pricing')[5].style.color = '#afafaf'
     } else {
@@ -247,7 +251,7 @@ window.onload = function() {
       estimatePrice()
 
       // reset toggles only when the starter or enterprise plans are clicked
-      if(i === 0 | i === 4 | i === 5 | i === 9){
+      if( i === 4 | i === 5 | i === 9){
         resetToggles(activeCheckBoxes)
       }
     });
