@@ -103,12 +103,14 @@ const smsDropdownValues = {
   7: { monthly: 'custom', annual: 'custom'}
 }
 const convertDropdownValues = {
-  2: { monthly: 150, annual: 150},
-  3: { monthly: 300, annual: 300},
-  4: { monthly: 575, annual: 575},
-  5: { monthly: 1100, annual: 1100},
-  6: { monthly: 1575, annual: 1575},
-  7: { monthly: 2000, annual: 2000}
+  1: { monthly: 30, annual: 30 },
+  2: { monthly: 300, annual: 300},
+  3: { monthly: 575, annual: 575},
+  4: { monthly: 1100, annual: 1100},
+  5: { monthly: 1575, annual: 1575},
+  6: { monthly: 2000, annual: 2000},
+  7: { monthly: 'custom', annual: 'custom'}
+
 }
 let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[7]
 let selectedPeriod = 'annual'
