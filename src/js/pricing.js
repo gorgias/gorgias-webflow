@@ -38,6 +38,10 @@ const combinedSms = {
   monthly: 20,
   annual: 17
 }
+const combinedConvert = {
+  monthly: 30,
+  annual: 30
+}
 const combinedNotAvailable = {
   monthly: 'Not available',
   annual: 'Not available'
@@ -63,6 +67,13 @@ const smsPrice = {
   pro: combinedSms,
   advanced: combinedSms,
   enterprise: combinedSms,
+}
+const convertPrice = {
+  starter: combinedConvert,
+  basic: combinedConvert,
+  pro: combinedConvert,
+  advanced: combinedConvert,
+  enterprise: combinedConvert,
 }
 // automation, voice, sms dropdown data
 const automationDropdownValues = {
@@ -91,11 +102,20 @@ const smsDropdownValues = {
   6: { monthly: 408, annual: 340},
   7: { monthly: 'custom', annual: 'custom'}
 }
+const convertDropdownValues = {
+  2: { monthly: 150, annual: 150},
+  3: { monthly: 300, annual: 300},
+  4: { monthly: 575, annual: 575},
+  5: { monthly: 1100, annual: 1100},
+  6: { monthly: 1575, annual: 1575},
+  7: { monthly: 2000, annual: 2000}
+}
 let selectedPlan = templatePagesPaths ? pricingPlansTemplates[0] : pricingPlans[7]
 let selectedPeriod = 'annual'
 let automationChecked = false
 let voiceChecked = false
 let smsChecked = false
+let convertChecked = false
 
 window.onload = function() {
   const getEl = (val) => document.getElementsByClassName(val)
@@ -127,17 +147,18 @@ window.onload = function() {
     return `${inputString.charAt(0).toUpperCase()}${inputString.slice(1)}`;
   }
 
-  const calculateTotalPrice = (automationTotalPrice, voiceTotalPrice, smsTotalPrice) => {
+  const calculateTotalPrice = (automationTotalPrice, voiceTotalPrice, smsTotalPrice,convertTotalPrice) => {
     const totalPriceEl = getEl('heading-tab-pane__pricing price-form')[0]
     let totalPrice = selectedPlan.price
     
-    if (selectedPlan.name === 'enterprise' || isStringCustom(automationTotalPrice) || isStringCustom(voiceTotalPrice) || isStringCustom(smsTotalPrice)) {
+    if (selectedPlan.name === 'enterprise' || isStringCustom(automationTotalPrice) || isStringCustom(voiceTotalPrice) || isStringCustom(smsTotalPrice) || isStringCustom(convertTotalPrice)) {
       totalPrice = 'Custom price'
       totalPriceEl.nextSibling.classList.add('hidden')
     } else {
       if (automationTotalPrice) totalPrice += automationTotalPrice
       if (voiceTotalPrice) totalPrice += voiceTotalPrice
       if (smsTotalPrice) totalPrice += smsTotalPrice  
+      if (convertTotalPrice) totalPrice += convertTotalPrice  
       totalPriceEl.nextSibling.classList.remove('hidden')
     }
     totalPrice = typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice
@@ -175,36 +196,40 @@ window.onload = function() {
     // when starter is selected disable all checkboxes areas except for automate
     if (selectedPlan.name =='starter') {
       Array.from(getEl('wrapper-master-select__pricing')).forEach((el,index) => {
-        if(index !== 0){
+        if(index > 1){
           el.style['pointer-events'] = 'none'
         }
       })
       // getElId('pricing-automation').style.color = '#afafaf'
-      getEl('green-heading-content-span__pricing')[3].style.color = '#afafaf'
       getEl('green-heading-content-span__pricing')[5].style.color = '#afafaf'
+      getEl('green-heading-content-span__pricing')[7].style.color = '#afafaf'
     } else {
       Array.from(getEl('wrapper-master-select__pricing')).forEach(el => el.style['pointer-events'] = 'auto')
       getElId('pricing-automation').style.color = '#1a9970'
-      getEl('green-heading-content-span__pricing')[3].style.color = '#1a9970'
       getEl('green-heading-content-span__pricing')[5].style.color = '#1a9970'
+      getEl('green-heading-content-span__pricing')[7].style.color = '#1a9970'
     }
     // get dropdown and price span dom elements
     const automationDropdown = getElId('Number-Automation-Addon-Interaction')
     const voiceDropdown = getElId('number-phone-interaction')
+    const convertDropdown = getElId('number-convert-interaction')
     const smsDropdown = getElId('number-sms-interaction')
     const automationPriceEl = getElId('pricing-automation')
-    const voicePriceEl = getEl('green-heading-content-span__pricing')[3]
-    const smsPriceEl = getEl('green-heading-content-span__pricing')[5]
+    const voicePriceEl = getEl('green-heading-content-span__pricing')[5]
+    const smsPriceEl = getEl('green-heading-content-span__pricing')[7]
+    const convertPriceEl = getEl('green-heading-content-span__pricing')[3]
     // toggle dropdowns
     automationDropdown && showHideDropdown(automationDropdown, automationChecked)
     voiceDropdown && showHideDropdown(voiceDropdown, voiceChecked) 
     smsDropdown && showHideDropdown(smsDropdown, smsChecked)
+    convertDropdown && showHideDropdown(convertDropdown, convertChecked)
     // calculate add-ons prices
     const automationTotalPrice = calculateAddOnsPrices(automationChecked, automationDropdownValues, automationDropdown, automationPrice, automationPriceEl)
     const voiceTotalPrice = calculateAddOnsPrices(voiceChecked, voiceDropdownValues, voiceDropdown, voicePrice, voicePriceEl)
     const smsTotalPrice = calculateAddOnsPrices(smsChecked, smsDropdownValues, smsDropdown, smsPrice, smsPriceEl)
+    const convertTotalPrice = calculateAddOnsPrices(convertChecked, convertDropdownValues, convertDropdown, convertPrice, convertPriceEl)
     // calculate total price and button display
-    calculateTotalPrice(automationTotalPrice, voiceTotalPrice, smsTotalPrice)
+    calculateTotalPrice(automationTotalPrice, voiceTotalPrice, smsTotalPrice,convertTotalPrice)
     showButtonDisplay()
   }
   // on first time load estimate prices
@@ -214,9 +239,14 @@ window.onload = function() {
   for (let i = 0; i < planPeriods.length; i++) {
     planPeriods[i].addEventListener('click', function () {
       const chooseTabs = templatePagesPaths ? tabsForTemplates : tabsForPricing
+      if(selectedPeriod === "annual" && i === 0){
+        pricingTabs[chooseTabs[selectedPlan.index]].click()  
+      }
+      if(selectedPeriod === "monthly" && i === 1){
+        pricingTabs[chooseTabs[selectedPlan.index]].click()  
+      }
       if (i === 0) selectedPeriod = 'monthly' 
       if (i === 1) selectedPeriod = 'annual' 
-      pricingTabs[chooseTabs[selectedPlan.index]].click()  
       estimatePrice()
     });
   }
@@ -232,8 +262,9 @@ window.onload = function() {
   for (let i = 0; i < checkBoxes.length; i++) {
     checkBoxes[i].addEventListener('click', function () {
       if (i === 0) automationChecked = !automationChecked
-      if (i === 1) voiceChecked = !voiceChecked
-      if (i === 2) smsChecked = !smsChecked
+      if (i === 1) convertChecked = !convertChecked
+      if (i === 2) voiceChecked = !voiceChecked
+      if (i === 3) smsChecked = !smsChecked
       estimatePrice()
     });
   }
@@ -251,8 +282,17 @@ window.onload = function() {
       estimatePrice()
 
       // reset toggles only when the starter or enterprise plans are clicked
-      if( i === 4 | i === 5 | i === 9){
+      if(i === 4 | i === 5 | i === 9){
         resetToggles(activeCheckBoxes)
+      }
+      // reset other toggles except automate and convert
+      if(i === 0){
+        document.querySelectorAll('.wrapper-toggle-pricing').forEach((item,index)=>{
+          const isChecked = item.parentElement.parentElement.querySelector(".checkbox__pricing").classList.contains("w--redirected-checked");
+          if(index > 1 && isChecked){
+            item.click();
+          }
+        })
       }
     });
   }
