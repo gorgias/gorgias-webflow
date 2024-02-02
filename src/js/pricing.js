@@ -163,7 +163,7 @@ window.onload = function() {
       if (convertTotalPrice) totalPrice += convertTotalPrice  
       totalPriceEl.nextSibling.classList.remove('hidden')
     }
-    totalPrice = typeof totalPrice === 'string' ? totalPrice : '$' + totalPrice
+    totalPrice = typeof totalPrice === 'string' ? totalPrice : '$' + formatNumberWithCommas(totalPrice)
     totalPriceEl.innerHTML = totalPrice
     // add mobile plan name 
     getElId('name-plan').innerHTML = capitalizeFirstLetter(selectedPlan.name)
@@ -173,16 +173,22 @@ window.onload = function() {
     let price = (dropDownValue.value !== '1')
       ? dropdownPrice[dropDownValue.value][selectedPeriod] 
       : basePrice[selectedPlan.name][selectedPeriod] 
-      const displayPrice = typeof price === 'string' ? price : '+$' + price + '/mo';
+      const displayPrice = typeof price === 'string' ? formatNumberWithCommas(price) : '+$' + formatNumberWithCommas(price) + '/mo';
       domElement.innerHTML = displayPrice
       return toggle ? price : 0
   }
 
   const showButtonDisplay = () => {
+    const totalPriceElTextContent = getEl('heading-tab-pane__pricing price-form')[0].textContent.trim().toLowerCase()
     document.querySelectorAll(".button.pricing")[0].innerHTML = selectedPlan.name === 'enterprise' ? 'Contact us' : 'Start a free trial'
     document.querySelectorAll(".button.pricing")[0].href = selectedPlan.name === 'enterprise' 
       ? 'https://www.gorgias.com/demo?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
       : 'https://www.gorgias.com/signup?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
+
+    if(totalPriceElTextContent === "custom price" || convertChecked){
+      document.querySelectorAll(".button.pricing")[0].innerHTML = "Contact us";
+      document.querySelectorAll(".button.pricing")[0].href = 'https://www.gorgias.com/demo?plan_name='+ selectedPlan.name +'&period=' + selectedPeriod
+    }
   }
 
   const showHideDropdown = (el, show) => {
@@ -263,10 +269,23 @@ window.onload = function() {
   const checkBoxes = document.querySelectorAll(".wrapper-toggle-pricing")
   for (let i = 0; i < checkBoxes.length; i++) {
     checkBoxes[i].addEventListener('click', function () {
-      if (i === 0) automationChecked = !automationChecked
-      if (i === 1) convertChecked = !convertChecked
-      if (i === 2) voiceChecked = !voiceChecked
-      if (i === 3) smsChecked = !smsChecked
+      if (i === 0) {
+        automationChecked = !automationChecked
+        toggleActiveClass(checkBoxes[i],automationChecked)
+      }
+      if (i === 1) {
+        convertChecked = !convertChecked
+        toggleActiveClass(checkBoxes[i],convertChecked)
+      }
+      if (i === 2) {
+        voiceChecked = !voiceChecked
+        toggleActiveClass(checkBoxes[i],voiceChecked)
+      }
+      if (i === 3) {
+        smsChecked = !smsChecked
+        toggleActiveClass(checkBoxes[i],smsChecked)
+      }
+
       estimatePrice()
     });
   }
@@ -297,6 +316,16 @@ window.onload = function() {
         })
       }
     });
+  }
+  // add remove is-active class
+  function toggleActiveClass(element, isActive) {
+    const action = isActive ? 'add' : 'remove';
+    element.classList[action]('is-active');
+    element.querySelectorAll('*').forEach(child => child.classList[action]('is-active'));
+  }
+  // comma separator
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
   // function to reset toggles
   const resetToggles = (activeCheckboxes)=>{
