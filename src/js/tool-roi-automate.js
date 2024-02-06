@@ -32,7 +32,7 @@ function initialize() {
     elements.responseTimeInput.min = "0";
     elements.resolutionTimeInput.min = "0";
     elements.calculatorResults.style.display = "grid";
-    elements.calculatorResults.style.gridTemplateRows = "0fr";
+    elements.calculatorResults.style.gridTemplateRows = "1fr";
     elements.automateSavingWrapper.style.opacity = "0";
     elements.calculatorResults.firstElementChild.style.overflow = "hidden";
     if (elements.supportSelect?.value === "Support Tickets") {
@@ -224,7 +224,7 @@ function initialize() {
         const maxVal = elements.sliderInput?.getAttribute("max");
         elements.automateSavingWrapper.style.opacity = "0";
         elements.calculatorResults.style.display = "grid";
-        elements.calculatorResults.style.gridTemplateRows = "0fr";
+        elements.calculatorResults.style.gridTemplateRows = "1fr";
         elements.calculatorResults.firstElementChild.style.overflow = "hidden";
         elements.costWithOutAutomateDiv.textContent = "$0";
         elements.costWithAutomateDiv.textContent = "$0";
