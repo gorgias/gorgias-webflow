@@ -1,0 +1,5 @@
+@media screen and (min-width: 991px) and (max-width: 1016px) {
+    [dev-target=usd-sign] {
+      display: none;
+    }
+  }

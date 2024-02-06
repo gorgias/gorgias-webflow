@@ -74,3 +74,8 @@ function getParam(name) {
     }
     return output;
 }
+
+// format figures with comma separator
+function formatNumberWithCommas(number) {
+return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
