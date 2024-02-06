@@ -63,5 +63,9 @@ Webflow.push(function () {
     if (path.includes('/signup-2')){
         newScript(scriptBase + '/src/js/signup-2'+minBase+'.js','head',1);
     }
+    if (path.includes('automate')){
+        newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head',0);
+        newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head',0);
+    }
 })
 

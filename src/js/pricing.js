@@ -323,10 +323,7 @@ window.onload = function() {
     element.classList[action]('is-active');
     element.querySelectorAll('*').forEach(child => child.classList[action]('is-active'));
   }
-  // comma separator
-  function formatNumberWithCommas(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+
   // function to reset toggles
   const resetToggles = (activeCheckboxes)=>{
     Array.from(activeCheckboxes).forEach(el => {
