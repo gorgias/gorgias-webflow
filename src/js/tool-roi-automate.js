@@ -42,7 +42,7 @@ function initialize() {
         elements.sliderInput.max = "38";
     }
     calculatorRateInputInit();
-    // customSlider();
+    customSlider();
     fourDigitInputLogicInit();
     newDisplayInputLogicInit();
     responseAndResolutionTime();
@@ -345,10 +345,10 @@ function initialize() {
     function calculateValues(costWithOutAutomateDiv, costWithAutomateDiv, automateSaving, estimateSavingDiv, costWithOutAutomate, costWithAutomate, percentSaved, amountSavedWithAutomate) {
         setTimeout(() => {
             costWithOutAutomateDiv.textContent =
-                "$" + Math.round(costWithOutAutomate);
-            costWithAutomateDiv.textContent = "$" + Math.round(costWithAutomate);
+                "$" + formatNumberWithCommas(Math.round(costWithOutAutomate));
+            costWithAutomateDiv.textContent = "$" + formatNumberWithCommas(Math.round(costWithAutomate));
         }, 200);
-        estimateSavingDiv.textContent = "$" + Math.round(amountSavedWithAutomate);
+        estimateSavingDiv.textContent = "$" + formatNumberWithCommas(Math.round(amountSavedWithAutomate));
         if (percentSaved) {
             automateSaving.textContent = percentSaved.toString();
         }
