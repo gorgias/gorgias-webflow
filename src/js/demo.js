@@ -1,11 +1,13 @@
 const demoLeadFormId = 'ef92ccce-92bd-4010-847a-793f56b6b353';
 const demoCustomerFormId = 'b7cf896e-d7b3-4f50-a5c1-21459faa6322';
+const demoCustomerAutomateFormId = '2550ba15-99e2-4792-ba41-e389b8695d12';
+const demoCustomerConvertFormId = 'ecb4eba5-6a65-49a2-82d1-5418da6dc5ec';
 const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
 
 // demo functions
 window.addEventListener("message", function(event) {
     // when form is ready
-    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId || event.data.id === demoCustomerFormId)) {
+    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId || event.data.id === demoCustomerFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId)) {
         // if url contains reamaze --> autocomplete current_helpdesk field if it exist and then and hide it
         if($('div.hs_demo_current_helpdesk').length  && location.href.includes('reamaze') == true){
             $('select[name=demo_current_helpdesk]').val('Reamaze').change();
@@ -74,7 +76,7 @@ function q(a){return function(){ChiliPiper[a].q=(ChiliPiper[a].q||[]).concat([ar
 
 // form submitted is a demo form (lead) of customer demo
 window.addEventListener("message", function(event) {
-    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoCustomerFormId )) {
+    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId )) {
 
         // store the value submitted
         var submittedValues=event.data.data.submissionValues;
@@ -96,7 +98,7 @@ window.addEventListener("message", function(event) {
             cpRouterName = "inbound-router"; 
         }
         // demo form for customers (on /demo-product)
-        else if (eventId === demoCustomerFormId) {
+        else if (eventId === demoCustomerFormId || eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId) {
             formName = 'demo_customer'
             cpRouterName = "inbound_router_customer"; 
         }
