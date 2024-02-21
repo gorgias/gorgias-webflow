@@ -258,7 +258,8 @@ function initialize() {
             if (elements.sliderThumb) {
                 elements.sliderThumb.style.left = val;
             }
-            elements.newDisplayedNumbers.value = sliderInput.value.padStart(4, "0").slice(0, 4);
+            elements.newDisplayedNumbers.type = "text";
+            elements.newDisplayedNumbers.value = formatNumberWithCommas(sliderInput.value.padStart(4, "0").slice(0, 4));
             elements.displayedNumbers.forEach((num, index) => {
                 num.value = fourDigitValueArray[index];
             });
@@ -333,12 +334,17 @@ function initialize() {
         });
     }
     function newDisplayInputLogicInit() {
-        elements.newDisplayedNumbers?.addEventListener("input", (e) => {
+        elements.newDisplayedNumbers?.addEventListener("blur", (e) => {
             elements.newDisplayedNumbers.value = elements.newDisplayedNumbers.value.padStart(4, "0");
             elements.sliderInput.value = elements.newDisplayedNumbers.value;
             elements.sliderInput?.dispatchEvent(inputEvent);
+            elements.newDisplayedNumbers.type = "text";
+            elements.newDisplayedNumbers.value = formatNumberWithCommas(elements.newDisplayedNumbers.value);
         });
         elements.newDisplayedNumbers?.addEventListener("focus", (e) => {
+            const value = elements.newDisplayedNumbers.value.replace(/,/g, '')
+            elements.newDisplayedNumbers.type = "number";
+            elements.newDisplayedNumbers.value = value;
             elements.newDisplayedNumbers?.select();
         });
     }
