@@ -67,5 +67,8 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head',0);
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head',0);
     }
+    if (path.includes('/products/convert')){
+        newScript(scriptBase + '/src/js/tool-roi-convert'+minBase+'.js','head',0);
+    }
 })
 
