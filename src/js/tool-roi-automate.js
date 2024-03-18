@@ -36,7 +36,7 @@ function initialize() {
     elements.automateSavingWrapper.style.opacity = "0";
     elements.calculatorResults.firstElementChild.style.overflow = "hidden";
     if (elements.supportSelect?.value === "Support Tickets") {
-        elements.sliderInput.max = "9999";
+        elements.sliderInput.max = "99999";
     }
     else if (elements.supportSelect?.value === "Support Agents") {
         elements.sliderInput.max = "38";
@@ -246,7 +246,7 @@ function initialize() {
     function updateSlider(sliderInput, maxVal) {
         if (sliderInput && maxVal) {
             const val = (Number(sliderInput.value) / Number(maxVal)) * 100 + "%";
-            const fourDigitValueArray = sliderInput?.value.padStart(4, "0").split("");
+            const fourDigitValueArray = sliderInput?.value.padStart(5, "").split("");
             const costWithOutAutomate = elements.numOfMonthlyTickets * (elements.agentCostPerTicket + elements.billableTicketCost);
             console.log("costWithOutAutomate", costWithOutAutomate);
             const costWithAutomate = costWithOutAutomate - (0.3 * elements.numOfMonthlyTickets * ((elements.agentCostPerTicket + elements.billableTicketCost) - elements.costOfAutomatedInteraction)) + (elements.automateSubscriptionCost);
@@ -259,7 +259,7 @@ function initialize() {
                 elements.sliderThumb.style.left = val;
             }
             elements.newDisplayedNumbers.type = "text";
-            elements.newDisplayedNumbers.value = formatNumberWithCommas(sliderInput.value.padStart(4, "0").slice(0, 4));
+            elements.newDisplayedNumbers.value = formatNumberWithCommas(sliderInput.value.padStart(5, "").slice(0, 5));
             elements.displayedNumbers.forEach((num, index) => {
                 num.value = fourDigitValueArray[index];
             });
@@ -335,7 +335,7 @@ function initialize() {
     }
     function newDisplayInputLogicInit() {
         elements.newDisplayedNumbers?.addEventListener("blur", (e) => {
-            elements.newDisplayedNumbers.value = elements.newDisplayedNumbers.value.padStart(4, "0");
+            elements.newDisplayedNumbers.value = elements.newDisplayedNumbers.value.padStart(5, "");
             elements.sliderInput.value = elements.newDisplayedNumbers.value;
             elements.sliderInput?.dispatchEvent(inputEvent);
             elements.newDisplayedNumbers.type = "text";
@@ -369,7 +369,7 @@ function initialize() {
     elements.supportSelect?.addEventListener("change", () => {
         const value = elements.supportSelect?.value;
         if (value === "Support Tickets") {
-            elements.sliderInput.max = "9999";
+            elements.sliderInput.max = "99999";
             elements.newDisplayedNumbers.value = "0";
         }
         else if (value === "Support Agents") {
