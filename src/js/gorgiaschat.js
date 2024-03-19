@@ -1,17 +1,32 @@
-// Gorgias chat
+/* Convert Bundle Start */ 
+var scriptBundleConvert = document.createElement('script');
+var scriptBundleConvertId = 'convert-bundle-loader';
+var scriptBundleConvertSrc = 'https://bundle.dyn-rev.app/loader.js?g_cvt_id=214af90f-860b-42c0-9bc9-505d6bcad587';
+var scriptBundleConvertType = 'text/javascript';
+scriptBundleConvert.setAttribute("src",scriptBundleConvertSrc);
+scriptBundleConvert.setAttribute("type",scriptBundleConvertType);
+scriptBundleConvert.setAttribute("id",scriptBundleConvertId);
+scriptBundleConvert.async = 1;
+$('body')[0].appendChild(scriptBundleConvert);  
+/* GorConvert Bundle End */
+
+
 
 /* Gorgias Chat Widget Start */ 
-var script = document.createElement('script');
-var scriptId = 'gorgias-chat-widget-install-v3';
-script.setAttribute('src','https://config.gorgias.chat/bundle-loader/01GYCCQV7ZZN9NBVRBND6RA25H');
-script.setAttribute("type","text/javascript");
-script.setAttribute("id",scriptId);
-script.async = 1;
-$('body')[0].appendChild(script);  
+var scriptGorgiasChat = document.createElement('script');
+var scriptGorgiasChatId = 'gorgias-chat-widget-install-v3';
+var scriptGorgiasChatSrc = 'https://config.gorgias.chat/bundle-loader/01GYCCQV7ZZN9NBVRBND6RA25H';
+var scriptGorgiasChatType = 'text/javascript';
+
+scriptGorgiasChat.setAttribute('src',scriptGorgiasChatSrc);
+scriptGorgiasChat.setAttribute("type",scriptGorgiasChatType);
+scriptGorgiasChat.setAttribute("id",scriptGorgiasChatId);
+scriptGorgiasChat.async = 1;
+$('body')[0].appendChild(scriptGorgiasChat);  
 /* Gorgias Chat Widget End */
 
 /* Track chat widget open event */
-document.getElementById('gorgias-chat-widget-install-v3').addEventListener("load", function(event) {
+document.getElementById(scriptGorgiasChatId).addEventListener("load", function(event) {
     GorgiasChat.init().then(function () {
       GorgiasChat.on('widget:opened', function (data) {
         analytics.track('chat-widget-opened');
