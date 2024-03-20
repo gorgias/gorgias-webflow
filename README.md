@@ -52,8 +52,7 @@ You can test your local code before deployement by using Visual code Studio and 
 - fix/{{what-you-fix}} --> Use to fixe a bug. E.g. fix/autocompletion-demo-form-fields
 - new/{{what-you-built-new}} --> Use to add new features. E.g. new/graident-effect-animation-h1
 - refactor/{{what-you-clean}} --> refactor/simplify-script-pricing-page
-- refactor/{{what-you-clean}} --> refactor/simplify-script-pricing-page
-- improve/{{what's-your-update}} --> e.g. improve/readme-purge
+- improve/{{whats-your-update}} --> e.g. improve/readme-purge
 
 
 ## Expertiments and A/B testing
