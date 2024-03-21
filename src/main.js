@@ -60,8 +60,13 @@ Webflow.push(function () {
     if (path.includes('signup-2') || path.includes('signup-3')){
         newStyle(scriptBase + '/src/css/signup'+minBase+'.css','body');
     }
-    if (path.includes('/signup-2')){
-        newScript(scriptBase + '/src/js/signup-2'+minBase+'.js','head',1);
+    // Check if the path is specifically for the French version of signup-2
+    if (path.includes("/fr/signup-2")) {
+      // Load the French version of the script
+      newScript(scriptBase + "/src/js/signup-2-fr" + minBase + ".js", "head", 1);
+    } else if (path.includes("/signup-2")) {
+      // Load the default version of the script if not the French version
+      newScript(scriptBase + "/src/js/signup-2" + minBase + ".js", "head", 1);
     }
     if (path.includes('/products/automate')){
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head',0);
