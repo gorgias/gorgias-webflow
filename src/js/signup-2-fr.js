@@ -321,7 +321,7 @@ function emailVerify(verifyStatus) {
   // resetFieldStatus(emailField);
   const regexEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
   let verifyMessage = "";
-  let verifyStatus = verifyStatus;
+  verifyStatus = verifyStatus;
   if (!emailField.val() || emailField.val() === "") {
     verifyMessage = "Nous avons besoin de votre email pour créer votre compte";
     handleFieldStatus(emailField, verifyStatus, verifyMessage);
@@ -426,7 +426,7 @@ function accountDomainVerify(verifyStatus, domain, prefilled) {
   if (typeof account_domain_submitted != "string") {
     account_domain_submitted = account_domain_submitted.val();
   }
-  let verifyStatus = verifyStatus;
+  verifyStatus = verifyStatus;
   let verifyMessage = "";
   let regexAccountDomain = /^[a-zA-Z0-9\-]+$/;
   let regexAccountDomain2 = /^-|-/;
@@ -579,7 +579,7 @@ function companyDomainVerify(verifyStatus) {
   let regexCompanyDomain =
     /^(?:(?:https?:\/\/)?(?:www\.)?)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?$/;
   let verifyMessage = "";
-  let verifyStatus = verifyStatus;
+  verifyStatus = verifyStatus;
 
   if (!companyDomainField.val() || companyDomainField.val() === "") {
     verifyMessage =
