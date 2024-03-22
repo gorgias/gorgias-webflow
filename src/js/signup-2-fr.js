@@ -16,10 +16,10 @@ const btnWaitString = "Please wait";
 const classValidMessage = "message-valid";
 const SIGNUP_ACCOUNT_FORM_PAGE = path.includes("staging")
   ? "/staging-signup-2/account"
-  : "/signup-2/account";
+  : "/fr/signup-2/account";
 const SIGNUP_FORM_PAGE = path.includes("staging")
   ? "/staging-signup-2"
-  : "/signup-2";
+  : "/fr/signup-2";
 
 var emailField = $('#signup-user-form input[name="' + email_key + '"]') || "";
 var fullnameField =
