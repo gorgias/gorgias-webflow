@@ -16,44 +16,44 @@ const btnWaitString = "Please wait";
 const classValidMessage = "message-valid";
 const SIGNUP_ACCOUNT_FORM_PAGE = path.includes("staging")
   ? "/staging-signup-2/account"
-  : "/fr/signup-2/account";
+  : "/signup-2/account";
 const SIGNUP_FORM_PAGE = path.includes("staging")
   ? "/staging-signup-2"
-  : "/fr/signup-2";
+  : "/signup-2";
 
-let emailField = $('#signup-user-form input[name="' + email_key + '"]') || "";
-let fullnameField =
+var emailField = $('#signup-user-form input[name="' + email_key + '"]') || "";
+var fullnameField =
   $('#signup-user-form input[name="' + fullname_key + '"]') || "";
-let passwordField =
+var passwordField =
   $('#signup-user-form input[name="' + password_key + '"]') || "";
-let accountDomainEditButton = $("a#account-domain-edit-button") || "";
-let accountDomainEditWrapper = $("#account-domain-edit-wrapper") || "";
-let accountDomainWrapper = $("#account-domain-wrapper") || "";
-let accountDomainLoaderWrapper = $("#account-domain-loader-wrapper") || "";
-let accountDomainEditLoaderWrapper =
+var accountDomainEditButton = $("a#account-domain-edit-button") || "";
+var accountDomainEditWrapper = $("#account-domain-edit-wrapper") || "";
+var accountDomainWrapper = $("#account-domain-wrapper") || "";
+var accountDomainLoaderWrapper = $("#account-domain-loader-wrapper") || "";
+var accountDomainEditLoaderWrapper =
   $("#account-domain-edit-loader-wrapper") || "";
-let accountDomainSaveButton = $("a#account-domain-save-button") || "";
-let accountDomainText = $("#account-domain-text") || "";
-let accountDomainSubdomainString = $("#account-subdomain-string") || "";
-let accountDomainTextInfoWrapper = $("#account-domain-info-wrapper") || "";
-let companyDomainField =
+var accountDomainSaveButton = $("a#account-domain-save-button") || "";
+var accountDomainText = $("#account-domain-text") || "";
+var accountDomainSubdomainString = $("#account-subdomain-string") || "";
+var accountDomainTextInfoWrapper = $("#account-domain-info-wrapper") || "";
+var companyDomainField =
   $('#signup-account-form input[name="' + company_domain_key + '"]') || "";
-let accountDomainField =
+var accountDomainField =
   $('#signup-account-form input[name="' + account_domain_key + '"]') || "";
-let signupButton = $('input[id="signup-button"]') || "";
-let signupButtonLoading = $("#signup-button-loading") || "";
-let ssoGoogleButton = $('a[id="sso-button-google"]') || "";
-let userForm = $("form#signup-user-form");
-let accountForm = $("form#signup-account-form");
-let accountFormWrapper = $("#signup-account-form-wrapper");
-let accountFormLoadingWrapper = $("div#signup-account-form-loading-wrapper");
+var signupButton = $('input[id="signup-button"]') || "";
+var signupButtonLoading = $("#signup-button-loading") || "";
+var ssoGoogleButton = $('a[id="sso-button-google"]') || "";
+var userForm = $("form#signup-user-form");
+var accountForm = $("form#signup-account-form");
+var accountFormWrapper = $("#signup-account-form-wrapper");
+var accountFormLoadingWrapper = $("div#signup-account-form-loading-wrapper");
 
-let delayTimer;
+var delayTimer;
 
 function waitForAnalytics(callback) {
-  let waitForAnalyticsIntervalCount = 0;
-  let waitForAnalyticsIntervalMax = 3;
-  let waitForAnalyticsInterval = null;
+  var waitForAnalyticsIntervalCount = 0;
+  var waitForAnalyticsIntervalMax = 3;
+  var waitForAnalyticsInterval = null;
   waitForAnalyticsInterval = window.setInterval(function () {
     if (
       typeof analytics.user === "function" ||
@@ -98,8 +98,8 @@ function getFieldStatusStorage(fieldName) {
 
 // Used to manage the field status and messaging: valid (green), warning (pre-form submission:orange), alert (post-form submission: red)
 function handleFieldStatus(field, status, messaging) {
-  let fieldName = field[0].name;
-  let fieldType = field[0].type;
+  var fieldName = field[0].name;
+  var fieldType = field[0].type;
   setFieldStatusStorage(fieldName, status);
 
   if (status == "warning") {
@@ -140,7 +140,7 @@ function handleFieldStatus(field, status, messaging) {
 
   // all but password: we don't empty the message container in case the messaging is the same as the initial one
   if (fieldName != password_key) {
-    let initialMessage =
+    var initialMessage =
       field.next("div[id*='-message-container']").innerHTML || "";
     if (initialMessage && initialMessage != "" && messaging != initialMessage) {
       field.next("div[id*='-message-container']").empty().append(messaging);
@@ -241,9 +241,9 @@ function updateLinksForSession(sessionToken) {
   });
 }
 
-function post(endpoint, data, success, error, complete) {
+function post(endpoint, data, success, error, compvare) {
   //const API_BASE_URL = new URL(document.currentScript.src).origin + '/signup'
-  let API_BASE_URL = "https://accounts.gorgias.com" + "/signup";
+  var API_BASE_URL = "https://accounts.gorgias.com" + "/signup";
 
   return $.ajax({
     method: "POST",
@@ -264,9 +264,9 @@ function post(endpoint, data, success, error, complete) {
     success: function (data, status, jqXHR) {
       success(data);
     },
-    complete: function (jqXHR) {
-      if (typeof complete === "function") {
-        complete(jqXHR);
+    compvare: function (jqXHR) {
+      if (typeof compvare === "function") {
+        compvare(jqXHR);
       }
       const sessionToken = jqXHR.getResponseHeader(TOKEN_KEY);
       if (sessionToken) {
@@ -281,12 +281,12 @@ function post(endpoint, data, success, error, complete) {
 
 // used to to fetch url parameters, set a session token key as local storage and prefilled fields using url parameters
 function processURLSearchParams() {
-  let searchParams = new URLSearchParams(window.location.search);
-  let sessionToken = searchParams.get(TOKEN_KEY);
-  let sessionEmail = searchParams.get(email_key.toLowerCase());
-  let sessionfullname = searchParams.get(fullname_key.toLowerCase());
-  let sessionPlanName = searchParams.get(plan_name_key.toLowerCase());
-  let sessionPlanPeriod = searchParams.get(plan_period_key.toLowerCase());
+  var searchParams = new URLSearchParams(window.location.search);
+  var sessionToken = searchParams.get(TOKEN_KEY);
+  var sessionEmail = searchParams.get(email_key.toLowerCase());
+  var sessionfullname = searchParams.get(fullname_key.toLowerCase());
+  var sessionPlanName = searchParams.get(plan_name_key.toLowerCase());
+  var sessionPlanPeriod = searchParams.get(plan_period_key.toLowerCase());
   if (sessionToken) {
     window.localStorage.setItem(session_TOKEN_KEY, sessionToken);
     updateLinksForSession(sessionToken);
@@ -310,8 +310,8 @@ function isPersonalEmail(email) {
   // Custom logic to determine if the email is professional or not
   // You can use regular expressions or any other method
   // Here's a simple example using a predefined list of non-professional email domains
-  let personalDomains = ["gmail.com", "outlook.com"];
-  let domain = email.split("@")[1];
+  var personalDomains = ["gmail.com", "outlook.com"];
+  var domain = email.split("@")[1];
 
   return personalDomains.includes(domain);
 }
@@ -320,8 +320,8 @@ function isPersonalEmail(email) {
 function emailVerify(verifyStatus) {
   // resetFieldStatus(emailField);
   const regexEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  let verifyMessage = "";
-  verifyStatus = verifyStatus;
+  var verifyMessage = "";
+  var verifyStatus = verifyStatus;
   if (!emailField.val() || emailField.val() === "") {
     verifyMessage = "Nous avons besoin de votre email pour créer votre compte";
     handleFieldStatus(emailField, verifyStatus, verifyMessage);
@@ -335,19 +335,19 @@ function emailVerify(verifyStatus) {
     verifyMessage =  'Keep a good work-life balance, use a professional email'
   }
   */
-    let validationData = {
+    var validationData = {
       name: fullnameField.val(),
       email: emailField.val(),
       password: emailField.val(),
     };
-    let API_VALIDATION_ENDPOINT = "/user/validation";
+    var API_VALIDATION_ENDPOINT = "/user/validation";
     post(
       API_VALIDATION_ENDPOINT,
       validationData,
       // success callback
       function (data) {
         if (data && data["signup-email-validation"]) {
-          let validationResult = data["signup-email-validation"];
+          var validationResult = data["signup-email-validation"];
           if (validationResult.risk === "high") {
             if (
               validationResult.reason === "mailbox_does_not_exist" ||
@@ -373,7 +373,7 @@ function emailVerify(verifyStatus) {
       function (response) {
         handleErrors(self, response);
       },
-      // compelete
+      // compevare
       function (data) {
         handleFieldStatus(emailField, verifyStatus, verifyMessage);
         return verifyStatus;
@@ -393,7 +393,7 @@ function extractDomain(url) {
   url = url.replace(/^(https?:\/\/)?(www\.)?/i, "");
 
   // Extract domain name
-  let domain = url.split("/")[0];
+  var domain = url.split("/")[0];
 
   // Remove file extension if present
   domain = domain.replace(/\.[^.]*$/, "");
@@ -401,12 +401,12 @@ function extractDomain(url) {
   // Check if the domain matches "myshopify" or "mybigcommerce"
   if (domain === "myshopify" || domain === "mybigcommerce") {
     // Extract subdomain
-    let subdomain = url.split(".")[0];
+    var subdomain = url.split(".")[0];
     return subdomain;
   }
 
   // Remove subdomains if present
-  let parts = domain.split(".");
+  var parts = domain.split(".");
   if (parts.length > 2) {
     domain = parts.slice(-2).join(".");
   }
@@ -420,19 +420,19 @@ function extractDomain(url) {
 function accountDomainVerify(verifyStatus, domain, prefilled) {
   resetFieldStatus(accountDomainField);
 
-  let account_domain_submitted = domain.trim().toLowerCase();
+  var account_domain_submitted = domain.trim().toLowerCase();
 
   // happen on keyup trigger : $this is an input, not the input value
   if (typeof account_domain_submitted != "string") {
     account_domain_submitted = account_domain_submitted.val();
   }
-  verifyStatus = verifyStatus;
-  let verifyMessage = "";
-  let regexAccountDomain = /^[a-zA-Z0-9\-]+$/;
-  let regexAccountDomain2 = /^-|-/;
+  var verifyStatus = verifyStatus;
+  var verifyMessage = "";
+  var regexAccountDomain = /^[a-zA-Z0-9\-]+$/;
+  var regexAccountDomain2 = /^-|-/;
 
   if (!regexAccountDomain.test(account_domain_submitted)) {
-    let verifyMessage =
+    var verifyMessage =
       "Ce champ n'autorise que les caractères spéciaux suivants : -";
     handleFieldStatus(accountDomainField, verifyStatus, verifyMessage);
     return verifyStatus;
@@ -442,11 +442,11 @@ function accountDomainVerify(verifyStatus, domain, prefilled) {
   // If it already exists, retrieve the existing data and append the new key/value
 
   try {
-    let accountSubdomainsApproved = JSON.parse(
+    var accountSubdomainsApproved = JSON.parse(
       localStorage.getItem("account-subdomains-approved")
     );
   } catch (error) {
-    let accountSubdomainsApproved = {};
+    var accountSubdomainsApproved = {};
     localStorage.removeItem("account-subdomains-approved");
     handleFieldStatus(accountDomainField, verifyStatus, verifyMessage);
     return verifyStatus;
@@ -455,10 +455,10 @@ function accountDomainVerify(verifyStatus, domain, prefilled) {
     localStorage.getItem("account-subdomains-approved") === null ||
     !accountSubdomainsApproved.hasOwnProperty(account_domain_submitted)
   ) {
-    let API_BASE_URL =
+    var API_BASE_URL =
       "https://us-central1-gorgias-growth-production.cloudfunctions.net/check_helpdesk_domain";
-    let data = { account_name_predicted: account_domain_submitted };
-    let settings = {
+    var data = { account_name_predicted: account_domain_submitted };
+    var settings = {
       url: API_BASE_URL,
       method: "POST",
       crossDomain: "true",
@@ -469,10 +469,10 @@ function accountDomainVerify(verifyStatus, domain, prefilled) {
       beforeSend: function (xhr) {
         accountDomainLoaderWrapper.removeClass("hidden");
         accountDomainEditLoaderWrapper.removeClass("hidden");
-        accountDomainSubdomainString.addClass("skeleton-text");
+        accountDomainSubdomainString.addClass("skevaron-text");
       },
     };
-    let APIresponse;
+    var APIresponse;
 
     $.ajax(settings)
       // cloud function failed
@@ -488,8 +488,8 @@ function accountDomainVerify(verifyStatus, domain, prefilled) {
           account_domain: response.account_domain,
         };
         // Check if "account-subdomains-approved" exists in local storage
-        let data = localStorage.getItem("account-subdomains-approved") || {};
-        let dataObject;
+        var data = localStorage.getItem("account-subdomains-approved") || {};
+        var dataObject;
 
         try {
           dataObject = JSON.parse(data);
@@ -503,7 +503,7 @@ function accountDomainVerify(verifyStatus, domain, prefilled) {
           JSON.stringify(dataObject)
         );
         verifyStatus = "valid";
-        let verifyMessage = "";
+        var verifyMessage = "";
       })
       .always(function (jqXHR, textStatus, errorThrown) {
         if (prefilled == true) {
@@ -511,17 +511,17 @@ function accountDomainVerify(verifyStatus, domain, prefilled) {
         }
         accountDomainLoaderWrapper.addClass("hidden");
         accountDomainEditLoaderWrapper.hide();
-        accountDomainSubdomainString.removeClass("skeleton-text");
+        accountDomainSubdomainString.removeClass("skevaron-text");
 
         handleFieldStatus(accountDomainField, verifyStatus, verifyMessage);
 
         return verifyStatus;
       });
   } else {
-    let approvedSubdomains = JSON.parse(
+    var approvedSubdomains = JSON.parse(
       localStorage.getItem("account-subdomains-approved")
     );
-    let recommendedSubdomain = approvedSubdomains[account_domain_submitted];
+    var recommendedSubdomain = approvedSubdomains[account_domain_submitted];
 
     response = {
       domain_exist: false,
@@ -547,9 +547,9 @@ function accountDomainVerify(verifyStatus, domain, prefilled) {
 }
 
 function accountDomainPrefilled(response, verifyStatus) {
-  let domain_exist = response.domain_exist;
-  let account_domain = response.account_domain;
-  let verifyMessage = "";
+  var domain_exist = response.domain_exist;
+  var account_domain = response.account_domain;
+  var verifyMessage = "";
 
   // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
   if (domain_exist == true) {
@@ -567,7 +567,7 @@ function accountDomainPrefilled(response, verifyStatus) {
     accountDomainField.val(account_domain);
     accountDomainSubdomainString.empty().text(account_domain);
     accountDomainLoaderWrapper.addClass("hidden");
-    accountDomainSubdomainString.removeClass("skeleton-text");
+    accountDomainSubdomainString.removeClass("skevaron-text");
   }
 
   handleFieldStatus(accountDomainField, verifyStatus, verifyMessage);
@@ -576,10 +576,10 @@ function accountDomainPrefilled(response, verifyStatus) {
 // used to verfiy the domain field is not empty and with the right format
 function companyDomainVerify(verifyStatus) {
   // resetFieldStatus(emailField);
-  let regexCompanyDomain =
+  var regexCompanyDomain =
     /^(?:(?:https?:\/\/)?(?:www\.)?)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?$/;
-  let verifyMessage = "";
-  verifyStatus = verifyStatus;
+  var verifyMessage = "";
+  var verifyStatus = verifyStatus;
 
   if (!companyDomainField.val() || companyDomainField.val() === "") {
     verifyMessage =
@@ -600,7 +600,7 @@ function companyDomainVerify(verifyStatus) {
       accountDomainWrapper.removeClass("hidden");
     }
     // extract the domain from company domain and check the account domain
-    let extractedDomain = extractDomain(companyDomainField.val());
+    var extractedDomain = extractDomain(companyDomainField.val());
     accountDomainVerify("warning", extractedDomain, true);
   }
 
@@ -612,11 +612,11 @@ function companyDomainVerify(verifyStatus) {
 function fullnameVerify(verifyStatus) {
   resetFieldStatus(fullnameField);
   const regexFullname = /^[A-Za-z]+(\s[A-Za-z]+)*$/;
-  let verifyMessage;
+  var verifyMessage;
 
   if (!fullnameField.val()) {
     verifyMessage =
-      "Nous avons besoin de votre nom complet pour créer votre compte";
+      "Nous avons besoin de votre nom compvar pour créer votre compte";
   } else {
     verifyStatus = "valid";
   }
@@ -628,18 +628,18 @@ function fullnameVerify(verifyStatus) {
 
 // used to verify the password field and display error/warning/valid properly
 function passwordVerify(verifyStatus) {
-  let passwordUppercaseMessage = $(
+  var passwordUppercaseMessage = $(
     "#signup-user-form ul li#pwd-message-uppercase"
   );
-  let passwordLowercaseMessage = $(
+  var passwordLowercaseMessage = $(
     "#signup-user-form ul li#pwd-message-lowercase"
   );
-  let passwordLengthMessage = $("#signup-user-form ul li#pwd-message-length");
-  let passwordNumber = $("#signup-user-form ul li#pwd-message-number");
+  var passwordLengthMessage = $("#signup-user-form ul li#pwd-message-length");
+  var passwordNumber = $("#signup-user-form ul li#pwd-message-number");
   // Regular expressions to check for lowercase, uppercase, and number
-  let lowercaseRegex = /[a-z]/;
-  let uppercaseRegex = /[A-Z]/;
-  let numberRegex = /[0-9]/;
+  var lowercaseRegex = /[a-z]/;
+  var uppercaseRegex = /[A-Z]/;
+  var numberRegex = /[0-9]/;
 
   // Check password length
   if (passwordField.val().length >= 14) {
@@ -738,16 +738,16 @@ function getOrCreateAnonymousId(anonymousId) {
 
 // used to manage errors responses from the account manager API
 function handleErrors(response) {
-  let verifyStatus = "error";
+  var verifyStatus = "error";
 
   if (response) {
     if (response.responseJSON) {
       for (const field of Object.keys(response.responseJSON)) {
         const error = response.responseJSON[field];
         const inputField = $("input[name=" + field + "]");
-        let stringToCheck =
+        var stringToCheck =
           "Le site web est déjà lié à un workspace existant. Veuillez essayer un nouvel URL ou vous connecter";
-        let errorCheck = JSON.stringify(error).includes(stringToCheck);
+        var errorCheck = JSON.stringify(error).includes(stringToCheck);
 
         if (errorCheck == true) {
           handleFieldStatus(
@@ -782,8 +782,8 @@ function handleErrors(response) {
 
 // used to init the form used (step 1)
 function signupUserFormHandler(form) {
-  let API_INIT_ENDPOINT = "/user/init";
-  let initParams = { anonymous_id: getOrCreateAnonymousId() };
+  var API_INIT_ENDPOINT = "/user/init";
+  var initParams = { anonymous_id: getOrCreateAnonymousId() };
   // initiat the API
   post(
     API_INIT_ENDPOINT,
@@ -798,12 +798,12 @@ function signupUserFormHandler(form) {
         handleErrors({ responseJSON: data.errors });
       }
       if (data.shopify) {
-        // if email field is empty but account manager API returns an email, then complete the email field and run the verify function
+        // if email field is empty but account manager API returns an email, then compvare the email field and run the verify function
         if (!emailField.val() && data.shopify.email) {
           emailField.val(data.shopify.email);
           emailVerify("warning");
         }
-        // if email field is empty but account manager API returns an full name, then complete the email field and run the verify function
+        // if email field is empty but account manager API returns an full name, then compvare the email field and run the verify function
         if (!fullnameField.val() && data.shopify.shop_owner) {
           fullnameField.val(data.shopify.shop_owner);
           fullnameVerify("warning");
@@ -817,14 +817,14 @@ function signupUserFormHandler(form) {
     },
     //error
     function (response) {},
-    //complete
+    //compvare
     function () {}
   );
 }
 
 // used to init the form account (step 2)
 function signupAccountFormHandler(form) {
-  let API_INIT_ENDPOINT = "/account/init";
+  var API_INIT_ENDPOINT = "/account/init";
 
   post(
     API_INIT_ENDPOINT,
@@ -905,7 +905,7 @@ function onSubmitUserSignupForm(response) {
   );
 }
 
-// unable all fields -> they are disable by default with script the head of the page before to prevent too early field completion or form submission while all scripts are not loaded.
+// unable all fields -> they are disable by default with script the head of the page before to prevent too early field compvarion or form submission while all scripts are not loaded.
 function Enablefields() {
   $("input").prop("disabled", false);
   signupButton.prop("disabled", false);
@@ -921,7 +921,7 @@ function resetLocalStorageFields() {
 
 // function to create the account using account manager API (step 2)
 function onSubmitAccountSignupForm(formData) {
-  let API_VALIDATION_ENDPOINT = "/account/submit";
+  var API_VALIDATION_ENDPOINT = "/account/submit";
   accountFormLoadingWrapper.show();
   accountFormWrapper.hide();
 
@@ -948,13 +948,13 @@ function onSubmitAccountSignupForm(formData) {
       accountFormLoadingWrapper.hide();
       accountFormWrapper.show();
     },
-    //complete
+    //compvare
     function () {}
   );
 }
 
 // once page is fully loaded
-let Webflow = Webflow || [];
+var Webflow = Webflow || [];
 Webflow.push(function () {
   resetLocalStorageFields();
   Enablefields();
@@ -967,7 +967,7 @@ Webflow.push(function () {
 
   // listen click on the save button of the domain field (step 2)
   accountDomainSaveButton.on("click", function () {
-    let accountDomainSatus = accountDomainVerify(
+    var accountDomainSatus = accountDomainVerify(
       "warning",
       accountDomainField.val(),
       false
@@ -1078,12 +1078,12 @@ Webflow.push(function () {
     event.stopPropagation();
     signupButton.next("div[id*='-message-container']").empty();
 
-    let form = $(this);
-    let fullnameStatus = getFieldStatusStorage(fullname_key);
-    let emailStatus = getFieldStatusStorage(email_key);
-    let passwordStatus = getFieldStatusStorage(password_key);
-    let status = "error";
-    let messaging = "Please check fields with error, then submit";
+    var form = $(this);
+    var fullnameStatus = getFieldStatusStorage(fullname_key);
+    var emailStatus = getFieldStatusStorage(email_key);
+    var passwordStatus = getFieldStatusStorage(password_key);
+    var status = "error";
+    var messaging = "Please check fields with error, then submit";
 
     if (
       fullnameStatus !== "valid" ||
@@ -1109,7 +1109,7 @@ Webflow.push(function () {
     }
   });
 
-  // Used to trigger the function that will create the user through account manager API Once the captach is completed (step 1)
+  // Used to trigger the function that will create the user through account manager API Once the captach is compvared (step 1)
   window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm;
 
   // submission account form (step 2)
@@ -1117,11 +1117,11 @@ Webflow.push(function () {
     event.preventDefault();
     event.stopPropagation();
 
-    let form = $(this);
-    let accountDomainStatus = getFieldStatusStorage(account_domain_key);
-    let companyDomainStatus = getFieldStatusStorage(company_domain_key);
-    let status = "error";
-    let messaging =
+    var form = $(this);
+    var accountDomainStatus = getFieldStatusStorage(account_domain_key);
+    var companyDomainStatus = getFieldStatusStorage(company_domain_key);
+    var status = "error";
+    var messaging =
       "Merci de vérifier les champs avec erreurs, puis de soumettre à nouveau.";
 
     if (accountDomainStatus !== "valid" || companyDomainStatus !== "valid") {
@@ -1135,7 +1135,7 @@ Webflow.push(function () {
       window.localStorage.removeItem(account_domain_key + "-status");
       window.localStorage.removeItem(company_domain_key + "-status");
 
-      let formData = {
+      var formData = {
         company_domain: companyDomainField.val().trim().toLowerCase(),
         account_domain: accountDomainField.val().trim().toLowerCase(),
       };
