@@ -1083,7 +1083,7 @@ Webflow.push(function () {
     var emailStatus = getFieldStatusStorage(email_key);
     var passwordStatus = getFieldStatusStorage(password_key);
     var status = "error";
-    var messaging = "Please check fields with error, then submit";
+    var messaging = "Vérifiez les champs avec erreurs, puis soumettez à nouveau.";
 
     if (
       fullnameStatus !== "valid" ||
