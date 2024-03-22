@@ -264,11 +264,11 @@ function emailVerify(verifyStatus){
   var verifyMessage = "";
   var verifyStatus = verifyStatus;
   if (!emailField.val() || emailField.val() === '') {
-    verifyMessage =  'We need your email to create your account';
+    verifyMessage =  'Nous avons besoin de votre email pour créer votre compte';
     handleFieldStatus(emailField,verifyStatus,verifyMessage);
     return verifyStatus;
   } else if (!regexEmail.test(emailField.val())) {
-    verifyMessage =  'The email you entered is incomplete';
+    verifyMessage =  "L'email n'est pas valide, veuillez vérifier";
     handleFieldStatus(emailField,verifyStatus,verifyMessage);
     return verifyStatus;
   }
@@ -293,10 +293,10 @@ function emailVerify(verifyStatus){
           var validationResult = data['signup-email-validation']
           if (validationResult.risk === 'high') {
             if (validationResult.reason === 'mailbox_does_not_exist' || validationResult.result === "undeliverable") {
-              verifyMessage = 'Are you sure this email address exists?';
+              verifyMessage = 'Êtes-vous sûr que cet email existe ?';
             }
             else if (validationResult.reason === 'mailbox_is_disposable_address') {
-              verifyMessage = "Please don't use disposable email addresses.";
+              verifyMessage = "N'utilisez pas un email temporaire";
             }
             else {
               verifyStatus = 'valid';
@@ -377,7 +377,7 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
   var regexAccountDomain2 = /^-|-/;
 
   if (!regexAccountDomain.test(account_domain_submitted)) {
-    var verifyMessage = "This field allow only the following special caracter: -";
+    var verifyMessage = "Ce champ n'autorise que les caractères spéciaux suivants : -";
     handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
     return verifyStatus;
   }
@@ -476,7 +476,7 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
         verifyStatus = 'valid';
       }
       else{
-        verifyMessage = 'Workspace domain not available. Recommendation: '+ recommendedSubdomain ;
+        verifyMessage = 'Domaine workspace non disponible. Recommandation : '+ recommendedSubdomain ;
       }
     
       handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
@@ -494,7 +494,7 @@ function accountDomainPrefilled(response, verifyStatus){
 
   // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
   if(domain_exist == true) {
-    verifyMessage = "This workspace is not available, try another one"
+    verifyMessage = "Ce workspace est déjà pris. Veuillez en choisir un autre."
     accountDomainWrapper.hide();
     accountDomainEditWrapper.removeClass('hidden');
   }
@@ -525,9 +525,9 @@ function companyDomainVerify(verifyStatus){
   var verifyStatus = verifyStatus;
   
   if (!companyDomainField.val() || companyDomainField.val() === '') {
-    verifyMessage =  'We need your website URL to create your account';
+    verifyMessage =  'Nous avons besoin de votre URL pour créer votre compte';
   } else if (!regexCompanyDomain.test(companyDomainField.val())) {
-    verifyMessage =  "It doesn't seem to be a proper URL, please double check";
+    verifyMessage =  "Cette URL n'est pas valide, veuillez vérifier";
   }else{
     verifyStatus = 'valid';
   }
@@ -558,7 +558,7 @@ function fullnameVerify(verifyStatus){
     let verifyMessage;
 
     if (!fullnameField.val()) {
-      verifyMessage =  'We need your fullname to create your account'
+      verifyMessage =  'Nous avons besoin de votre nom pour créer votre compte';
     }
     else{
       verifyStatus = 'valid';
@@ -649,12 +649,12 @@ function handleErrors(response) {
         for (const field of Object.keys(response.responseJSON)) {
           const error = response.responseJSON[field]
           const inputField = $('input[name=' + field + ']')
-          var stringToCheck = 'Company website or helpdesk website already exists or is reserved';
+          var stringToCheck = "Le site de l'entreprise ou l'url du help desk est déjà lié à un espace de travail existant. Veuillez essayer une nouvelle URL ou vous connecter";
           var errorCheck = JSON.stringify(error).includes(stringToCheck);
 
           if(errorCheck == true){
-            handleFieldStatus(companyDomainField,verifyStatus,"This URL is already linked to an existing workspace. Try a new URL or login");
-            handleFieldStatus(accountDomainField,verifyStatus,"This workspace is reserved. Try a new one");
+            handleFieldStatus(companyDomainField,verifyStatus,"Cet URL est déjà lié à un espace de travail existant. Veuillez essayer une nouvelle URL ou vous connecter");
+            handleFieldStatus(accountDomainField,verifyStatus,"Ce workspace est déjà pris. Veuillez en choisir un autre.");
           }   
 
           // stylized the input when there is an error
@@ -669,7 +669,7 @@ function handleErrors(response) {
 
       }
       else {
-        handleFieldStatus(signupButton,"error","An unexpected error occurred. Please try again.")
+        handleFieldStatus(signupButton,"error","Une erreur s'est produite. Veuillez réessayer plus tard.")
       }
     }
   }
@@ -977,7 +977,7 @@ Webflow.push(function () {
     var emailStatus = getFieldStatusStorage(email_key);
     var passwordStatus = getFieldStatusStorage(password_key);
     var status = 'error';
-    var messaging = 'Please check fields with error, then submit'
+    var messaging = 'Merci de vérifier les champs avec erreurs, puis de soumettre à nouveau.'
     
 
     if (fullnameStatus !== 'valid' || emailStatus !== 'valid' || passwordStatus !== 'valid' ) {
@@ -1018,7 +1018,7 @@ Webflow.push(function () {
     var accountDomainStatus = getFieldStatusStorage(account_domain_key);
     var companyDomainStatus = getFieldStatusStorage(company_domain_key);
     var status = 'error';
-    var messaging = 'Please check fields with error, then submit'
+    var messaging = 'Merci de vérifier les champs avec erreurs, puis de soumettre à nouveau.'
 
     if (accountDomainStatus !== 'valid' || companyDomainStatus !== 'valid') {
       companyDomainVerify(status);
