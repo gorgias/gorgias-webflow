@@ -318,16 +318,25 @@ function isPersonalEmail(email) {
 
 // used to verify the email field
 function emailVerify(verifyStatus) {
-  // resetFieldStatus(emailField);
+  // Define the regular expression for validating email format
   const regexEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  var verifyMessage = "";
-  var verifyStatus = verifyStatus;
+  let verifyMessage = "";
+
+  // Log the initial status and email value for debugging
+  console.log("Initial verifyStatus:", verifyStatus);
+  console.log("Email field value:", emailField.val());
+
+  // Check if the email field is empty
   if (!emailField.val() || emailField.val() === "") {
     verifyMessage = "Nous avons besoin de votre email pour créer votre compte";
+    console.log("Email field is empty. Setting message:", verifyMessage);
     handleFieldStatus(emailField, verifyStatus, verifyMessage);
     return verifyStatus;
-  } else if (!regexEmail.test(emailField.val())) {
+  }
+  // Check if the email does not match the regular expression pattern
+  else if (!regexEmail.test(emailField.val())) {
     verifyMessage = "L'email semble incorrect, veuillez le vérifier";
+    console.log("Email format is incorrect. Setting message:", verifyMessage);
     handleFieldStatus(emailField, verifyStatus, verifyMessage);
     return verifyStatus;
   } else {
