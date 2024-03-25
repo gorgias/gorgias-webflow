@@ -476,7 +476,7 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
         verifyStatus = 'valid';
       }
       else{
-        verifyMessage = 'Domaine workspace non disponible. Recommandation : '+ recommendedSubdomain ;
+        verifyMessage = 'URL indisponible. Essayez plutôt : '+ recommendedSubdomain ;
       }
     
       handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
@@ -494,7 +494,7 @@ function accountDomainPrefilled(response, verifyStatus){
 
   // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
   if(domain_exist == true) {
-    verifyMessage = "Ce workspace est déjà pris. Veuillez en choisir un autre."
+    verifyMessage = "Cet URL d'espace de travail est déjà utilisé. Veuillez en choisir un autre."
     accountDomainWrapper.hide();
     accountDomainEditWrapper.removeClass('hidden');
   }
@@ -525,7 +525,7 @@ function companyDomainVerify(verifyStatus){
   var verifyStatus = verifyStatus;
   
   if (!companyDomainField.val() || companyDomainField.val() === '') {
-    verifyMessage =  'Nous avons besoin de votre URL pour créer votre compte';
+    verifyMessage =  "Nous avons besoin de l'URL de votre boutique en ligne pour créer votre compte";
   } else if (!regexCompanyDomain.test(companyDomainField.val())) {
     verifyMessage =  "Cette URL n'est pas valide, veuillez vérifier";
   }else{
@@ -649,12 +649,12 @@ function handleErrors(response) {
         for (const field of Object.keys(response.responseJSON)) {
           const error = response.responseJSON[field]
           const inputField = $('input[name=' + field + ']')
-          var stringToCheck = "Le site de l'entreprise ou l'url du help desk est déjà lié à un espace de travail existant. Veuillez essayer une nouvelle URL ou vous connecter";
+          var stringToCheck = "L'URL de la boutique en ligne et/ou de l'espace de travail renseigné sont déjà liés à un compte existant. Veuillez essayer de nouvelles URLs ou vous connecter.";
           var errorCheck = JSON.stringify(error).includes(stringToCheck);
 
           if(errorCheck == true){
             handleFieldStatus(companyDomainField,verifyStatus,"Cet URL est déjà lié à un espace de travail existant. Veuillez essayer une nouvelle URL ou vous connecter");
-            handleFieldStatus(accountDomainField,verifyStatus,"Ce workspace est déjà pris. Veuillez en choisir un autre.");
+            handleFieldStatus(accountDomainField,verifyStatus,"Cet URL d'espace de travail est déjà utilisé. Veuillez en choisir un autre.");
           }   
 
           // stylized the input when there is an error
