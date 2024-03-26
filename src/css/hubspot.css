@@ -186,7 +186,7 @@ body.is-event div.submitted-message a:hover{
     height: auto;
     min-width: inherit !important;
     padding: 0 !important;
-    border: 2px solid #161616 !important;
+    border: 1px solid #161616 !important;
   }
 
   .hs-fieldtype-intl-phone select{
