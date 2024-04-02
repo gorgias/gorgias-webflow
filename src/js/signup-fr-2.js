@@ -14,8 +14,8 @@ const classErrorMessage = 'message-error';
 const classWarningMessage = 'message-warning';
 const btnWaitString = 'Veuillez patienter';
 const classValidMessage = 'message-valid';
-const SIGNUP_ACCOUNT_FORM_PAGE = path.includes('staging') ? '/staging-signup-2/account' : '/fr/signup-2/account';
-const SIGNUP_FORM_PAGE = path.includes('staging') ? '/staging-signup-2' : '/fr/signup-2';
+const SIGNUP_ACCOUNT_FORM_PAGE = path.includes('staging') ? '/staging-signup-2/account' : '/signup-2/account';
+const SIGNUP_FORM_PAGE = path.includes('staging') ? '/staging-signup-2' : '/signup-2';
 
 var emailField = $('#signup-user-form input[name="'+ email_key + '"]') || "";
 var fullnameField = $('#signup-user-form input[name="'+ fullname_key + '"]') || "";
@@ -377,7 +377,7 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
   var regexAccountDomain2 = /^-|-/;
 
   if (!regexAccountDomain.test(account_domain_submitted)) {
-    var verifyMessage = "Ce champ n'autorise que les caractères spéciaux suivants : -";
+    var verifyMessage = "Ce champ n'autorise que les caractères spéciaux suivants: -";
     handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
     return verifyStatus;
   }
@@ -494,7 +494,7 @@ function accountDomainPrefilled(response, verifyStatus){
 
   // shouldn't happen since the cloud function is supposed to incremante until a available domain is found
   if(domain_exist == true) {
-    verifyMessage = "Cet URL d'espace de travail est déjà utilisé. Veuillez en choisir un autre."
+    verifyMessage = "Cet URL d'espace de travail est déjà utilisé. Veuillez en choisir un autre"
     accountDomainWrapper.hide();
     accountDomainEditWrapper.removeClass('hidden');
   }
@@ -527,7 +527,7 @@ function companyDomainVerify(verifyStatus){
   if (!companyDomainField.val() || companyDomainField.val() === '') {
     verifyMessage =  "Nous avons besoin de l'URL de votre boutique en ligne pour créer votre compte";
   } else if (!regexCompanyDomain.test(companyDomainField.val())) {
-    verifyMessage =  "Cette URL n'est pas valide, veuillez vérifier";
+    verifyMessage =  "Cet URL n'est pas valide, veuillez vérifier:";
   }else{
     verifyStatus = 'valid';
   }
@@ -558,7 +558,7 @@ function fullnameVerify(verifyStatus){
     let verifyMessage;
 
     if (!fullnameField.val()) {
-      verifyMessage =  'Nous avons besoin de votre nom pour créer votre compte';
+      verifyMessage =  'Nous avons besoin de votre nom pour créer votre compte'
     }
     else{
       verifyStatus = 'valid';
@@ -649,12 +649,12 @@ function handleErrors(response) {
         for (const field of Object.keys(response.responseJSON)) {
           const error = response.responseJSON[field]
           const inputField = $('input[name=' + field + ']')
-          var stringToCheck = "L'URL de la boutique en ligne et/ou de l'espace de travail renseigné sont déjà liés à un compte existant. Veuillez essayer de nouvelles URLs ou vous connecter.";
+          var stringToCheck = "Cet URL d'espace de travail est déjà utilisé. Veuillez en choisir un autre";
           var errorCheck = JSON.stringify(error).includes(stringToCheck);
 
           if(errorCheck == true){
             handleFieldStatus(companyDomainField,verifyStatus,"Cet URL est déjà lié à un espace de travail existant. Veuillez essayer une nouvelle URL ou vous connecter");
-            handleFieldStatus(accountDomainField,verifyStatus,"Cet URL d'espace de travail est déjà utilisé. Veuillez en choisir un autre.");
+            handleFieldStatus(accountDomainField,verifyStatus,"Cet URL d'espace de travail est déjà utilisé. Veuillez en choisir un autre");
           }   
 
           // stylized the input when there is an error
@@ -977,7 +977,7 @@ Webflow.push(function () {
     var emailStatus = getFieldStatusStorage(email_key);
     var passwordStatus = getFieldStatusStorage(password_key);
     var status = 'error';
-    var messaging = 'Merci de vérifier les champs avec erreurs, puis de soumettre à nouveau.'
+    var messaging = 'Vérifiez les champs avec erreurs, puis soumettez à nouveau.'
     
 
     if (fullnameStatus !== 'valid' || emailStatus !== 'valid' || passwordStatus !== 'valid' ) {
@@ -1018,7 +1018,7 @@ Webflow.push(function () {
     var accountDomainStatus = getFieldStatusStorage(account_domain_key);
     var companyDomainStatus = getFieldStatusStorage(company_domain_key);
     var status = 'error';
-    var messaging = 'Merci de vérifier les champs avec erreurs, puis de soumettre à nouveau.'
+    var messaging = 'Vérifiez les champs avec erreurs, puis soumettez à nouveau.'
 
     if (accountDomainStatus !== 'valid' || companyDomainStatus !== 'valid') {
       companyDomainVerify(status);
