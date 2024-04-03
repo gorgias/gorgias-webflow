@@ -70,6 +70,7 @@ Webflow.push(function () {
     } else if (path.includes("/fr/home")) {
       newScript(scriptBase + "/src/js/hidenavigations" + minBase + ".js", "head", 1);
     }
+    // This handles navigations
 
     if (path.includes('/products/automate')){
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head',0);
