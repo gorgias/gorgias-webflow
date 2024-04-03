@@ -527,7 +527,7 @@ function companyDomainVerify(verifyStatus){
   if (!companyDomainField.val() || companyDomainField.val() === '') {
     verifyMessage =  "Nous avons besoin de l'URL de votre boutique en ligne pour créer votre compte";
   } else if (!regexCompanyDomain.test(companyDomainField.val())) {
-    verifyMessage =  "Cet URL n'est pas valide, veuillez vérifier:";
+    verifyMessage =  "Cet URL n'est pas valide, veuillez vérifier.";
   }else{
     verifyStatus = 'valid';
   }
