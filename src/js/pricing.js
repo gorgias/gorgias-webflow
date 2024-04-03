@@ -335,16 +335,20 @@ window.onload = function() {
 
 // Function to make divs with class 'text-link__pricing' clickable under a specific condition
 function redirectToDemoPage() {
+
+  // Select all elements with the class
   const demoDivs = document.querySelectorAll('.text-link__pricing'); // Selects all elements with the class
 
+  // Add event listener to each element
   demoDivs.forEach(demoDiv => {
+
     demoDiv.addEventListener('click', function() {
+      // Check if the parent element has the class 'w--current' to prevent click before tab is selected
       const parentHasCurrentClass = this.closest('.tab-pricing-options-link')?.classList.contains('w--current');
+
       if (parentHasCurrentClass) {
-        console.log("Redirecting to /demo...");
+        // If condition met sends to /demo
         window.location.href = '/demo';
-      } else {
-        console.log("Parent does not have 'w--current' class. No action taken.");
       }
     });
   });
