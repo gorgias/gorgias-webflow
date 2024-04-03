@@ -331,3 +331,24 @@ window.onload = function() {
     })
   }
 };
+
+
+// Function to make text-link__pricing clickable and send to demo page, with a condition
+function redirectToDemoPage() {
+  const demoButton = document.querySelector('.text-link__pricing');
+  if (demoButton) {
+    demoButton.addEventListener('click', function () {
+      // Check if the parent has the specified classes
+      const parent = this.closest('.tab-pricing-options-link');
+      if (parent && parent.classList.contains('w--current')) {
+        console.log('Condition met, redirecting...');
+        window.location.href = '/demo';
+      } else {
+        console.log('Condition not met, not redirecting.');
+      }
+    });
+  }
+}
+
+redirectToDemoPage();
+
