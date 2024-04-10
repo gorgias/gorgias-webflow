@@ -377,7 +377,7 @@ function accountDomainVerify(verifyStatus, domain, prefilled){
   var regexAccountDomain2 = /^-|-/;
 
   if (!regexAccountDomain.test(account_domain_submitted)) {
-    var verifyMessage = "Ce champ n'autorise que les caractères spéciaux suivants : -";
+    var verifyMessage = "Ce champ n'autorise que les caractères spéciaux suivants: -";
     handleFieldStatus(accountDomainField,verifyStatus,verifyMessage);
     return verifyStatus;
   }
