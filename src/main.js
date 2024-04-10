@@ -62,7 +62,7 @@ Webflow.push(function () {
     }
     // Check if the path is specifically for the French version of signup-2
     if (path.includes("/fr/signup-2")) {
-      // Load the French version of the script
+      // Load the French version of the script to fr version
       newScript(scriptBase + "/src/js/signup-fr-2" + minBase + ".js", "head", 1);
     } else if (path.includes("/signup-2")) {
       // Load the default version of the script if not the French version
