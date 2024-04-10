@@ -68,7 +68,6 @@ Webflow.push(function () {
       // Load the default version of the script if not the French version
       newScript(scriptBase + "/src/js/signup-2" + minBase + ".js", "head", 1);
     }
-    // This handles navigations
 
     if (path.includes('/products/automate')){
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head',0);
