@@ -70,14 +70,14 @@ function initialize() {
     }
     function handleResponseTimeInput() {
         const output = Number((Number(elements.responseTimeInput.value) -
-            Number(elements.responseTimeInput.value) * 0.30).toFixed(1));
+            Number(elements.responseTimeInput.value) *0.60).toFixed(1));
         elements.responseTimeOutput.textContent = elements.responseTimeInput.value
             ? output + "hrs"
             : "(x)hrs";
     }
     function handleResolutionTimeInput() {
         const output = Number((Number(elements.resolutionTimeInput.value) -
-            Number(elements.resolutionTimeInput.value) * 0.30).toFixed(1));
+            Number(elements.resolutionTimeInput.value) *0.60).toFixed(1));
         elements.resolutionTimeOutput.textContent = elements.resolutionTimeInput
             .value
             ? output + "hrs"
