@@ -249,7 +249,7 @@ function initialize() {
             const fourDigitValueArray = sliderInput?.value.padStart(4, "0").split("");
             const costWithOutAutomate = elements.numOfMonthlyTickets * (elements.agentCostPerTicket + elements.billableTicketCost);
             console.log("costWithOutAutomate", costWithOutAutomate);
-            const costWithAutomate = costWithOutAutomate - (0.3 * elements.numOfMonthlyTickets * ((elements.agentCostPerTicket + elements.billableTicketCost) - elements.costOfAutomatedInteraction)) + (elements.automateSubscriptionCost);
+            const costWithAutomate = costWithOutAutomate - (0.6 * elements.numOfMonthlyTickets * ((elements.agentCostPerTicket + elements.billableTicketCost) - elements.costOfAutomatedInteraction)) + (elements.automateSubscriptionCost);
             const amountSavedWithAutomate = costWithOutAutomate - costWithAutomate;
             const percentSaved = Math.round(((costWithOutAutomate - costWithAutomate) / costWithOutAutomate) * 100);
             if (elements.sliderProgress) {
