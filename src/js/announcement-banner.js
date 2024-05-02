@@ -1,3 +1,4 @@
+ console.log('hello announcement');
  // List of North American ISO country codes
  const northAmericanCodes = ['US', 'CA', 'MX'];
 
