@@ -18,7 +18,7 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
     // demo pages
     newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
-    newScript(scriptBase + '/src/js/announcement-banner'+minBase+'.js','body',1);
+    newScript(scriptBase + '/src/js/announcement-banner'+minBase+'.js','body');
     if (path === '/demo-2' || path === '/wip/demo') {
       newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
     }
