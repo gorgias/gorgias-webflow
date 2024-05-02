@@ -56,6 +56,7 @@ Webflow.push(function () {
     if (path === '/') {
       // Load the announcement banner script when the path is the homepage
       newScript(scriptBase + '/src/js/announcement-banner' + minBase + '.js', 'head', 1);
+      console.log("loading announcement script");
     }
     
     if (path === '/product-tour'){
