@@ -23,7 +23,8 @@
          .catch((error) => {
              //console.error("Error fetching country code:", error);
              // Show the AI Agent banner by default if an error occurs
-             document.querySelector('.announcement-banner.is-ai-agent').classList.remove('is-hidden');
+             aiAgentBanner.classList.remove('is-hidden');
+             cxBanner.classList.add('is-hidden');
          });
  }
 
