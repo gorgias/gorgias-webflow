@@ -53,6 +53,10 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/blog'+minBase+'.js','body',1);
     }
 
+    if (path === '/') {
+      // Load the announcement banner script when the path is the homepage
+      newScript(scriptBase + '/src/js/announcement-banner' + minBase + '.js', 'body');
+    }
     if (path === '/product-tour'){
         newScript(scriptBase + '/src/js/producttour'+minBase+'.js','head',1)
     } 
