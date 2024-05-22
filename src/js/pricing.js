@@ -630,6 +630,7 @@ $(automateSkipCTA).on("click", function () {
 });
 
 $(removeAutomate).on("click", function () {
+  // console.log("Automate skip CTA clicked");
 
   // Set the automate slider and automate number to 0
   const zeroAutomationRate = 0;
@@ -637,7 +638,7 @@ $(removeAutomate).on("click", function () {
   automateNumber.val(zeroAutomationRate);
 
   // Update the min value of the automate slider and reset the value
-  const newMinValue = 0; // Set this to your desired minimum value
+  const newMinValue = 10; // Set this to your desired minimum value
   automateSlider.attr("min", newMinValue);
   automateSlider.val(newMinValue); // Set the value again after changing min
 
@@ -659,38 +660,6 @@ $(removeAutomate).on("click", function () {
   //Updates CTA style
   updateButtonClasses();
 });
-
-// $(removeAutomate).on("click", function () {
-//   // console.log("Automate skip CTA clicked");
-
-//   // Set the automate slider and automate number to 0
-//   const zeroAutomationRate = 0;
-//   automateSlider.val(zeroAutomationRate).trigger("input");
-//   automateNumber.val(zeroAutomationRate);
-
-//   // Update the min value of the automate slider and reset the value
-//   const newMinValue = 10; // Set this to your desired minimum value
-//   automateSlider.attr("min", newMinValue);
-//   automateSlider.val(newMinValue); // Set the value again after changing min
-
-//   // Update automate price to 0
-//   automatePrice.text("0"); // Updated line to ensure it's calculated as zero
-
-//   // Calculate the percentage progress for the range slider
-//   const maxValue = parseInt(automateSlider.attr("max"), 10);
-//   const percentageProgress =
-//     ((newMinValue - newMinValue) / (maxValue - newMinValue)) * 100;
-//   const rangeStyle = `--progress: ${percentageProgress}%`;
-//   automateSlider.attr("style", rangeStyle);
-
-//   // Recalculate the total price with the updated automate price
-//   updateTotalPrice();
-
-//   $(automateSummary).css("display", "none");
-
-//   //Updates CTA style
-//   updateButtonClasses();
-// });
 
 $(tabLink1).on("click", function () {
   reverButtonClasses();
