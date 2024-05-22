@@ -21,14 +21,16 @@ Webflow.push(function () {
     if (path === '/demo-2' || path === '/wip/demo') {
       newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
     }
+    if (path === '/pricing') {
+      newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
+      newScript(scriptBase + '/src/js/pricing'+minBase+'.js','head',1);
+    }
     // pricing page
-    if (path === '/pricing' || path === '/pricing-test/pricing' || path === '/pages/template-long' 
+    if ( path === '/pricing-test/pricing' || path === '/pages/template-long' 
       || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
       || path === '/pages/helpdesk' || path === '/pages/crm' || path === '/wip/pricing') {
         // [Attributes by Finsweet] Mirrorclick
         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
-        newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
-        newScript(scriptBase + '/src/js/pricing'+minBase+'.js','head',1);
 
         // scripts for splide js
         newStyle('https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/css/splide-core.min.css','head');
