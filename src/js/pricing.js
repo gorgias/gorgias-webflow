@@ -1447,37 +1447,4 @@ $(skipAutomate).on("click", function () {
   // $(".summary_automate-saving").css("display", "none");
 });
 
-
-// Function to update summary pricing based on billing cycle
-function updateSummaryPricing(billingCycle) {
-  $('.summary-toggle').on('click', function () {
-    console.log('Summary toggle clicked');
-    const planPrice = parseFloat(planPriceEl.textContent.replace(/,/g, ""));
-    const tierPrice = parseFloat(tierPriceEl.textContent.replace(/,/g, ""));
-    const totalGorgiasCost = planPrice + tierPrice;
-    const totalCostWithGorgias = parseFloat(
-      totalCostWithGorgiasEl.textContent.replace(/,/g, "")
-    );
-    const totalGorgiasLabourCost = parseFloat(
-      totalCostWithGorgias - totalGorgiasCost
-    );
-
-    planPriceEl.textContent = formatNumberWithCommas(planPrice);
-    tierPriceEl.textContent = formatNumberWithCommas(tierPrice);
-    totalCostGorgias.textContent = formatNumberWithCommas(totalGorgiasCost);
-    totalCostGorgiasLabour.textContent = formatNumberWithCommas(
-      totalGorgiasLabourCost
-    );
-
-    const costWithoutGorgias = parseFloat(
-      totalCostWithoutGorgias.textContent.replace(/,/g, "")
-    );
-    const moneySaved = costWithoutGorgias - totalGorgiasLabourCost;
-
-    moneySavedEl.textContent = formatNumberWithCommas(moneySaved);
-    moneySavedSummary.textContent = formatNumberWithCommas(moneySaved);
-
-    // Call updateSavings to recalculate and update UI elements
-    updateSavings(billingCycle === "annual");
-  });
-}
+console.log('Hello from the new pricing page!');
