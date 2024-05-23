@@ -104,14 +104,36 @@ function updateHelpdeskPlan(tickets) {
 
 /** Function to calculate the total price, applying discounts for annual plans */
 function calculateTotalPrice(isAnnual) {
-  let prices = [helpdeskPrice, automatePrice, voicePrice, smsPrice].map((p) =>
-    parseFloat(p.text().replace(/[^\d.-]/g, ""))
+  // Get the prices and parse them into numbers
+  let prices = [helpdeskPrice, automatePrice, voicePrice, smsPrice].map(
+    (p, index) => {
+      const parsedPrice = parseFloat(p.text().replace(/[^\d.-]/g, ""));
+      console.log(
+        `Original price for item ${index + 1}: $${parsedPrice.toFixed(2)}`
+      );
+      return parsedPrice;
+    }
   );
 
+  // Apply the annual discount to each price if applicable
   if (isAnnual) {
-    prices = prices.map((price) => price * (10 / 12));
+    prices = prices.map((price, index) => {
+      const discountedPrice = price * (10 / 12);
+      console.log(
+        `Discounted price for item ${index + 1}: $${discountedPrice.toFixed(2)}`
+      );
+      return discountedPrice;
+    });
+  } else {
+    prices.forEach((price, index) => {
+      console.log(`No discount for item ${index + 1}: $${price.toFixed(2)}`);
+    });
   }
+
+  // Calculate the total by summing the (possibly discounted) prices
   let total = prices.reduce((sum, price) => sum + price, 0);
+
+  console.log(`Total price: $${total.toFixed(2)}`);
 
   return total;
 }
