@@ -48,22 +48,22 @@ const voiceTiers = [
   { range: "No Voice Tickets", tier: "Tier 0", price: 0 },
   { range: "Pay as you go", tier: "Pay as you go", price: 0 },
   { range: "0-24", tier: "Tier 1", price: 30 },
-  { range: "25-74", tier: "Tier 2", price: 75 },
-  { range: "75-149", tier: "Tier 3", price: 113 },
-  { range: "150-249", tier: "Tier 4", price: 146 },
-  { range: "250-499", tier: "Tier 5", price: 208 },
-  { range: "500-999", tier: "Tier 6", price: 333 },
+  { range: "25-74", tier: "Tier 2", price: 90 },
+  { range: "75-149", tier: "Tier 3", price: 135 },
+  { range: "150-249", tier: "Tier 4", price: 175 },
+  { range: "250-499", tier: "Tier 5", price: 250 },
+  { range: "500-999", tier: "Tier 6", price: 400 },
   { range: "999+", tier: "Tier 7", price: 0 },
 ];
 const smsTiers = [
   { range: "No SMS Tickets", tier: "Tier 0", price: 0 },
   { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-  { range: "0-24", tier: "Tier 1", price: 17 },
-  { range: "25-74", tier: "Tier 2", price: 50 },
-  { range: "75-149", tier: "Tier 3", price: 75 },
-  { range: "150-249", tier: "Tier 4", price: 117 },
-  { range: "250-499", tier: "Tier 5", price: 180 },
-  { range: "500-999", tier: "Tier 6", price: 340 },
+  { range: "0-24", tier: "Tier 1", price: 20 },
+  { range: "25-74", tier: "Tier 2", price: 60 },
+  { range: "75-149", tier: "Tier 3", price: 90 },
+  { range: "150-249", tier: "Tier 4", price: 140 },
+  { range: "250-499", tier: "Tier 5", price: 216 },
+  { range: "500-999", tier: "Tier 6", price: 408 },
   { range: "999+", tier: "Tier 7", price: 0 },
 ];
 const planMin = $('[data-range="plan-min"]');
@@ -1446,3 +1446,5 @@ const skipAutomate = document.querySelector('[data-button="automate-skip"]');
 $(skipAutomate).on("click", function () {
   // $(".summary_automate-saving").css("display", "none");
 });
+
+console.log('Hello from the new pricing page!');
