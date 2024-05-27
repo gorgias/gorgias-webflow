@@ -108,9 +108,9 @@ function calculateTotalPrice(isAnnual) {
   let prices = [helpdeskPrice, automatePrice, voicePrice, smsPrice].map(
     (p, index) => {
       const parsedPrice = parseFloat(p.text().replace(/[^\d.-]/g, ""));
-      console.log(
-        `Original price for item ${index + 1}: $${parsedPrice.toFixed(2)}`
-      );
+      // console.log(
+      //   `Original price for item ${index + 1}: $${parsedPrice.toFixed(2)}`
+      // );
       return parsedPrice;
     }
   );
