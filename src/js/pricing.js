@@ -39,7 +39,7 @@ const slider = $('[data-el="range-slider"]');
 const automateSlider = $('[data-el="automate-slider"]');
 const helpdeskPlans = [
   ["Starter", 10, 0, 50],
-  ["Basic", 60, 50, 300],
+  ["Basic", 60, 51, 300],
   ["Pro", 360, 301, 2000],
   ["Advanced", 900, 2001, 4999],
   ["Enterprise", "Contact us", 5000, Infinity],
