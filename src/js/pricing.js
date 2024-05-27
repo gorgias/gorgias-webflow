@@ -374,17 +374,22 @@ $(".summary_toggle").on("click", function () {
     previousSliderValue = slider.val();
     console.log("Saved previous slider value:", previousSliderValue);
 
-    // Set the slider value to 60 for the annual plan and trigger the input event
+    // Set the slider value to 60 for the annual plan if it's below 60 and trigger the input event
     const annualSliderValue = 60;
-    slider.val(annualSliderValue).trigger("input");
-    ticketNumber.val(annualSliderValue); // Update the ticket number input as well
+    if (previousSliderValue < annualSliderValue) {
+      console.log("Setting slider value to 60 as it was below 60.");
+      slider.val(annualSliderValue).trigger("input");
+      ticketNumber.val(annualSliderValue); // Update the ticket number input as well
 
-    // Call the necessary functions to update the UI
-    let planDetails = updateHelpdeskPlan(annualSliderValue);
-    displayPlanDetails(planDetails);
-    updateTotalPrice();
-    syncTicketNumberWithEntryTickets(annualSliderValue);
-    updateProgressBar(slider[0]);
+      // Call the necessary functions to update the UI
+      let planDetails = updateHelpdeskPlan(annualSliderValue);
+      displayPlanDetails(planDetails);
+      updateTotalPrice();
+      syncTicketNumberWithEntryTickets(annualSliderValue);
+      updateProgressBar(slider[0]);
+    } else {
+      console.log("Slider value is already 60 or above, no change needed.");
+    }
   } else {
     $("#monthly").prop("checked", true).trigger("change");
     $(toggle).removeClass("active");
@@ -405,6 +410,7 @@ $(".summary_toggle").on("click", function () {
 
   updateTotalPrice();
 });
+
 
 
 // Update the radio button change event listener
