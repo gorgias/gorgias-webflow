@@ -22,8 +22,9 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
     }
     if (path === '/pricing') {
-      newScript(scriptBase + '/src/js/pricing'+'.js','body');
+      // newScript(scriptBase + '/src/js/pricing'+'.js','body');
       newScript(scriptBase + '/src/js/pricing'+minBase+'.js','body');
+      newScript(scriptBase + '/src/js/roi-calc-pricing'+minBase+'.js','body');
     }
     // pricing page
     if ( path === '/pricing-test/pricing' || path === '/pages/template-long' 
@@ -58,7 +59,6 @@ Webflow.push(function () {
     if (path === '/') {
       // Load the announcement banner script when the path is the homepage
       newScript(scriptBase + '/src/js/announcement-banner' + minBase + '.js', 'body');
-      newScript(scriptBase + '/src/js/faq.js' + minBase + '.js', 'body');
     }
     if (path === '/product-tour'){
         newScript(scriptBase + '/src/js/producttour'+minBase+'.js','head',1)
