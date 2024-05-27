@@ -356,25 +356,56 @@ automateSlider.on("input", function () {
   updateTotalPrice();
 });
 
+// Variable to store the current slider value
+let previousSliderValue = slider.val();
+
 // Toggle switch script
 $(".summary_toggle").on("click", function () {
   // Check which radio button is currently selected
   const currentSelection = $('input[name="billingCycle"]:checked').val();
-  // console.log("Current selection:", currentSelection);
 
   // Toggle to the opposite selection
   if (currentSelection === "monthly") {
     $("#annual").prop("checked", true).trigger("change");
     $(toggle).addClass("active");
     $(toggleDot).addClass("active");
+
+    // Save the current slider value before changing it
+    previousSliderValue = slider.val();
+    console.log("Saved previous slider value:", previousSliderValue);
+
+    // Set the slider value to 60 for the annual plan and trigger the input event
+    const annualSliderValue = 60;
+    slider.val(annualSliderValue).trigger("input");
+    ticketNumber.val(annualSliderValue); // Update the ticket number input as well
+
+    // Call the necessary functions to update the UI
+    let planDetails = updateHelpdeskPlan(annualSliderValue);
+    displayPlanDetails(planDetails);
+    updateTotalPrice();
+    syncTicketNumberWithEntryTickets(annualSliderValue);
+    updateProgressBar(slider[0]);
   } else {
     $("#monthly").prop("checked", true).trigger("change");
     $(toggle).removeClass("active");
     $(toggleDot).removeClass("active");
+
+    // Restore the previous slider value and trigger the input event
+    console.log("Restoring previous slider value:", previousSliderValue);
+    slider.val(previousSliderValue).trigger("input");
+    ticketNumber.val(previousSliderValue); // Update the ticket number input as well
+
+    // Call the necessary functions to update the UI
+    let planDetails = updateHelpdeskPlan(previousSliderValue);
+    displayPlanDetails(planDetails);
+    updateTotalPrice();
+    syncTicketNumberWithEntryTickets(previousSliderValue);
+    updateProgressBar(slider[0]);
   }
 
   updateTotalPrice();
 });
+
 
 // Update the radio button change event listener
 $('input[name="billingCycle"]').change(function () {
