@@ -108,9 +108,11 @@ function calculateTotalPrice(isAnnual) {
   let prices = [helpdeskPrice, automatePrice, voicePrice, smsPrice].map(
     (p, index) => {
       const parsedPrice = parseFloat(p.text().replace(/[^\d.-]/g, ""));
+
       // console.log(
       //   `Original price for item ${index + 1}: $${parsedPrice.toFixed(2)}`
       // );
+
       return parsedPrice;
     }
   );
@@ -119,21 +121,26 @@ function calculateTotalPrice(isAnnual) {
   if (isAnnual) {
     prices = prices.map((price, index) => {
       const discountedPrice = price * (10 / 12);
+      
       // console.log(
       //   `Discounted price for item ${index + 1}: $${discountedPrice.toFixed(2)}`
       // );
+
       return discountedPrice;
     });
   } else {
     prices.forEach((price, index) => {
       // console.log(`No discount for item ${index + 1}: $${price.toFixed(2)}`);
+
     });
   }
 
   // Calculate the total by summing the (possibly discounted) prices
   let total = prices.reduce((sum, price) => sum + price, 0);
 
+
   // console.log(`Total price: $${total.toFixed(2)}`);
+
 
   return total;
 }
@@ -1009,3 +1016,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }, 2000); // Change to 2000ms (2 seconds) delay
 });
+
