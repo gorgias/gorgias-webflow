@@ -395,9 +395,10 @@ function formatNumberWithCommas(x) {
   const number = parseFloat(x);
   if (isNaN(number)) return x; // Return the original value if conversion fails
 
-  // Use toLocaleString with "en-US" for US-style commas
-  return number.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  // Use toLocaleString with "en-US" for US-style commas and no decimals
+  return Math.floor(number).toLocaleString("en-US");
 }
+
 
 /** Function to update the progress bar of a slider */
 function updateProgressBar(slider) {
