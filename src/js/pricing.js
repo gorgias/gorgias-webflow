@@ -280,12 +280,13 @@ function syncEntryRateWithAutomateNumber(initialValueAutomate) {
  *
  ****************************/
 
-document.addEventListener("DOMContentLoaded", () => {
+
   const initialValue = 1500; // Set the initial value for the ticket count.
   const initialValueAutomate = 0; // Set the initial value for the ticket count.
 
   slider.val(initialValue).trigger("input");
   ticketNumber.val(initialValue);
+  updateProgressBar(slider[0]);
 
   automateSlider.val(initialValueAutomate).trigger("input");
   automateNumber.val(initialValueAutomate);
@@ -310,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (smsTicketsElement) {
     smsTicketsElement.addEventListener("change", displaySelectedSmsPrice);
   }
-});
+
 
 // Handles helpdesk slider interactions
 slider.on("input", function () {
@@ -726,37 +727,7 @@ $(removeAutomate).on("click", function () {
   updateButtonClasses();
 });
 
-// $(removeAutomate).on("click", function () {
-//   // console.log("Automate skip CTA clicked");
 
-//   // Set the automate slider and automate number to 0
-//   const zeroAutomationRate = 0;
-//   automateSlider.val(zeroAutomationRate).trigger("input");
-//   automateNumber.val(zeroAutomationRate);
-
-//   // Update the min value of the automate slider and reset the value
-//   const newMinValue = 10; // Set this to your desired minimum value
-//   automateSlider.attr("min", newMinValue);
-//   automateSlider.val(newMinValue); // Set the value again after changing min
-
-//   // Update automate price to 0
-//   automatePrice.text("0"); // Updated line to ensure it's calculated as zero
-
-//   // Calculate the percentage progress for the range slider
-//   const maxValue = parseInt(automateSlider.attr("max"), 10);
-//   const percentageProgress =
-//     ((newMinValue - newMinValue) / (maxValue - newMinValue)) * 100;
-//   const rangeStyle = `--progress: ${percentageProgress}%`;
-//   automateSlider.attr("style", rangeStyle);
-
-//   // Recalculate the total price with the updated automate price
-//   updateTotalPrice();
-
-//   $(automateSummary).css("display", "none");
-
-//   //Updates CTA style
-//   updateButtonClasses();
-// });
 
 $(tabLink1).on("click", function () {
   reverButtonClasses();
@@ -945,7 +916,6 @@ smsRemoveElements.forEach((element) => {
 });
 
 // Handle UI and IDs for dropdown list links on Voice and SMS
-document.addEventListener("DOMContentLoaded", function () {
   // Add a 2-second delay before running the script
   setTimeout(function () {
     // Select all elements with the class 'addons_dropdown-link'
@@ -1053,5 +1023,5 @@ document.addEventListener("DOMContentLoaded", function () {
       observer.observe(dropdownToggle, { childList: true, subtree: true });
     }
   }, 2000); // Change to 2000ms (2 seconds) delay
-});
+
 

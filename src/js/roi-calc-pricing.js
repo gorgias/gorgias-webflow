@@ -67,7 +67,7 @@ function formatNumberWithCommas(value) {
   return number.toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+
   // Listen for custom event 'entryTicketsUpdated'
   $(document).on("entryTicketsUpdated", function (event, eventData) {
     // Call the processing function directly with the new value
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
       processTicketData(this.value);
     });
   });
-});
+
 
 // Existing processTicketData function with the updated condition for moneySavedSummary
 function processTicketData(value) {
@@ -470,12 +470,12 @@ document.querySelectorAll('input[name="billingCycle"]').forEach((button) => {
 });
 
 // Initialize data on page load
-document.addEventListener("DOMContentLoaded", () => {
+
   setTimeout(() => {
     const initialValue = 1500;
     processTicketData(initialValue);
   }, 500);
-});
+
 
 const skipAutomate = document.querySelector('[data-button="automate-skip"]');
 $(skipAutomate).on("click", function () {
