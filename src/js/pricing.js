@@ -216,8 +216,8 @@ function displayPlanDetails(planDetails) {
   // console.log("displayPlanDetails called with planDetails:", planDetails);
   const [plan, price, min, max] = planDetails;
   helpdeskPlan.text(plan);
-  planMin.text(min === Infinity ? "more" : formatNumberWithCommas(min));
-  planMax.text(max === Infinity ? "more" : formatNumberWithCommas(max));
+  planMin.text(min === Infinity ? "+" : formatNumberWithCommas(min));
+  planMax.text(max === Infinity ? "+" : formatNumberWithCommas(max));
   const formattedPrice =
     price === "Contact us" ? price : `$${formatNumberWithCommas(price)}/mo`;
   helpdeskPriceDisplay.text(formattedPrice);
@@ -242,9 +242,11 @@ function displayTotalPrice(total) {
     // talkToSalesElement.css("display", "block");
     totalItemElement.css("display", "none");
     totalPrice.text(" — ");
+    $('.is-dash').css('display', 'none');
   } else {
     // talkToSalesElement.css("display", "none");
     totalItemElement.css("display", "flex");
+    $('.is-dash').css('display', 'inline-block');
 
     totalPrice.text(formatNumberWithCommas(total.toFixed(0)));
   }
