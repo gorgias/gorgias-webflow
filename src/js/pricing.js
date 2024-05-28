@@ -411,6 +411,8 @@ $(".summary_toggle").on("click", function () {
   updateTotalPrice();
 });
 
+console.log("Hey new log");
+
 
 // Update the radio button change event listener
 $('input[name="billingCycle"]').change(function () {
