@@ -64,7 +64,10 @@ Webflow.push(function () {
     } 
 
     if (path.includes('signup-2') || path.includes('signup-3')){
+        newStyle('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css','head');
+        newScript('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js','head',1);
         newStyle(scriptBase + '/src/css/signup'+minBase+'.css','body');
+        newScript(scriptBase + '/src/js/phone-check'+minBase+'.js','body', 1);
     }
     // Check if the path is specifically for the French version of signup-2
     if (path.includes("/fr/signup-2")) {
