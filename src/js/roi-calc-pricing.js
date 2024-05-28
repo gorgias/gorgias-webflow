@@ -367,12 +367,24 @@ function getAutomateTier(automatedTickets) {
     return ""; // No automated tickets
   } else if (automatedTickets <= 30) {
     return "tier 1"; // Up to 30 automated tickets
+  } else if (automatedTickets <= 80) {
+    return "tier 1B"; // Up to 80 automated tickets
+  } else if (automatedTickets <= 120) {
+    return "tier 1C"; // Up to 120 automated tickets
+  } else if (automatedTickets <= 150) {
+    return "tier 1D"; // Up to 150 automated tickets
   } else if (automatedTickets <= 190) {
     return "tier 2"; // Up to 190 automated tickets
+  } else if (automatedTickets <= 360) {
+    return "tier 2B"; // Up to 360 automated tickets
   } else if (automatedTickets <= 530) {
     return "tier 3"; // Up to 530 automated tickets
+  } else if (automatedTickets <= 800) {
+    return "tier 3B"; // Up to 800 automated tickets
   } else if (automatedTickets <= 1125) {
     return "tier 4"; // Up to 1125 automated tickets
+  } else if (automatedTickets <= 1500) {
+    return "tier 4B"; // Up to 1500 automated tickets
   } else if (automatedTickets <= 2000) {
     return "tier 5"; // Up to 2000 automated tickets
   } else if (automatedTickets <= 3000) {
@@ -414,9 +426,15 @@ function getAutomateTierPrice(tier, cycle) {
   const prices = {
     monthly: {
       "tier 1": 30,
+      "tier 1b": 80, 
+      "tier 1c": 114,
+      "tier 1d": 143,
       "tier 2": 180,
+      "tier 2b": 306,
       "tier 3": 450,
+      "tier 3b": 640,
       "tier 4": 900,
+      "tier 4b": 1125,
       "tier 5": 1500,
       "tier 6": 2100,
       "tier 7": 2500,
@@ -424,9 +442,15 @@ function getAutomateTierPrice(tier, cycle) {
     },
     annual: {
       "tier 1": 25,
+      "tier 1b": 66, 
+      "tier 1c": 95,
+      "tier 1d": 119,
       "tier 2": 150,
+      "tier 2b": 255,
       "tier 3": 375,
+      "tier 3b": 533,
       "tier 4": 750,
+      "tier 4b": 938,
       "tier 5": 1500,
       "tier 6": 2000,
       "tier 7": 3000,
@@ -434,7 +458,10 @@ function getAutomateTierPrice(tier, cycle) {
     },
   };
 
-  return prices[cycle][formattedTier] || 0;
+  // Fetch the price, or default to 0 if not found
+  const price = prices[cycle][formattedTier] || 0;
+
+  return price;
 }
 
 // Attach click event listeners to each radio button
