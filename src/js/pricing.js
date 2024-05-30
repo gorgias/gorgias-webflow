@@ -472,11 +472,10 @@ $(".support-tickets_cta").on("click", function () {
   // Rule: On average, brands receive one support ticket for every 15 orders
   const tickets = Math.round(orders / 15);
 
-  // Replace the number in the input with the calculated number
-  $(".support-tickets_input").val(tickets);
-
   // Output the calculated tickets in .support-tickets_result-value element
   $(".support-tickets_result-value").text(tickets);
+
+  console.log("Calculated tickets:", tickets);
 
   // Show the result container
   $(".support-tickets_result").css("display", "block");
@@ -577,6 +576,8 @@ $(".active-modal-trigger").on("click", function () {
 
 let isProgrammaticClick = false;
 let isFirstClick = true;
+let isFirstTabLink2Click = true; // New flag to track first click on tabLink2
+let hasOtherLinkBeenClicked = false; // Flag to track if any other link has been clicked
 
 $(helpdeskCTA).on("click", function () {
   // Set the flag to true to indicate a programmatic click
@@ -611,6 +612,9 @@ $(helpdeskCTA).on("click", function () {
 
   // Recalculate the total price
   updateTotalPrice();
+
+  // Mark that helpdeskCTA has been clicked
+  hasOtherLinkBeenClicked = true;
 });
 
 $(tabLink2).on("click", function () {
@@ -645,6 +649,27 @@ $(tabLink2).on("click", function () {
 
   // Recalculate the total price
   updateTotalPrice();
+
+  // Additional condition for the first click on tabLink2
+  if (isFirstTabLink2Click && !hasOtherLinkBeenClicked) {
+    isFirstTabLink2Click = false; // Set the flag to false after the first click on tabLink2
+
+    // Set the automate slider to 30% and trigger the input event
+    const predefinedAutomationRate = 30;
+    automateSlider.val(predefinedAutomationRate).trigger("input");
+
+    // Update the automate number with the predefined rate
+    automateNumber.val(predefinedAutomationRate);
+
+    // Update the min value of the automate slider
+    const newMinValue = 10; // Set this to your desired minimum value
+    const rangeStyle = "--progress: 40%"; // Set range style
+    automateSlider.attr("style", rangeStyle);
+    automateSlider.attr("min", newMinValue);
+
+    // Recalculate the total price
+    updateTotalPrice();
+  }
 });
 
 function updateButtonClasses() {
