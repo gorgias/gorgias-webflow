@@ -346,6 +346,8 @@ slider.on("input", function () {
   syncEntryRateWithAutomateNumber();
 
   // console.log("Slider input handling completed.");
+  // Variable to store the current slider value
+let previousSliderValue = slider.val();
 });
 
 // Handles automate slider interactions
@@ -359,8 +361,6 @@ automateSlider.on("input", function () {
   updateTotalPrice();
 });
 
-// Variable to store the current slider value
-let previousSliderValue = slider.val();
 
 // Toggle switch script
 $(".summary_toggle").on("click", function () {
