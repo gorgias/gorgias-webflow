@@ -1,5 +1,3 @@
-// console.log("Hello I'm the new pricing script");
-
 /****************************
  *
  * This script handles the UI and logic for the new pricing page.
@@ -92,6 +90,7 @@ let entryRate = document.getElementById("entryRate");
 
 /** Function to find the appropriate helpdesk plan based on the number of tickets */
 function updateHelpdeskPlan(tickets) {
+  console.log("updateHelpdeskPlan called with tickets:", tickets);
   let selectedPlan = helpdeskPlans.find(
     (plan) => tickets >= plan[2] && (tickets <= plan[3] || plan[3] === Infinity)
   );
@@ -99,20 +98,21 @@ function updateHelpdeskPlan(tickets) {
     selectedPlan = ["No plan available", "", "", Infinity];
   }
 
+  console.log("Selected plan:", selectedPlan);
   return selectedPlan;
 }
 
 /** Function to calculate the total price, applying discounts for annual plans */
 function calculateTotalPrice(isAnnual) {
+  console.log("calculateTotalPrice called with isAnnual:", isAnnual);
+
   // Get the prices and parse them into numbers
   let prices = [helpdeskPrice, automatePrice, voicePrice, smsPrice].map(
     (p, index) => {
       const parsedPrice = parseFloat(p.text().replace(/[^\d.-]/g, ""));
-
-      // console.log(
-      //   `Original price for item ${index + 1}: $${parsedPrice.toFixed(2)}`
-      // );
-
+      console.log(
+        `Original price for item ${index + 1}: $${parsedPrice.toFixed(2)}`
+      );
       return parsedPrice;
     }
   );
@@ -121,27 +121,20 @@ function calculateTotalPrice(isAnnual) {
   if (isAnnual) {
     prices = prices.map((price, index) => {
       const discountedPrice = price * (10 / 12);
-      
-      // console.log(
-      //   `Discounted price for item ${index + 1}: $${discountedPrice.toFixed(2)}`
-      // );
-
+      console.log(
+        `Discounted price for item ${index + 1}: $${discountedPrice.toFixed(2)}`
+      );
       return discountedPrice;
     });
   } else {
     prices.forEach((price, index) => {
-      // console.log(`No discount for item ${index + 1}: $${price.toFixed(2)}`);
-
+      console.log(`No discount for item ${index + 1}: $${price.toFixed(2)}`);
     });
   }
 
   // Calculate the total by summing the (possibly discounted) prices
   let total = prices.reduce((sum, price) => sum + price, 0);
-
-
-  // console.log(`Total price: $${total.toFixed(2)}`);
-
-
+  console.log(`Total price: $${total.toFixed(2)}`);
   return total;
 }
 
@@ -152,6 +145,7 @@ function calculateTotalPrice(isAnnual) {
  ****************************/
 /** Function to update the visible CTA group based on the selected helpdesk plan */
 function updateCTAGroup(plan) {
+  console.log("updateCTAGroup called with plan:", plan);
   const starterCTAs = $(".starter-ctas");
   const basicCTAs = $(".basic-ctas");
   const proCTAs = $(".pro-ctas");
@@ -213,7 +207,7 @@ function updateCTAGroup(plan) {
 
 // Ensure displayPlanDetails updates the helpdesk price correctly
 function displayPlanDetails(planDetails) {
-  // console.log("displayPlanDetails called with planDetails:", planDetails);
+  console.log("displayPlanDetails called with planDetails:", planDetails);
   const [plan, price, min, max] = planDetails;
   helpdeskPlan.text(plan);
   planMin.text(min === Infinity ? "+" : formatNumberWithCommas(min));
@@ -230,6 +224,7 @@ function displayPlanDetails(planDetails) {
 
 /** Function to update the total price displayed on the UI */
 function displayTotalPrice(total) {
+  console.log("displayTotalPrice called with total:", total);
   // Check if the helpdesk price is "Contact us" indicating the Enterprise plan
   const isEnterprisePlan = helpdeskPrice.text() === "Contact us";
 
@@ -254,6 +249,7 @@ function displayTotalPrice(total) {
 
 /** Function to show/hide the automate alert based on automate number */
 function checkAndDisplayAutomateAlert() {
+  console.log("checkAndDisplayAutomateAlert called");
   const automateAlert = $(".automate-alert");
   const value = parseInt(automateNumber.val(), 10);
   automateAlert.css("display", value < 30 ? "flex" : "none");
@@ -261,6 +257,7 @@ function checkAndDisplayAutomateAlert() {
 
 /** Function to sync ticket number input with entry tickets value */
 function syncTicketNumberWithEntryTickets(initialValue) {
+  console.log("syncTicketNumberWithEntryTickets called with initialValue:", initialValue);
   const numericValue = parseInt(ticketNumber.val(), 10);
   entryTickets.val(isNaN(numericValue) ? 0 : numericValue);
   entryTickets.trigger("entryTicketsUpdated", [{ value: numericValue }]);
@@ -268,6 +265,7 @@ function syncTicketNumberWithEntryTickets(initialValue) {
 
 /** Function to sync the automate number with the entry rate */
 function syncEntryRateWithAutomateNumber(initialValueAutomate) {
+  console.log("syncEntryRateWithAutomateNumber called with initialValueAutomate:", initialValueAutomate);
   let automateValue = automateNumber.val();
   if (entryRate) {
     entryRate.value = automateValue;
@@ -283,42 +281,44 @@ function syncEntryRateWithAutomateNumber(initialValueAutomate) {
  ****************************/
 
 
-  const initialValue = 1500; // Set the initial value for the ticket count.
-  const initialValueAutomate = 0; // Set the initial value for the ticket count.
+$('#monthly').prop('checked', true);
+const initialValue = 1500; // Set the initial value for the ticket count.
+const initialValueAutomate = 0; // Set the initial value for the ticket count.
 
-  slider.val(initialValue).trigger("input");
-  ticketNumber.val(initialValue);
-  updateProgressBar(slider[0]);
+slider.val(initialValue).trigger("input");
+ticketNumber.val(initialValue);
+updateProgressBar(slider[0]);
 
-  automateSlider.val(initialValueAutomate).trigger("input");
-  automateNumber.val(initialValueAutomate);
-  $(automateSummary).css("display", "none");
 
-  checkAndDisplayAutomateAlert();
-  syncTicketNumberWithEntryTickets(initialValue);
+automateSlider.val(initialValueAutomate).trigger("input");
+automateNumber.val(initialValueAutomate);
+$(automateSummary).css("display", "none");
 
-  let planDetails = updateHelpdeskPlan(initialValue);
-  let total = calculateTotalPrice(false);
+checkAndDisplayAutomateAlert();
+syncTicketNumberWithEntryTickets(initialValue);
 
-  displayPlanDetails(planDetails);
-  displayTotalPrice(total);
+let planDetails = updateHelpdeskPlan(initialValue);
+let total = calculateTotalPrice(false);
 
-  const voiceTicketsElement = document.querySelector("#voice-tickets");
-  const smsTicketsElement = document.querySelector("#sms-tickets");
+displayPlanDetails(planDetails);
+displayTotalPrice(total);
 
-  if (voiceTicketsElement) {
-    voiceTicketsElement.addEventListener("change", displaySelectedVoicePrice);
-  }
+const voiceTicketsElement = document.querySelector("#voice-tickets");
+const smsTicketsElement = document.querySelector("#sms-tickets");
 
-  if (smsTicketsElement) {
-    smsTicketsElement.addEventListener("change", displaySelectedSmsPrice);
-  }
+if (voiceTicketsElement) {
+  voiceTicketsElement.addEventListener("change", displaySelectedVoicePrice);
+}
 
+
+if (smsTicketsElement) {
+  smsTicketsElement.addEventListener("change", displaySelectedSmsPrice);
+}
 
 // Handles helpdesk slider interactions
 slider.on("input", function () {
   const val = parseInt(this.value, 10);
-  // console.log("Slider input event fired with value:", val);
+  console.log("Slider input event fired with value:", val);
 
   if (isNaN(val)) {
     console.error("Invalid slider value:", this.value);
@@ -327,14 +327,14 @@ slider.on("input", function () {
 
   ticketNumber.val(val);
   const stepSize = val < 1000 ? 10 : val < 2500 ? 100 : 500;
-  // console.log("Step size set to:", stepSize);
+  console.log("Step size set to:", stepSize);
   slider.attr("step", stepSize);
 
   let planDetails = updateHelpdeskPlan(val);
-  // console.log("Plan details found:", planDetails);
+  console.log("Plan details found:", planDetails);
 
   if (!planDetails) {
-    // console.error("No plan details found for value:", val);
+    console.error("No plan details found for value:", val);
     return;
   }
 
@@ -345,14 +345,15 @@ slider.on("input", function () {
   syncTicketNumberWithEntryTickets(val);
   syncEntryRateWithAutomateNumber();
 
-  // console.log("Slider input handling completed.");
-  // Variable to store the current slider value
-let previousSliderValue = slider.val();
+
+  console.log("Slider input handling completed.");
+
 });
 
 // Handles automate slider interactions
 automateSlider.on("input", function () {
   const val = parseInt(this.value, 10);
+  console.log("Automate slider input event fired with value:", val);
   automateNumber.val(val);
   $(automateSummary).css("display", "flex");
   checkAndDisplayAutomateAlert();
@@ -364,22 +365,29 @@ automateSlider.on("input", function () {
 
 // Toggle switch script
 $(".summary_toggle").on("click", function () {
+  console.log("Toggle switch clicked");
   // Check which radio button is currently selected
   const currentSelection = $('input[name="billingCycle"]:checked').val();
 
-  // Toggle to the opposite selection
-  if (currentSelection === "monthly") {
-    $("#annual").prop("checked", true).trigger("change");
-    $(toggle).addClass("active");
-    $(toggleDot).addClass("active");
+  console.log("Current selection:", currentSelection);
 
-    // Save the current slider value before changing it
-    previousSliderValue = slider.val();
-    console.log("Saved previous slider value:", previousSliderValue);
+  // Get the current slider value
+  const currentSliderValue = parseInt(slider.val(), 10);
 
-    // Set the slider value to 60 for the annual plan if it's below 60 and trigger the input event
-    const annualSliderValue = 60;
-    if (previousSliderValue < annualSliderValue) {
+  if (currentSliderValue < 60) {
+    // Toggle to the opposite selection
+    if (currentSelection === "monthly") {
+      $("#annual").prop("checked", true).trigger("change");
+      $(toggle).addClass("active");
+      $(toggleDot).addClass("active");
+
+      // Save the current slider value before changing it
+      previousSliderValue = currentSliderValue;
+      console.log("Saved previous slider value:", previousSliderValue);
+
+      // Set the slider value to 60 for the annual plan and trigger the input event
+      const annualSliderValue = 60;
+
       console.log("Setting slider value to 60 as it was below 60.");
       slider.val(annualSliderValue).trigger("input");
       ticketNumber.val(annualSliderValue); // Update the ticket number input as well
@@ -387,28 +395,37 @@ $(".summary_toggle").on("click", function () {
       // Call the necessary functions to update the UI
       let planDetails = updateHelpdeskPlan(annualSliderValue);
       displayPlanDetails(planDetails);
-      updateTotalPrice();
+
       syncTicketNumberWithEntryTickets(annualSliderValue);
       updateProgressBar(slider[0]);
     } else {
-      console.log("Slider value is already 60 or above, no change needed.");
+      $("#monthly").prop("checked", true).trigger("change");
+      $(toggle).removeClass("active");
+      $(toggleDot).removeClass("active");
+
+      // Restore the previous slider value and trigger the input event
+      console.log("Restoring previous slider value:", previousSliderValue);
+      slider.val(previousSliderValue).trigger("input");
+      ticketNumber.val(previousSliderValue); // Update the ticket number input as well
+
+      // Call the necessary functions to update the UI
+      let planDetails = updateHelpdeskPlan(previousSliderValue);
+      displayPlanDetails(planDetails);
+      syncTicketNumberWithEntryTickets(previousSliderValue);
+      updateProgressBar(slider[0]);
+
     }
   } else {
-    $("#monthly").prop("checked", true).trigger("change");
-    $(toggle).removeClass("active");
-    $(toggleDot).removeClass("active");
-
-    // Restore the previous slider value and trigger the input event
-    console.log("Restoring previous slider value:", previousSliderValue);
-    slider.val(previousSliderValue).trigger("input");
-    ticketNumber.val(previousSliderValue); // Update the ticket number input as well
-
-    // Call the necessary functions to update the UI
-    let planDetails = updateHelpdeskPlan(previousSliderValue);
-    displayPlanDetails(planDetails);
-    updateTotalPrice();
-    syncTicketNumberWithEntryTickets(previousSliderValue);
-    updateProgressBar(slider[0]);
+    // Toggle to the opposite selection without changing the slider value
+    if (currentSelection === "monthly") {
+      $("#annual").prop("checked", true).trigger("change");
+      $(toggle).addClass("active");
+      $(toggleDot).addClass("active");
+    } else {
+      $("#monthly").prop("checked", true).trigger("change");
+      $(toggle).removeClass("active");
+      $(toggleDot).removeClass("active");
+    }
   }
 
   updateTotalPrice();
@@ -419,6 +436,7 @@ console.log("Hey new log");
 
 // Update the radio button change event listener
 $('input[name="billingCycle"]').change(function () {
+  console.log("Radio button change event triggered");
   updateTotalPrice();
 
   // Update the active classes based on the selected billing cycle
@@ -449,6 +467,7 @@ function formatNumberWithCommas(x) {
 
 /** Function to update the progress bar of a slider */
 function updateProgressBar(slider) {
+  console.log("updateProgressBar called with slider value:", slider.value);
   const percentage =
     (100 * (slider.value - slider.min)) / (slider.max - slider.min);
   $(slider).css("--progress", `${percentage}%`);
@@ -456,6 +475,7 @@ function updateProgressBar(slider) {
 
 /** Function to update the automate progress bar */
 function updateAutomateProgressBar(automateSlider) {
+  console.log("updateAutomateProgressBar called with automateSlider value:", automateSlider.value);
   const value = parseInt(automateSlider.value, 10);
   const min = parseInt(automateSlider.min, 10);
   const max = parseInt(automateSlider.max, 10);
@@ -503,6 +523,7 @@ ticketNumber
   .on("blur", handleTicketNumberInput);
 
 function handleTicketNumberInput() {
+  console.log("handleTicketNumberInput called");
   // Find the value in the input ticketNumber
   let tickets = parseInt($(this).val(), 10);
 
@@ -525,6 +546,7 @@ automateNumber
   .on("blur", handleAutomateNumberInput);
 
 function handleAutomateNumberInput() {
+  console.log("handleAutomateNumberInput called");
   // Find the value in the input automateNumber
   let automateValue = parseInt($(this).val(), 10);
 
@@ -543,6 +565,7 @@ function handleAutomateNumberInput() {
 
 /** Function to update total price when any related factor changes */
 function updateTotalPrice() {
+  console.log("updateTotalPrice called");
   const isAnnual = $('input[name="billingCycle"]:checked').val() === "annual";
   let total = calculateTotalPrice(isAnnual);
   displayTotalPrice(total);
@@ -580,6 +603,7 @@ let isFirstTabLink2Click = true; // New flag to track first click on tabLink2
 let hasOtherLinkBeenClicked = false; // Flag to track if any other link has been clicked
 
 $(helpdeskCTA).on("click", function () {
+  console.log("helpdeskCTA clicked");
   // Set the flag to true to indicate a programmatic click
   isProgrammaticClick = true;
 
@@ -618,6 +642,7 @@ $(helpdeskCTA).on("click", function () {
 });
 
 $(tabLink2).on("click", function () {
+  console.log("tabLink2 clicked");
   // If the click is programmatic, do not execute the actions
   if (isProgrammaticClick) {
     return;
@@ -673,26 +698,28 @@ $(tabLink2).on("click", function () {
 });
 
 function updateButtonClasses() {
+  console.log("updateButtonClasses called");
   $('[data-button="action-cta"]').each(function () {
     $(this).removeClass("button-secondary").addClass("button");
   });
 }
 
 function reverButtonClasses() {
+  console.log("reverButtonClasses called");
   $('[data-button="action-cta"]').each(function () {
     $(this).removeClass("button").addClass("button-secondary");
   });
 }
 
 $(automateCTA).on("click", function () {
-  // console.log("Automate CTA clicked");
+  console.log("Automate CTA clicked");
   $(tabLink3).click();
   //Updates CTA style
   updateButtonClasses();
 });
 
 $(automateSkipCTA).on("click", function () {
-  // console.log("Automate skip CTA clicked");
+  console.log("Automate skip CTA clicked");
   $(tabLink3).click();
 
   // Set the automate slider and automate number to 0
@@ -725,6 +752,7 @@ $(automateSkipCTA).on("click", function () {
 });
 
 $(removeAutomate).on("click", function () {
+  console.log("removeAutomate clicked");
   // Set the automate slider and automate number to 0
   const zeroAutomationRate = 0;
   automateSlider.val(zeroAutomationRate).trigger("input");
@@ -754,8 +782,6 @@ $(removeAutomate).on("click", function () {
   updateButtonClasses();
 });
 
-
-
 $(tabLink1).on("click", function () {
   reverButtonClasses();
 });
@@ -772,6 +798,7 @@ $(tabLink2).on("click", function () {
 
 // Function to find and display the price based on the selected voice tier
 function displaySelectedVoicePrice() {
+  console.log("displaySelectedVoicePrice called");
   const selectedVoice = document.querySelector("#voice-tickets").value;
   const tierVoice = voiceTiers.find((tier) => tier.tier === selectedVoice);
   const voiceDisplay = document.querySelector('[data-price="voice-plan"]');
@@ -830,6 +857,7 @@ function displaySelectedVoicePrice() {
 
 // Function to find and display the price based on the selected SMS tier
 function displaySelectedSmsPrice() {
+  console.log("displaySelectedSmsPrice called");
   const selectedSMS = document.querySelector("#sms-tickets").value;
   const tierSMS = smsTiers.find((tier) => tier.tier === selectedSMS);
   const smsDisplay = document.querySelector('[data-price="sms-plan"]');
@@ -894,6 +922,7 @@ function displaySelectedSmsPrice() {
  ****************************/
 
 function resetVoicePrice() {
+  console.log("resetVoicePrice called");
   // Select the "No Voice Tickets" option
   const voiceTicketsDropdown = document.querySelector("#voice-tickets");
   voiceTicketsDropdown.value = "Tier 0"; // Set the dropdown to "No Voice Tickets"
@@ -919,6 +948,7 @@ voiceRemoveElements.forEach((element) => {
 
 // Function to reset the SMS price
 function resetSMSPrice() {
+  console.log("resetSMSPrice called");
   // Select the "No SMS Tickets" option
   const smsTicketsDropdown = document.querySelector("#sms-tickets");
   smsTicketsDropdown.value = "Tier 0"; // Set the dropdown to "No SMS Tickets"
@@ -943,112 +973,116 @@ smsRemoveElements.forEach((element) => {
 });
 
 // Handle UI and IDs for dropdown list links on Voice and SMS
-  // Add a 2-second delay before running the script
-  setTimeout(function () {
-    // Select all elements with the class 'addons_dropdown-link'
-    const links = document.querySelectorAll(".addons_dropdown-link");
 
-    links.forEach((link) => {
-      // Get the text inside the link element
-      const text = link.textContent.trim();
+// Add a 2-second delay before running the script
+setTimeout(function () {
+  console.log("Running delayed script for dropdown list links");
 
-      // Check if the text contains the '–'
-      if (text.includes("–")) {
-        // Split the text at the '–'
-        const parts = text.split("–").map((part) => part.trim());
+  // Select all elements with the class 'addons_dropdown-link'
+  const links = document.querySelectorAll(".addons_dropdown-link");
 
-        // Create two span elements
-        const span1 = document.createElement("span");
-        const span2 = document.createElement("span");
+  links.forEach((link) => {
+    // Get the text inside the link element
+    const text = link.textContent.trim();
 
-        // Set the text for the spans
-        span1.textContent = parts[0];
-        span2.textContent = parts[1];
+    // Check if the text contains the '–'
+    if (text.includes("–")) {
+      // Split the text at the '–'
+      const parts = text.split("–").map((part) => part.trim());
 
-        // Clear the original link text
-        link.textContent = "";
+      // Create two span elements
+      const span1 = document.createElement("span");
+      const span2 = document.createElement("span");
 
-        // Append the spans to the link
-        link.appendChild(span1);
-        link.appendChild(document.createTextNode(" ")); // Add space between spans
-        link.appendChild(span2);
+      // Set the text for the spans
+      span1.textContent = parts[0];
+      span2.textContent = parts[1];
 
-        // Determine the prefix based on the class
-        let prefix = "";
-        if (link.classList.contains("voice-link")) {
-          prefix = "voice-";
-        } else if (link.classList.contains("sms-link")) {
-          prefix = "sms-";
-        }
+      // Clear the original link text
+      link.textContent = "";
 
-        // Generate a valid ID from the text before '–'
-        const id = generateValidId(parts[0]);
-        link.id = prefix + id;
+      // Append the spans to the link
+      link.appendChild(span1);
+      link.appendChild(document.createTextNode(" ")); // Add space between spans
+      link.appendChild(span2);
+
+      // Determine the prefix based on the class
+      let prefix = "";
+      if (link.classList.contains("voice-link")) {
+        prefix = "voice-";
+      } else if (link.classList.contains("sms-link")) {
+        prefix = "sms-";
+
       }
+
+      // Generate a valid ID from the text before '–'
+      const id = generateValidId(parts[0]);
+      link.id = prefix + id;
+    }
+  });
+
+  // Function to generate a valid ID from a given string
+  function generateValidId(text) {
+    return text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "") // Remove invalid characters
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Replace multiple hyphens with a single one
+      .trim();
+  }
+
+  // Function to process text and split at '–'
+  function processText(element) {
+    const text = element.textContent.trim();
+
+    // Check if the text contains the '–'
+    if (text.includes("–")) {
+      // Split the text at the '–'
+      const parts = text.split("–").map((part) => part.trim());
+
+      // Create two span elements
+      const span1 = document.createElement("span");
+      const span2 = document.createElement("span");
+
+      // Set the text for the spans
+      span1.textContent = parts[0];
+      span2.textContent = parts[1];
+
+      // Clear the original element text
+      element.textContent = "";
+
+      // Append the spans to the element
+      element.appendChild(span1);
+      element.appendChild(document.createTextNode(" ")); // Add space between spans
+      element.appendChild(span2);
+
+      // Determine the prefix based on the class
+      let prefix = "";
+      if (element.classList.contains("voice-ticket")) {
+        prefix = "voice-";
+      } else if (element.classList.contains("sms-ticket")) {
+        prefix = "sms-";
+      }
+
+      // Generate a valid ID from the text before '–'
+      const id = generateValidId(parts[0]);
+      element.id = prefix + id;
+    }
+  }
+
+  // Select the element with id 'w-dropdown-toggle-14'
+  const dropdownToggle = document.querySelector("#w-dropdown-toggle-14");
+  if (dropdownToggle) {
+    // Process initially if necessary
+    processText(dropdownToggle);
+
+
+    // Add an observer to watch for changes to the dropdown toggle's text content
+    const observer = new MutationObserver(() => {
+      processText(dropdownToggle);
     });
 
-    // Function to generate a valid ID from a given string
-    function generateValidId(text) {
-      return text
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, "") // Remove invalid characters
-        .replace(/\s+/g, "-") // Replace spaces with hyphens
-        .replace(/-+/g, "-") // Replace multiple hyphens with a single one
-        .trim();
-    }
 
-    // Function to process text and split at '–'
-    function processText(element) {
-      const text = element.textContent.trim();
-
-      // Check if the text contains the '–'
-      if (text.includes("–")) {
-        // Split the text at the '–'
-        const parts = text.split("–").map((part) => part.trim());
-
-        // Create two span elements
-        const span1 = document.createElement("span");
-        const span2 = document.createElement("span");
-
-        // Set the text for the spans
-        span1.textContent = parts[0];
-        span2.textContent = parts[1];
-
-        // Clear the original element text
-        element.textContent = "";
-
-        // Append the spans to the element
-        element.appendChild(span1);
-        element.appendChild(document.createTextNode(" ")); // Add space between spans
-        element.appendChild(span2);
-
-        // Determine the prefix based on the class
-        let prefix = "";
-        if (element.classList.contains("voice-ticket")) {
-          prefix = "voice-";
-        } else if (element.classList.contains("sms-ticket")) {
-          prefix = "sms-";
-        }
-
-        // Generate a valid ID from the text before '–'
-        const id = generateValidId(parts[0]);
-        element.id = prefix + id;
-      }
-    }
-
-    // Select the element with id 'w-dropdown-toggle-14'
-    const dropdownToggle = document.querySelector("#w-dropdown-toggle-14");
-    if (dropdownToggle) {
-      // Process initially if necessary
-      processText(dropdownToggle);
-
-      // Add an observer to watch for changes to the dropdown toggle's text content
-      const observer = new MutationObserver(() => {
-        processText(dropdownToggle);
-      });
-
-      observer.observe(dropdownToggle, { childList: true, subtree: true });
-    }
-  }, 2000); // Change to 2000ms (2 seconds) delay
-
-
+    observer.observe(dropdownToggle, { childList: true, subtree: true });
+  }
+}, 2000); // Change to 2000ms (2 seconds) delay
