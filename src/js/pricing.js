@@ -298,13 +298,15 @@ function toggleToMonthlyIfBelow60(tickets) {
  *
  ****************************/
 
-$("#monthly").prop("checked", true);
+
+$('#monthly').prop('checked', true);
 const initialValue = 1500; // Set the initial value for the ticket count.
 const initialValueAutomate = 0; // Set the initial value for the ticket count.
 
 slider.val(initialValue).trigger("input");
 ticketNumber.val(initialValue);
 updateProgressBar(slider[0]);
+
 
 automateSlider.val(initialValueAutomate).trigger("input");
 automateNumber.val(initialValueAutomate);
@@ -325,6 +327,7 @@ const smsTicketsElement = document.querySelector("#sms-tickets");
 if (voiceTicketsElement) {
   voiceTicketsElement.addEventListener("change", displaySelectedVoicePrice);
 }
+
 
 if (smsTicketsElement) {
   smsTicketsElement.addEventListener("change", displaySelectedSmsPrice);
@@ -363,7 +366,9 @@ slider.on("input", function () {
   syncTicketNumberWithEntryTickets(val);
   syncEntryRateWithAutomateNumber();
 
+
   console.log("Slider input handling completed.");
+
 });
 
 
@@ -379,14 +384,13 @@ automateSlider.on("input", function () {
   updateTotalPrice();
 });
 
-// Variable to store the current slider value
-let previousSliderValue = slider.val();
 
 // Toggle switch script
 $(".summary_toggle").on("click", function () {
   console.log("Toggle switch clicked");
   // Check which radio button is currently selected
   const currentSelection = $('input[name="billingCycle"]:checked').val();
+
   console.log("Current selection:", currentSelection);
 
   // Get the current slider value
@@ -405,6 +409,7 @@ $(".summary_toggle").on("click", function () {
 
       // Set the slider value to 60 for the annual plan and trigger the input event
       const annualSliderValue = 60;
+
       console.log("Setting slider value to 60 as it was below 60.");
       slider.val(annualSliderValue).trigger("input");
       ticketNumber.val(annualSliderValue); // Update the ticket number input as well
@@ -412,6 +417,7 @@ $(".summary_toggle").on("click", function () {
       // Call the necessary functions to update the UI
       let planDetails = updateHelpdeskPlan(annualSliderValue);
       displayPlanDetails(planDetails);
+
       syncTicketNumberWithEntryTickets(annualSliderValue);
       updateProgressBar(slider[0]);
     } else {
@@ -429,6 +435,7 @@ $(".summary_toggle").on("click", function () {
       displayPlanDetails(planDetails);
       syncTicketNumberWithEntryTickets(previousSliderValue);
       updateProgressBar(slider[0]);
+
     }
   } else {
     // Toggle to the opposite selection without changing the slider value
@@ -445,6 +452,7 @@ $(".summary_toggle").on("click", function () {
 
   updateTotalPrice();
 });
+
 
 // Update the radio button change event listener
 $('input[name="billingCycle"]').change(function () {
@@ -988,6 +996,7 @@ smsRemoveElements.forEach((element) => {
 });
 
 // Handle UI and IDs for dropdown list links on Voice and SMS
+
 // Add a 2-second delay before running the script
 setTimeout(function () {
   console.log("Running delayed script for dropdown list links");
@@ -1026,6 +1035,7 @@ setTimeout(function () {
         prefix = "voice-";
       } else if (link.classList.contains("sms-link")) {
         prefix = "sms-";
+
       }
 
       // Generate a valid ID from the text before '–'
@@ -1089,10 +1099,12 @@ setTimeout(function () {
     // Process initially if necessary
     processText(dropdownToggle);
 
+
     // Add an observer to watch for changes to the dropdown toggle's text content
     const observer = new MutationObserver(() => {
       processText(dropdownToggle);
     });
+
 
     observer.observe(dropdownToggle, { childList: true, subtree: true });
   }
