@@ -237,11 +237,11 @@ function displayTotalPrice(total) {
     // talkToSalesElement.css("display", "block");
     totalItemElement.css("display", "none");
     totalPrice.text(" — ");
-    $('.is-dash').css('display', 'none');
+    $(".is-dash").css("display", "none");
   } else {
     // talkToSalesElement.css("display", "none");
     totalItemElement.css("display", "flex");
-    $('.is-dash').css('display', 'inline-block');
+    $(".is-dash").css("display", "inline-block");
 
     totalPrice.text(formatNumberWithCommas(total.toFixed(0)));
   }
@@ -257,7 +257,12 @@ function checkAndDisplayAutomateAlert() {
 
 /** Function to sync ticket number input with entry tickets value */
 function syncTicketNumberWithEntryTickets(initialValue) {
-  console.log("syncTicketNumberWithEntryTickets called with initialValue:", initialValue);
+
+  console.log(
+    "syncTicketNumberWithEntryTickets called with initialValue:",
+    initialValue
+  );
+
   const numericValue = parseInt(ticketNumber.val(), 10);
   entryTickets.val(isNaN(numericValue) ? 0 : numericValue);
   entryTickets.trigger("entryTicketsUpdated", [{ value: numericValue }]);
@@ -265,12 +270,29 @@ function syncTicketNumberWithEntryTickets(initialValue) {
 
 /** Function to sync the automate number with the entry rate */
 function syncEntryRateWithAutomateNumber(initialValueAutomate) {
-  console.log("syncEntryRateWithAutomateNumber called with initialValueAutomate:", initialValueAutomate);
+
+  console.log(
+    "syncEntryRateWithAutomateNumber called with initialValueAutomate:",
+    initialValueAutomate
+  );
+
   let automateValue = automateNumber.val();
   if (entryRate) {
     entryRate.value = automateValue;
     entryRate.textContent = automateValue;
     $(entryRate).trigger("automateRateUpdated", [{ value: automateValue }]);
+  }
+}
+
+/** Function to toggle back to monthly if we go bellow 60 tickets when on annual billing */
+function toggleToMonthlyIfBelow60(tickets) {
+  const isAnnual = $('input[name="billingCycle"]:checked').val() === "annual";
+  
+  if (isAnnual && tickets < 60) {
+    console.log("Toggling to monthly because tickets are below 60 on annual billing.");
+    $("#monthly").prop("checked", true).trigger("change");
+    $(toggle).removeClass("active");
+    $(toggleDot).removeClass("active");
   }
 }
 
@@ -306,10 +328,16 @@ displayTotalPrice(total);
 const voiceTicketsElement = document.querySelector("#voice-tickets");
 const smsTicketsElement = document.querySelector("#sms-tickets");
 
+
 if (voiceTicketsElement) {
   voiceTicketsElement.addEventListener("change", displaySelectedVoicePrice);
 }
 
+
+
+if (smsTicketsElement) {
+  smsTicketsElement.addEventListener("change", displaySelectedSmsPrice);
+}
 
 if (smsTicketsElement) {
   smsTicketsElement.addEventListener("change", displaySelectedSmsPrice);
@@ -330,6 +358,9 @@ slider.on("input", function () {
   console.log("Step size set to:", stepSize);
   slider.attr("step", stepSize);
 
+  // Call the new function to toggle to monthly if below 60 on annual billing
+  toggleToMonthlyIfBelow60(val);
+
   let planDetails = updateHelpdeskPlan(val);
   console.log("Plan details found:", planDetails);
 
@@ -349,6 +380,7 @@ slider.on("input", function () {
   console.log("Slider input handling completed.");
 
 });
+
 
 // Handles automate slider interactions
 automateSlider.on("input", function () {
@@ -380,6 +412,7 @@ $(".summary_toggle").on("click", function () {
       $("#annual").prop("checked", true).trigger("change");
       $(toggle).addClass("active");
       $(toggleDot).addClass("active");
+
 
       // Save the current slider value before changing it
       previousSliderValue = currentSliderValue;
@@ -431,8 +464,6 @@ $(".summary_toggle").on("click", function () {
   updateTotalPrice();
 });
 
-console.log("Hey new log");
-
 
 // Update the radio button change event listener
 $('input[name="billingCycle"]').change(function () {
@@ -475,7 +506,12 @@ function updateProgressBar(slider) {
 
 /** Function to update the automate progress bar */
 function updateAutomateProgressBar(automateSlider) {
-  console.log("updateAutomateProgressBar called with automateSlider value:", automateSlider.value);
+
+  console.log(
+    "updateAutomateProgressBar called with automateSlider value:",
+    automateSlider.value
+  );
+
   const value = parseInt(automateSlider.value, 10);
   const min = parseInt(automateSlider.min, 10);
   const max = parseInt(automateSlider.max, 10);
@@ -1021,6 +1057,7 @@ setTimeout(function () {
     }
   });
 
+
   // Function to generate a valid ID from a given string
   function generateValidId(text) {
     return text
@@ -1030,6 +1067,7 @@ setTimeout(function () {
       .replace(/-+/g, "-") // Replace multiple hyphens with a single one
       .trim();
   }
+
 
   // Function to process text and split at '–'
   function processText(element) {
