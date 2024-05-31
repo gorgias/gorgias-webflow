@@ -257,10 +257,12 @@ function checkAndDisplayAutomateAlert() {
 
 /** Function to sync ticket number input with entry tickets value */
 function syncTicketNumberWithEntryTickets(initialValue) {
+
   console.log(
     "syncTicketNumberWithEntryTickets called with initialValue:",
     initialValue
   );
+
   const numericValue = parseInt(ticketNumber.val(), 10);
   entryTickets.val(isNaN(numericValue) ? 0 : numericValue);
   entryTickets.trigger("entryTicketsUpdated", [{ value: numericValue }]);
@@ -268,10 +270,12 @@ function syncTicketNumberWithEntryTickets(initialValue) {
 
 /** Function to sync the automate number with the entry rate */
 function syncEntryRateWithAutomateNumber(initialValueAutomate) {
+
   console.log(
     "syncEntryRateWithAutomateNumber called with initialValueAutomate:",
     initialValueAutomate
   );
+
   let automateValue = automateNumber.val();
   if (entryRate) {
     entryRate.value = automateValue;
@@ -324,10 +328,16 @@ displayTotalPrice(total);
 const voiceTicketsElement = document.querySelector("#voice-tickets");
 const smsTicketsElement = document.querySelector("#sms-tickets");
 
+
 if (voiceTicketsElement) {
   voiceTicketsElement.addEventListener("change", displaySelectedVoicePrice);
 }
 
+
+
+if (smsTicketsElement) {
+  smsTicketsElement.addEventListener("change", displaySelectedSmsPrice);
+}
 
 if (smsTicketsElement) {
   smsTicketsElement.addEventListener("change", displaySelectedSmsPrice);
@@ -402,6 +412,7 @@ $(".summary_toggle").on("click", function () {
       $("#annual").prop("checked", true).trigger("change");
       $(toggle).addClass("active");
       $(toggleDot).addClass("active");
+
 
       // Save the current slider value before changing it
       previousSliderValue = currentSliderValue;
@@ -495,10 +506,12 @@ function updateProgressBar(slider) {
 
 /** Function to update the automate progress bar */
 function updateAutomateProgressBar(automateSlider) {
+
   console.log(
     "updateAutomateProgressBar called with automateSlider value:",
     automateSlider.value
   );
+
   const value = parseInt(automateSlider.value, 10);
   const min = parseInt(automateSlider.min, 10);
   const max = parseInt(automateSlider.max, 10);
@@ -1044,6 +1057,7 @@ setTimeout(function () {
     }
   });
 
+
   // Function to generate a valid ID from a given string
   function generateValidId(text) {
     return text
@@ -1053,6 +1067,7 @@ setTimeout(function () {
       .replace(/-+/g, "-") // Replace multiple hyphens with a single one
       .trim();
   }
+
 
   // Function to process text and split at '–'
   function processText(element) {
