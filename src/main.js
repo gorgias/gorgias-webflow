@@ -23,7 +23,7 @@ Webflow.push(function () {
     }
     if (path === '/pricing') {
       newScript(scriptBase + '/src/js/pricing'+minBase+'.js','body', 1);
-      newScript(scriptBase + '/src/js/roi-calc-pricing'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/pricing-ui'+minBase+'.js','body', 1);
     }
     // pricing page
     if ( path === '/pricing-test/pricing' || path === '/pages/template-long' 
