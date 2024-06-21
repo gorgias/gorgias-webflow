@@ -1,4 +1,5 @@
-
+var Webflow = Webflow || [];
+Webflow.push(function () {
   // Get references to HTML elements for ticket range, automate range, plan type toggle, and voice and SMS tickets select
   const ticketRange = document.getElementById("ticketRange");
   const automateRange = document.getElementById("automateRange");
@@ -1077,3 +1078,4 @@ setTimeout(() => {
   }
 }, 2000); // 2-second delay
 
+});
