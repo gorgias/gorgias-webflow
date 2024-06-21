@@ -8,12 +8,12 @@
   const smsTicketsSelect = document.getElementById("sms-tickets");
 
   // Verify that the elements are correctly selected
-  console.log("ticketRange:", ticketRange);
-  console.log("automateRange:", automateRange);
-  console.log("monthlyPlanRadio:", monthlyPlanRadio);
-  console.log("annualPlanRadio:", annualPlanRadio);
-  console.log("voiceTicketsSelect:", voiceTicketsSelect);
-  console.log("smsTicketsSelect:", smsTicketsSelect);
+  // console.log("ticketRange:", ticketRange);
+  // console.log("automateRange:", automateRange);
+  // console.log("monthlyPlanRadio:", monthlyPlanRadio);
+  // console.log("annualPlanRadio:", annualPlanRadio);
+  // console.log("voiceTicketsSelect:", voiceTicketsSelect);
+  // console.log("smsTicketsSelect:", smsTicketsSelect);
 
   // Elements that change visibility based on the selected plan
   const elementsToToggle = {
@@ -357,6 +357,9 @@
    * HELPER FUNCTIONS
    *
    ****************************/
+
+  // Disable console.logs for production
+   console.log = function () {};
 
   // Function to format numbers with commas for better readability
   function formatNumberWithCommas(x) {
@@ -1074,4 +1077,3 @@ setTimeout(() => {
   }
 }, 2000); // 2-second delay
 
-console.log = function () {};
