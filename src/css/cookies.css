@@ -1,0 +1,87 @@
+  
+/* Cookies consent */
+#ot-sdk-btn-floating .ot-floating-button__front {
+    background-color: #fff9f4 !important;
+}
+
+#ot-sdk-btn.ot-sdk-show-settings, #ot-sdk-btn.optanon-show-settings {
+    display: none !important;
+}
+
+#onetrust-pc-sdk .ot-tgl input:checked+.ot-switch .ot-switch-nob {
+    background-color: #ff9780 !important;
+}
+
+#onetrust-pc-sdk .ot-tgl input:checked+.ot-switch .ot-switch-nob {
+    background-color: #ff9780 !important;
+}
+
+#onetrust-pc-sdk .ot-always-active {
+    color: #ff9780 !important;
+}
+
+input:checked+.ot-switch .ot-switch-nob:before {
+    background-color: #ff9780 !important;
+}
+
+#onetrust-consent-sdk #onetrust-pc-sdk .ot-tgl input:focus + .ot-switch, .ot-switch .ot-switch-nob, .ot-switch .ot-switch-nob:before, #onetrust-pc-sdk .ot-checkbox input[type="checkbox"]:focus + label::before, #onetrust-pc-sdk .ot-chkbox input[type="checkbox"]:focus + label::before {
+    outline-color: transparent !important;
+    outline-width: 0px !important;
+}
+
+#onetrust-consent-sdk #onetrust-pc-sdk *:focus, #onetrust-consent-sdk #onetrust-pc-sdk .ot-vlst-cntr > a:focus {
+    outline: 0px none !important;
+}
+
+#ot-sdk-btn-floating.ot-floating-button {
+    left: 20px !important;
+    bottom: 20px !important;
+}
+
+#ot-sdk-btn-floating .ot-floating-button__back svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+}
+
+#onetrust-pc-sdk.otRelFont {
+    font-size: 1rem !important;
+    font-family: 'Inter' !important;
+}
+
+#onetrust-pc-sdk .ot-pc-footer-logo {
+    height: 0px !important;
+    position: absolute !important;
+    top: -1000% !important;
+    	display: none !important;
+}
+
+#onetrust-pc-sdk .ot-pc-header {
+    border-bottom: 1px solid #000 !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+}
+  
+  
+.ot-btn-container > button {
+  padding-top: 0.81rem;
+  padding-right: 1.25rem;
+  padding-bottom: 0.81rem;
+  padding-left: 1.25rem;
+  border-top-left-radius: var(--border-radius--xsmall-5px);
+  border-top-right-radius: var(--border-radius--xsmall-5px);
+  border-bottom-left-radius: var(--border-radius--xsmall-5px);
+  border-bottom-right-radius: var(--border-radius--xsmall-5px);
+  background-color: var(--primary-oatmeal);
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+  color: var(--black);
+  font-size: 1.13rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.ot-btn-container > button:hover {
+  background-color: var(--primary-oatmeal);
+}
