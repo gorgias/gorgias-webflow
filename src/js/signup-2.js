@@ -41,6 +41,95 @@ var accountFormLoadingWrapper = $('div#signup-account-form-loading-wrapper');
 
 var delayTimer;
 
+// UI treatment for the light form
+$("#continue-email").on("click", function () {
+  // Verify email first
+  emailVerifyWithCallback("warning", function (emailStatus) {
+    // Check the email verification status from local storage
+    if (emailStatus === "valid") {
+      // If email is valid, proceed with displaying the rest of the form
+      $(".signup-account_item").removeClass("field-hidden");
+      $(".submit-form-button-wrapper").removeClass("field-hidden");
+
+      // Remove 'is-hidden' class from the form-captcha wrapper
+      $(".form-captcha_wrapper").removeClass("is-hidden");
+      $(".form-captcha_wrapper").css("height", "24rem");
+
+      // Remove the clicked element (the button)
+      $("#continue-email").remove();
+
+      setTimeout(function () {
+        $(".form-captcha_wrapper").css("height", "auto");
+      }, 600);
+    } else {
+      // If email is not valid, display an error message
+      handleFieldStatus(
+        emailField,
+        "error",
+        "Please enter a valid email address."
+      );
+    }
+  });
+});
+
+function emailVerifyWithCallback(verifyStatus, callback) {
+  const regexEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  let verifyMessage = "";
+  if (!emailField.val() || emailField.val() === "") {
+    verifyMessage = "We need your email to create your account";
+    handleFieldStatus(emailField, verifyStatus, verifyMessage);
+    callback("error");
+  } else if (!regexEmail.test(emailField.val())) {
+    verifyMessage = "The email you entered is incomplete";
+    handleFieldStatus(emailField, verifyStatus, verifyMessage);
+    callback("error");
+  } else {
+    var validationData = {
+      name: fullnameField.val(),
+      email: emailField.val(),
+      password: emailField.val(),
+    };
+    var API_VALIDATION_ENDPOINT = "/user/validation";
+    post(
+      API_VALIDATION_ENDPOINT,
+      validationData,
+      // success callback
+      function (data) {
+        if (data && data["signup-email-validation"]) {
+          var validationResult = data["signup-email-validation"];
+          if (validationResult.risk === "high") {
+            if (
+              validationResult.reason === "mailbox_does_not_exist" ||
+              validationResult.result === "undeliverable"
+            ) {
+              verifyMessage = "Are you sure this email address exists?";
+              handleFieldStatus(emailField, "error", verifyMessage);
+              callback("error");
+            } else if (
+              validationResult.reason === "mailbox_is_disposable_address"
+            ) {
+              verifyMessage = "Please don't use disposable email addresses.";
+              handleFieldStatus(emailField, "error", verifyMessage);
+              callback("error");
+            } else {
+              callback("valid");
+            }
+          } else {
+            callback("valid");
+          }
+        } else {
+          callback("valid");
+        }
+      },
+      //error callback
+      function (response) {
+        handleErrors(response);
+        callback("error");
+      }
+    );
+  }
+}
+
 function waitForAnalytics (callback) {
   var waitForAnalyticsIntervalCount = 0
   var waitForAnalyticsIntervalMax = 3
@@ -322,6 +411,65 @@ function emailVerify(verifyStatus){
         return verifyStatus;
       }
     )
+  }
+}
+
+// used to verify the email field with a callback function (used in the first step of the light form)
+function emailVerifyWithCallback(verifyStatus, callback) {
+  const regexEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  let verifyMessage = "";
+  if (!emailField.val() || emailField.val() === "") {
+    verifyMessage = "We need your email to create your account";
+    handleFieldStatus(emailField, verifyStatus, verifyMessage);
+    callback("error");
+  } else if (!regexEmail.test(emailField.val())) {
+    verifyMessage = "The email you entered is incomplete";
+    handleFieldStatus(emailField, verifyStatus, verifyMessage);
+    callback("error");
+  } else {
+    var validationData = {
+      name: fullnameField.val(),
+      email: emailField.val(),
+      password: emailField.val(),
+    };
+    var API_VALIDATION_ENDPOINT = "/user/validation";
+    post(
+      API_VALIDATION_ENDPOINT,
+      validationData,
+      // success callback
+      function (data) {
+        if (data && data["signup-email-validation"]) {
+          var validationResult = data["signup-email-validation"];
+          if (validationResult.risk === "high") {
+            if (
+              validationResult.reason === "mailbox_does_not_exist" ||
+              validationResult.result === "undeliverable"
+            ) {
+              verifyMessage = "Are you sure this email address exists?";
+              handleFieldStatus(emailField, "error", verifyMessage);
+              callback("error");
+            } else if (
+              validationResult.reason === "mailbox_is_disposable_address"
+            ) {
+              verifyMessage = "Please don't use disposable email addresses.";
+              handleFieldStatus(emailField, "error", verifyMessage);
+              callback("error");
+            } else {
+              callback("valid");
+            }
+          } else {
+            callback("valid");
+          }
+        } else {
+          callback("valid");
+        }
+      },
+      //error callback
+      function (response) {
+        handleErrors(response);
+        callback("error");
+      }
+    );
   }
 }
 
