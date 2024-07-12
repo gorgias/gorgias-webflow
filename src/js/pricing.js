@@ -360,7 +360,7 @@ Webflow.push(function () {
    ****************************/
 
   // Disable console.logs for production
-   console.log = function () {};
+   //console.log = function () {};
 
   // Function to format numbers with commas for better readability
   function formatNumberWithCommas(x) {
@@ -874,9 +874,14 @@ Webflow.push(function () {
     updateSummaryTotalPrice();
   }
 
+
+  let automateRangeVal
+
   // Event listenir for the automate range slider
   $("#automateRange").on("input", function () {
     document.querySelector('[data-summary="automate"]').style.display = "flex";
+    automateRangeVal = $(this).val();
+    console.log('Automate range value:', automateRangeVal);
   });
 
   // Event listener for the helpdesk button to set automation rate to 30%
@@ -906,17 +911,17 @@ Webflow.push(function () {
         "none";
     });
 
-  // Event listener for the tab-link_2 element to set automation rate to 30% if certain conditions are met
-  document.querySelector(".tab-link_2").addEventListener("click", function () {
-    // Check if the helpdesk button has been clicked
-    const helpdeskButtonClicked = document
-      .querySelector('[data-button="helpdesk"]')
-      .getAttribute("data-clicked");
-    // Set automation rate to 30% only if the helpdesk button has not been clicked and the automate range value is 0
-    if (!helpdeskButtonClicked && automateRange.value === "0") {
-      setAutomationRate(30);
-    }
-  });
+// Event listener for the tab-link_2 element to set automation rate based on the automateRangeVal
+document.querySelector(".tab-link_2").addEventListener("click", function () {
+  // Check if the helpdesk button has been clicked
+  const helpdeskButtonClicked = document.querySelector('[data-button="helpdesk"]').getAttribute("data-clicked");
+  // Set automation rate based on the value of automateRangeVal
+  if ( automateRangeVal === 0) {
+    setAutomationRate(30);
+  } else {
+    setAutomationRate(automateRangeVal);
+  }
+});
 
   // Initialize a flag variable to false
   let flag = false;
