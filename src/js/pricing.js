@@ -916,6 +916,7 @@ document.querySelector(".tab-link_2").addEventListener("click", function () {
   // Check if the helpdesk button has been clicked
   const helpdeskButtonClicked = document.querySelector('[data-button="helpdesk"]').getAttribute("data-clicked");
   // Set automation rate based on the value of automateRangeVal
+
   if (!helpdeskButtonClicked && automateRangeVal === 0) {
     setAutomationRate(30);
   } else {
