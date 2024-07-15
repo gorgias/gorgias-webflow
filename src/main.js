@@ -55,15 +55,17 @@ Webflow.push(function () {
         newStyle(scriptBase + '/src/css/blog'+minBase+'.css','body');
         newScript(scriptBase + '/src/js/blog'+minBase+'.js','body',1);
     }
-
-    if (path === '/') {
-      // Load the announcement banner script when the path is the homepage
-      newScript(scriptBase + '/src/js/announcement-banner' + minBase + '.js', 'body');
-    }
+    // product tour page
     if (path === '/product-tour'){
         newScript(scriptBase + '/src/js/producttour'+minBase+'.js','head',1)
     } 
 
+      // partner referral page
+      if (path === '/partner-referral'){
+          newScript(scriptBase + '/src/js/partner-referral'+minBase+'.js','body',1)
+      } 
+
+    // signup pages
     if (path.includes('signup-2') || path.includes('signup-3')){
         newStyle('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css','head');
         newScript('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js','head',1);
@@ -79,10 +81,12 @@ Webflow.push(function () {
       newScript(scriptBase + "/src/js/signup-2" + minBase + ".js", "head", 1);
     } 
 
+    // Check if product is automate
     if (path.includes('/products/automate')){
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head',0);
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head',0);
     }
+    // Check if product is convert
     if (path.includes('/products/convert')){
         newScript(scriptBase + '/src/js/tool-roi-convert'+minBase+'.js','head',0);
     }
