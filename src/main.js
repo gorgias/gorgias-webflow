@@ -65,6 +65,11 @@ Webflow.push(function () {
           newScript(scriptBase + '/src/js/partner-referral'+minBase+'.js','body',1)
       } 
 
+      // partner referral page
+      if (path === '/events'){
+          newScript(scriptBase + '/src/js/events'+minBase+'.js','body',1)
+      } 
+
     // signup pages
     if (path.includes('signup-2') || path.includes('signup-3')){
         newStyle('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css','head');

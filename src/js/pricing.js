@@ -360,7 +360,7 @@ Webflow.push(function () {
    ****************************/
 
   // Disable console.logs for production
-   //console.log = function () {};
+  console.log = function () {};
 
   // Function to format numbers with commas for better readability
   function formatNumberWithCommas(x) {
