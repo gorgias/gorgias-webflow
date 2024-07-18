@@ -41,33 +41,6 @@ var accountFormLoadingWrapper = $('div#signup-account-form-loading-wrapper');
 
 var delayTimer;
 
-// UI treatment for the light form
-$("#continue-email").on("click", function () {
-  // Verify email first
-  emailVerifyWithCallback("warning", function (emailStatus) {
-    // Check the email verification status
-    if (emailStatus === "valid") {
-      // If email is valid, proceed with displaying the rest of the form
-      $(".signup-account_item").removeClass("field-hidden");
-      $(".submit-form-button-wrapper").removeClass("field-hidden");
-
-      // Remove 'is-hidden' class from the form-captcha wrapper
-      $(".form-captcha_wrapper").removeClass("is-hidden");
-      $(".form-captcha_wrapper").css("height", "24rem");
-
-      // Remove the clicked element (the button)
-      $("#continue-email").remove();
-
-      setTimeout(function () {
-        $(".form-captcha_wrapper").css("height", "auto");
-      }, 600);
-    } else {
-
-    }
-  });
-});
-
-
 
 function waitForAnalytics (callback) {
   var waitForAnalyticsIntervalCount = 0
@@ -935,7 +908,9 @@ function onSubmitAccountSignupForm(formData) {
 
       // before redirecting, remove local storage to avoid confusion in case of resigning up
       localStorage.removeItem('account-subdomains-approved');
-      window.location = data.redirect_url
+      setTimeout(function() {
+        window.location = data.redirect_url;
+      }, 500);
     },
     //error
       function (response) {
@@ -1043,6 +1018,32 @@ Webflow.push(function () {
   passwordField.on('input', function(){
     passwordVerify('warning');
   })
+
+  // UI treatment for the light form
+$("#continue-email").on("click", function () {
+  // Verify email first
+  emailVerifyWithCallback("warning", function (emailStatus) {
+    // Check the email verification status
+    if (emailStatus === "valid") {
+      // If email is valid, proceed with displaying the rest of the form
+      $(".signup-account_item").removeClass("field-hidden");
+      $(".submit-form-button-wrapper").removeClass("field-hidden");
+
+      // Remove 'is-hidden' class from the form-captcha wrapper
+      $(".form-captcha_wrapper").removeClass("is-hidden");
+      $(".form-captcha_wrapper").css("height", "24rem");
+
+      // Remove the clicked element (the button)
+      $("#continue-email").remove();
+
+      setTimeout(function () {
+        $(".form-captcha_wrapper").css("height", "auto");
+      }, 600);
+    } else {
+
+    }
+  });
+});
   
   // used to display / hide the password field content using the button within the field
   $('#transformButton').on('click', function() {
