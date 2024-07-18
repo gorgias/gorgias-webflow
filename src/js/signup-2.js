@@ -876,6 +876,14 @@ function onSubmitUserSignupForm(response) {
     // success
     function (data) {
     // Important: we keep the search (url parameters) in order to pass them to the following step
+
+    // push the event to the dataLayer to trigger the GTM event
+    window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+      event: 'webflowFormSubmissionSuccess',
+      wfFormId: 'signup-user-form'
+    });
+
     window.location = SIGNUP_ACCOUNT_FORM_PAGE + window.location.search
     },
     // error
@@ -916,6 +924,15 @@ function onSubmitAccountSignupForm(formData) {
     formData,
     // success
     function (data) {
+
+
+    // push the event to the dataLayer to trigger the GTM event
+  window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    event: 'webflowFormSubmissionSuccess',
+    wfFormId: 'signup-account-form'
+  });
+
       // before redirecting, remove local storage to avoid confusion in case of resigning up
       localStorage.removeItem('account-subdomains-approved');
       window.location = data.redirect_url
