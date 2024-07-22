@@ -5,8 +5,12 @@ Webflow.push(function () {
   const automateRange = document.getElementById("automateRange");
   const monthlyPlanRadio = document.getElementById("monthlyPlan");
   const annualPlanRadio = document.getElementById("annualPlan");
-  const voiceTicketsSelect = document.getElementById("voice-tickets");
-  const smsTicketsSelect = document.getElementById("sms-tickets");
+  const voiceTicketsSelect = document.querySelector(
+    `[data-target="voice-tickets"]`
+  );
+  const smsTicketsSelect = document.querySelector(
+    `[data-target="sms-tickets"]`
+  );
 
   // Verify that the elements are correctly selected
   // console.log("ticketRange:", ticketRange);
