@@ -920,7 +920,7 @@ function updateSmsTier() {
 // Function to update signup button URLs with current selected plans
 function updateSignupUrls() {
   const queryParams = new URLSearchParams(selectedPlans);
-  const signupButtons = document.querySelectorAll('[data-target="signup-btn"]');
+  const signupButtons = document.querySelectorAll('[data-target="query-params"]');
   signupButtons.forEach(button => {
     const baseUrl = button.getAttribute('href').split('?')[0];
     button.setAttribute('href', `${baseUrl}?${queryParams.toString()}`);
@@ -969,7 +969,7 @@ function attachListeners() {
     .addEventListener("input", updateAutomatePlan);
 
   // Attach click event listeners to signup buttons
-  const signupButtons = document.querySelectorAll('[data-target="signup-btn"]');
+  const signupButtons = document.querySelectorAll('[data-target="query-params"]');
   signupButtons.forEach(button => {
     button.addEventListener("click", updateSignupUrls);
   });

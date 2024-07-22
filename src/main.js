@@ -71,7 +71,7 @@ Webflow.push(function () {
       } 
 
     // signup pages
-    if (path.includes('signup-2') || path.includes('signup-3')){
+    if (path.includes('signup-2') || path.includes('signup-3')  || path.includes('signup-v')){
         newStyle('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css','head');
         newScript('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js','head',1);
         newStyle(scriptBase + '/src/css/signup'+minBase+'.css','body');
@@ -84,6 +84,9 @@ Webflow.push(function () {
     } else if (path.includes("/signup-2")) {
       // Load the default version of the script if not the French version
       newScript(scriptBase + "/src/js/signup-2" + minBase + ".js", "head", 1);
+    } else if (path.includes("/signup-v")) {
+      // Load the default version of the script if not the French version
+      newScript(scriptBase + "/src/js/signup-v" + minBase + ".js", "head", 1);
     } 
 
     // Check if product is automate
