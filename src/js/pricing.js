@@ -856,6 +856,127 @@ Webflow.push(function () {
 
   /****************************
    *
+   * UPDATE QUERY PARAMETERS
+   *
+   ****************************/
+// Object to store selected plans and tiers
+const selectedPlans = {};
+
+// Function to update the selected plan and log it to the console
+function updateSelectedPlan(param, value) {
+  if (value) {
+    selectedPlans[param] = value;
+  } else {
+    delete selectedPlans[param];
+  }
+}
+
+// Function to get and update helpdesk plan
+function updateHelpdeskPlan() {
+  const planName = document.querySelector(
+    '[data-target="planName"]'
+  ).textContent;
+  updateSelectedPlan("helpdesk", planName);
+}
+
+// Function to get and update automate plan
+function updateAutomatePlan() {
+  const automatePlanName = document.querySelector(
+    '[data-target="automatePlanName"]'
+  ).textContent;
+  if (automatePlanName !== "Tier 0") {
+    updateSelectedPlan("automate", automatePlanName);
+  } else {
+    updateSelectedPlan("automate", null);
+  }
+}
+
+// Function to update voice tier
+function updateVoiceTier() {
+  const voiceTier = document.querySelector(
+    `[data-target="voice-tickets"]`
+  ).value;
+  if (voiceTier !== "Tier 0") {
+    updateSelectedPlan("voice", voiceTier);
+  } else {
+    updateSelectedPlan("voice", null);
+  }
+}
+
+// Function to update SMS tier
+function updateSmsTier() {
+  const smsTier = document.querySelector(`[data-target="sms-tickets"]`).value;
+  if (smsTier !== "Tier 0") {
+    updateSelectedPlan("sms", smsTier);
+  } else {
+    updateSelectedPlan("sms", null);
+  }
+}
+
+// Function to update signup button URLs with current selected plans
+function updateSignupUrls() {
+  const queryParams = new URLSearchParams(selectedPlans);
+  const signupButtons = document.querySelectorAll('[data-target="signup-btn"]');
+  signupButtons.forEach(button => {
+    const baseUrl = button.getAttribute('href').split('?')[0];
+    button.setAttribute('href', `${baseUrl}?${queryParams.toString()}`);
+  });
+}
+
+// Function to initialize selected plans
+function initializeSelectedPlans() {
+  updateHelpdeskPlan();
+  updateAutomatePlan();
+  updateVoiceTier();
+  updateSmsTier();
+}
+
+// Attach event listeners to elements
+function attachListeners() {
+  // Observe changes to planName
+  const planNameElement = document.querySelector('[data-target="planName"]');
+  const planNameObserver = new MutationObserver(updateHelpdeskPlan);
+  planNameObserver.observe(planNameElement, { childList: true, subtree: true });
+
+  // Observe changes to automatePlanName
+  const automatePlanNameElement = document.querySelector(
+    '[data-target="automatePlanName"]'
+  );
+  const automatePlanObserver = new MutationObserver(updateAutomatePlan);
+  automatePlanObserver.observe(automatePlanNameElement, {
+    childList: true,
+    subtree: true,
+  });
+
+  // Attach change event listeners to voice and SMS dropdowns
+  document
+    .querySelector(`[data-target="voice-tickets"]`)
+    .addEventListener("change", updateVoiceTier);
+  document
+    .querySelector(`[data-target="sms-tickets"]`)
+    .addEventListener("change", updateSmsTier);
+
+  // Attach input event listeners to range sliders
+  document
+    .getElementById("ticketRange")
+    .addEventListener("input", updateHelpdeskPlan);
+  document
+    .getElementById("automateRange")
+    .addEventListener("input", updateAutomatePlan);
+
+  // Attach click event listeners to signup buttons
+  const signupButtons = document.querySelectorAll('[data-target="signup-btn"]');
+  signupButtons.forEach(button => {
+    button.addEventListener("click", updateSignupUrls);
+  });
+}
+
+// Initial call to initialize selected plans and attach listeners
+initializeSelectedPlans();
+attachListeners();
+
+  /****************************
+   *
    * EVENT HANDLERS
    *
    ****************************/
@@ -1085,4 +1206,6 @@ setTimeout(() => {
 }, 2000); // 2-second delay
 
 });
+
+
 
