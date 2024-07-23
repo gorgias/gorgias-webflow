@@ -127,3 +127,32 @@ $(document).on("click", ".addons_dropdown-link.voice-link", function () {
 $(document).on("click", ".addons_dropdown-link.sms-link", function () {
   $('[data-summary="sms"]').css("display", "flex");
 });
+
+// Function to update the display of .dollar elements based on totalCost text
+function updateDollarDisplay() {
+  // Select all elements with data-target="totalCost"
+  $('[data-target="totalCost"]').each(function() {
+    // Get the text content of the element
+    let textContent = $(this).text().trim();
+
+    // Get the sibling element with the class 'dollar'
+    let dollarElement = $(this).siblings('.dollar');
+
+    // Check if the text content is "Contact us"
+    if (textContent === "Contact us") {
+      // Set the display property of the sibling element to 'none'
+      dollarElement.css('display', 'none');
+    } else {
+      // Set the display property of the sibling element to 'flex'
+      dollarElement.css('display', 'inline-flex');
+    }
+  });
+}
+
+// Initial call to set the correct display state on page load
+updateDollarDisplay();
+
+// Event listener for the range slider to update display on input change
+$('#ticketRange').on('input change', function() {
+  updateDollarDisplay();
+});
