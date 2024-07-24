@@ -110,3 +110,31 @@ document.addEventListener("DOMContentLoaded", () => {
       element.innerHTML = updatedContent;
     });
   });
+
+  /****************************
+   * 
+   * Checks UTM source to display banner
+   * 
+   * 
+   * ****************************/
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Step 1: Find the element with data-target="banner"
+    const banner = document.querySelector('[data-target="banner"]');
+  
+    // Step 2: Function to get URL parameters
+    const getUrlParameter = (name) => {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      const results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
+  
+    // Step 3: Check if the utm_source is "google"
+    const utmSource = getUrlParameter('utm_source');
+    if (utmSource === 'google-joseph') {
+      // Step 4: Remove the class .is-hidden if the traffic comes from Google search
+      banner.classList.remove('is-hidden');
+    }
+  });
+  
