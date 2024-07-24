@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Step 3: Check if the utm_source is "google"
     const utmSource = getUrlParameter('utm_source');
-    if (utmSource === 'google') {
+    if (utmSource === 'google-joseph') {
       // Step 4: Remove the class .is-hidden if the traffic comes from Google search
       banner.classList.remove('is-hidden');
     }
