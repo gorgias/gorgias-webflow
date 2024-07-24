@@ -863,32 +863,32 @@ Webflow.push(function () {
    * UPDATE QUERY PARAMETERS
    *
    ****************************/
+  
 // Object to store selected plans and tiers
-const selectedPlans = {};
+const selectedPlans = {
+    "source": "pricing", // default source parameter
+  "billing-cycle": "annual" // default billing cycle
+};
 
 // Function to update the selected plan and log it to the console
 function updateSelectedPlan(param, value) {
   if (value) {
-    selectedPlans[param] = value;
+    selectedPlans[param.toLowerCase()] = value.toLowerCase();
   } else {
-    delete selectedPlans[param];
+    delete selectedPlans[param.toLowerCase()];
   }
 }
 
 // Function to get and update helpdesk plan
 function updateHelpdeskPlan() {
-  const planName = document.querySelector(
-    '[data-target="planName"]'
-  ).textContent;
+  const planName = document.querySelector('[data-target="planName"]').textContent.toLowerCase();
   updateSelectedPlan("helpdesk", planName);
 }
 
 // Function to get and update automate plan
 function updateAutomatePlan() {
-  const automatePlanName = document.querySelector(
-    '[data-target="automatePlanName"]'
-  ).textContent;
-  if (automatePlanName !== "Tier 0") {
+  const automatePlanName = document.querySelector('[data-target="automatePlanName"]').textContent.toLowerCase();
+  if (automatePlanName !== "tier 0") {
     updateSelectedPlan("automate", automatePlanName);
   } else {
     updateSelectedPlan("automate", null);
@@ -897,10 +897,8 @@ function updateAutomatePlan() {
 
 // Function to update voice tier
 function updateVoiceTier() {
-  const voiceTier = document.querySelector(
-    `[data-target="voice-tickets"]`
-  ).value;
-  if (voiceTier !== "Tier 0") {
+  const voiceTier = document.querySelector(`[data-target="voice-tickets"]`).value.toLowerCase();
+  if (voiceTier !== "tier 0") {
     updateSelectedPlan("voice", voiceTier);
   } else {
     updateSelectedPlan("voice", null);
@@ -909,11 +907,23 @@ function updateVoiceTier() {
 
 // Function to update SMS tier
 function updateSmsTier() {
-  const smsTier = document.querySelector(`[data-target="sms-tickets"]`).value;
-  if (smsTier !== "Tier 0") {
+  const smsTier = document.querySelector(`[data-target="sms-tickets"]`).value.toLowerCase();
+  if (smsTier !== "tier 0") {
     updateSelectedPlan("sms", smsTier);
   } else {
     updateSelectedPlan("sms", null);
+  }
+}
+
+// Function to update billing cycle
+function updateBillingCycle() {
+  const annualPlan = document.getElementById("annualPlan");
+  const monthlyPlan = document.getElementById("monthlyPlan");
+
+  if (annualPlan.checked) {
+    updateSelectedPlan("billing-cycle", "annual");
+  } else if (monthlyPlan.checked) {
+    updateSelectedPlan("billing-cycle", "monthly");
   }
 }
 
@@ -933,6 +943,7 @@ function initializeSelectedPlans() {
   updateAutomatePlan();
   updateVoiceTier();
   updateSmsTier();
+  updateBillingCycle(); // Ensure default billing cycle is set
 }
 
 // Attach event listeners to elements
@@ -943,9 +954,7 @@ function attachListeners() {
   planNameObserver.observe(planNameElement, { childList: true, subtree: true });
 
   // Observe changes to automatePlanName
-  const automatePlanNameElement = document.querySelector(
-    '[data-target="automatePlanName"]'
-  );
+  const automatePlanNameElement = document.querySelector('[data-target="automatePlanName"]');
   const automatePlanObserver = new MutationObserver(updateAutomatePlan);
   automatePlanObserver.observe(automatePlanNameElement, {
     childList: true,
@@ -953,20 +962,16 @@ function attachListeners() {
   });
 
   // Attach change event listeners to voice and SMS dropdowns
-  document
-    .querySelector(`[data-target="voice-tickets"]`)
-    .addEventListener("change", updateVoiceTier);
-  document
-    .querySelector(`[data-target="sms-tickets"]`)
-    .addEventListener("change", updateSmsTier);
+  document.querySelector(`[data-target="voice-tickets"]`).addEventListener("change", updateVoiceTier);
+  document.querySelector(`[data-target="sms-tickets"]`).addEventListener("change", updateSmsTier);
 
   // Attach input event listeners to range sliders
-  document
-    .getElementById("ticketRange")
-    .addEventListener("input", updateHelpdeskPlan);
-  document
-    .getElementById("automateRange")
-    .addEventListener("input", updateAutomatePlan);
+  document.getElementById("ticketRange").addEventListener("input", updateHelpdeskPlan);
+  document.getElementById("automateRange").addEventListener("input", updateAutomatePlan);
+
+  // Attach change event listeners to billing cycle radio buttons
+  document.getElementById("annualPlan").addEventListener("change", updateBillingCycle);
+  document.getElementById("monthlyPlan").addEventListener("change", updateBillingCycle);
 
   // Attach click event listeners to signup buttons
   const signupButtons = document.querySelectorAll('[data-target="query-params"]');
@@ -979,11 +984,34 @@ function attachListeners() {
 initializeSelectedPlans();
 attachListeners();
 
-  /****************************
-   *
-   * EVENT HANDLERS
-   *
-   ****************************/
+/****************************
+*
+* CHECK FOR COOKIES
+*
+****************************/
+
+// Function to look for cookies "gorgias_helpdesk_subdomain" and change data-type="signup-btn" for login ctas
+function checkCookie() {
+  const cookie = document.cookie;
+  if (cookie.includes("gorgias-helpdesk-subdomain")) {
+    const subdomain = cookie.split("gorgias-helpdesk-subdomain=")[1].split(";")[0];
+    const signupBtns = document.querySelectorAll('[data-type="signup-btn"]');
+    signupBtns.forEach((btn) => {
+      btn.textContent = "Log in";
+      btn.href = `https://${subdomain}.gorgias.com/login`;
+    });
+  }
+}
+
+// Call the function to check for cookies
+checkCookie();
+
+
+/****************************
+*
+* EVENT HANDLERS
+*
+****************************/
 
   // Function to set the automation rate and update related UI elements
   function setAutomationRate(value) {
@@ -1208,7 +1236,6 @@ setTimeout(() => {
     observer.observe(dropdownToggle, { childList: true, subtree: true });
   }
 }, 2000); // 2-second delay
-
 });
 
 
