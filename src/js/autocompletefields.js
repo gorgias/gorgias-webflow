@@ -7,7 +7,7 @@ function autoCompleteInputsForms(){
         }
         else{
             $("input[name|='email']").val(sessionStorage.email).change();
-            console.log('Email set in input:', sessionStorage.email);
+            //console.log('Email set in input:', sessionStorage.email);
         }
     }
 
@@ -73,7 +73,7 @@ function autoCompleteInputsForms(){
             'helpdesk': 'helpdesk'
         };
         
-        console.log('Product Interests:', productInterests);
+        //console.log('Product Interests:', productInterests);
 
         var productInterestInput = document.querySelector('div[class*=demo-form] form input[name=demo_lead_product_interest]');
         // when a multiple checkbox property in an HS form is hidden, it's not a checkbox field anymore, so we need to pass the data differently
@@ -132,7 +132,7 @@ function autoCompleteInputsForms(){
 
 window.addEventListener('message', event => {
     if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady') {
-        console.log('Form Ready Event:', event.data);
+        //console.log('Form Ready Event:', event.data);
         autoCompleteInputsForms();
     }
 });
@@ -140,6 +140,6 @@ window.addEventListener('message', event => {
 // Look for element .w-form that has a <form> inside, if it exists, console log "webflow form ready" when it's loaded and then call the function to autocomplete the fields
 const webflowForm = document.querySelector('.w-form form');
 if (webflowForm) {
-    console.log('Webflow form ready');
+   // console.log('Webflow form ready');
     autoCompleteInputsForms();
 }
