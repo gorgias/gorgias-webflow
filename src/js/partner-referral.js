@@ -66,26 +66,24 @@ Webflow.push(function () {
       const checkbox = $('input[name="0-2/bizdev_ok_to_contact"]');
   
       // Element to be displayed
-      const elementToDisplay = $(
-        ".hs_0-2\\/expected_receiving_introduction_date"
-      );
+      const elementToDisplay = $(".hs_0-2\\/expected_receiving_introduction_date");
   
-      // Initially hide the element to be displayed
-      elementToDisplay.hide();
+      // Initially show the element to be displayed
+      elementToDisplay.show();
   
       // Function to toggle visibility based on checkbox state
       function toggleElementVisibility() {
-        if (checkbox.is(":checked")) {
-          elementToDisplay.show();
+          if (checkbox.is(":checked")) {
+              elementToDisplay.hide();
   
-          // Set inputs inside as required
-          elementToDisplay.find("input").prop("required", true);
-        } else {
-          elementToDisplay.hide();
+              // Remove required attribute
+              elementToDisplay.find("input").prop("required", false);
+          } else {
+              elementToDisplay.show();
   
-          // Remove required attribute
-          elementToDisplay.find("input").prop("required", false);
-        }
+              // Set inputs inside as required
+              elementToDisplay.find("input").prop("required", true);
+          }
       }
   
       // Initially check the state of the checkbox
@@ -93,14 +91,13 @@ Webflow.push(function () {
   
       // Add event listener to checkbox
       checkbox.on("change", toggleElementVisibility);
-    }
+  }
   
-    // Check if HubSpot form is ready
-    const formCheckInterval = setInterval(function () {
+  // Check if HubSpot form is ready
+  const formCheckInterval = setInterval(function () {
       if ($("form").length > 0) {
-        clearInterval(formCheckInterval);
-        onHubSpotFormReady();
+          clearInterval(formCheckInterval);
+          onHubSpotFormReady();
       }
-    }, 100); // Check every 100ms
-  });
-  
+  }, 100); // Check every 100ms
+});  
