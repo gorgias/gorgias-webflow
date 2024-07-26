@@ -1,3 +1,6 @@
+  // Disable console.logs for production
+  console.log = function () {};
+
 function autoCompleteInputsForms(){
     // List of inputs to autocomplete
     
@@ -10,14 +13,6 @@ function autoCompleteInputsForms(){
 
             //console.log('Email set in input:', sessionStorage.email);
         }
-    }
-
-    if (sessionStorage.first_name) {
-        $("input[name='first_name']").val(sessionStorage.first_name).change();
-    }
-
-    if (sessionStorage.last_name) {
-        $("input[name='last_name']").val(sessionStorage.first_name).change();
     }
 
     if (sessionStorage.first_name || sessionStorage.last_name) {

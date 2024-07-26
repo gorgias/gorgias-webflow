@@ -1,148 +1,91 @@
+// Disable console.logs for production
+//console.log = function () {};
+
 // Get all utmParameter and set a session cookie to reuse them later during the session (e.g. complete forms fields)
 function cookieSessionFromUtmParameter() {
-  var query = window.location.search.substring(1);
-  if (query != '') {
-    var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
-      var pair = vars[i].split("=");
-      var paramName = pair[0];
-      var paramValue = decodeURIComponent(pair[1]);
-
-      if (paramName === "email") {
-        sessionStorage.setItem('email', paramValue);
-        console.log('Stored email:', paramValue);
-      } else if (paramName === "first_name") {
-        sessionStorage.setItem('first_name', paramValue);
-        console.log('Stored first name:', paramValue);
-      } else if (paramName === "last_name") {
-        sessionStorage.setItem('last_name', paramValue);
-        console.log('Stored last name:', paramValue);
-      } else if (paramName === "number_of_agents") {
-        sessionStorage.setItem('number_of_agents', paramValue);
-        console.log('Stored number of agents:', paramValue);
-      } else if (paramName === "name") {
-        sessionStorage.setItem('name', paramValue);
-        console.log('Stored name:', paramValue);
-      } else if (paramName === "domain") {
-        sessionStorage.setItem('domain', paramValue);
-        console.log('Stored domain:', paramValue);
-      } else if (paramName === "gorgias_subdomain") {
-        sessionStorage.setItem('gorgias_subdomain', paramValue);
-        console.log('Stored Gorgias subdomain:', paramValue);
-      } else if (paramName === "phone") {
-        sessionStorage.setItem('phone', paramValue);
-        console.log('Stored phone:', paramValue);
-      } else if (paramName === "about_us") {
-        sessionStorage.setItem('about_us', paramValue);
-        console.log('Stored about us:', paramValue);
-      } else if (paramName === "ecommerce_platform") {
-        sessionStorage.setItem('ecommerce_platform', paramValue);
-        console.log('Stored ecommerce platform:', paramValue);
-      } else if (paramName === "utm_campaign") {
-        sessionStorage.setItem('utm_campaign_session', paramValue);
-        console.log('Stored utm_campaign:', paramValue);
-      } else if (paramName === "utm_source") {
-        sessionStorage.setItem('utm_source_session', paramValue);
-        console.log('Stored utm_source:', paramValue);
-      } else if (paramName === "utm_term") {
-        sessionStorage.setItem('utm_term_session', paramValue);
-        console.log('Stored utm_term:', paramValue);
-      } else if (paramName === "utm_medium") {
-        sessionStorage.setItem('utm_medium_session', paramValue);
-        console.log('Stored utm_medium:', paramValue);
-      } else if (paramName === "ajs_prop_adset_name") {
-        sessionStorage.setItem('adset_name_session', paramValue);
-        console.log('Stored adset_name:', paramValue);
-      } else if (paramName === "ajs_prop_ad_name") {
-        sessionStorage.setItem('ad_name_session', paramValue);
-        console.log('Stored ad_name:', paramValue);
-      } else if (paramName === "ajs_prop_campaign_name") {
-        sessionStorage.setItem('ad_campaign_name_session', paramValue);
-        console.log('Stored ad_campaign_name:', paramValue);
-      } else if (paramName === "metadata_cid") {
-        sessionStorage.setItem('metadata_cid', paramValue);
-        console.log('Stored metadata_cid:', paramValue);
-      } else if (paramName === "gclid") {
-        if (typeof analytics !== "undefined") {
-          analytics.track("Gclid caught");
-        }
-      }
-    }
+  const query = window.location.search.substring(1);
+  if (query) {
+      const vars = query.split("&");
+      vars.forEach(param => {
+          const [paramName, paramValue] = param.split("=").map(decodeURIComponent);
+          const storageMap = {
+              email: 'email',
+              first_name: 'first_name',
+              last_name: 'last_name',
+              number_of_agents: 'number_of_agents',
+              name: 'name',
+              domain: 'domain',
+              gorgias_subdomain: 'gorgias_subdomain',
+              phone: 'phone',
+              about_us: 'about_us',
+              ecommerce_platform: 'ecommerce_platform',
+              utm_campaign: 'utm_campaign_session',
+              utm_source: 'utm_source_session',
+              utm_term: 'utm_term_session',
+              utm_medium: 'utm_medium_session',
+              ajs_prop_adset_name: 'adset_name_session',
+              ajs_prop_ad_name: 'ad_name_session',
+              ajs_prop_campaign_name: 'ad_campaign_name_session',
+              metadata_cid: 'metadata_cid'
+          };
+          if (paramName in storageMap) {
+              sessionStorage.setItem(storageMap[paramName], paramValue);
+              console.log(`Stored ${paramName}:`, paramValue);
+          } else if (paramName === "gclid" && typeof analytics !== "undefined") {
+              analytics.track("Gclid caught");
+          }
+      });
   }
 }
 
-// fetch the IP and store it in variable session
-// function getandStoreIp(){
-//     if(sessionStorage.getItem('ipVisitor') === null || sessionStorage.getItem('ipVisitor') == ""){
-//         $.getJSON( "https://api.ipify.org?format=jsonp&callback=?", function(json) {
-//             if(json.ip.length > 0){
-//                 sessionStorage.setItem('ipVisitor', json.ip);
-//             }
-//             else{
-//                 sessionStorage.setItem('ipVisitor', '');
-//             }
-//         })
+// Fetch the IP and store it in variable session
+// function getAndStoreIp() {
+//     if (!sessionStorage.getItem('ipVisitor')) {
+//         $.getJSON("https://api.ipify.org?format=jsonp&callback=?", json => {
+//             sessionStorage.setItem('ipVisitor', json.ip || '');
+//         });
 //     }
 // }
 
 function productInterest() {
-  var sessionStorageName = 'product_interest';
-  var interests = {
-    'convert': {
-      pathConditions: ['convert'],
-      searchConditions: ['convert']
-    },
-    'automate': {
-      pathConditions: ['automate', 'automation'],
-      searchConditions: ['automate', 'automation']
-    },
-    'helpdesk': {
-      pathConditions: ['helpdesk'],
-      searchConditions: ['helpdesk']
-    }
+  const sessionStorageName = 'product_interest';
+  const interests = {
+      convert: {
+          pathConditions: ['convert'],
+          searchConditions: ['convert']
+      },
+      automate: {
+          pathConditions: ['automate', 'automation'],
+          searchConditions: ['automate', 'automation']
+      },
+      helpdesk: {
+          pathConditions: ['helpdesk'],
+          searchConditions: ['helpdesk']
+      }
   };
 
-  var sessionProductInterest = sessionStorage.getItem(sessionStorageName);
-  var existing_interest = [];
+  // Retrieve the existing product interests from session storage
+  const sessionProductInterest = JSON.parse(sessionStorage.getItem(sessionStorageName) || '[]');
+  const existingInterest = new Set(sessionProductInterest);
 
-  // Check if there are already product interests stored in session. If so, store them in an array.
-  if (sessionProductInterest) {
-    var sessionArray = JSON.parse(sessionProductInterest);
-    existing_interest.push.apply(existing_interest, sessionArray);
-  }
-
-  // Iterate through the interests and conditions.
-  for (var interest in interests) {
-    if (interests.hasOwnProperty(interest)) {
-      var conditions = interests[interest];
-
-      // Check path conditions.
-      if (conditions.pathConditions.some(function (condition) {
-        return location.pathname.toLowerCase().indexOf(condition) >= 0;
-      })) {
-        // Check if the interest was not already detected previously.
-        if (existing_interest.indexOf(interest) === -1) {
-          existing_interest.push(interest);
-        }
-      }
-
-      // Check search conditions.
-      if (conditions.searchConditions.some(function (condition) {
-        return location.search.toLowerCase().indexOf(condition) >= 0;
-      })) {
-        // Check if the interest was not already detected previously.
-        if (existing_interest.indexOf(interest) === -1) {
-          existing_interest.push(interest);
-        }
-      }
+  // Define the different product interests and their associated conditions
+  Object.entries(interests).forEach(([interest, conditions]) => {
+    // Check if any of the path conditions or search conditions match the current page
+    if (conditions.pathConditions.some(cond => location.pathname.toLowerCase().includes(cond)) ||
+      conditions.searchConditions.some(cond => location.search.toLowerCase().includes(cond))) {
+      // Add the interest to the existing interests set
+      existingInterest.add(interest);
     }
-  }
+  });
 
-  // Update the session storage with the updated interests array.
-  sessionStorage.setItem(sessionStorageName, JSON.stringify(existing_interest));
-  console.log('Stored product interests:', existing_interest);
+  // Convert the set of interests back to an array and update the session storage
+  const updatedInterests = Array.from(existingInterest);
+  sessionStorage.setItem(sessionStorageName, JSON.stringify(updatedInterests));
+
+  // Log the updated product interests
+  console.log('Stored product interests:', updatedInterests);
 }
 
 cookieSessionFromUtmParameter();
 productInterest();
-//getandStoreIp()
+// getAndStoreIp();
