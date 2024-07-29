@@ -92,12 +92,13 @@ Webflow.push(function () {
 
     // Check if product is automate
     if (path.includes('/products/automate')){
-        newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head',0);
-        newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head',0);
+        newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head', 1);
+        newStyle(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head');
     }
     // Check if product is convert
-    if (path.includes('/products/convert')){
-        newScript(scriptBase + '/src/js/tool-roi-convert'+minBase+'.js','head',0);
+    if (path.includes('/products/convert') || path.includes('/lp/convert')){
+      newScript(scriptBase + '/src/js/tool-roi-convert'+minBase+'.js','head', 1);
+      newScript(scriptBase + '/src/js/convert'+minBase+'.js','head', 1);
     }
 })
 
