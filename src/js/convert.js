@@ -7,8 +7,10 @@
   console.log = function () {};
 
 
+
   var Webflow = Webflow || [];
   Webflow.push(function () {
+
     const convertNumberInput = $("#numberInteractionsConvert");
     const convertRangeSlider = $('[data-el="convert-range-slider"]');
   
