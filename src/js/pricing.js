@@ -997,7 +997,7 @@ function checkCookie() {
     const subdomain = cookie.split("gorgias-helpdesk-subdomain=")[1].split(";")[0];
     const signupBtns = document.querySelectorAll('[data-type="signup-btn"]');
     signupBtns.forEach((btn) => {
-      btn.textContent = "Log in";
+      btn.textContent = "Update your plan";
       btn.href = `https://${subdomain}.gorgias.com/app/settings/billing`;
     });
   }
