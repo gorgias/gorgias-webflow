@@ -998,7 +998,7 @@ function checkCookie() {
     const signupBtns = document.querySelectorAll('[data-type="signup-btn"]');
     signupBtns.forEach((btn) => {
       btn.textContent = "Log in";
-      btn.href = `https://${subdomain}.gorgias.com/login`;
+      btn.href = `https://${subdomain}.gorgias.com/app/settings/billing`;
     });
   }
 }
