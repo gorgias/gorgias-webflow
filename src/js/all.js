@@ -149,19 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
   
-    $("#incentive-demo").click(function() {
-      // Get the current URL parameters
-      let utm_source = getUrlParameter('utm_source');
-      let utm_medium = getUrlParameter('utm_medium');
-      let utm_campaign = getUrlParameter('utm_campaign');
-  
-      // Override the values for the parameters
-      utm_source = 'google';
-      utm_medium = 'cpc';
-      utm_campaign = 'incentive_website_banner';
-  
+    $("#incentive-demo").click(function() {  
       // Create the URL with the parameters
-      const demoUrl = `/stimulus/fr/100amazon?utm_source=${utm_source}&utm_medium=${utm_medium}&utm_campaign=${utm_campaign}`;
+      const demoUrl = `/stimulus/fr/100amazon?utm_source=google&utm_medium=cpc&utm_campaign=incentive_website_banner`;
   
       // Redirect to the demo URL
       window.location.href = demoUrl;
