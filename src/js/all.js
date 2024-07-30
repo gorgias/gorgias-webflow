@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
   
+
     $("#incentive-demo").click(function() {  
       // Create the URL with the parameters
       const demoUrl = `/stimulus/fr/100amazon?utm_source=google&utm_medium=cpc&utm_campaign=incentive_website_banner`;
