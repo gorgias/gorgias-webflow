@@ -111,14 +111,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /****************************
-   * 
-   * Checks UTM source to display banner
-   * 
-   * 
-   * ****************************/
+ /****************************
+ * 
+ * Checks UTM source to display banner
+ * 
+ * 
+ ****************************/
 
-  document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     // Step 1: Find the element with data-target="banner"
     const banner = document.querySelector('[data-target="banner"]');
   
@@ -137,5 +137,25 @@ document.addEventListener("DOMContentLoaded", () => {
       // Step 4: Remove the class .is-hidden if the traffic comes from Google search with CPC medium
       banner.classList.remove('is-hidden');
     }
+  });
+  
+  // Step 4: pass info to demo url
+  $(document).ready(function() {
+    // Function to get URL parameters (reused)
+    const getUrlParameter = (name) => {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      const results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
+  
+
+    $("#incentive-demo").click(function() {  
+      // Create the URL with the parameters
+      const demoUrl = `/stimulus/fr/100amazon?utm_source=google&utm_medium=cpc&utm_campaign=incentive_website_banner`;
+  
+      // Redirect to the demo URL
+      window.location.href = demoUrl;
+    });
   });
   
