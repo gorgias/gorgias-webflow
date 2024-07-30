@@ -26,10 +26,13 @@ function getCollectionItemName() {
   setSessionCookie("ecommerce_source", collectionItemName);
   
   // Add event listener to the demo button to append the utm_source parameter
-  document.getElementById("demo-btn").addEventListener("click", function (event) {
-    event.preventDefault();
-    const ecommerceSource = getSessionCookie("ecommerce_source");
-    const demoUrl = `/demo?ecommerce_source=${ecommerceSource}`;
-    window.location.href = demoUrl;
-  });
+const demoButtons = document.querySelectorAll('[data-el="demo-btn"]');
+demoButtons.forEach(function(button) {
+    button.addEventListener("click", function (event) {
+        event.preventDefault();
+        const ecommerceSource = getSessionCookie("ecommerce_source");
+        const demoUrl = `/demo?ecommerce_source=${ecommerceSource}`;
+        window.location.href = demoUrl;
+    });
+});
   
