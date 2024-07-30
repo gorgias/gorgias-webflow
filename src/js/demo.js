@@ -105,7 +105,6 @@ window.addEventListener("message", function(event) {
             // Trigger change event
             selectInput.change();
         }
-
      }
 });
 
