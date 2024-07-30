@@ -132,8 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Step 3: Check if the utm_source is "google"
     const utmSource = getUrlParameter('utm_source');
-    if (utmSource === 'google-joseph') {
-      // Step 4: Remove the class .is-hidden if the traffic comes from Google search
+    const utmMedium = getUrlParameter('utm_medium');
+    if (utmSource === 'google' && utmMedium === 'cpc') {
+      // Step 4: Remove the class .is-hidden if the traffic comes from Google search with CPC medium
       banner.classList.remove('is-hidden');
     }
   });
