@@ -5,10 +5,12 @@ const demoCustomerAutomateFormId = '2550ba15-99e2-4792-ba41-e389b8695d12';
 const demoCustomerConvertFormId = 'ecb4eba5-6a65-49a2-82d1-5418da6dc5ec';
 const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
 
+
 // demo functions
 window.addEventListener("message", function(event) {
     // when form is ready
     if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId)) {
+        
         // if url contains reamaze --> autocomplete current_helpdesk field if it exist and then and hide it
         if($('div.hs_demo_current_helpdesk').length  && location.href.includes('reamaze') == true){
             $('select[name=demo_current_helpdesk]').val('Reamaze').change();
@@ -70,14 +72,40 @@ window.addEventListener("message", function(event) {
 
         }
 
-        // Update ecommerce platform input field with utm_source
-        let ecommerceSource = sessionStorage.getItem('ecommerce_source') || '' ;
-        if (ecommerceSource.length > 0) {
-            $('input[name=demo_ecommerce_platform]').val(ecommerceSource).change();
+        // Get ecommerce_source parameter from URL and store in "ecommerceSource" variable
+        let ecommerceSource = new URLSearchParams(window.location.search).get("ecommerce_source");
+
+        // Normalize the ecommerceSource to lowercase for case-insensitive comparison
+        if (ecommerceSource) {
+            ecommerceSource = ecommerceSource.toLowerCase();
+
+            // Define the select input element
+            let selectInput = $('select[name=demo_ecommerce_platform]');
+            
+            // Set a flag to determine if a match was found
+            let matchFound = false;
+
+            // Iterate through each option in the select input
+            selectInput.find('option').each(function() {
+                let optionValue = $(this).val().toLowerCase();
+
+                // Check for match or special case for "Magento"
+                if (ecommerceSource === optionValue || (ecommerceSource === 'magento' && optionValue === 'magento_2')) {
+                    $(this).prop('selected', true);
+                    matchFound = true;
+                    return false; // Break the loop as we found the match
+                }
+            });
+
+            // If no match was found, select "Other" option
+            if (!matchFound) {
+                selectInput.find('option[value="other"]').prop('selected', true);
+            }
+
+            // Trigger change event
+            selectInput.change();
         }
-        else{
-            $('input[name=demo_ecommerce_platform]').val('other').change();
-        }
+
      }
 });
 
