@@ -23,6 +23,12 @@ Webflow.push(function () {
     if (path === '/demo-2' || path === '/wip/demo') {
       newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
     }
+
+    // demo page
+    if (path === '/demo'){
+        newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
+    }
+
     if (path.includes('pricing') || path.includes('choose-your-plan')){
       newScript(scriptBase + '/src/js/pricing'+minBase+'.js','body', 1);
       newScript(scriptBase + '/src/js/pricing-ui'+minBase+'.js','body', 1);
@@ -99,6 +105,11 @@ Webflow.push(function () {
     if (path.includes('/products/convert') || path.includes('/lp/convert')){
       newScript(scriptBase + '/src/js/tool-roi-convert'+minBase+'.js','head', 1);
       newScript(scriptBase + '/src/js/convert'+minBase+'.js','head', 1);
+    }
+
+    // page is /ecommerce/
+    if (path.includes('/ecommerce/')){
+        newScript(scriptBase + '/src/js/ecommerce'+minBase+'.js','head', 1);
     }
 })
 

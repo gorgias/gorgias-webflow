@@ -69,6 +69,15 @@ window.addEventListener("message", function(event) {
             $('input[name=cross_sell_utm_term]').val('').change();
 
         }
+
+        // Update ecommerce platform input field with utm_source
+        let ecommerceSource = sessionStorage.getItem('ecommerce_source') || '' ;
+        if (ecommerceSource.length > 0) {
+            $('input[name=demo_ecommerce_platform]').val(ecommerceSource).change();
+        }
+        else{
+            $('input[name=demo_ecommerce_platform]').val('other').change();
+        }
      }
 });
 
