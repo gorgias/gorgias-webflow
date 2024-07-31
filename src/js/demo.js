@@ -91,7 +91,7 @@
                 let matchFound = false;
                 if (ecommercePlatform === 'magento') {
                     selectInput.find('option[value="magento_2"]').prop('selected', true);
-                    console.log('Magento 2 selected');
+                 //   console.log('Magento 2 selected');
                     matchFound = true;
                 } else {
                     selectInput.find('option').each(function() {
@@ -104,12 +104,13 @@
                 }
                 if (!matchFound) {
                     selectInput.find('option[value="other"]').prop('selected', true);
-                    console.log('Other selected');
+                  //  console.log('Other selected');
                 }
                 if (ecommercePlatform === 'magento' || !matchFound) {
                     selectInput.change();
-                    console.log('Change event triggered');
+                   // console.log('Change event triggered');
                 }
+
             }
         }
     });
