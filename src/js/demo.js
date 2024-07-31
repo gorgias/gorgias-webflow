@@ -72,12 +72,12 @@ window.addEventListener("message", function(event) {
 
         }
 
-        // Get ecommerce_source parameter from URL and store in "ecommerceSource" variable
-        let ecommerceSource = new URLSearchParams(window.location.search).get("ecommerce_source");
+        // Get ecommerce_platform parameter from URL and store in "ecommercePlatform" variable
+        let ecommercePlatform = new URLSearchParams(window.location.search).get("ecommerce_platform");
 
-        // Normalize the ecommerceSource to lowercase for case-insensitive comparison
-        if (ecommerceSource) {
-            ecommerceSource = ecommerceSource.toLowerCase();
+        // Normalize the ecommercePlatform to lowercase for case-insensitive comparison
+        if (ecommercePlatform) {
+            ecommercePlatform = ecommercePlatform.toLowerCase();
 
             // Define the select input element
             let selectInput = $('select[name=demo_ecommerce_platform]');
@@ -87,19 +87,19 @@ window.addEventListener("message", function(event) {
 
             // Iterate through each option in the select input
             selectInput.find('option').each(function() {
-                let optionValue = $(this).val().toLowerCase();
+            let optionValue = $(this).val().toLowerCase();
 
-                // Check for match or special case for "Magento"
-                if (ecommerceSource === optionValue || (ecommerceSource === 'magento' && optionValue === 'magento_2')) {
-                    $(this).prop('selected', true);
-                    matchFound = true;
-                    return false; // Break the loop as we found the match
-                }
+            // Check for match or special case for "Magento"
+            if (ecommercePlatform === optionValue || (ecommercePlatform === 'magento' && optionValue === 'magento_2')) {
+                $(this).prop('selected', true);
+                matchFound = true;
+                return false; // Break the loop as we found the match
+            }
             });
 
             // If no match was found, select "Other" option
             if (!matchFound) {
-                selectInput.find('option[value="other"]').prop('selected', true);
+            selectInput.find('option[value="other"]').prop('selected', true);
             }
 
             // Trigger change event

@@ -23,15 +23,15 @@ function getCollectionItemName() {
   
   // Get the collection item name and store it in a session cookie
   const collectionItemName = getCollectionItemName();
-  setSessionCookie("ecommerce_source", collectionItemName);
+  setSessionCookie("ecommerce_platform", collectionItemName);
   
   // Add event listener to the demo button to append the utm_source parameter
 const demoButtons = document.querySelectorAll('[data-el="demo-btn"]');
 demoButtons.forEach(function(button) {
     button.addEventListener("click", function (event) {
         event.preventDefault();
-        const ecommerceSource = getSessionCookie("ecommerce_source");
-        const demoUrl = `/demo?ecommerce_source=${ecommerceSource}`;
+        const ecommercePlatform = getSessionCookie("ecommerce_platform");
+        const demoUrl = `/demo?ecommerce_platform=${ecommercePlatform}`;
         window.location.href = demoUrl;
     });
 });
