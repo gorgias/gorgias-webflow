@@ -97,16 +97,10 @@ window.addEventListener("message", function(event) {
                 $(this).prop('selected', true);
                 matchFound = true;
                 return false; // Break the loop as we found the match
+            } else if ((matchFound === false) && (optionValue === 'other')) {
+                selectInput.find('option[value="other"]').prop('selected', true);
             }
-
             });
-
-            // If no match was found, select "Other" option
-            if (!matchFound) {
-
-            selectInput.find('option[value="other"]').prop('selected', true);
-
-            }
 
             // Trigger change event
             selectInput.change();
