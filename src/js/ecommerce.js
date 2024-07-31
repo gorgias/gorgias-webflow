@@ -30,8 +30,10 @@ const demoButtons = document.querySelectorAll('[data-el="demo-btn"]');
 demoButtons.forEach(function(button) {
     button.addEventListener("click", function (event) {
         event.preventDefault();
+
         const ecommercePlatform = getSessionCookie("ecommerce_platform");
         const demoUrl = `/demo?ecommerce_platform=${ecommercePlatform}`;
+
         window.location.href = demoUrl;
     });
 });

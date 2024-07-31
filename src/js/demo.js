@@ -72,12 +72,14 @@ window.addEventListener("message", function(event) {
 
         }
 
+
         // Get ecommerce_platform parameter from URL and store in "ecommercePlatform" variable
         let ecommercePlatform = new URLSearchParams(window.location.search).get("ecommerce_platform");
 
         // Normalize the ecommercePlatform to lowercase for case-insensitive comparison
         if (ecommercePlatform) {
             ecommercePlatform = ecommercePlatform.toLowerCase();
+
 
             // Define the select input element
             let selectInput = $('select[name=demo_ecommerce_platform]');
@@ -87,6 +89,7 @@ window.addEventListener("message", function(event) {
 
             // Iterate through each option in the select input
             selectInput.find('option').each(function() {
+
             let optionValue = $(this).val().toLowerCase();
 
             // Check for match or special case for "Magento"
@@ -95,11 +98,14 @@ window.addEventListener("message", function(event) {
                 matchFound = true;
                 return false; // Break the loop as we found the match
             }
+
             });
 
             // If no match was found, select "Other" option
             if (!matchFound) {
+
             selectInput.find('option[value="other"]').prop('selected', true);
+
             }
 
             // Trigger change event
