@@ -1,181 +1,175 @@
-const demoLeadFormId = 'ef92ccce-92bd-4010-847a-793f56b6b353';
-const demoFrLeadFormId = "af1d8fe3-2a0d-4dc8-afb4-eb08b6741f79";
-const demoCustomerFormId = 'b7cf896e-d7b3-4f50-a5c1-21459faa6322';
-const demoCustomerAutomateFormId = '2550ba15-99e2-4792-ba41-e389b8695d12';
-const demoCustomerConvertFormId = 'ecb4eba5-6a65-49a2-82d1-5418da6dc5ec';
-const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
+(function() {
+    // Function to check the user's IP and redirect based on location
+    function checkUserLocationAndRedirect() {
+        // Check if the URL has the "ecommerce_platform" parameter
+        let urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("ecommerce_platform") && !sessionStorage.getItem('redirected')) {
+            // Convert URL parameters to string to append to the new URL
+            let queryString = urlParams.toString();
 
-
-// demo functions
-window.addEventListener("message", function(event) {
-    // when form is ready
-    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId)) {
-        
-        // if url contains reamaze --> autocomplete current_helpdesk field if it exist and then and hide it
-        if($('div.hs_demo_current_helpdesk').length  && location.href.includes('reamaze') == true){
-            $('select[name=demo_current_helpdesk]').val('Reamaze').change();
-            $('div.hs_demo_current_helpdesk').addClass('hidden');
+            // Fetch the user's IP information
+            fetch('https://ipinfo.io/json?token=16b2fa7a6332cb')
+                .then(response => response.json())
+                .then(data => {
+                    let country = data.country.toLowerCase();
+                    if (country === 'fr') {
+                        sessionStorage.setItem('redirected', 'true');
+                        //console.log('Redirecting to /fr/demo');
+                        window.location.href = '/fr/demo?' + queryString;
+                    } else if (country === 'es') {
+                        sessionStorage.setItem('redirected', 'true');
+                        //console.log('Redirecting to /es/demo');
+                        window.location.href = '/es/demo?' + queryString;
+                    }
+                })
+                .catch(error => console.error('Error fetching IP info:', error));
+        } else {
+           // console.log('No ecommerce_platform parameter or already redirected.');
         }
-   
-        // get utm and timzezone data to autocomplete hidden fields
-        var utmCampaign = sessionStorage.getItem('utm_campaign_session') || '' ;
-        var utmSourceParam = sessionStorage.getItem('utm_source_session') || '' ;
-        var utmMediumParam = sessionStorage.getItem('utm_medium_session') || '' ;
-        var demoUtmTerm = sessionStorage.getItem('utm_term_session') || '' ;
-        var demoTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '' ;      
-    
-        if (demoTimezone.length > 0) {
-            $('input[name=demo_timezone]').val(demoTimezone).change();
-        }
-        else{
-            $('input[name=demo_timezone]').val('').change();
-        }        
-      
-        if (utmCampaign.length > 0) {
-        $('input[name=demo_utm_campaign]').val(utmCampaign).change();
-        $('input[name=cross_sell_utm_campaign]').val(utmCampaign).change();
+    }
 
-        }
-        else{
-            $('input[name=demo_utm_campaign]').val('').change();
-            $('input[name=cross_sell_utm_campaign]').val('').change();
-        }
-
-        if (utmSourceParam.length > 0) {
-        $('input[name=demo_utm_source]').val(utmSourceParam).change();
-        $('input[name=cross_sell_utm_source]').val(utmSourceParam).change();
-
-        }
-        else{
-            $('input[name=demo_utm_source]').val('').change();
-            $('input[name=cross_sell_utm_source]').val('').change();
-        }
-
-        if (utmMediumParam.length > 0) {
-            $('input[name=demo_utm_medium]').val(utmMediumParam).change();
-            $('input[name=cross_sell_utm_medium]').val(utmMediumParam).change();
-        }
-        else{
-            $('input[name=demo_utm_medium]').val('').change();
-            $('input[name=cross_sell_utm_medium]').val('').change();
-        }
-
-        if (demoUtmTerm.length > 0) {
-        $('input[name=demo_utm_term]').val(demoUtmTerm).change();
-        $('input[name=cross_sell_utm_term]').val(demoUtmTerm).change();
-
-        }
-
-        else{
-            $('input[name=demo_utm_term]').val('').change();
-            $('input[name=cross_sell_utm_term]').val('').change();
-
-        }
+    // Call the function to check the user's location and redirect if necessary
+    checkUserLocationAndRedirect();
 
 
-        // Get ecommerce_platform parameter from URL and store in "ecommercePlatform" variable
-        let ecommercePlatform = new URLSearchParams(window.location.search).get("ecommerce_platform");
+    const demoLeadFormId = 'ef92ccce-92bd-4010-847a-793f56b6b353';
+    const demoFrLeadFormId = "af1d8fe3-2a0d-4dc8-afb4-eb08b6741f79";
+    const demoCustomerFormId = 'b7cf896e-d7b3-4f50-a5c1-21459faa6322';
+    const demoCustomerAutomateFormId = '2550ba15-99e2-4792-ba41-e389b8695d12';
+    const demoCustomerConvertFormId = 'ecb4eba5-6a65-49a2-82d1-5418da6dc5ec';
+    const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
 
-        // Normalize the ecommercePlatform to lowercase for case-insensitive comparison
-        if (ecommercePlatform) {
-            ecommercePlatform = ecommercePlatform.toLowerCase();
-
-
-            // Define the select input element
-            let selectInput = $('select[name=demo_ecommerce_platform]');
-            
-            // Set a flag to determine if a match was found
-            let matchFound = false;
-
-            // Iterate through each option in the select input
-            selectInput.find('option').each(function() {
-
-            let optionValue = $(this).val().toLowerCase();
-
-            // Check for match or special case for "Magento"
-            if (ecommercePlatform === optionValue || (ecommercePlatform === 'magento' && optionValue === 'magento_2')) {
-                $(this).prop('selected', true);
-                matchFound = true;
-                return false; // Break the loop as we found the match
-            } else if ((matchFound === false) && (optionValue === 'other')) {
-                selectInput.find('option[value="other"]').prop('selected', true);
+    // demo functions
+    window.addEventListener("message", function(event) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId)) {
+            if($('div.hs_demo_current_helpdesk').length  && location.href.includes('reamaze') == true){
+                $('select[name=demo_current_helpdesk]').val('Reamaze').change();
+                $('div.hs_demo_current_helpdesk').addClass('hidden');
             }
-            });
-
-            // Trigger change event
-            selectInput.change();
-        }
-     }
-});
-
-// chilipiper function 
-function q(a){return function(){ChiliPiper[a].q=(ChiliPiper[a].q||[]).concat([arguments])}}window.ChiliPiper=window.ChiliPiper||"submit scheduling showCalendar submit widget bookMeeting".split(" ").reduce(function(a,b){a[b]=q(b);return a},{});
-
-// form submitted is a demo form (lead) of customer demo
-window.addEventListener("message", function(event) {
-    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId )) {
-
-        // store the value submitted
-        var submittedValues=event.data.data.submissionValues;
-        for (var key in submittedValues) {
-            if (Array.isArray(submittedValues[key])) {
-                submittedValues[key] = submittedValues[key].toString().replaceAll(",",";");
+            var utmCampaign = sessionStorage.getItem('utm_campaign_session') || '' ;
+            var utmSourceParam = sessionStorage.getItem('utm_source_session') || '' ;
+            var utmMediumParam = sessionStorage.getItem('utm_medium_session') || '' ;
+            var demoUtmTerm = sessionStorage.getItem('utm_term_session') || '' ;
+            var demoTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '' ;      
+            if (demoTimezone.length > 0) {
+                $('input[name=demo_timezone]').val(demoTimezone).change();
+            } else {
+                $('input[name=demo_timezone]').val('').change();
+            }        
+            if (utmCampaign.length > 0) {
+                $('input[name=demo_utm_campaign]').val(utmCampaign).change();
+                $('input[name=cross_sell_utm_campaign]').val(utmCampaign).change();
+            } else {
+                $('input[name=demo_utm_campaign]').val('').change();
+                $('input[name=cross_sell_utm_campaign]').val('').change();
             }
-        }
-
-        var eventId = event.data.id;
-        var formName;
-        var cpTenantDomain;
-        var cpRouterName;
-        cpTenantDomain = "gorgias"; 
-
-        // demo form for prospect (on /demo and /demo-2)
-        if(eventId === demoLeadFormId || eventId === demoFrLeadFormId) {
-            formName = 'demo'
-            cpRouterName = "inbound-router"; 
-        }
-        // demo form for customers (on /demo-product)
-        else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId) {
-            formName = 'demo_customer'
-            cpRouterName = "inbound_router_customer"; 
-        }
-
-        ChiliPiper.submit(cpTenantDomain, cpRouterName,{
-            map: true,
-            lead: submittedValues,
-            formId:'hsForm_' + eventId,
-            domElement: "#wrapper-chilipiper-embed",
-            // submission received by CP & routing attempt has been made, whether successful or not
-            onRouted: function () {
-                analytics.track("cp_"+ formName +"_request_routed");
-            },
-            // successful booking
-            onSuccess: function (data) { 
-                analytics.track("cp_" + formName + "_booked");
-
-                if(formName == 'demo'){
-                    $('.wrapper-post-demo-booked').removeClass('is-hidden');
-                    $('.wrapper-chilipiper-embed').height('250px');
-                    $('.demo_step-wrapper').css('display','none');
-                    $('.demo-new_status-bar').css('display','none');
+            if (utmSourceParam.length > 0) {
+                $('input[name=demo_utm_source]').val(utmSourceParam).change();
+                $('input[name=cross_sell_utm_source]').val(utmSourceParam).change();
+            } else {
+                $('input[name=demo_utm_source]').val('').change();
+                $('input[name=cross_sell_utm_source]').val('').change();
+            }
+            if (utmMediumParam.length > 0) {
+                $('input[name=demo_utm_medium]').val(utmMediumParam).change();
+                $('input[name=cross_sell_utm_medium]').val(utmMediumParam).change();
+            } else {
+                $('input[name=demo_utm_medium]').val('').change();
+                $('input[name=cross_sell_utm_medium]').val('').change();
+            }
+            if (demoUtmTerm.length > 0) {
+                $('input[name=demo_utm_term]').val(demoUtmTerm).change();
+                $('input[name=cross_sell_utm_term]').val(demoUtmTerm).change();
+            } else {
+                $('input[name=demo_utm_term]').val('').change();
+                $('input[name=cross_sell_utm_term]').val('').change();
+            }
+            let ecommercePlatform = new URLSearchParams(window.location.search).get("ecommerce_platform");
+            if (ecommercePlatform) {
+                ecommercePlatform = ecommercePlatform.toLowerCase();
+                let selectInput = $('select[name=demo_ecommerce_platform]');
+                let matchFound = false;
+                if (ecommercePlatform === 'magento') {
+                    selectInput.find('option[value="magento_2"]').prop('selected', true);
+                    console.log('Magento 2 selected');
+                    matchFound = true;
+                } else {
+                    selectInput.find('option').each(function() {
+                        let optionValue = $(this).val().toLowerCase();
+                        if (ecommercePlatform === optionValue) {
+                            matchFound = true;
+                            return false;
+                        }
+                    });
                 }
+                if (!matchFound) {
+                    selectInput.find('option[value="other"]').prop('selected', true);
+                    console.log('Other selected');
+                }
+                if (ecommercePlatform === 'magento' || !matchFound) {
+                    selectInput.change();
+                    console.log('Change event triggered');
+                }
+            }
+        }
+    });
 
-            }, 
-            // submission received but does not match any queue rules and cannot be routed, thus no calendar is displayed.
-            // This is usually when someone is disqualified from booking
-            onError: function () {
-                analytics.track("cp_" + formName + "_demo_request_failed");
-            }, 
-            injectRootCss: true
-        })  
-    }
-});
+    // chilipiper function 
+    function q(a){return function(){ChiliPiper[a].q=(ChiliPiper[a].q||[]).concat([arguments])}}
+    window.ChiliPiper=window.ChiliPiper||"submit scheduling showCalendar submit widget bookMeeting".split(" ").reduce(function(a,b){a[b]=q(b);return a},{});
 
-// form submitted is a post demo form
-window.addEventListener("message", function(event) {
-    if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == postDemoFormId )) {
-        $('.post-demo-booked-heading').addClass('is-hidden');
-        $('.demo-form-hubspot-post-booking').addClass('is-hidden');
-        $('.post-demo-booked-confirmation').removeClass('is-hidden');
-    }
-});
+    // form submitted is a demo form (lead) of customer demo
+    window.addEventListener("message", function(event) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId )) {
+            var submittedValues=event.data.data.submissionValues;
+            for (var key in submittedValues) {
+                if (Array.isArray(submittedValues[key])) {
+                    submittedValues[key] = submittedValues[key].toString().replaceAll(",",";");
+                }
+            }
+            var eventId = event.data.id;
+            var formName;
+            var cpTenantDomain;
+            var cpRouterName;
+            cpTenantDomain = "gorgias"; 
+            if(eventId === demoLeadFormId || eventId === demoFrLeadFormId) {
+                formName = 'demo'
+                cpRouterName = "inbound-router"; 
+            } else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId) {
+                formName = 'demo_customer'
+                cpRouterName = "inbound_router_customer"; 
+            }
+            ChiliPiper.submit(cpTenantDomain, cpRouterName,{
+                map: true,
+                lead: submittedValues,
+                formId:'hsForm_' + eventId,
+                domElement: "#wrapper-chilipiper-embed",
+                onRouted: function () {
+                    analytics.track("cp_"+ formName +"_request_routed");
+                },
+                onSuccess: function (data) { 
+                    analytics.track("cp_" + formName + "_booked");
+                    if(formName == 'demo'){
+                        $('.wrapper-post-demo-booked').removeClass('is-hidden');
+                        $('.wrapper-chilipiper-embed').height('250px');
+                        $('.demo_step-wrapper').css('display','none');
+                        $('.demo-new_status-bar').css('display','none');
+                    }
+                }, 
+                onError: function () {
+                    analytics.track("cp_" + formName + "_demo_request_failed");
+                }, 
+                injectRootCss: true
+            })  
+        }
+    });
+
+    // form submitted is a post demo form
+    window.addEventListener("message", function(event) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == postDemoFormId )) {
+            $('.post-demo-booked-heading').addClass('is-hidden');
+            $('.demo-form-hubspot-post-booking').addClass('is-hidden');
+            $('.post-demo-booked-confirmation').removeClass('is-hidden');
+        }
+    });
+})();
