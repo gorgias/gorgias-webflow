@@ -1,35 +1,36 @@
 (function() {
-    // Function to check the user's IP and redirect based on location
-    function checkUserLocationAndRedirect() {
-        // Check if the URL has the "ecommerce_platform" parameter
-        let urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has("ecommerce_platform") && !sessionStorage.getItem('redirected')) {
-            // Convert URL parameters to string to append to the new URL
-            let queryString = urlParams.toString();
 
-            // Fetch the user's IP information
-            fetch('https://ipinfo.io/json?token=16b2fa7a6332cb')
-                .then(response => response.json())
-                .then(data => {
-                    let country = data.country.toLowerCase();
-                    if (country === 'fr') {
-                        sessionStorage.setItem('redirected', 'true');
-                        //console.log('Redirecting to /fr/demo');
-                        window.location.href = '/fr/demo?' + queryString;
-                    } else if (country === 'es') {
-                        sessionStorage.setItem('redirected', 'true');
-                        //console.log('Redirecting to /es/demo');
-                        window.location.href = '/es/demo?' + queryString;
-                    }
-                })
-                .catch(error => console.error('Error fetching IP info:', error));
-        } else {
-           // console.log('No ecommerce_platform parameter or already redirected.');
-        }
-    }
+    // // Function to check the user's IP and redirect based on location
+    // function checkUserLocationAndRedirect() {
+    //     // Check if the URL has the "ecommerce_platform" parameter
+    //     let urlParams = new URLSearchParams(window.location.search);
+    //     if (urlParams.has("ecommerce_platform") && !sessionStorage.getItem('redirected')) {
+    //         // Convert URL parameters to string to append to the new URL
+    //         let queryString = urlParams.toString();
 
-    // Call the function to check the user's location and redirect if necessary
-    checkUserLocationAndRedirect();
+    //         // Fetch the user's IP information
+    //         fetch('https://ipinfo.io/json?token=16b2fa7a6332cb')
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 let country = data.country.toLowerCase();
+    //                 if (country === 'fr') {
+    //                     sessionStorage.setItem('redirected', 'true');
+    //                     //console.log('Redirecting to /fr/demo');
+    //                     window.location.href = '/fr/demo?' + queryString;
+    //                 } else if (country === 'es') {
+    //                     sessionStorage.setItem('redirected', 'true');
+    //                     //console.log('Redirecting to /es/demo');
+    //                     window.location.href = '/es/demo?' + queryString;
+    //                 }
+    //             })
+    //             .catch(error => console.error('Error fetching IP info:', error));
+    //     } else {
+    //        // console.log('No ecommerce_platform parameter or already redirected.');
+    //     }
+    // }
+
+    // // Call the function to check the user's location and redirect if necessary
+    // checkUserLocationAndRedirect();
 
 
     const demoLeadFormId = 'ef92ccce-92bd-4010-847a-793f56b6b353';
@@ -83,33 +84,7 @@
             } else {
                 $('input[name=demo_utm_term]').val('').change();
                 $('input[name=cross_sell_utm_term]').val('').change();
-            }
-            let ecommercePlatform = new URLSearchParams(window.location.search).get("ecommerce_platform");
-            if (ecommercePlatform) {
-                ecommercePlatform = ecommercePlatform.toLowerCase();
-                let selectInput = $('select[name=demo_ecommerce_platform]');
-                let matchFound = false;
-                if (ecommercePlatform === 'magento') {
-                    selectInput.find('option[value="magento_2"]').prop('selected', true);
-                 //   console.log('Magento 2 selected');
-                    matchFound = true;
-                } else {
-                    selectInput.find('option').each(function() {
-                        let optionValue = $(this).val().toLowerCase();
-                        if (ecommercePlatform === optionValue) {
-                            matchFound = true;
-                            return false;
-                        }
-                    });
-                }
-                if (!matchFound) {
-                    selectInput.find('option[value="other"]').prop('selected', true);
-                  //  console.log('Other selected');
-                }
-                if (ecommercePlatform === 'magento' || !matchFound) {
-                    selectInput.change();
-                   // console.log('Change event triggered');
-                }
+
 
             }
         }
