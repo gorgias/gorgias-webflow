@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", function () {
+var Webflow = Webflow || [];
+Webflow.push(function () {
     // Disable console.logs for production
     console.log = function () {};
     console.log("DOM fully loaded and parsed");
@@ -162,6 +163,26 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("events_meta element not found");
     }
   });
+
+  // Add query parameters to the registration links
+
+    // Define the query parameter to add
+    const newParam = { utm_source: "events" };
+  
+    // Find all elements with the specified data attribute
+    const eventButtons = document.querySelectorAll('[data-el="events-btn"]');
+  
+    // Iterate over each button and append the new query parameter
+    eventButtons.forEach(button => {
+      // Get the current href of the button
+      const originalUrl = new URL(button.href);
+  
+      // Append the new query parameter to the original URL
+      originalUrl.searchParams.append('utm_source', newParam.utm_source);
+  
+      // Set the new URL with the query parameter back to the button
+      button.href = originalUrl.toString();
+    });
   
   document.addEventListener("DOMContentLoaded", function () {
     // Check if the viewport width is greater than 768px
@@ -201,5 +222,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     }
+
   });
+  
+
+
   
