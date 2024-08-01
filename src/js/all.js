@@ -115,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
  * 
  * Checks UTM source to display banner
  * 
- * 
  ****************************/
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -159,3 +158,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
+
+/****************************
+ * 
+ * Find and append query parameters to a button URL
+ * 
+ ****************************/
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Get the current page URL search parameters
+  const queryParams = new URLSearchParams(window.location.search);
+
+  // Find the element with the specified data attribute
+  const paramButton = document.querySelector('[data-el="params"]');
+
+  // Check if the element exists
+  if (paramButton) {
+    // Get the current href of the button
+    const originalUrl = new URL(paramButton.href);
+
+    // Append the query parameters from the current page to the original URL
+    queryParams.forEach((value, key) => {
+      originalUrl.searchParams.append(key, value);
+    });
+
+    // Set the new URL with the query parameters back to the button
+    paramButton.href = originalUrl.toString();
+  }
+});
