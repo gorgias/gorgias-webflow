@@ -72,7 +72,7 @@ Webflow.push(function () {
           newScript(scriptBase + '/src/js/partner-referral'+minBase+'.js','body',1)
       } 
 
-      // partner referral page
+      // events page
       if (path === '/events'){
           newScript(scriptBase + '/src/js/events'+minBase+'.js','body',1)
       } 
