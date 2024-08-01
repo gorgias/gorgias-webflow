@@ -1,4 +1,5 @@
 (function() {
+
     // // Function to check the user's IP and redirect based on location
     // function checkUserLocationAndRedirect() {
     //     // Check if the URL has the "ecommerce_platform" parameter
@@ -83,6 +84,8 @@
             } else {
                 $('input[name=demo_utm_term]').val('').change();
                 $('input[name=cross_sell_utm_term]').val('').change();
+
+
             }
         }
     });
