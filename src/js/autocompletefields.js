@@ -124,6 +124,35 @@ function autoCompleteInputsForms(){
         if($("select[name*='ecommerce_platform']").length>0){
             $("select[name*='ecommerce_platform']").val(sessionStorage.ecommerce_platform).change();
         }
+
+        // let ecommercePlatform = new URLSearchParams(window.location.search).get("ecommerce_platform");
+        // if (ecommercePlatform) {
+        //     ecommercePlatform = ecommercePlatform.toLowerCase();
+        //     let selectInput = $('select[name=demo_ecommerce_platform]');
+        //     let matchFound = false;
+        //     if (ecommercePlatform === 'magento') {
+        //         selectInput.find('option[value="magento_2"]').prop('selected', true);
+        //      //   console.log('Magento 2 selected');
+        //         matchFound = true;
+        //     } else {
+        //         selectInput.find('option').each(function() {
+        //             let optionValue = $(this).val().toLowerCase();
+        //             if (ecommercePlatform === optionValue) {
+        //                 matchFound = true;
+        //                 return false;
+        //             }
+        //         });
+        //     }
+        //     if (!matchFound) {
+        //         selectInput.find('option[value="other"]').prop('selected', true);
+        //       //  console.log('Other selected');
+        //     }
+        //     if (ecommercePlatform === 'magento' || !matchFound) {
+        //         selectInput.change();
+        //        // console.log('Change event triggered');
+        //     }
+        // }
+
     }
 
 }
