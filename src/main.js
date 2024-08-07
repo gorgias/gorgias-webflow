@@ -111,5 +111,6 @@ Webflow.push(function () {
     if (path.includes('/ecommerce/')){
         newScript(scriptBase + '/src/js/ecommerce'+minBase+'.js','head', 1);
     }
+
 })
 
