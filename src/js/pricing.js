@@ -12,13 +12,14 @@ Webflow.push(function () {
     `[data-target="sms-tickets"]`
   );
 
-  // Verify that the elements are correctly selected
+  // These are console logs to check the values of the elements
   // console.log("ticketRange:", ticketRange);
   // console.log("automateRange:", automateRange);
   // console.log("monthlyPlanRadio:", monthlyPlanRadio);
   // console.log("annualPlanRadio:", annualPlanRadio);
   // console.log("voiceTicketsSelect:", voiceTicketsSelect);
   // console.log("smsTicketsSelect:", smsTicketsSelect);
+
 
   // Elements that change visibility based on the selected plan
   const elementsToToggle = {
