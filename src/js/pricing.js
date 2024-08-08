@@ -12,7 +12,7 @@ Webflow.push(function () {
     `[data-target="sms-tickets"]`
   );
 
-  // These are console logs to check the values of the elements
+  // These are console logs to check the values of the stored elements
   // console.log("ticketRange:", ticketRange);
   // console.log("automateRange:", automateRange);
   // console.log("monthlyPlanRadio:", monthlyPlanRadio);
