@@ -29,7 +29,7 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
     }
 
-    if (path.includes('pricing') || path.includes('choose-your-plan')){
+    if (path.includes('pricing') || path.includes('choose-your-plan') || path.includes('/alternative/')){
       newScript(scriptBase + '/src/js/pricing'+minBase+'.js','body', 1);
       newScript(scriptBase + '/src/js/pricing-ui'+minBase+'.js','body', 1);
     }
