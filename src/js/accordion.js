@@ -13,7 +13,7 @@ function injectAccordionStyles() {
       }
   
       [g-accordion-element="content"].is-active {
-        max-height: 45rem;
+        max-height: 150rem;
       }
   
       [g-accordion-element="arrow"] {
