@@ -546,8 +546,10 @@ Webflow.push(function () {
     // Check if the plan is "Enterprise" and update the total price display accordingly
     if (planName === "Enterprise") {
       updateElements("totalPrice", "Talk to sales");
+      $(".tab-link_2, .tab-link_3").css("pointer-events", "none");
     } else {
       updateElements("totalPrice", planCost.toFixed(0));
+      $(".tab-link_2, .tab-link_3").css("pointer-events", "auto");
     }
 
     updateElements("ticketCount", number_of_tickets);
