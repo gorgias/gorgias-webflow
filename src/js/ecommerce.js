@@ -47,7 +47,7 @@ $(document).ready(function () {
         trialText: "Prueba Gratis",
         demoText: "Reserva una Demo",
         demoHref: "/es/demo",
-        customerNumberText: "Need spanish translation", // Placeholder for the Spanish translation
+        customerNumberText: "Ayudamos a 15,000 marcas de comercio electrónico a automatizar la experiencia del cliente con la potencia de la IA",
       },
     };
 
@@ -69,31 +69,36 @@ $(document).ready(function () {
     }).text(customerNumberText);
   }
 
-  // Function to handle demo button click and append the ecommerce_platform parameter
-  function handleDemoButtonClick(languageCode) {
-    const demoButtons = document.querySelectorAll('[data-el="demo-btn"]');
-    demoButtons.forEach(function (button) {
-      button.addEventListener("click", function (event) {
-        event.preventDefault();
+// Function to handle demo button click and append the ecommerce_platform parameter
+function handleDemoButtonClick(languageCode) {
+  const demoButtons = document.querySelectorAll('[data-el="demo-btn"]');
+  demoButtons.forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
 
-        const ecommercePlatform = getSessionCookie("ecommerce_platform");
-        let demoUrl = "/demo";
-        
-        // Adjust demoUrl based on languageCode
-        if (languageCode === "fr") {
-          demoUrl = "/fr/demo";
-        } else if (languageCode === "es") {
-          demoUrl = "/es/demo";
-        }
+      let ecommercePlatform = getSessionCookie("ecommerce_platform");
 
-        // Append query parameter
-        demoUrl += `?ecommerce_platform=${ecommercePlatform}`;
+      // Remove the language suffix if it exists (e.g., "-es", "-fr")
+      ecommercePlatform = ecommercePlatform.replace(/-[a-z]{2}$/, '');
 
-        console.log("Redirecting to:", demoUrl);  // Log for debugging purposes
-        window.location.href = demoUrl;
-      });
+      let demoUrl = "/demo";
+      
+      // Adjust demoUrl based on languageCode
+      if (languageCode === "fr") {
+        demoUrl = "/fr/demo";
+      } else if (languageCode === "es") {
+        demoUrl = "/es/demo";
+      }
+
+      // Append query parameters
+      demoUrl += `?ecommerce_platform=${ecommercePlatform}&utm_campaign=${ecommercePlatform}_landing_page`;
+
+      console.log("Redirecting to:", demoUrl);  // Log for debugging purposes
+      window.location.href = demoUrl;
     });
-  }
+  });
+}
+
 
   // Function to extract language code from URL
   function getLanguageCode() {
