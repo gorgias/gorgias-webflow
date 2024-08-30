@@ -15,7 +15,7 @@ $('body')[0].appendChild(scriptBundleConvert);
 /* Gorgias Chat Widget Start */ 
 var scriptGorgiasChat = document.createElement('script');
 var scriptGorgiasChatId = 'gorgias-chat-widget-install-v3';
-var scriptGorgiasChatSrc = 'https://config.gorgias.chat/bundle-loader/01GYCCQV7ZZN9NBVRBND6RA25H';
+var scriptGorgiasChatSrc = 'https://config.gorgias.chat/bundle-loader/01J5V1J9ZV18ZCZZZ6ZCFDGFE5';
 var scriptGorgiasChatType = 'text/javascript';
 
 scriptGorgiasChat.setAttribute('src',scriptGorgiasChatSrc);
