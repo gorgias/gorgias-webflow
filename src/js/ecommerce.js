@@ -91,7 +91,9 @@ function handleDemoButtonClick(languageCode) {
       }
 
       // Append query parameters
-      demoUrl += `?ecommerce_platform=${ecommercePlatform}&utm_campaign=${ecommercePlatform}_landing_page`;
+
+      demoUrl += `?ecommerce_platform=${ecommercePlatform}&ref=${ecommercePlatform}_landing_page`;
+
 
       console.log("Redirecting to:", demoUrl);  // Log for debugging purposes
       window.location.href = demoUrl;
