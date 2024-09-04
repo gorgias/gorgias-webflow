@@ -46,7 +46,7 @@ function injectAccordionStyles() {
   
   var Webflow = Webflow || [];
   Webflow.push(function () {
-    // console.log("Webflow initialized");
+    console.log("Webflow initialized");
   
     // Inject styles
     injectAccordionStyles();
