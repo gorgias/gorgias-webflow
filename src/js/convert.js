@@ -4,7 +4,7 @@
  *
  ****************************/
   // Disable console.logs for production
-  console.log = function () {};
+  //console.log = function () {};
 
 
 

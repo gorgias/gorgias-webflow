@@ -1,5 +1,5 @@
 // Disable console.logs for production
-console.log = function () {};
+// console.log = function () {};
 
 // Get all utmParameter and set a session cookie to reuse them later during the session (e.g. complete forms fields)
 function cookieSessionFromUtmParameter() {

@@ -1,5 +1,5 @@
   // Disable console.logs for production
-  console.log = function () {};
+  //console.log = function () {};
 
 function autoCompleteInputsForms(){
     // List of inputs to autocomplete
