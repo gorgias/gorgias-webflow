@@ -1,7 +1,7 @@
 var Webflow = Webflow || [];
 Webflow.push(function () {
     // Disable console.logs for production
-    console.log = function () {};
+    //console.log = function () {};
     console.log("DOM fully loaded and parsed");
   
     // Select all events_item elements
