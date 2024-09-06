@@ -1,4 +1,3 @@
-
 /****************************
  *
  * DATA DEFINITIONS
@@ -156,30 +155,21 @@ const smsTiers = {
 };
 
 // Select Voice and SMS selects
-const voiceTicketsSelect = document.querySelector(
-  `[data-target="voice-tickets"]`
-);
+const voiceTicketsSelect = document.querySelector(`[data-target="voice-tickets"]`);
 const smsTicketsSelect = document.querySelector(`[data-target="sms-tickets"]`);
 const voiceSummary = document.querySelector(`[data-summary="voice"]`);
 const smsSummary = document.querySelector(`[data-summary="sms"]`);
 
 /****************************
- *
+ * 
  * Global Functions
- *
+ * 
  ****************************/
 
 // format figures with comma separator
 function formatNumberWithCommas(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-
-$(".support-tickets_cta").on("click", function () {
-    const orders = parseInt($(".support-tickets_input").val(), 10);
-    const tickets = Math.round(orders / 15);
-    $(".support-tickets_result-value").text(tickets);
-    $(".support-tickets_result").css("display", "block");
-  });
 
 /****************************
  *
@@ -190,32 +180,26 @@ $(".support-tickets_cta").on("click", function () {
 // Global variable to store the number of tickets
 let globalTicketNumber = 0;
 
-// Function to handle ticket range input
 $("#ticketRange").on("input", function () {
-    // Parse the input value as an integer or set to 0 if invalid
-    globalTicketNumber = parseInt($(this).val(), 10) || 0;
-  
-    // Log the current state
-    console.log("Step 1: Number of tickets selected:", globalTicketNumber);
-  
-    // Pass the ticket number to DOM Element data-el="ticketNumber"
-    $('[data-el="ticketNumber"]').text(globalTicketNumber);
-  
-    // After ticket input changes, trigger next steps
-    if (globalCurrentPlanName === "Starter") {
-      toggleMonthly();
-    }
-  
-    updatePricesOnBillingCycleChange();
-    determinePlan(globalTicketNumber);
-    updateActivePlanElement();
-    updateLogosAndCTAs();
-  
-    // Ensure calculateSummary only runs if a plan has been selected
-    if (chosenHelpdeskPrice > 0) {
-      calculateSummary();
-    }
-  });
+  // Parse the input value as an integer or set to 0 if invalid
+  globalTicketNumber = parseInt($(this).val(), 10) || 0;
+
+  // Log the current state
+  console.log("Step 1: Number of tickets selected:", globalTicketNumber);
+
+  // Pass the ticket number to DOM Element data-el="ticketNumber"
+  $('[data-el="ticketNumber"]').text(globalTicketNumber);
+
+  // After ticket input changes, trigger next steps
+  if (globalCurrentPlanName === "Starter") {
+    toggleMonthly();
+  }
+
+  updatePricesOnBillingCycleChange();
+  determinePlan(globalTicketNumber);
+  updateActivePlanElement();
+  updateLogosAndCTAs();
+});
 
 // Function to initialize at 2000 tickets on page load
 function initTicketNumber() {
@@ -484,89 +468,29 @@ function calculateOptionPrices() {
  *
  ****************************/
 $('[data-el^="pricingCard"]').on("click", function () {
-  // Store the selected card type (e.g., "pricingCard", "pricingCard10", etc.)
-  selectedCardType = $(this).attr("data-el");
-  console.log("Selected card type:", selectedCardType);
-
-  // Deselect all cards and their automate pills
-  $(".pricing_card").removeClass("is-selected");
-  $(".pricing_card .pricing_automate-pill").removeClass("is-selected");
-
-  // Select the clicked card and its automate pill
-  $(this).toggleClass("is-selected");
-  $(this).find(".pricing_automate-pill").toggleClass("is-selected");
-
-  // Display the selected plan summary and hide the no-selection message
-  $(".plan_summary-layout").css("display", "flex");
-  $(".plan_no-selection").css("display", "none");
-
-  // Enable the code radio buttons
-  $(".code-radio").removeClass("is-inactive");
-
-  // Update chosen prices and summary total
-  updateChosenPrices();
-  calculateSummary();
-  calculateROISavings();
-});
-
-/****************************
- *
- * Function to Calculate ROI Savings Based on Chosen Plan
- *
- ****************************/
-
-function calculateROISavings() {
-    const avgTimePerTicketWithoutGorgias = 8.6; // Average time per ticket without Gorgias, in minutes
-    const avgTimePerTicketWithGorgias = 6; // Average time per ticket with Gorgias, in minutes
-    const avgSupportSalary = 35; // Average support salary in USD/hour
-    
-    // Agent tickets is set to globalTicketNumber by default
-    const agentTickets = globalTicketNumber;
-    
-    // Ensure agent tickets are a valid number
-    if (isNaN(agentTickets)) {
-        console.error("Invalid agent ticket number");
-        return;
-    }
-    
-    // Calculate total support time without Gorgias (in hours)
-    const totalSupportTimeWithoutGorgias = (agentTickets * avgTimePerTicketWithoutGorgias) / 60;
-    
-    // Calculate total human cost without Gorgias
-    const totalHumanCostWithoutGorgias = totalSupportTimeWithoutGorgias * avgSupportSalary;
-    
-    // Calculate total support time with Gorgias (in hours)
-    const totalSupportTimeWithGorgias = (agentTickets * avgTimePerTicketWithGorgias) / 60;
-    
-    // Calculate total human cost with Gorgias
-    const totalHumanCostWithGorgias = totalSupportTimeWithGorgias * avgSupportSalary;
-    
-    // Calculate total Gorgias cost (helpdesk + automate prices)
-    const totalGorgiasCost = chosenHelpdeskPrice + chosenAutomatePrice;
-    
-    // Calculate time and money saved
-    const timeSaved = totalSupportTimeWithoutGorgias - totalSupportTimeWithGorgias;
-    const moneySaved = totalHumanCostWithoutGorgias - (totalHumanCostWithGorgias + totalGorgiasCost);
+    // Store the selected card type (e.g., "pricingCard", "pricingCard10", etc.)
+    selectedCardType = $(this).attr("data-el");
+    console.log("Selected card type:", selectedCardType);
   
-    // Log the results for debugging
-    console.log(`Agent tickets: ${agentTickets}`);
-    console.log(`Total support time without Gorgias (hours): ${totalSupportTimeWithoutGorgias}`);
-    console.log(`Total human cost without Gorgias: ${totalHumanCostWithoutGorgias}`);
-    console.log(`Chosen helpdesk price: ${chosenHelpdeskPrice}`);
-    console.log(`Chosen automate price: ${chosenAutomatePrice}`);
-    console.log(`Total Gorgias cost: ${totalGorgiasCost}`);
-    console.log(`Total support time with Gorgias (hours): ${totalSupportTimeWithGorgias}`);
-    console.log(`Total human cost with Gorgias: ${totalHumanCostWithGorgias}`);
-    console.log(`Time saved: ${timeSaved} hours`);
-    console.log(`Money saved: ${moneySaved} USD`);
-    
-    // Format money saved with comma separators
-    const formattedMoneySaved = formatNumberWithCommas(moneySaved.toFixed(0));
-    
-    // Update the DOM with time and formatted money saved
-    $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
-    $('[data-target="moneySaved"]').text(formattedMoneySaved);
-}
+    // Deselect all cards and their automate pills
+    $(".pricing_card").removeClass("is-selected");
+    $(".pricing_card .pricing_automate-pill").removeClass("is-selected");
+  
+    // Select the clicked card and its automate pill
+    $(this).toggleClass("is-selected");
+    $(this).find(".pricing_automate-pill").toggleClass("is-selected");
+  
+    // Display the selected plan summary and hide the no-selection message
+    $(".plan_summary-layout").css("display", "flex");
+    $(".plan_no-selection").css("display", "none");
+  
+    // Enable the code radio buttons
+    $(".code-radio").removeClass("is-inactive");
+  
+    // Update chosen prices and summary total
+    updateChosenPrices();
+    calculateSummary();
+  });
 
 /****************************
  *
@@ -575,100 +499,88 @@ function calculateROISavings() {
  ****************************/
 
 function updatePricesOnBillingCycleChange() {
-  console.log("Billing cycle changed to:", globalBillingCycle);
+    console.log("Billing cycle changed to:", globalBillingCycle);
+  
+    // Recalculate prices for the current billing cycle
+    determinePlan(globalTicketNumber); // This recalculates the plan based on ticket number
+    calculateAutomatePrices(); // Recalculate automate prices
 
-  // Recalculate prices for the current billing cycle
-  determinePlan(globalTicketNumber); // This recalculates the plan based on ticket number
-  calculateAutomatePrices(); // Recalculate automate prices
-
-  updateVoiceTicketPrice();
-  updateSmsTicketPrice();
-
-  // Ensure that chosen prices are updated after recalculating plans
-  setTimeout(() => {
-    updateChosenPrices(); // Ensure this updates the DOM after recalculating
-    calculateSummary(); // Recalculate summary once prices are updated
-    calculateROISavings();
-  }, 100); // Adding a slight delay to ensure execution order
-}
+    updateVoiceTicketPrice();
+    updateSmsTicketPrice();
+  
+    // Ensure that chosen prices are updated after recalculating plans
+    setTimeout(() => {
+      updateChosenPrices();  // Ensure this updates the DOM after recalculating
+      calculateSummary();     // Recalculate summary once prices are updated
+    }, 100); // Adding a slight delay to ensure execution order
+  }
 
 /****************************
  *
  * Function to Update Chosen Prices Based on Selected Card Type
  *
  ****************************/
-// Initialize selectedCardType to a default value
-let selectedCardType = "pricingCard"; // Default value if no card is selected
 
 function updateChosenPrices() {
-  console.log("Updating prices for selected card:", selectedCardType);
-
-  // Check if a card was selected previously
-  if (!selectedCardType) {
-    console.warn("No selected card type, using default (pricingCard).");
-    selectedCardType = "pricingCard"; // Default to the first card if none is selected
+    console.log("Updating prices for selected card:", selectedCardType);
+  
+    // Check if a card was selected previously
+    if (!selectedCardType) {
+      console.warn("No selected card type, using default (pricingCard).");
+      selectedCardType = "pricingCard"; // Default to the first card if none is selected
+    }
+  
+    // Update chosen prices based on the selected card
+    switch (selectedCardType) {
+      case "pricingCard":
+        chosenHelpdeskPrice = globalCurrentPlanPrice;
+        chosenAutomatePrice = globalAutomatePrice0;
+        break;
+      case "pricingCard10":
+        chosenHelpdeskPrice = globalCurrentPlanPrice;
+        chosenAutomatePrice = globalAutomatePrice10;
+        break;
+      case "pricingCard20":
+        chosenHelpdeskPrice = globalCurrentPlanPrice;
+        chosenAutomatePrice = globalAutomatePrice20;
+        break;
+      case "pricingCard30":
+        chosenHelpdeskPrice = globalCurrentPlanPrice;
+        chosenAutomatePrice = globalAutomatePrice30;
+        break;
+    }
+  
+    // Log updated prices
+    console.log("Updated chosenHelpdeskPrice:", chosenHelpdeskPrice);
+    console.log("Updated chosenAutomatePrice:", chosenAutomatePrice);
+  
+    // Update the DOM with the chosen prices
+    $('[data-el="chosenHelpdeskPrice"]').text(chosenHelpdeskPrice);
+    $('[data-el="chosenAutomatePrice"]').text(chosenAutomatePrice);
   }
-
-  // Update chosen prices based on the selected card
-  switch (selectedCardType) {
-    case "pricingCard":
-      chosenHelpdeskPrice = globalCurrentPlanPrice;
-      chosenAutomatePrice = globalAutomatePrice0;
-      break;
-    case "pricingCard10":
-      chosenHelpdeskPrice = globalCurrentPlanPrice;
-      chosenAutomatePrice = globalAutomatePrice10;
-      break;
-    case "pricingCard20":
-      chosenHelpdeskPrice = globalCurrentPlanPrice;
-      chosenAutomatePrice = globalAutomatePrice20;
-      break;
-    case "pricingCard30":
-      chosenHelpdeskPrice = globalCurrentPlanPrice;
-      chosenAutomatePrice = globalAutomatePrice30;
-      break;
-  }
-
-  // Log updated prices
-  console.log("Updated chosenHelpdeskPrice:", chosenHelpdeskPrice);
-  console.log("Updated chosenAutomatePrice:", chosenAutomatePrice);
-
-  // Update the DOM with the chosen prices
-  $('[data-el="chosenHelpdeskPrice"]').text(chosenHelpdeskPrice);
-  $('[data-el="chosenAutomatePrice"]').text(chosenAutomatePrice);
-}
-
+  
 /****************************
  *
  * Step 7: Calculating the Summary Total
  *
  ****************************/
-// Initialize chosen prices to default values (0) to avoid errors
-let chosenHelpdeskPrice = 0;
-let chosenAutomatePrice = 0;
 
 // Function to calculate and update the summary total
 function calculateSummary() {
-  // Ensure chosenHelpdeskPrice and chosenAutomatePrice are valid
-  if (typeof chosenHelpdeskPrice === 'undefined' || chosenHelpdeskPrice === 0) {
-    console.warn("No plan has been selected yet.");
-    return; // Exit the function until a plan is chosen
+    // Ensure chosenHelpdeskPrice, chosenAutomatePrice, voiceTicketPrice, and smsTicketPrice are added to the total
+    summaryTotal = chosenHelpdeskPrice + chosenAutomatePrice + voiceTicketPrice + smsTicketPrice;
+  
+    // Log the calculated summary total
+    console.log("Calculated summary total:", summaryTotal);
+  
+    // Format the summary total with comma separators
+    const formattedTotal = formatNumberWithCommas(summaryTotal.toFixed(0));
+  
+    // Update the DOM with the new formatted summary total
+    $('[data-el="summaryTotalPrice"]').text(formattedTotal);
+  
+    console.log("Updated DOM with formatted summary total:", formattedTotal);
   }
-
-  // Calculate the summary total
-  summaryTotal = chosenHelpdeskPrice + chosenAutomatePrice + voiceTicketPrice + smsTicketPrice;
-
-  // Log the calculated summary total
-  console.log("Calculated summary total:", summaryTotal);
-
-  // Format the summary total with comma separators
-  const formattedTotal = formatNumberWithCommas(summaryTotal.toFixed(0));
-
-  // Update the DOM with the new formatted summary total
-  $('[data-el="summaryTotalPrice"]').text(formattedTotal);
-
-  console.log("Updated DOM with formatted summary total:", formattedTotal);
-}
 
 /****************************
  *
@@ -721,58 +633,61 @@ function calculateSmsTicketPrice(selectedTier, planType) {
 
 // Function to update the UI with voice ticket prices
 function updateVoiceTicketPrice() {
-  const selectedTier = voiceTicketsSelect.value; // Get the selected tier
-  const planType = globalBillingCycle; // Use the global billing cycle to determine the plan type
-  voiceTicketPrice = calculateVoiceTicketPrice(selectedTier, planType); // Update global variable
-
-  // Pass the selected range to the DOM
-  const tiers = voiceTiers[planType];
-  const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
-  if (selectedPlan) {
-    $('[data-el="nbVoiceTickets"]').text(selectedPlan.range);
+    const selectedTier = voiceTicketsSelect.value; // Get the selected tier
+    const planType = globalBillingCycle; // Use the global billing cycle to determine the plan type
+    voiceTicketPrice = calculateVoiceTicketPrice(selectedTier, planType); // Update global variable
+  
+    // Pass the selected range to the DOM
+    const tiers = voiceTiers[planType];
+    const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
+    if (selectedPlan) {
+      $('[data-el="nbVoiceTickets"]').text(selectedPlan.range);
+    }
+  
+    // Update DOM element for voice price
+    $('[data-el="voicePrice"]').text(voiceTicketPrice.toFixed(0));
+    console.log(`Updated UI with voice ticket price: ${voiceTicketPrice}`);
+  
+    // Ensure we recalculate the summary total after updating the price
+    calculateSummary();
   }
-
-  // Update DOM element for voice price
-  $('[data-el="voicePrice"]').text(voiceTicketPrice.toFixed(0));
-  console.log(`Updated UI with voice ticket price: ${voiceTicketPrice}`);
-
-  // Ensure we recalculate the summary total after updating the price
-  calculateSummary();
-}
-
+  
 // Function to update the UI with SMS ticket prices
 function updateSmsTicketPrice() {
-  const selectedTier = smsTicketsSelect.value; // Get the selected tier
-  const planType = globalBillingCycle; // Use the global billing cycle to determine the plan type
-  smsTicketPrice = calculateSmsTicketPrice(selectedTier, planType); // Update global variable
-
-  // Pass the selected range to the DOM
-  const tiers = smsTiers[planType];
-  const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
-  if (selectedPlan) {
-    $('[data-el="nbSMSTickets"]').text(selectedPlan.range);
+    const selectedTier = smsTicketsSelect.value; // Get the selected tier
+    const planType = globalBillingCycle; // Use the global billing cycle to determine the plan type
+    smsTicketPrice = calculateSmsTicketPrice(selectedTier, planType); // Update global variable
+  
+    // Pass the selected range to the DOM
+    const tiers = smsTiers[planType];
+    const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
+    if (selectedPlan) {
+      $('[data-el="nbSMSTickets"]').text(selectedPlan.range);
+    }
+  
+    // Update DOM element for SMS price
+    $('[data-el="smsPrice"]').text(smsTicketPrice.toFixed(0));
+    console.log(`Updated UI with SMS ticket price: ${smsTicketPrice}`);
+  
+    // Ensure we recalculate the summary total after updating the price
+    calculateSummary();
   }
 
-  // Update DOM element for SMS price
-  $('[data-el="smsPrice"]').text(smsTicketPrice.toFixed(0));
-  console.log(`Updated UI with SMS ticket price: ${smsTicketPrice}`);
+  voiceTicketsSelect.addEventListener("change", updateVoiceTicketPrice);
+  smsTicketsSelect.addEventListener("change", updateSmsTicketPrice);
 
-  // Ensure we recalculate the summary total after updating the price
-  calculateSummary();
-}
+  voiceTicketsSelect.addEventListener("change", function () {
+    $(voiceSummary).removeClass("is-hidden");
+    updateVoiceTicketPrice();
+  });
+ 
+ smsTicketsSelect.addEventListener("change", function () {
+    $(smsSummary).removeClass("is-hidden");
+    updateSmsTicketPrice();
+  });
 
-voiceTicketsSelect.addEventListener("change", updateVoiceTicketPrice);
-smsTicketsSelect.addEventListener("change", updateSmsTicketPrice);
+  
 
-voiceTicketsSelect.addEventListener("change", function () {
-  $(voiceSummary).removeClass("is-hidden");
-  updateVoiceTicketPrice();
-});
-
-smsTicketsSelect.addEventListener("change", function () {
-  $(smsSummary).removeClass("is-hidden");
-  updateSmsTicketPrice();
-});
 
 /****************************
  *
@@ -798,23 +713,23 @@ $('[data-summary="automate-remove"').on("click", function () {
 });
 
 $('[data-summary="voice-remove"').on("click", function () {
-  // Remove the selected voice tier by choosing the default option "No Voice Tickets"
-  voiceTicketsSelect.value = "Tier 0";
-  // Remove current class
-  $(".addons_dropdown-links.w--current").removeClass("w--current");
-  $(voiceSummary).addClass("is-hidden");
-  // Update the UI with the new price
-  updateVoiceTicketPrice();
+    // Remove the selected voice tier by choosing the default option "No Voice Tickets"
+    voiceTicketsSelect.value = "Tier 0";
+    // Remove current class
+    $('.addons_dropdown-links.w--current').removeClass('w--current');
+    $(voiceSummary).addClass("is-hidden");
+    // Update the UI with the new price
+    updateVoiceTicketPrice();
 });
 
 $('[data-summary="sms-remove"').on("click", function () {
   // Remove the selected voice tier by choosing the default option "No Voice Tickets"
   smsTicketsSelect.value = "Tier 0";
   // Remove current class
-  $(".addons_dropdown-links.w--current").removeClass("w--current");
+  $('.addons_dropdown-links.w--current').removeClass('w--current');
   $(smsSummary).addClass("is-hidden");
   // Update the UI with the new price
-  updateSmsTicketPrice();
+    updateSmsTicketPrice();
 });
 
 /***************************
@@ -858,7 +773,6 @@ function updateLogosAndCTAs() {
   }
 }
 
-
 var Webflow = Webflow || [];
 Webflow.push(function () {
   // Initialize the ticket number input
@@ -866,4 +780,3 @@ Webflow.push(function () {
   // Initialize the active plan element
   updateActivePlanElement();
 });
-
