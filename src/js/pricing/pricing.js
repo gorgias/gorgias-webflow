@@ -1,588 +1,868 @@
-var Webflow = Webflow || [];
-Webflow.push(function () {
-
-  /****************************
-   *
-   * MAIN VARIABLES
-   *
-   ****************************/
-
-  // Get references to HTML elements for ticket range, plan type toggle, and voice and SMS tickets select
-  let ticketRange = document.getElementById("ticketRange");
-  const monthlyPlanRadios = document.querySelectorAll('input[data-el="monthly"]');
-  const annualPlanRadios = document.querySelectorAll('input[data-el="annual"]');
-
-  // Set data-el price elements for Helpdesk, Automation, SMS, and Voice
-  let helpdeskPriceElements = document.querySelectorAll(`[data-el="helpdeskPrice"]`);
-  let helpdeskPrice0Elements = document.querySelectorAll(`[data-el="helpdeskPrice0"]`);
-  let helpdeskPrice10Elements = document.querySelectorAll(`[data-el="helpdeskPrice10"]`);
-  let helpdeskPrice20Elements = document.querySelectorAll(`[data-el="helpdeskPrice20"]`);
-  let helpdeskPrice30Elements = document.querySelectorAll(`[data-el="helpdeskPrice30"]`);
-  let chosenHelpdeskPrice = document.querySelector(`[data-el="chosenHelpdeskPrice"]`);
-  let chosenAutomatePrice = document.querySelector(`[data-el="chosenAutomatePrice"]`);
-  let automatePrice10 = document.querySelector(`[data-update="automatePrice10"]`);
-  let automatePrice20 = document.querySelector(`[data-update="automatePrice20"]`);
-  let automatePrice30 = document.querySelector(`[data-update="automatePrice30"]`);
-
-  // Select different pricing card
-  let pricingCard = document.querySelector(`[data-el="pricingCard"]`);
-  let pricingCard10 = document.querySelector(`[data-el="pricingCard10"]`);
-  let pricingCard20 = document.querySelector(`[data-el="pricingCard20"]`);
-  let pricingCard30 = document.querySelector(`[data-el="pricingCard30"]`);
-
-  // Select all elements with the attribute data-el="planName"
-  const planNameElements = document.querySelectorAll(`[data-el="planName"]`);
-
-  // Select all elements to show ticket number for Helpdesk and Automation
-  let ticketNumberElements = document.querySelectorAll(`[data-el="ticketNumber"]`);
-  let automateTicketNumber10Elements = document.querySelectorAll(`[data-el="automateTicketNumber10"]`);
-  let automateTicketNumber20Elements = document.querySelectorAll(`[data-el="automateTicketNumber20"]`);
-  let automateTicketNumber30Elements = document.querySelectorAll(`[data-el="automateTicketNumber30"]`);
-
-  // Select voice and SMS tickets
-  let voiceTicketsSelect = document.querySelector(`[data-target="voice-tickets"]`);
-  let smsTicketsSelect = document.querySelector(`[data-target="sms-tickets"]`);
-
-  // Select the summary total price
-  let summaryTotalPrice = document.querySelector(`[data-el="summaryTotalPrice"]`);
-  let automationRate = document.querySelector(`[data-el="automationRate"]`);
-
-  /****************************
-   *
-   * DATA DEFINITIONS
-   *
-   ****************************/
-
-  // Define the helpdesk plans
-  const helpdeskPlans = {
-    monthly: [
-      { name: "Starter", tickets_per_month: 50, monthly_cost: 10, cost_per_overage_ticket: 0.4 },
-      { name: "Basic", tickets_per_month: 300, monthly_cost: 60, cost_per_overage_ticket: 0.4 },
-      { name: "Pro", tickets_per_month: 2000, monthly_cost: 360, cost_per_overage_ticket: 0.36 },
-      { name: "Advanced", tickets_per_month: 5000, monthly_cost: 900, cost_per_overage_ticket: 0.36 },
-      { name: "Enterprise", tickets_per_month: 10000, monthly_cost: 1600, cost_per_overage_ticket: 0.32 },
-    ],
-    yearly: [
-      { name: "Starter", tickets_per_month: 50, monthly_cost: 8, cost_per_overage_ticket: 0.4 },
-      { name: "Basic", tickets_per_month: 300, monthly_cost: 50, cost_per_overage_ticket: 0.4 },
-      { name: "Pro", tickets_per_month: 2000, monthly_cost: 300, cost_per_overage_ticket: 0.36 },
-      { name: "Advanced", tickets_per_month: 5000, monthly_cost: 750, cost_per_overage_ticket: 0.36 },
-      { name: "Enterprise", tickets_per_month: 10000, monthly_cost: 1333, cost_per_overage_ticket: 0.32 },
-    ],
-  };
-
-  // Define the automate plans
-  const automatePlans = {
-    monthly: [
-      { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0 },
-      { name: "Tier 1", interactions_per_month: 30, monthly_cost: 30 },
-      { name: "Tier 1B", interactions_per_month: 80, monthly_cost: 80 },
-      { name: "Tier 1C", interactions_per_month: 120, monthly_cost: 114 },
-      { name: "Tier 2", interactions_per_month: 190, monthly_cost: 180 },
-      { name: "Tier 3", interactions_per_month: 530, monthly_cost: 450 },
-      { name: "Tier 4", interactions_per_month: 1125, monthly_cost: 900 },
-      { name: "Tier 5", interactions_per_month: 2000, monthly_cost: 1500 },
-      { name: "Tier 6", interactions_per_month: 3000, monthly_cost: 2100 },
-      { name: "Tier 7", interactions_per_month: 5000, monthly_cost: 2500 },
-      { name: "Tier 8", interactions_per_month: 7000, monthly_cost: 3500 },
-    ],
-    yearly: [
-      { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0 },
-      { name: "Tier 1", interactions_per_month: 30, monthly_cost: 25 },
-      { name: "Tier 1B", interactions_per_month: 80, monthly_cost: 67 },
-      { name: "Tier 1C", interactions_per_month: 120, monthly_cost: 95 },
-      { name: "Tier 2", interactions_per_month: 190, monthly_cost: 150 },
-      { name: "Tier 3", interactions_per_month: 530, monthly_cost: 375 },
-      { name: "Tier 4", interactions_per_month: 1125, monthly_cost: 750 },
-      { name: "Tier 5", interactions_per_month: 2000, monthly_cost: 1250 },
-      { name: "Tier 6", interactions_per_month: 3000, monthly_cost: 1750 },
-      { name: "Tier 7", interactions_per_month: 5000, monthly_cost: 2083 },
-      { name: "Tier 8", interactions_per_month: 7000, monthly_cost: 2917 },
-    ],
-  };
-
-  // Define the voice tiers
-  const voiceTiers = {
-    monthly: [
-      { range: "No Voice Tickets", tier: "Tier 0", price: 0 },
-      { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-      { range: "0-24", tier: "Tier 1", price: 30 },
-      { range: "25-74", tier: "Tier 2", price: 90 },
-      { range: "75-149", tier: "Tier 3", price: 135 },
-      { range: "150-249", tier: "Tier 4", price: 175 },
-      { range: "250-499", tier: "Tier 5", price: 250 },
-      { range: "500-999", tier: "Tier 6", price: 400 },
-      { range: "999+", tier: "Tier 7", price: 0 },
-    ],
-    yearly: [
-      { range: "No Voice Tickets", tier: "Tier 0", price: 0 },
-      { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-      { range: "0-24", tier: "Tier 1", price: 25 },
-      { range: "25-74", tier: "Tier 2", price: 75 },
-      { range: "75-149", tier: "Tier 3", price: 113 },
-      { range: "150-249", tier: "Tier 4", price: 146 },
-      { range: "250-499", tier: "Tier 5", price: 208 },
-      { range: "500-999", tier: "Tier 6", price: 333 },
-      { range: "999+", tier: "Tier 7", price: 0 },
-    ],
-  };
-
-  // Define the SMS tiers
-  const smsTiers = {
-    monthly: [
-      { range: "No SMS Tickets", tier: "Tier 0", price: 0 },
-      { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-      { range: "0-24", tier: "Tier 1", price: 20 },
-      { range: "25-74", tier: "Tier 2", price: 60 },
-      { range: "75-149", tier: "Tier 3", price: 90 },
-      { range: "150-249", tier: "Tier 4", price: 140 },
-      { range: "250-499", tier: "Tier 5", price: 216 },
-      { range: "500-999", tier: "Tier 6", price: 408 },
-      { range: "999+", tier: "Tier 7", price: 0 },
-    ],
-    yearly: [
-      { range: "No SMS Tickets", tier: "Tier 0", price: 0 },
-      { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-      { range: "0-24", tier: "Tier 1", price: 17 },
-      { range: "25-74", tier: "Tier 2", price: 50 },
-      { range: "75-149", tier: "Tier 3", price: 75 },
-      { range: "150-249", tier: "Tier 4", price: 117 },
-      { range: "250-499", tier: "Tier 5", price: 180 },
-      { range: "500-999", tier: "Tier 6", price: 340 },
-      { range: "999+", tier: "Tier 7", price: 0 },
-    ],
-  };
 
 /****************************
  *
- * BILLING CYCLE FUNCTIONALITY
+ * DATA DEFINITIONS
  *
  ****************************/
 
-// Function to toggle between monthly and yearly pricing
-function setupBillingCycleToggle() {
-    document.querySelectorAll('.billing-toggle-radio').forEach(el => {
-        el.addEventListener('click', function () {
-            const input = this.querySelector('input[type="radio"]');
-            input.checked = true;
+// Define the helpdesk plans
+const helpdeskPlans = {
+  monthly: [
+    {
+      name: "Starter",
+      tickets_per_month: 50,
+      monthly_cost: 10,
+      cost_per_overage_ticket: 0.4,
+    },
+    {
+      name: "Basic",
+      tickets_per_month: 300,
+      monthly_cost: 60,
+      cost_per_overage_ticket: 0.4,
+    },
+    {
+      name: "Pro",
+      tickets_per_month: 2000,
+      monthly_cost: 360,
+      cost_per_overage_ticket: 0.36,
+    },
+    {
+      name: "Advanced",
+      tickets_per_month: 5000,
+      monthly_cost: 900,
+      cost_per_overage_ticket: 0.36,
+    },
+    {
+      name: "Enterprise",
+      tickets_per_month: 10000,
+      monthly_cost: 1600,
+      cost_per_overage_ticket: 0.32,
+    },
+  ],
+  yearly: [
+    {
+      name: "Starter",
+      tickets_per_month: 50,
+      monthly_cost: 8,
+      cost_per_overage_ticket: 0.4,
+    },
+    {
+      name: "Basic",
+      tickets_per_month: 300,
+      monthly_cost: 50,
+      cost_per_overage_ticket: 0.4,
+    },
+    {
+      name: "Pro",
+      tickets_per_month: 2000,
+      monthly_cost: 300,
+      cost_per_overage_ticket: 0.36,
+    },
+    {
+      name: "Advanced",
+      tickets_per_month: 5000,
+      monthly_cost: 750,
+      cost_per_overage_ticket: 0.36,
+    },
+    {
+      name: "Enterprise",
+      tickets_per_month: 10000,
+      monthly_cost: 1333,
+      cost_per_overage_ticket: 0.32,
+    },
+  ],
+};
 
-            // Log the selected billing cycle
-            //console.log(`${input.value} plan selected`);
+// Define the automate plans
+const automatePlans = {
+  monthly: [
+    { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0 },
+    { name: "Tier 1", interactions_per_month: 30, monthly_cost: 30 },
+    { name: "Tier 1B", interactions_per_month: 80, monthly_cost: 80 },
+    { name: "Tier 1C", interactions_per_month: 120, monthly_cost: 114 },
+    { name: "Tier 2", interactions_per_month: 190, monthly_cost: 180 },
+    { name: "Tier 3", interactions_per_month: 530, monthly_cost: 450 },
+    { name: "Tier 4", interactions_per_month: 1125, monthly_cost: 900 },
+    { name: "Tier 5", interactions_per_month: 2000, monthly_cost: 1500 },
+    { name: "Tier 6", interactions_per_month: 3000, monthly_cost: 2100 },
+    { name: "Tier 7", interactions_per_month: 5000, monthly_cost: 2500 },
+    { name: "Tier 8", interactions_per_month: 7000, monthly_cost: 3500 },
+  ],
+  yearly: [
+    { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0 },
+    { name: "Tier 1", interactions_per_month: 30, monthly_cost: 25 },
+    { name: "Tier 1B", interactions_per_month: 80, monthly_cost: 67 },
+    { name: "Tier 1C", interactions_per_month: 120, monthly_cost: 95 },
+    { name: "Tier 2", interactions_per_month: 190, monthly_cost: 150 },
+    { name: "Tier 3", interactions_per_month: 530, monthly_cost: 375 },
+    { name: "Tier 4", interactions_per_month: 1125, monthly_cost: 750 },
+    { name: "Tier 5", interactions_per_month: 2000, monthly_cost: 1250 },
+    { name: "Tier 6", interactions_per_month: 3000, monthly_cost: 1750 },
+    { name: "Tier 7", interactions_per_month: 5000, monthly_cost: 2083 },
+    { name: "Tier 8", interactions_per_month: 7000, monthly_cost: 2917 },
+  ],
+};
 
-            const number_of_tickets = parseInt(ticketRange.value, 10) || 0;
-            // Update all prices and summary for the new billing cycle
-            updatePricesForCurrentPlan();
-            calculatePricePerMonth(number_of_tickets);
-            updateSummaryTotalPrice();
-            //console.log("The summary total is now: " + summaryTotalPrice.textContent + " chosen helpdesk price is: " + chosenHelpdeskPrice + " chosen automate price is: " + chosenAutomatePrice);
-        });
-    });
+// Define the voice tiers
+const voiceTiers = {
+  monthly: [
+    { range: "No Voice Tickets", tier: "Tier 0", price: 0 },
+    { range: "Pay as you go", tier: "Pay as you go", price: 0 },
+    { range: "0-24", tier: "Tier 1", price: 30 },
+    { range: "25-74", tier: "Tier 2", price: 90 },
+    { range: "75-149", tier: "Tier 3", price: 135 },
+    { range: "150-249", tier: "Tier 4", price: 175 },
+    { range: "250-499", tier: "Tier 5", price: 250 },
+    { range: "500-999", tier: "Tier 6", price: 400 },
+    { range: "999+", tier: "Tier 7", price: 0 },
+  ],
+  yearly: [
+    { range: "No Voice Tickets", tier: "Tier 0", price: 0 },
+    { range: "Pay as you go", tier: "Pay as you go", price: 0 },
+    { range: "0-24", tier: "Tier 1", price: 25 },
+    { range: "25-74", tier: "Tier 2", price: 75 },
+    { range: "75-149", tier: "Tier 3", price: 113 },
+    { range: "150-249", tier: "Tier 4", price: 146 },
+    { range: "250-499", tier: "Tier 5", price: 208 },
+    { range: "500-999", tier: "Tier 6", price: 333 },
+    { range: "999+", tier: "Tier 7", price: 0 },
+  ],
+};
 
-    $('.billing-toggle-radio.is-yearly').on('click', function () {
-        $('.billing-toggle-radio.is-yearly').addClass('active');
-        $('.billing-toggle-radio.is-monthly').removeClass('active');
-        setupBillingCycleToggle()
-        console.log('Updated all radio buttons for yearly')
-    });
+// Define the SMS tiers
+const smsTiers = {
+  monthly: [
+    { range: "No SMS Tickets", tier: "Tier 0", price: 0 },
+    { range: "Pay as you go", tier: "Pay as you go", price: 0 },
+    { range: "0-24", tier: "Tier 1", price: 20 },
+    { range: "25-74", tier: "Tier 2", price: 60 },
+    { range: "75-149", tier: "Tier 3", price: 90 },
+    { range: "150-249", tier: "Tier 4", price: 140 },
+    { range: "250-499", tier: "Tier 5", price: 216 },
+    { range: "500-999", tier: "Tier 6", price: 408 },
+    { range: "999+", tier: "Tier 7", price: 0 },
+  ],
+  yearly: [
+    { range: "No SMS Tickets", tier: "Tier 0", price: 0 },
+    { range: "Pay as you go", tier: "Pay as you go", price: 0 },
+    { range: "0-24", tier: "Tier 1", price: 17 },
+    { range: "25-74", tier: "Tier 2", price: 50 },
+    { range: "75-149", tier: "Tier 3", price: 75 },
+    { range: "150-249", tier: "Tier 4", price: 117 },
+    { range: "250-499", tier: "Tier 5", price: 180 },
+    { range: "500-999", tier: "Tier 6", price: 340 },
+    { range: "999+", tier: "Tier 7", price: 0 },
+  ],
+};
 
-    $('.billing-toggle-radio.is-monthly').on('click', function () {
-        $('.billing-toggle-radio.is-yearly').removeClass('active');
-        $('.billing-toggle-radio.is-monthly').addClass('active');
-        setupBillingCycleToggle()
-        console.log('Updated all radio buttons for monthly')
-    });
+// Select Voice and SMS selects
+const voiceTicketsSelect = document.querySelector(
+  `[data-target="voice-tickets"]`
+);
+const smsTicketsSelect = document.querySelector(`[data-target="sms-tickets"]`);
+const voiceSummary = document.querySelector(`[data-summary="voice"]`);
+const smsSummary = document.querySelector(`[data-summary="sms"]`);
 
-    // if .billing-toggle-radio.is-yearly has class active then child input radio should be checked
-    if ($('.billing-toggle-radio.is-yearly').hasClass('active')) {
-        $('.billing-toggle-radio.is-yearly input[type="radio"]').prop('checked', true);
-    }
+/****************************
+ *
+ * Global Functions
+ *
+ ****************************/
 
-    // if .billing-toggle-radio.is-monthly has class active then child input radio should be checked 
-    if ($('.billing-toggle-radio.is-monthly').hasClass('active')) {
-        $('.billing-toggle-radio.is-monthly input[type="radio"]').prop('checked', true);
-    }
+// format figures with comma separator
+function formatNumberWithCommas(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-  // Function to initialize the yearly plan as default on page load
-  function initializeBillingCycle() {
-    // Set the yearly plan as active
-    const yearlyPlanRadio = document.querySelector('.billing-toggle-radio.is-yearly');
-    if (yearlyPlanRadio) {
-      yearlyPlanRadio.classList.add('active');
-      yearlyPlanRadio.querySelector('input[type="radio"]').checked = true;
-    }
-  
-    // Update prices and summary for the yearly plan
-    updatePricesForCurrentPlan();
-    updateSummaryTotalPrice();
-  }
-  
-  // Call the setup for the billing cycle toggle
-  setupBillingCycleToggle();
-  initializeBillingCycle();  // Initialize the yearly plan on page load
-  /****************************
-   *
-   * HELPER FUNCTIONS
-   *
-   ****************************/
 
-  // Function to update the elements with new prices
-  function updateElements(target, value) {
-    document.querySelectorAll(`[data-el="${target}"]`).forEach((element) => {
-      element.textContent = value;
-    });
-  }
-
-  // Function to get the current plan type (yearly or monthly)
-  function getCurrentPlanType() {
-    return annualPlanRadios[0]?.checked ? "yearly" : "monthly";
-  }
+$(".support-tickets_cta").on("click", function () {
+    const orders = parseInt($(".support-tickets_input").val(), 10);
+    const tickets = Math.round(orders / 15);
+    $(".support-tickets_result-value").text(tickets);
+    $(".support-tickets_result").css("display", "block");
+  });
 
 /****************************
  *
- * FUNCTION TO UPDATE PRICES BASED ON CURRENT PLAN
+ * Step 1: Input Number of Tickets by User
  *
  ****************************/
-function updatePricesForCurrentPlan() {
-    const planType = getCurrentPlanType(); // 'monthly' or 'yearly'
-    const number_of_tickets = parseInt(ticketRange.value, 10) || 0;
+
+// Global variable to store the number of tickets
+let globalTicketNumber = 0;
+
+// Function to handle ticket range input
+$("#ticketRange").on("input", function () {
+    // Parse the input value as an integer or set to 0 if invalid
+    globalTicketNumber = parseInt($(this).val(), 10) || 0;
   
-    // Update helpdesk prices
-    const { planCost } = calculateHelpdeskPrice(number_of_tickets);
-    helpdeskPriceElements.forEach((element) => {
-      element.textContent = planCost;
-    });
+    // Log the current state
+    console.log("Step 1: Number of tickets selected:", globalTicketNumber);
   
-    // Update automate prices
-    const automationRates = [0.1, 0.2, 0.3];
-    automationRates.forEach((rate) => {
-      const automatedTickets = Math.floor(rate * number_of_tickets);
-      const automateCost = calculateAutomatePrice(automatedTickets);
+    // Pass the ticket number to DOM Element data-el="ticketNumber"
+    $('[data-el="ticketNumber"]').text(globalTicketNumber);
   
-      if (rate === 0.1 && automatePrice10) {
-        automatePrice10.textContent = automateCost;
-      } else if (rate === 0.2 && automatePrice20) {
-        automatePrice20.textContent = automateCost;
-      } else if (rate === 0.3 && automatePrice30) {
-        automatePrice30.textContent = automateCost;
-      }
-    });
+    // After ticket input changes, trigger next steps
+    if (globalCurrentPlanName === "Starter") {
+      toggleMonthly();
+    }
   
-    // Update voice and SMS prices
-    updateVoiceTicketPrice();
-    updateSmsTicketPrice();
+    updatePricesOnBillingCycleChange();
+    determinePlan(globalTicketNumber);
+    updateActivePlanElement();
+    updateLogosAndCTAs();
   
-    //console.log('Prices updated for current billing cycle:', planType);
+    // Ensure calculateSummary only runs if a plan has been selected
+    if (chosenHelpdeskPrice > 0) {
+      calculateSummary();
+    }
+  });
+
+// Function to initialize at 2000 tickets on page load
+function initTicketNumber() {
+  // Set the ticket number to 2000
+  globalTicketNumber = 2000;
+
+  // Update the ticket range input value
+  $("#ticketRange").val(globalTicketNumber);
+
+  // Pass the ticket number to DOM Element data-el="ticketNumber"
+  $('[data-el="ticketNumber"]').text(globalTicketNumber);
+
+  // After ticket input changes, trigger next steps
+  determinePlan(globalTicketNumber);
+  updateActivePlanElement();
+  updateLogosAndCTAs();
+}
+/****************************
+ *
+ * Step 2: Check Billing Cycle
+ *
+ ****************************/
+
+// Global variable to track the billing cycle
+let globalBillingCycle = "yearly"; // Default to yearly
+
+// Find all elements with class .billing-toggle-radio and add click event listeners
+$(".billing-toggle-radio").on("click", function () {
+  // Check if it's the yearly or monthly toggle
+  if ($(this).hasClass("is-yearly")) {
+    // Add active class to yearly, remove from monthly
+    $(".is-yearly").addClass("active");
+    $(".is-monthly").removeClass("active");
+
+    // Mark the yearly radio input as checked
+    $(".annualPlan").prop("checked", true);
+
+    // Update the global billing cycle
+    globalBillingCycle = "yearly";
+
+    // Log the change
+    console.log("Step 2: Switched to Yearly billing cycle");
+  } else if ($(this).hasClass("is-monthly")) {
+    // Add active class to monthly, remove from yearly
+    $(".is-monthly").addClass("active");
+    $(".is-yearly").removeClass("active");
+
+    // Mark the monthly radio input as checked
+    $(".monthlyPlan").prop("checked", true);
+
+    // Update the global billing cycle
+    globalBillingCycle = "monthly";
+
+    // Log the change
+    console.log("Step 2: Switched to Monthly billing cycle");
   }
 
-  /****************************
-   *
-   * HELPER FUNCTION TO CALCULATE AUTOMATION PRICE
-   *
-   ****************************/
+  // Call updatePricesOnBillingCycleChange to recalculate prices and update DOM
+  updatePricesOnBillingCycleChange();
+  // After changing the billing cycle, reinitialize plan pricing
+  determinePlan(globalTicketNumber);
+});
 
-  function calculateAutomatePrice(automatedTickets) {
-    const planType = getCurrentPlanType();
-    const plans = automatePlans[planType];
-
-    let selectedPlan = plans[0];
-
-    for (let i = 0; i < plans.length; i++) {
-      if (automatedTickets <= plans[i].interactions_per_month) {
-        selectedPlan = plans[i];
-        break;
-      }
-    }
-
-    //console.log(`Automation Price Calculation: Plan Name: ${selectedPlan.name}, Monthly Cost: ${selectedPlan.monthly_cost}, Automated Tickets: ${automatedTickets}`);
-    updateElements("automatePrice", selectedPlan.monthly_cost);
-    return selectedPlan.monthly_cost;
+// Function to toggle to monthly billing cycle
+function toggleMonthly() {
+  // Add active class to monthly, remove from yearly
+  $(".is-monthly").addClass("active");
+  $(".is-yearly").removeClass("active");
+  // Mark the monthly radio input as checked
+  $(".monthlyPlan").prop("checked", true);
+  // Update the global billing cycle
+  globalBillingCycle = "monthly";
+  // Log the change
+  console.log("Step 2: Switched to Monthly billing cycle");
+  // After changing the billing cycle, reinitialize plan pricing
+  determinePlan(globalTicketNumber);
+  if (globalCurrentPlanName === "Starter") {
+    // Set yearly toggle button to pointer-events none
+    $(".billing-toggle-radio.is-yearly").css("pointer-events", "none");
+  } else {
+    // Set yearly toggle button to pointer-events auto
+    $(".billing-toggle-radio.is-yearly").css("pointer-events", "auto");
   }
+}
 
-  /****************************
-   *
-   * FUNCTION TO CALCULATE HELPDESK PRICE WITH OVERAGES
-   *
-   ****************************/
+/****************************
+ *
+ * Step 3: Compare globalTicketNumber to Data Definitions
+ *
+ ****************************/
 
-  function calculateHelpdeskPrice(nb_of_tickets) {
-    const planType = getCurrentPlanType();
-    const plans = helpdeskPlans[planType];
+// Global variables for current plan
+let globalCurrentPlanName = "";
+let globalCurrentPlanPrice = 0; // This will hold the base price of the selected plan
 
-    let currentPlanIndex = 0;
-    let applicablePlan = plans[currentPlanIndex];
-    let planCost = 0;
-    let overageCost = 0;
+// Function to determine the plan based on the number of tickets
+function determinePlan(tickets) {
+  const plans = helpdeskPlans[globalBillingCycle]; // Choose the plans based on the current billing cycle
+  let currentPlanIndex = 0; // Start with the first plan
+  let applicablePlan = plans[currentPlanIndex]; // Default to the first plan
+  let overageCost = 0; // Overage cost variable
+  let planCost = 0; // Plan cost variable
 
-    // Loop through plans and check base price + overage cost
-    while (currentPlanIndex < plans.length) {
-      const plan = plans[currentPlanIndex];
-      const overageTickets = nb_of_tickets - plan.tickets_per_month;
-      overageCost = overageTickets > 0 ? overageTickets * plan.cost_per_overage_ticket : 0;
-      planCost = plan.monthly_cost;
+  // Loop through plans and check base price + overage cost, but display base price only
+  while (currentPlanIndex < plans.length) {
+    const plan = plans[currentPlanIndex];
+    const overageTickets = tickets - plan.tickets_per_month;
+    overageCost =
+      overageTickets > 0 ? overageTickets * plan.cost_per_overage_ticket : 0;
+    planCost = plan.monthly_cost;
 
-      //console.log(`Checking Plan: ${plan.name}, Base Price: ${planCost}, Overage Tickets: ${overageTickets}, Overage Cost: ${overageCost}`);
-
-      const totalPrice = planCost + overageCost;
-
-      // Move to the next plan if the next one has a better total price
-      if (currentPlanIndex < plans.length - 1 && totalPrice > plans[currentPlanIndex + 1].monthly_cost) {
-        currentPlanIndex++;
-        applicablePlan = plans[currentPlanIndex];
-      } else {
-        break;
-      }
-    }
-
+    // Calculate total price (plan base cost + overage cost)
     const totalPrice = planCost + overageCost;
 
-    //console.log(`Final Plan Selected: ${applicablePlan.name}, Plan Cost: ${planCost}, Overage Cost: ${overageCost}, Total Cost: ${totalPrice}`);
+    // Log current plan calculation for debugging
+    console.log(
+      `Checking Plan: ${plan.name}, Base Price: ${planCost}, Overage Tickets: ${overageTickets}, Overage Cost: ${overageCost}, Total Price: ${totalPrice}`
+    );
 
-    return {
-      planName: applicablePlan.name,
-      planCost: planCost,
-      overageCost: overageCost,
-      totalPrice: totalPrice,
-    };
-  }
-
-  /****************************
-   *
-   * FUNCTION TO CALCULATE TOTAL PRICE INCLUDING AUTOMATION
-   *
-   ****************************/
-
-  function calculatePricePerMonth(nb_of_tickets) {
-    // Calculate the best helpdesk plan
-    const { planName, planCost, overageCost, totalPrice } = calculateHelpdeskPrice(nb_of_tickets);
-
-    // Update the helpdesk-only price in all matching elements
-    helpdeskPriceElements.forEach((element) => {
-      element.textContent = `${planCost}`;
-    });
-
-    // Update the plan name in all elements with data-el="planName"
-    planNameElements.forEach((element) => {
-      element.textContent = planName;
-    });
-
-    // Update the ticket number for Helpdesk (total number of tickets)
-    ticketNumberElements.forEach((element) => {
-      element.textContent = `${nb_of_tickets}`;
-    });
-
-    //console.log(`Helpdesk Plan: ${planName}, Plan Cost: ${planCost}, Overage Cost: ${overageCost}, Total Price: ${totalPrice}`);
-
-    // Calculate the total cost for each automation rate (10%, 20%, 30%)
-    const automationRates = [0.1, 0.2, 0.3];
-
-    automationRates.forEach((rate) => {
-        const automatedTickets = Math.floor(rate * nb_of_tickets);
-        const automateCost = calculateAutomatePrice(automatedTickets);
-        const totalCost = planCost + automateCost;
-      
-        if (rate === 0) {
-          helpdeskPrice0Elements.forEach((element) => {
-            element.textContent = `${totalCost}`;
-          });
-        } else if (rate === 0.1) {
-          automateTicketNumber10Elements.forEach((element) => {
-            element.textContent = `${automatedTickets}`;
-          });
-          if (automatePrice10) {
-            automatePrice10.textContent = `${automateCost}`;
-            automationRate.textContent = `10`;
-          }
-          helpdeskPrice10Elements.forEach((element) => {
-            element.textContent = `${totalCost}`;
-          });
-        } else if (rate === 0.2) {
-          automateTicketNumber20Elements.forEach((element) => {
-            element.textContent = `${automatedTickets}`;
-          });
-          if (automatePrice20) {
-            automatePrice20.textContent = `${automateCost}`;
-            automationRate.textContent = `20`;
-          }
-          helpdeskPrice20Elements.forEach((element) => {
-            element.textContent = `${totalCost}`;
-          });
-        } else if (rate === 0.3) {
-          automateTicketNumber30Elements.forEach((element) => {
-            element.textContent = `${automatedTickets}`;
-          });
-          if (automatePrice30) {
-            automatePrice30.textContent = `${automateCost}`;
-            automationRate.textContent = `30`;
-          }
-          helpdeskPrice30Elements.forEach((element) => {
-            element.textContent = `${totalCost}`;
-          });
-        }
-      
-       // console.log(`Automation Rate: ${rate * 100}%, Automated Tickets: ${automatedTickets}, Automate Cost: ${automateCost}, Total Price: ${totalCost}`);
-      });
-
-    // Call the updateActivePlanElement with the actual plan name
-    updateActivePlanElement(planName);
-  }
-
-  /****************************
-   *
-   * VOICE AND SMS TICKET PRICING
-   *
-   ****************************/
-
-  // Function to calculate voice ticket price
-  function calculateVoiceTicketPrice(selectedTier, planType) {
-    const tier = voiceTiers[planType].find(t => t.tier === selectedTier);
-    return tier ? tier.price : 0;
-  }
-
-  // Function to calculate SMS ticket price
-  function calculateSmsTicketPrice(selectedTier, planType) {
-    const tier = smsTiers[planType].find(t => t.tier === selectedTier);
-    return tier ? tier.price : 0;
-  }
-
-  // Function to update the UI with voice ticket prices
-  function updateVoiceTicketPrice() {
-    const selectedTier = voiceTicketsSelect.value;
-    const planType = getCurrentPlanType();
-    const voiceTicketPrice = calculateVoiceTicketPrice(selectedTier, planType);
-    updateElements("voicePrice", voiceTicketPrice.toFixed(0));
-    //(`Updated UI with voice ticket price: ${voiceTicketPrice}`);
-    updateSummaryTotalPrice();
-  }
-
-  // Function to update the UI with SMS ticket prices
-  function updateSmsTicketPrice() {
-    const selectedTier = smsTicketsSelect.value;
-    const planType = getCurrentPlanType();
-    const smsTicketPrice = calculateSmsTicketPrice(selectedTier, planType);
-    updateElements("smsPrice", smsTicketPrice.toFixed(0));
-    //console.log(`Updated UI with SMS ticket price: ${smsTicketPrice}`);
-    updateSummaryTotalPrice();
-  }
-
-  function updateElements(target, value) {
-    document.querySelectorAll(`[data-el="${target}"]`).forEach((element) => {
-      element.textContent = value;
-    });
-  }
-
-  function updateSummaryTotalPrice() {
-    // Ensure chosenHelpdeskPrice and chosenAutomatePrice are numbers before attempting to manipulate them
-    const helpdeskPrice = parseInt(chosenHelpdeskPrice || "0", 10) || 0;
-    const automatePrice = parseInt(chosenAutomatePrice || "0", 10) || 0;
-
-    // Use the selected tier to find the voice and SMS prices from the corresponding tier objects
-    const voiceTier = voiceTiers[getCurrentPlanType()].find(t => t.tier === voiceTicketsSelect.value);
-    const voicePrice = voiceTier ? voiceTier.price : 0;
-
-    const smsTier = smsTiers[getCurrentPlanType()].find(t => t.tier === smsTicketsSelect.value);
-    const smsPrice = smsTier ? smsTier.price : 0;
-  
-    // Calculate the total price
-    const totalPrice = helpdeskPrice + automatePrice + voicePrice + smsPrice;
-  
-    // Update the summary total price element
-    updateElements("summaryTotalPrice", totalPrice.toFixed(2));
-  
-    //console.log(`Summary Total Price Updated: ${totalPrice.toFixed(2)}`);
-  }
-
-  /****************************
-   *
-   * FUNCTION TO UPDATE ACTIVE PLAN ELEMENT
-   *
-   ****************************/
-
-  function updateActivePlanElement(planName) {
-    const planElements = document.querySelectorAll('[g-col-highlight]');
-
-    planElements.forEach((element) => {
-      if (element.getAttribute('g-col-highlight').toLowerCase() === planName.toLowerCase()) {
-        element.classList.add('is-active');
-      } else {
-        element.classList.remove('is-active');
-      }
-    });
-
-   // console.log(`Active Plan Element Updated: ${planName}`);
-  }
-
-  /****************************
-   *
-   * FUNCTION TO HANDLE PRICING CARD SELECTION
-   *
-   ****************************/ 
-
-  function handlePricingCardClick() {
-    // Deselect all cards and their automate pills
-    $(".pricing_card").removeClass("is-selected");
-    $(".pricing_card .pricing_automate-pill").removeClass("is-selected");
-
-    // Select the clicked card and its automate pill
-    $(this).toggleClass("is-selected");
-    $(this).find(".pricing_automate-pill").toggleClass("is-selected");
-
-    // Get the chosen helpdesk price from the clicked card
-    chosenHelpdeskPrice = $(this).find('[data-el="helpdeskPrice"]').text();
-
-    // Check which automate price to update based on the clicked card
-    if ($(this).is(pricingCard)) {
-      chosenAutomatePrice = $(this).find('[data-update="automatePrice"]').text();
-    } else if ($(this).is(pricingCard10)) {
-      chosenAutomatePrice = $(this).find('[data-update="automatePrice10"]').text();
-    } else if ($(this).is(pricingCard20)) {
-      chosenAutomatePrice = $(this).find('[data-update="automatePrice20"]').text();
-    } else if ($(this).is(pricingCard30)) {
-      chosenAutomatePrice = $(this).find('[data-update="automatePrice30"]').text();
+    // Compare total price (plan + overage) with the next plan's base price
+    if (
+      currentPlanIndex < plans.length - 1 &&
+      totalPrice > plans[currentPlanIndex + 1].monthly_cost
+    ) {
+      // Move to the next plan if it is cheaper (considering overages)
+      currentPlanIndex++;
+      applicablePlan = plans[currentPlanIndex];
+    } else {
+      // Stay on the current plan if it's cheaper or equal
+      break;
     }
-
-    // Log the selected prices for debugging
-    //console.log(`Chosen Helpdesk Price: ${chosenHelpdeskPrice}`);
-    //console.log(`Chosen Automate Price: ${chosenAutomatePrice}`);
-
-    // Update the summary elements with the chosen prices
-    updateElements('chosenHelpdeskPrice', chosenHelpdeskPrice);
-    updateElements('chosenAutomatePrice', chosenAutomatePrice);
-
-    // Update the summary total price
-    updateSummaryTotalPrice();
   }
 
-  // Attach event listener for all pricing cards
-  $(".pricing_card").on("click", handlePricingCardClick);
+  // Set the global current plan name and base price (excluding overage cost)
+  globalCurrentPlanName = applicablePlan.name;
+  globalCurrentPlanPrice = applicablePlan.monthly_cost; // Always display the base price
 
+  // Update the DOM element with the current plan name
+  $('[data-el="planName"]').text(globalCurrentPlanName);
 
-  /****************************
-   *
-   * EVENT LISTENERS
-   *
-   ****************************/
+  // Log the selected plan and base price (without overages)
+  console.log(
+    "Step 3: Selected Plan -",
+    globalCurrentPlanName,
+    "| Base Price:",
+    globalCurrentPlanPrice
+  );
 
-  if (ticketRange) {
-    ticketRange.addEventListener("input", function () {
-      const number_of_tickets = parseInt(ticketRange.value, 10) || 0;
-      //console.log(`Input Event Fired: Number of Tickets: ${number_of_tickets}`);
-      calculatePricePerMonth(number_of_tickets);
-    });
-  } else {
-    console.error("ticketRange element not found!");
+  // After determining the plan, calculate automated ticket prices
+  calculateAutomatePrices();
+}
+
+/****************************
+ *
+ * Step 4: Calculate Number of Automated Tickets
+ *
+ ****************************/
+
+// Global variables for automated ticket counts and prices
+let globalAutomateTickets0 = 0,
+  globalAutomateTickets10 = 0,
+  globalAutomateTickets20 = 0,
+  globalAutomateTickets30 = 0;
+let globalAutomatePrice0 = 0,
+  globalAutomatePrice10 = 0,
+  globalAutomatePrice20 = 0,
+  globalAutomatePrice30 = 0;
+
+// Function to calculate automated ticket prices based on ticket percentages
+function calculateAutomatePrices() {
+  // Calculate the number of automated tickets for each percentage
+  globalAutomateTickets0 = 0;
+  globalAutomateTickets10 = Math.round(globalTicketNumber * 0.1);
+  globalAutomateTickets20 = Math.round(globalTicketNumber * 0.2);
+  globalAutomateTickets30 = Math.round(globalTicketNumber * 0.3);
+
+  // For each percentage, update the DOM element with the calculated ticket count
+  $('[data-el="automateTicketNumber10"]').text(globalAutomateTickets10);
+  $('[data-el="automateTicketNumber20"]').text(globalAutomateTickets20);
+  $('[data-el="automateTicketNumber30"]').text(globalAutomateTickets30);
+
+  // Fetch the automate plans for the current billing cycle
+  const automatePlansForCycle = automatePlans[globalBillingCycle];
+
+  // Determine automate prices for each percentage
+  globalAutomatePrice0 = findAutomatePrice(
+    globalAutomateTickets0,
+    automatePlansForCycle
+  );
+  globalAutomatePrice10 = findAutomatePrice(
+    globalAutomateTickets10,
+    automatePlansForCycle
+  );
+  globalAutomatePrice20 = findAutomatePrice(
+    globalAutomateTickets20,
+    automatePlansForCycle
+  );
+  globalAutomatePrice30 = findAutomatePrice(
+    globalAutomateTickets30,
+    automatePlansForCycle
+  );
+
+  // Log the calculated automated prices
+  console.log(
+    "Step 4: Automated Prices | 0%:",
+    globalAutomatePrice0,
+    "| 10%:",
+    globalAutomatePrice10,
+    "| 20%:",
+    globalAutomatePrice20,
+    "| 30%:",
+    globalAutomatePrice30
+  );
+
+  // Proceed to calculate option prices
+  calculateOptionPrices();
+}
+
+// Helper function to find automate price based on ticket count
+function findAutomatePrice(tickets, plans) {
+  let selectedPlan = plans[0];
+  for (let i = 0; i < plans.length; i++) {
+    if (tickets <= plans[i].interactions_per_month) {
+      selectedPlan = plans[i];
+      break;
+    }
   }
+  return selectedPlan.monthly_cost;
+}
 
-  voiceTicketsSelect.addEventListener("change", function () {
-    updateVoiceTicketPrice();
-  });
+/****************************
+ *
+ * Step 5: Calculate Plan Option Prices
+ *
+ ****************************/
 
-  smsTicketsSelect.addEventListener("change", function () {
-    updateSmsTicketPrice();
-  });
+// Function to calculate total plan prices for different automation levels
+function calculateOptionPrices() {
+  const option1 = globalCurrentPlanPrice + globalAutomatePrice0;
+  const option2 = globalCurrentPlanPrice + globalAutomatePrice10;
+  const option3 = globalCurrentPlanPrice + globalAutomatePrice20;
+  const option4 = globalCurrentPlanPrice + globalAutomatePrice30;
 
-  // Initialize with the default selected values
+  // Update the DOM elements with the calculated prices
+  $('[data-el="helpdeskPrice0"]').text(option1);
+  $('[data-el="helpdeskPrice10"]').text(option2);
+  $('[data-el="helpdeskPrice20"]').text(option3);
+  $('[data-el="helpdeskPrice30"]').text(option4);
+
+  // Log the option prices
+  console.log(
+    "Step 5: Option Prices | Option 1:",
+    option1,
+    "| Option 2:",
+    option2,
+    "| Option 3:",
+    option3,
+    "| Option 4:",
+    option4
+  );
+}
+
+/****************************
+ *
+ * Step 6: Choosing a Plan
+ *
+ ****************************/
+$('[data-el^="pricingCard"]').on("click", function () {
+  // Store the selected card type (e.g., "pricingCard", "pricingCard10", etc.)
+  selectedCardType = $(this).attr("data-el");
+  console.log("Selected card type:", selectedCardType);
+
+  // Deselect all cards and their automate pills
+  $(".pricing_card").removeClass("is-selected");
+  $(".pricing_card .pricing_automate-pill").removeClass("is-selected");
+
+  // Select the clicked card and its automate pill
+  $(this).toggleClass("is-selected");
+  $(this).find(".pricing_automate-pill").toggleClass("is-selected");
+
+  // Display the selected plan summary and hide the no-selection message
+  $(".plan_summary-layout").css("display", "flex");
+  $(".plan_no-selection").css("display", "none");
+
+  // Enable the code radio buttons
+  $(".code-radio").removeClass("is-inactive");
+
+  // Update chosen prices and summary total
+  updateChosenPrices();
+  calculateSummary();
+  calculateROISavings();
+});
+
+/****************************
+ *
+ * Function to Calculate ROI Savings Based on Chosen Plan
+ *
+ ****************************/
+
+function calculateROISavings() {
+    const avgTimePerTicketWithoutGorgias = 8.6; // Average time per ticket without Gorgias, in minutes
+    const avgTimePerTicketWithGorgias = 6; // Average time per ticket with Gorgias, in minutes
+    const avgSupportSalary = 35; // Average support salary in USD/hour
+    
+    // Agent tickets is set to globalTicketNumber by default
+    const agentTickets = globalTicketNumber;
+    
+    // Ensure agent tickets are a valid number
+    if (isNaN(agentTickets)) {
+        console.error("Invalid agent ticket number");
+        return;
+    }
+    
+    // Calculate total support time without Gorgias (in hours)
+    const totalSupportTimeWithoutGorgias = (agentTickets * avgTimePerTicketWithoutGorgias) / 60;
+    
+    // Calculate total human cost without Gorgias
+    const totalHumanCostWithoutGorgias = totalSupportTimeWithoutGorgias * avgSupportSalary;
+    
+    // Calculate total support time with Gorgias (in hours)
+    const totalSupportTimeWithGorgias = (agentTickets * avgTimePerTicketWithGorgias) / 60;
+    
+    // Calculate total human cost with Gorgias
+    const totalHumanCostWithGorgias = totalSupportTimeWithGorgias * avgSupportSalary;
+    
+    // Calculate total Gorgias cost (helpdesk + automate prices)
+    const totalGorgiasCost = chosenHelpdeskPrice + chosenAutomatePrice;
+    
+    // Calculate time and money saved
+    const timeSaved = totalSupportTimeWithoutGorgias - totalSupportTimeWithGorgias;
+    const moneySaved = totalHumanCostWithoutGorgias - (totalHumanCostWithGorgias + totalGorgiasCost);
+  
+    // Log the results for debugging
+    console.log(`Agent tickets: ${agentTickets}`);
+    console.log(`Total support time without Gorgias (hours): ${totalSupportTimeWithoutGorgias}`);
+    console.log(`Total human cost without Gorgias: ${totalHumanCostWithoutGorgias}`);
+    console.log(`Chosen helpdesk price: ${chosenHelpdeskPrice}`);
+    console.log(`Chosen automate price: ${chosenAutomatePrice}`);
+    console.log(`Total Gorgias cost: ${totalGorgiasCost}`);
+    console.log(`Total support time with Gorgias (hours): ${totalSupportTimeWithGorgias}`);
+    console.log(`Total human cost with Gorgias: ${totalHumanCostWithGorgias}`);
+    console.log(`Time saved: ${timeSaved} hours`);
+    console.log(`Money saved: ${moneySaved} USD`);
+    
+    // Format money saved with comma separators
+    const formattedMoneySaved = formatNumberWithCommas(moneySaved.toFixed(0));
+    
+    // Update the DOM with time and formatted money saved
+    $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
+    $('[data-target="moneySaved"]').text(formattedMoneySaved);
+}
+
+/****************************
+ *
+ * Function to Recalculate Prices When Billing Cycle Changes
+ *
+ ****************************/
+
+function updatePricesOnBillingCycleChange() {
+  console.log("Billing cycle changed to:", globalBillingCycle);
+
+  // Recalculate prices for the current billing cycle
+  determinePlan(globalTicketNumber); // This recalculates the plan based on ticket number
+  calculateAutomatePrices(); // Recalculate automate prices
+
   updateVoiceTicketPrice();
   updateSmsTicketPrice();
-  updateSummaryTotalPrice();
 
+  // Ensure that chosen prices are updated after recalculating plans
+  setTimeout(() => {
+    updateChosenPrices(); // Ensure this updates the DOM after recalculating
+    calculateSummary(); // Recalculate summary once prices are updated
+    calculateROISavings();
+  }, 100); // Adding a slight delay to ensure execution order
+}
+
+/****************************
+ *
+ * Function to Update Chosen Prices Based on Selected Card Type
+ *
+ ****************************/
+// Initialize selectedCardType to a default value
+let selectedCardType = "pricingCard"; // Default value if no card is selected
+
+function updateChosenPrices() {
+  console.log("Updating prices for selected card:", selectedCardType);
+
+  // Check if a card was selected previously
+  if (!selectedCardType) {
+    console.warn("No selected card type, using default (pricingCard).");
+    selectedCardType = "pricingCard"; // Default to the first card if none is selected
+  }
+
+  // Update chosen prices based on the selected card
+  switch (selectedCardType) {
+    case "pricingCard":
+      chosenHelpdeskPrice = globalCurrentPlanPrice;
+      chosenAutomatePrice = globalAutomatePrice0;
+      break;
+    case "pricingCard10":
+      chosenHelpdeskPrice = globalCurrentPlanPrice;
+      chosenAutomatePrice = globalAutomatePrice10;
+      break;
+    case "pricingCard20":
+      chosenHelpdeskPrice = globalCurrentPlanPrice;
+      chosenAutomatePrice = globalAutomatePrice20;
+      break;
+    case "pricingCard30":
+      chosenHelpdeskPrice = globalCurrentPlanPrice;
+      chosenAutomatePrice = globalAutomatePrice30;
+      break;
+  }
+
+  // Log updated prices
+  console.log("Updated chosenHelpdeskPrice:", chosenHelpdeskPrice);
+  console.log("Updated chosenAutomatePrice:", chosenAutomatePrice);
+
+  // Update the DOM with the chosen prices
+  $('[data-el="chosenHelpdeskPrice"]').text(chosenHelpdeskPrice);
+  $('[data-el="chosenAutomatePrice"]').text(chosenAutomatePrice);
+}
+
+/****************************
+ *
+ * Step 7: Calculating the Summary Total
+ *
+ ****************************/
+// Initialize chosen prices to default values (0) to avoid errors
+let chosenHelpdeskPrice = 0;
+let chosenAutomatePrice = 0;
+
+// Function to calculate and update the summary total
+function calculateSummary() {
+  // Ensure chosenHelpdeskPrice and chosenAutomatePrice are valid
+  if (typeof chosenHelpdeskPrice === 'undefined' || chosenHelpdeskPrice === 0) {
+    console.warn("No plan has been selected yet.");
+    return; // Exit the function until a plan is chosen
+  }
+
+  // Calculate the summary total
+  summaryTotal = chosenHelpdeskPrice + chosenAutomatePrice + voiceTicketPrice + smsTicketPrice;
+
+  // Log the calculated summary total
+  console.log("Calculated summary total:", summaryTotal);
+
+  // Format the summary total with comma separators
+  const formattedTotal = formatNumberWithCommas(summaryTotal.toFixed(0));
+
+  // Update the DOM with the new formatted summary total
+  $('[data-el="summaryTotalPrice"]').text(formattedTotal);
+
+  console.log("Updated DOM with formatted summary total:", formattedTotal);
+}
+
+/****************************
+ *
+ * Step 8: Update Active Plan Element
+ *
+ ****************************/
+function updateActivePlanElement() {
+  globalCurrentPlanName; // Use the global variable to get the current plan name
+
+  // Find all elements with the attribute 'g-col-highlight'
+  const planElements = document.querySelectorAll("[g-col-highlight]");
+
+  // Loop through each element to check if its value matches the current plan name
+  planElements.forEach((element) => {
+    // Compare the element's attribute value with the current plan name, case insensitive
+    if (
+      element.getAttribute("g-col-highlight").toLowerCase() ===
+      globalCurrentPlanName.toLowerCase()
+    ) {
+      element.classList.add("is-active"); // Add the 'is-active' class if it matches
+    } else {
+      element.classList.remove("is-active"); // Otherwise, remove the 'is-active' class
+    }
+  });
+}
+
+/****************************
+ *
+ * Selecting and calculating voice and SMS tickets
+ *
+ * **************************/
+
+// Global variables for voice and SMS ticket prices
+let voiceTicketPrice = 0;
+let smsTicketPrice = 0;
+
+// Function to calculate the price of the voice tickets
+function calculateVoiceTicketPrice(selectedTier, planType) {
+  const tiers = voiceTiers[planType];
+  const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
+  return selectedPlan ? selectedPlan.price : 0;
+}
+
+// Function to calculate the price of the SMS tickets
+function calculateSmsTicketPrice(selectedTier, planType) {
+  const tiers = smsTiers[planType];
+  const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
+  return selectedPlan ? selectedPlan.price : 0;
+}
+
+// Function to update the UI with voice ticket prices
+function updateVoiceTicketPrice() {
+  const selectedTier = voiceTicketsSelect.value; // Get the selected tier
+  const planType = globalBillingCycle; // Use the global billing cycle to determine the plan type
+  voiceTicketPrice = calculateVoiceTicketPrice(selectedTier, planType); // Update global variable
+
+  // Pass the selected range to the DOM
+  const tiers = voiceTiers[planType];
+  const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
+  if (selectedPlan) {
+    $('[data-el="nbVoiceTickets"]').text(selectedPlan.range);
+  }
+
+  // Update DOM element for voice price
+  $('[data-el="voicePrice"]').text(voiceTicketPrice.toFixed(0));
+  console.log(`Updated UI with voice ticket price: ${voiceTicketPrice}`);
+
+  // Ensure we recalculate the summary total after updating the price
+  calculateSummary();
+}
+
+// Function to update the UI with SMS ticket prices
+function updateSmsTicketPrice() {
+  const selectedTier = smsTicketsSelect.value; // Get the selected tier
+  const planType = globalBillingCycle; // Use the global billing cycle to determine the plan type
+  smsTicketPrice = calculateSmsTicketPrice(selectedTier, planType); // Update global variable
+
+  // Pass the selected range to the DOM
+  const tiers = smsTiers[planType];
+  const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
+  if (selectedPlan) {
+    $('[data-el="nbSMSTickets"]').text(selectedPlan.range);
+  }
+
+  // Update DOM element for SMS price
+  $('[data-el="smsPrice"]').text(smsTicketPrice.toFixed(0));
+  console.log(`Updated UI with SMS ticket price: ${smsTicketPrice}`);
+
+  // Ensure we recalculate the summary total after updating the price
+  calculateSummary();
+}
+
+voiceTicketsSelect.addEventListener("change", updateVoiceTicketPrice);
+smsTicketsSelect.addEventListener("change", updateSmsTicketPrice);
+
+voiceTicketsSelect.addEventListener("change", function () {
+  $(voiceSummary).removeClass("is-hidden");
+  updateVoiceTicketPrice();
+});
+
+smsTicketsSelect.addEventListener("change", function () {
+  $(smsSummary).removeClass("is-hidden");
+  updateSmsTicketPrice();
+});
+
+/****************************
+ *
+ * Remove Items from Summary
+ *
+ * **************************/
+
+// Handle clicks on remove buttons
+
+// When click on helpdesk-remove and automate-remove buttons plan_summary-layout display none and plan_no-selection display flex
+$('[data-summary="helpdesk-remove"').on("click", function () {
+  $(".plan_summary-layout").css("display", "none");
+  $(".plan_no-selection").css("display", "flex");
+  $(".code-radio").addClass("is-inactive");
+  $(".pricing_card").removeClass("is-selected");
+});
+
+$('[data-summary="automate-remove"').on("click", function () {
+  $(".plan_summary-layout").css("display", "none");
+  $(".plan_no-selection").css("display", "flex");
+  $(".code-radio").addClass("is-inactive");
+  $(".pricing_card").removeClass("is-selected");
+});
+
+$('[data-summary="voice-remove"').on("click", function () {
+  // Remove the selected voice tier by choosing the default option "No Voice Tickets"
+  voiceTicketsSelect.value = "Tier 0";
+  // Remove current class
+  $(".addons_dropdown-links.w--current").removeClass("w--current");
+  $(voiceSummary).addClass("is-hidden");
+  // Update the UI with the new price
+  updateVoiceTicketPrice();
+});
+
+$('[data-summary="sms-remove"').on("click", function () {
+  // Remove the selected voice tier by choosing the default option "No Voice Tickets"
+  smsTicketsSelect.value = "Tier 0";
+  // Remove current class
+  $(".addons_dropdown-links.w--current").removeClass("w--current");
+  $(smsSummary).addClass("is-hidden");
+  // Update the UI with the new price
+  updateSmsTicketPrice();
+});
+
+/***************************
+ *
+ * Update UI elements
+ *
+ * *************************/
+
+// Function to display logos elements based on current plan name
+// if plan name is Starter, Basic or Pro display logos for Pro
+// if plan name is Advanced display logos for Advanced
+// if plan name is Enterprise display logos for Enterprise
+
+function updateLogosAndCTAs() {
+  if (
+    globalCurrentPlanName === "Starter" ||
+    globalCurrentPlanName === "Basic" ||
+    globalCurrentPlanName === "Pro"
+  ) {
+    $(".is-pro-logos").css("display", "flex");
+    $(".is-advanced-logos").css("display", "none");
+    $(".is-enterprise-logos").css("display", "none");
+    $('[data-el="book-demo"]').css("display", "none");
+    $('[data-el="start-free-trial"]').css("display", "block");
+    $(".pricing_card-wrapper").css("display", "flex");
+    $(".pricing-step_banner.is-enterprise").css("display", "none");
+  } else if (globalCurrentPlanName === "Advanced") {
+    $(".is-pro-logos").css("display", "none");
+    $(".is-advanced-logos").css("display", "flex");
+    $(".is-enterprise-logos").css("display", "none");
+    $('[data-el="book-demo"]').css("display", "block");
+    $('[data-el="start-free-trial"]').css("display", "none");
+    $(".pricing_card-wrapper").css("display", "flex");
+    $(".pricing-step_banner.is-enterprise").css("display", "none");
+  } else if (globalCurrentPlanName === "Enterprise") {
+    $(".is-pro-logos").css("display", "none");
+    $(".is-advanced-logos").css("display", "none");
+    $(".is-enterprise-logos").css("display", "flex");
+    $(".pricing_card-wrapper").css("display", "none");
+    $(".pricing-step_banner.is-enterprise").css("display", "flex");
+  }
+}
+
+
+var Webflow = Webflow || [];
+Webflow.push(function () {
+  // Initialize the ticket number input
+  initTicketNumber();
+  // Initialize the active plan element
+  updateActivePlanElement();
 });
