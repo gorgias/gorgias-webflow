@@ -235,7 +235,7 @@ $("#ticketRange").on("change", function () {
     // Set a new timeout to trigger the scroll after 1000ms of inactivity
     debounceTimeout = setTimeout(function () {
         // Scroll to #step-1 after 1000ms of inactivity
-        document.querySelector("#step-2").scrollIntoView({ behavior: "smooth" });
+        document.querySelector("#step-1").scrollIntoView({ behavior: "smooth" });
     }, 500); // 1000ms delay
 });
 
