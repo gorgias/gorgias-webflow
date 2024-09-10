@@ -414,7 +414,7 @@ $("#ticketRange").on("change", function () {
   const ticketNumber = parseInt($(this).val(), 10);
 
   // Check if the ticket number is less than 3000
-  if (ticketNumber >= 2500) {
+  if (ticketNumber >= 2000) {
     $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
   } else {
     $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
@@ -430,7 +430,15 @@ $(".more-tickets-cta").on("click", function() {
   // Update the range slider attributes
   const rangeSlider = $(".pricing-step_range-module");
   rangeSlider.attr("fs-rangeslider-max", "10000"); // Change the max to 10000
-  rangeSlider.attr("fs-rangeslider-step", "100");  // Change the step to 100
+  rangeSlider.attr("fs-rangeslider-step", "10");  // Change the step to 100
+
+  window.fsAttributes = window.fsAttributes || [];
+ window.fsAttributes.push([
+   'rangeslider',
+   (listInstances) => {
+     window.fsAttributes.rangeslider.init();
+   },
+ ]);
 
   // Log the change for debugging
   console.log("Range slider updated to max 10000 and step 100");
@@ -438,16 +446,30 @@ $(".more-tickets-cta").on("click", function() {
 
 
 
-$('.range-slider_thumb').on('mouseup keyup', function() {
-  console.log('ticketRange event triggered'); // Log to see if the event is detected
-  var scrollTarget = $('#step-1');
-  if (scrollTarget.length) { // Check if the target element exists
-    console.log('Scrolling to #step-1');
-    $('html, body').animate({
-      scrollTop: scrollTarget.offset().top - ($(window).height() * -0.1) // Scroll with a 20% offset
-    }, 400); // 1-second scroll duration
-  } else {
-    console.log('Element #step-1 not found');
+let isThumbDragging = false; // Flag to track if the thumb is being dragged
+
+// Listen for mousedown on the .range-slider_thumb
+$('.range-slider_thumb').on('mousedown', function() {
+  console.log('Mouse down on range slider thumb');
+  isThumbDragging = true; // Set the flag to true when dragging starts
+});
+
+// Listen for mouseup anywhere in the document
+$(document).on('mouseup', function() {
+  if (isThumbDragging) { // Check if dragging was happening
+    console.log('Mouse up detected after dragging thumb');
+    isThumbDragging = false; // Reset the flag
+
+    // Scroll to #step-1
+    var scrollTarget = $('#step-1');
+    if (scrollTarget.length) { // Check if the target element exists
+      console.log('Scrolling to #step-1');
+      $('html, body').animate({
+        scrollTop: scrollTarget.offset().top - ($(window).height() * -0.1) // Scroll with a 20% offset
+      }, 400); // 400ms scroll duration
+    } else {
+      console.log('Element #step-1 not found');
+    }
   }
 });
 
