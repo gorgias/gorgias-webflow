@@ -410,7 +410,33 @@ $("#ticketRange").on("change", function () {
   if (globalCurrentPlanName === "Starter") {
     toggleMonthly();
   }
+
+  const ticketNumber = parseInt($(this).val(), 10);
+
+  // Check if the ticket number is less than 3000
+  if (ticketNumber >= 2500) {
+    $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
+  } else {
+    $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
+  }
 });
+
+// Handle click event on the more-tickets-cta button
+$(".more-tickets-cta").on("click", function() {
+  // Hide the lower graduation and show the higher graduation
+  $(".range-slider_graduation.is-lower").css("display", "none");
+  $(".range-slider_graduation.is-higher").css("display", "flex");
+
+  // Update the range slider attributes
+  const rangeSlider = $(".pricing-step_range-module");
+  rangeSlider.attr("fs-rangeslider-max", "10000"); // Change the max to 10000
+  rangeSlider.attr("fs-rangeslider-step", "100");  // Change the step to 100
+
+  // Log the change for debugging
+  console.log("Range slider updated to max 10000 and step 100");
+});
+
+
 
 
 $('.range-slider_thumb').on('mouseup keyup', function() {
