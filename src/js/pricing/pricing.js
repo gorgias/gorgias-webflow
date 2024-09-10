@@ -403,9 +403,80 @@ $("#ticketRange").on("input", function () {
   }
 });
 
+$("#ticketRange-2").on("input", function () {
+  // Parse the input value as an integer or set to 0 if invalid
+  globalTicketNumber = parseInt($(this).val(), 10) || 0;
+
+  // Log the current state
+  console.log("Step 1: Number of tickets selected:", globalTicketNumber);
+
+  // Pass the ticket number to DOM Element data-el="ticketNumber" but format first
+  $('[data-el="ticketNumber"]').text(globalTicketNumber);
+
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 10% Automated tickets " +
+      globalAutomatePrice10 +
+      " Tickets less 10% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets10)
+  );
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 20% Automated tickets " +
+      globalAutomatePrice20 +
+      " Tickets less 20% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets20)
+  );
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 30% Automated tickets " +
+      globalAutomatePrice30 +
+      " Tickets less 30% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets30)
+  );
+
+  // After ticket input changes, trigger next steps
+  if (globalCurrentPlanName === "Starter") {
+    toggleMonthly();
+  }
+
+  // Ensure that plan selection is valid before proceeding
+  determinePlan(globalTicketNumber);
+  updateLogosAndCTAs();
+
+  // Check if a valid plan has been determined
+  if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
+    // Update prices, UI elements, and calculate the summary
+    updatePricesOnBillingCycleChange();
+    updateActivePlanElement();
+    calculateSummary();
+  } else {
+    console.warn("No valid plan selected, skipping summary calculation.");
+  }
+});
+
 let debounceTimeout;
 
 $("#ticketRange").on("change", function () {
+  // After ticket input changes, trigger next steps
+  if (globalCurrentPlanName === "Starter") {
+    toggleMonthly();
+  }
+
+  const ticketNumber = parseInt($(this).val(), 10);
+
+  // Check if the ticket number is less than 3000
+  if (ticketNumber >= 2000) {
+    $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
+  } else {
+    $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
+  }
+});
+
+$("#ticketRange-2").on("change", function () {
   // After ticket input changes, trigger next steps
   if (globalCurrentPlanName === "Starter") {
     toggleMonthly();
@@ -426,19 +497,19 @@ $(".more-tickets-cta").on("click", function() {
   // Hide the lower graduation and show the higher graduation
   $(".range-slider_graduation.is-lower").css("display", "none");
   $(".range-slider_graduation.is-higher").css("display", "flex");
+  $(this).remove();
 
-  // Update the range slider attributes
-  const rangeSlider = $(".pricing-step_range-module");
-  rangeSlider.attr("fs-rangeslider-max", "10000"); // Change the max to 10000
-  rangeSlider.attr("fs-rangeslider-step", "10");  // Change the step to 100
+$('.pricing-step_range-module.is-lower').css('display', 'none');
+$('.pricing-step_range-module.is-lower').remove();
+$('.pricing-step_range-module.is-higher').css('display', 'flex');
 
-  window.fsAttributes = window.fsAttributes || [];
- window.fsAttributes.push([
-   'rangeslider',
-   (listInstances) => {
-     window.fsAttributes.rangeslider.init();
-   },
- ]);
+// window.fsAttributes = window.fsAttributes || [];
+//  window.fsAttributes.push([
+//    'rangeslider',
+//    (listInstances) => {
+//      window.fsAttributes.rangeslider.init();
+//    },
+//  ]);
 
   // Log the change for debugging
   console.log("Range slider updated to max 10000 and step 100");
@@ -481,6 +552,25 @@ function initTicketNumber() {
 
   // Update the ticket range input value
   $("#ticketRange").val(globalTicketNumber);
+
+  // Pass the ticket number to DOM Element data-el="ticketNumber"
+  $('[data-el="ticketNumber"]').text(
+    formatNumberWithCommas(globalTicketNumber)
+  );
+
+  // After ticket input changes, trigger next steps
+  determinePlan(globalTicketNumber);
+  updateActivePlanElement();
+  updateLogosAndCTAs();
+}
+
+// Function to initialize at 2000 tickets on page load
+function initTicketNumber() {
+  // Set the ticket number to 2000
+  globalTicketNumber = 2000;
+
+  // Update the ticket range input value
+  $("#ticketRange-2").val(globalTicketNumber);
 
   // Pass the ticket number to DOM Element data-el="ticketNumber"
   $('[data-el="ticketNumber"]').text(
@@ -824,11 +914,11 @@ $('[data-el^="pricingCard"]').on("click", function () {
   calculateROISavings();
 });
 
-// $('.pricing_card').on('click', function() {
-//   $('html, body').animate({
-//     scrollTop: $('#step-3').offset().top - ($('#step-3').offset().top * 0.25)
-//     }, 400); // The 1000 is the scroll speed in milliseconds (1 second in this case)
-// });
+$('.pricing_card').on('click', function() {
+  $('html, body').animate({
+    scrollTop: $('#step-3').offset().top
+    }, 400); // The 1000 is the scroll speed in milliseconds (1 second in this case)
+});
 /****************************
  *
  * Function to Calculate ROI Savings Based on Chosen Plan
@@ -842,16 +932,18 @@ function calculateROISavings() {
 
   // Agent tickets is set to globalTicketNumber by default
   let agentTickets = globalTicketNumber;
-  let agentTicketsWithAutomate;
+  let agentTicketsWithAutomate = globalTicketNumber; // Default to no automation if 0% is chosen
+
+  // Check which card is selected (automation rate)
   if (selectedCardType === "pricingCard10") {
     agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets10;
-    console.log("All tickets with automate: ", agentTicketsWithAutomate);
+    console.log("All tickets with 10% automate: ", agentTicketsWithAutomate);
   } else if (selectedCardType === "pricingCard20") {
     agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets20;
-    console.log("All tickets with automate: ", agentTicketsWithAutomate);
+    console.log("All tickets with 20% automate: ", agentTicketsWithAutomate);
   } else if (selectedCardType === "pricingCard30") {
     agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets30;
-    console.log("All tickets with automate: ", agentTicketsWithAutomate);
+    console.log("All tickets with 30% automate: ", agentTicketsWithAutomate);
   }
 
   // Ensure agent tickets are a valid number
@@ -867,6 +959,12 @@ function calculateROISavings() {
   // Calculate total human cost without Gorgias
   let totalHumanCostWithoutGorgias =
     totalSupportTimeWithoutGorgias * avgSupportSalary;
+
+  // If 0% automation, set agentTicketsWithAutomate to agentTickets (no automation applied)
+  if (selectedCardType === "pricingCard" || agentTicketsWithAutomate === globalTicketNumber) {
+    agentTicketsWithAutomate = agentTickets;
+    console.log("No automation selected, only helpdesk pricing considered");
+  }
 
   // Calculate total support time with Gorgias (in hours)
   let totalSupportTimeWithGorgias =
@@ -971,6 +1069,17 @@ function updateChosenPrices() {
       chosenAutomatePrice = globalAutomatePrice30;
       break;
   }
+
+    // Check if automation is 0% and hide or show the automate summary
+    if (selectedCardType === "pricingCard") {
+      // Automate is 0%, hide the automate summary
+      $('[data-summary="automate"]').css("display", "none");
+      console.log("Automation is 0%, hiding automate summary.");
+    } else {
+      // Automate is not 0%, show the automate summary
+      $('[data-summary="automate"]').css("display", "flex");
+      console.log("Automation is not 0%, displaying automate summary.");
+    }
 
   // Log updated prices
   console.log("Updated chosenHelpdeskPrice:", chosenHelpdeskPrice);
