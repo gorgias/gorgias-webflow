@@ -503,6 +503,22 @@ $('.pricing-step_range-module.is-lower').css('display', 'none');
 $('.pricing-step_range-module.is-lower').remove();
 $('.pricing-step_range-module.is-higher').css('display', 'flex');
 
+  // Set the ticket number to 2000
+  globalTicketNumber = 2500;
+
+  // Update the ticket range input value
+  $("#ticketRange-2").val(globalTicketNumber);
+
+  // Pass the ticket number to DOM Element data-el="ticketNumber"
+  $('[data-el="ticketNumber"]').text(
+    formatNumberWithCommas(globalTicketNumber)
+  );
+
+  // After ticket input changes, trigger next steps
+  determinePlan(globalTicketNumber);
+  updateActivePlanElement();
+  updateLogosAndCTAs();
+
 // window.fsAttributes = window.fsAttributes || [];
 //  window.fsAttributes.push([
 //    'rangeslider',
