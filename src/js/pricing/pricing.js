@@ -413,6 +413,7 @@ $("#ticketRange").on("change", function () {
 });
 
 
+
 $('.range-slider_thumb').on('mouseup keyup', function() {
   console.log('ticketRange event triggered'); // Log to see if the event is detected
   var scrollTarget = $('#step-1');
@@ -423,7 +424,7 @@ $('.range-slider_thumb').on('mouseup keyup', function() {
     }, 400); // 1-second scroll duration
   } else {
     console.log('Element #step-1 not found');
-  }
+
 });
 
 // Function to initialize at 2000 tickets on page load
