@@ -73,35 +73,193 @@ const helpdeskPlans = {
   ],
 };
 
-// Define the automate plans
-const automatePlans = {
-  monthly: [
-    { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0 },
-    { name: "Tier 1", interactions_per_month: 30, monthly_cost: 30 },
-    { name: "Tier 1B", interactions_per_month: 80, monthly_cost: 80 },
-    { name: "Tier 1C", interactions_per_month: 120, monthly_cost: 114 },
-    { name: "Tier 2", interactions_per_month: 190, monthly_cost: 180 },
-    { name: "Tier 3", interactions_per_month: 530, monthly_cost: 450 },
-    { name: "Tier 4", interactions_per_month: 1125, monthly_cost: 900 },
-    { name: "Tier 5", interactions_per_month: 2000, monthly_cost: 1500 },
-    { name: "Tier 6", interactions_per_month: 3000, monthly_cost: 2100 },
-    { name: "Tier 7", interactions_per_month: 5000, monthly_cost: 2500 },
-    { name: "Tier 8", interactions_per_month: 7000, monthly_cost: 3500 },
-  ],
-  yearly: [
-    { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0 },
-    { name: "Tier 1", interactions_per_month: 30, monthly_cost: 25 },
-    { name: "Tier 1B", interactions_per_month: 80, monthly_cost: 67 },
-    { name: "Tier 1C", interactions_per_month: 120, monthly_cost: 95 },
-    { name: "Tier 2", interactions_per_month: 190, monthly_cost: 150 },
-    { name: "Tier 3", interactions_per_month: 530, monthly_cost: 375 },
-    { name: "Tier 4", interactions_per_month: 1125, monthly_cost: 750 },
-    { name: "Tier 5", interactions_per_month: 2000, monthly_cost: 1250 },
-    { name: "Tier 6", interactions_per_month: 3000, monthly_cost: 1750 },
-    { name: "Tier 7", interactions_per_month: 5000, monthly_cost: 2083 },
-    { name: "Tier 8", interactions_per_month: 7000, monthly_cost: 2917 },
-  ],
-};
+  // Define the automate plans
+  const automatePlans = {
+    monthly: [
+      {
+        name: "Tier 0",
+        interactions_per_month: 0,
+        monthly_cost: 0,
+        cost_per_overage_interaction: 0,
+      },
+      {
+        name: "Tier 1",
+        interactions_per_month: 30,
+        monthly_cost: 30,
+        cost_per_overage_interaction: 2.0,
+      },
+      {
+        name: "Tier 1B",
+        interactions_per_month: 80,
+        monthly_cost: 80,
+        cost_per_overage_interaction: 2.0,
+      },
+      {
+        name: "Tier 1C",
+        interactions_per_month: 120,
+        monthly_cost: 114,
+        cost_per_overage_interaction: 1.9,
+      },
+      {
+        name: "Tier 1D",
+        interactions_per_month: 150,
+        monthly_cost: 143,
+        cost_per_overage_interaction: 1.9,
+      },
+      {
+        name: "Tier 2",
+        interactions_per_month: 190,
+        monthly_cost: 180,
+        cost_per_overage_interaction: 1.9,
+      },
+      {
+        name: "Tier 2B",
+        interactions_per_month: 360,
+        monthly_cost: 306,
+        cost_per_overage_interaction: 1.7,
+      },
+      {
+        name: "Tier 3",
+        interactions_per_month: 530,
+        monthly_cost: 450,
+        cost_per_overage_interaction: 1.7,
+      },
+      {
+        name: "Tier 3B",
+        interactions_per_month: 800,
+        monthly_cost: 640,
+        cost_per_overage_interaction: 1.6,
+      },
+      {
+        name: "Tier 4",
+        interactions_per_month: 1125,
+        monthly_cost: 900,
+        cost_per_overage_interaction: 1.6,
+      },
+      {
+        name: "Tier 4B",
+        interactions_per_month: 1500,
+        monthly_cost: 1125,
+        cost_per_overage_interaction: 1.5,
+      },
+      {
+        name: "Tier 5",
+        interactions_per_month: 2000,
+        monthly_cost: 1500,
+        cost_per_overage_interaction: 1.5,
+      },
+      {
+        name: "Tier 6",
+        interactions_per_month: 3000,
+        monthly_cost: 2100,
+        cost_per_overage_interaction: 1.4,
+      },
+      {
+        name: "Tier 7",
+        interactions_per_month: 5000,
+        monthly_cost: 2500,
+        cost_per_overage_interaction: 1.0,
+      },
+      {
+        name: "Tier 8",
+        interactions_per_month: 7000,
+        monthly_cost: 3500,
+        cost_per_overage_interaction: 1.0,
+      },
+    ],
+    yearly: [
+      {
+        name: "Tier 0",
+        interactions_per_month: 0,
+        monthly_cost: 0,
+        cost_per_overage_interaction: 0,
+      },
+      {
+        name: "Tier 1",
+        interactions_per_month: 30,
+        monthly_cost: 25,
+        cost_per_overage_interaction: 1.67,
+      },
+      {
+        name: "Tier 1B",
+        interactions_per_month: 80,
+        monthly_cost: 67,
+        cost_per_overage_interaction: 1.67,
+      },
+      {
+        name: "Tier 1C",
+        interactions_per_month: 120,
+        monthly_cost: 95,
+        cost_per_overage_interaction: 1.58,
+      },
+      {
+        name: "Tier 1D",
+        interactions_per_month: 150,
+        monthly_cost: 119,
+        cost_per_overage_interaction: 1.58,
+      },
+      {
+        name: "Tier 2",
+        interactions_per_month: 190,
+        monthly_cost: 150,
+        cost_per_overage_interaction: 1.58,
+      },
+      {
+        name: "Tier 2B",
+        interactions_per_month: 360,
+        monthly_cost: 255,
+        cost_per_overage_interaction: 1.42,
+      },
+      {
+        name: "Tier 3",
+        interactions_per_month: 530,
+        monthly_cost: 375,
+        cost_per_overage_interaction: 1.42,
+      },
+      {
+        name: "Tier 3B",
+        interactions_per_month: 800,
+        monthly_cost: 533,
+        cost_per_overage_interaction: 1.33,
+      },
+      {
+        name: "Tier 4",
+        interactions_per_month: 1125,
+        monthly_cost: 750,
+        cost_per_overage_interaction: 1.33,
+      },
+      {
+        name: "Tier 4B",
+        interactions_per_month: 1500,
+        monthly_cost: 938,
+        cost_per_overage_interaction: 1.25,
+      },
+      {
+        name: "Tier 5",
+        interactions_per_month: 2000,
+        monthly_cost: 1250,
+        cost_per_overage_interaction: 1.25,
+      },
+      {
+        name: "Tier 6",
+        interactions_per_month: 3000,
+        monthly_cost: 1750,
+        cost_per_overage_interaction: 1.17,
+      },
+      {
+        name: "Tier 7",
+        interactions_per_month: 5000,
+        monthly_cost: 2083,
+        cost_per_overage_interaction: 0.83,
+      },
+      {
+        name: "Tier 8",
+        interactions_per_month: 7000,
+        monthly_cost: 2917,
+        cost_per_overage_interaction: 0.83,
+      },
+    ],
+  };
 
 // Define the voice tiers
 const voiceTiers = {
