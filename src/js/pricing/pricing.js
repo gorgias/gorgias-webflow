@@ -1,4 +1,3 @@
-
 /****************************
  *
  * DATA DEFINITIONS
@@ -76,30 +75,188 @@ const helpdeskPlans = {
 // Define the automate plans
 const automatePlans = {
   monthly: [
-    { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0 },
-    { name: "Tier 1", interactions_per_month: 30, monthly_cost: 30 },
-    { name: "Tier 1B", interactions_per_month: 80, monthly_cost: 80 },
-    { name: "Tier 1C", interactions_per_month: 120, monthly_cost: 114 },
-    { name: "Tier 2", interactions_per_month: 190, monthly_cost: 180 },
-    { name: "Tier 3", interactions_per_month: 530, monthly_cost: 450 },
-    { name: "Tier 4", interactions_per_month: 1125, monthly_cost: 900 },
-    { name: "Tier 5", interactions_per_month: 2000, monthly_cost: 1500 },
-    { name: "Tier 6", interactions_per_month: 3000, monthly_cost: 2100 },
-    { name: "Tier 7", interactions_per_month: 5000, monthly_cost: 2500 },
-    { name: "Tier 8", interactions_per_month: 7000, monthly_cost: 3500 },
+    {
+      name: "Tier 0",
+      interactions_per_month: 0,
+      monthly_cost: 0,
+      cost_per_overage_interaction: 0,
+    },
+    {
+      name: "Tier 1",
+      interactions_per_month: 30,
+      monthly_cost: 30,
+      cost_per_overage_interaction: 2.0,
+    },
+    {
+      name: "Tier 1B",
+      interactions_per_month: 80,
+      monthly_cost: 80,
+      cost_per_overage_interaction: 2.0,
+    },
+    {
+      name: "Tier 1C",
+      interactions_per_month: 120,
+      monthly_cost: 114,
+      cost_per_overage_interaction: 1.9,
+    },
+    {
+      name: "Tier 1D",
+      interactions_per_month: 150,
+      monthly_cost: 143,
+      cost_per_overage_interaction: 1.9,
+    },
+    {
+      name: "Tier 2",
+      interactions_per_month: 190,
+      monthly_cost: 180,
+      cost_per_overage_interaction: 1.9,
+    },
+    {
+      name: "Tier 2B",
+      interactions_per_month: 360,
+      monthly_cost: 306,
+      cost_per_overage_interaction: 1.7,
+    },
+    {
+      name: "Tier 3",
+      interactions_per_month: 530,
+      monthly_cost: 450,
+      cost_per_overage_interaction: 1.7,
+    },
+    {
+      name: "Tier 3B",
+      interactions_per_month: 800,
+      monthly_cost: 640,
+      cost_per_overage_interaction: 1.6,
+    },
+    {
+      name: "Tier 4",
+      interactions_per_month: 1125,
+      monthly_cost: 900,
+      cost_per_overage_interaction: 1.6,
+    },
+    {
+      name: "Tier 4B",
+      interactions_per_month: 1500,
+      monthly_cost: 1125,
+      cost_per_overage_interaction: 1.5,
+    },
+    {
+      name: "Tier 5",
+      interactions_per_month: 2000,
+      monthly_cost: 1500,
+      cost_per_overage_interaction: 1.5,
+    },
+    {
+      name: "Tier 6",
+      interactions_per_month: 3000,
+      monthly_cost: 2100,
+      cost_per_overage_interaction: 1.4,
+    },
+    {
+      name: "Tier 7",
+      interactions_per_month: 5000,
+      monthly_cost: 2500,
+      cost_per_overage_interaction: 1.0,
+    },
+    {
+      name: "Tier 8",
+      interactions_per_month: 7000,
+      monthly_cost: 3500,
+      cost_per_overage_interaction: 1.0,
+    },
   ],
   yearly: [
-    { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0 },
-    { name: "Tier 1", interactions_per_month: 30, monthly_cost: 25 },
-    { name: "Tier 1B", interactions_per_month: 80, monthly_cost: 67 },
-    { name: "Tier 1C", interactions_per_month: 120, monthly_cost: 95 },
-    { name: "Tier 2", interactions_per_month: 190, monthly_cost: 150 },
-    { name: "Tier 3", interactions_per_month: 530, monthly_cost: 375 },
-    { name: "Tier 4", interactions_per_month: 1125, monthly_cost: 750 },
-    { name: "Tier 5", interactions_per_month: 2000, monthly_cost: 1250 },
-    { name: "Tier 6", interactions_per_month: 3000, monthly_cost: 1750 },
-    { name: "Tier 7", interactions_per_month: 5000, monthly_cost: 2083 },
-    { name: "Tier 8", interactions_per_month: 7000, monthly_cost: 2917 },
+    {
+      name: "Tier 0",
+      interactions_per_month: 0,
+      monthly_cost: 0,
+      cost_per_overage_interaction: 0,
+    },
+    {
+      name: "Tier 1",
+      interactions_per_month: 30,
+      monthly_cost: 25,
+      cost_per_overage_interaction: 1.67,
+    },
+    {
+      name: "Tier 1B",
+      interactions_per_month: 80,
+      monthly_cost: 67,
+      cost_per_overage_interaction: 1.67,
+    },
+    {
+      name: "Tier 1C",
+      interactions_per_month: 120,
+      monthly_cost: 95,
+      cost_per_overage_interaction: 1.58,
+    },
+    {
+      name: "Tier 1D",
+      interactions_per_month: 150,
+      monthly_cost: 119,
+      cost_per_overage_interaction: 1.58,
+    },
+    {
+      name: "Tier 2",
+      interactions_per_month: 190,
+      monthly_cost: 150,
+      cost_per_overage_interaction: 1.58,
+    },
+    {
+      name: "Tier 2B",
+      interactions_per_month: 360,
+      monthly_cost: 255,
+      cost_per_overage_interaction: 1.42,
+    },
+    {
+      name: "Tier 3",
+      interactions_per_month: 530,
+      monthly_cost: 375,
+      cost_per_overage_interaction: 1.42,
+    },
+    {
+      name: "Tier 3B",
+      interactions_per_month: 800,
+      monthly_cost: 533,
+      cost_per_overage_interaction: 1.33,
+    },
+    {
+      name: "Tier 4",
+      interactions_per_month: 1125,
+      monthly_cost: 750,
+      cost_per_overage_interaction: 1.33,
+    },
+    {
+      name: "Tier 4B",
+      interactions_per_month: 1500,
+      monthly_cost: 938,
+      cost_per_overage_interaction: 1.25,
+    },
+    {
+      name: "Tier 5",
+      interactions_per_month: 2000,
+      monthly_cost: 1250,
+      cost_per_overage_interaction: 1.25,
+    },
+    {
+      name: "Tier 6",
+      interactions_per_month: 3000,
+      monthly_cost: 1750,
+      cost_per_overage_interaction: 1.17,
+    },
+    {
+      name: "Tier 7",
+      interactions_per_month: 5000,
+      monthly_cost: 2083,
+      cost_per_overage_interaction: 0.83,
+    },
+    {
+      name: "Tier 8",
+      interactions_per_month: 7000,
+      monthly_cost: 2917,
+      cost_per_overage_interaction: 0.83,
+    },
   ],
 };
 
@@ -175,11 +332,11 @@ function formatNumberWithCommas(number) {
 }
 
 $(".support-tickets_cta").on("click", function () {
-    const orders = parseInt($(".support-tickets_input").val(), 10);
-    const tickets = Math.round(orders / 15);
-    $(".support-tickets_result-value").text(tickets);
-    $(".support-tickets_result").css("display", "block");
-  });
+  const orders = parseInt($(".support-tickets_input").val(), 10);
+  const tickets = Math.round(orders / 15);
+  $(".support-tickets_result-value").text(tickets);
+  $(".support-tickets_result").css("display", "block");
+});
 
 /****************************
  *
@@ -199,7 +356,32 @@ $("#ticketRange").on("input", function () {
   console.log("Step 1: Number of tickets selected:", globalTicketNumber);
 
   // Pass the ticket number to DOM Element data-el="ticketNumber" but format first
-  $('[data-el="ticketNumber"]').text(formatNumberWithCommas(globalTicketNumber));
+  $('[data-el="ticketNumber"]').text(globalTicketNumber);
+
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 10% Automated tickets " +
+      globalAutomatePrice10 +
+      " Tickets less 10% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets10)
+  );
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 20% Automated tickets " +
+      globalAutomatePrice20 +
+      " Tickets less 20% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets20)
+  );
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 30% Automated tickets " +
+      globalAutomatePrice30 +
+      " Tickets less 30% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets30)
+  );
 
   // After ticket input changes, trigger next steps
   if (globalCurrentPlanName === "Starter") {
@@ -209,7 +391,62 @@ $("#ticketRange").on("input", function () {
   // Ensure that plan selection is valid before proceeding
   determinePlan(globalTicketNumber);
   updateLogosAndCTAs();
-  
+
+  // Check if a valid plan has been determined
+  if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
+    // Update prices, UI elements, and calculate the summary
+    updatePricesOnBillingCycleChange();
+    updateActivePlanElement();
+    calculateSummary();
+  } else {
+    console.warn("No valid plan selected, skipping summary calculation.");
+  }
+});
+
+$("#ticketRange-2").on("input", function () {
+  // Parse the input value as an integer or set to 0 if invalid
+  globalTicketNumber = parseInt($(this).val(), 10) || 0;
+
+  // Log the current state
+  console.log("Step 1: Number of tickets selected:", globalTicketNumber);
+
+  // Pass the ticket number to DOM Element data-el="ticketNumber" but format first
+  $('[data-el="ticketNumber"]').text(globalTicketNumber);
+
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 10% Automated tickets " +
+      globalAutomatePrice10 +
+      " Tickets less 10% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets10)
+  );
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 20% Automated tickets " +
+      globalAutomatePrice20 +
+      " Tickets less 20% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets20)
+  );
+  console.log(
+    "Tickets without: " +
+      globalTicketNumber +
+      " 30% Automated tickets " +
+      globalAutomatePrice30 +
+      " Tickets less 30% automated tickets " +
+      (globalTicketNumber - globalAutomateTickets30)
+  );
+
+  // After ticket input changes, trigger next steps
+  if (globalCurrentPlanName === "Starter") {
+    toggleMonthly();
+  }
+
+  // Ensure that plan selection is valid before proceeding
+  determinePlan(globalTicketNumber);
+  updateLogosAndCTAs();
+
   // Check if a valid plan has been determined
   if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
     // Update prices, UI elements, and calculate the summary
@@ -224,19 +461,87 @@ $("#ticketRange").on("input", function () {
 let debounceTimeout;
 
 $("#ticketRange").on("change", function () {
-    // After ticket input changes, trigger next steps
-    if (globalCurrentPlanName === "Starter") {
-        toggleMonthly();
+  // After ticket input changes, trigger next steps
+  if (globalCurrentPlanName === "Starter") {
+    toggleMonthly();
+  }
+
+  const ticketNumber = parseInt($(this).val(), 10);
+
+  // Check if the ticket number is less than 3000
+  if (ticketNumber >= 2000) {
+    $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
+  } else {
+    $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
+  }
+});
+
+$("#ticketRange-2").on("change", function () {
+  // After ticket input changes, trigger next steps
+  if (globalCurrentPlanName === "Starter") {
+    toggleMonthly();
+  }
+
+  const ticketNumber = parseInt($(this).val(), 10);
+
+  // Check if the ticket number is less than 3000
+  if (ticketNumber >= 2000) {
+    $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
+  } else {
+    $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
+  }
+});
+
+// Handle click event on the more-tickets-cta button
+$(".more-tickets-cta").on("click", function() {
+  // Hide the lower graduation and show the higher graduation
+  $(".range-slider_graduation.is-lower").css("display", "none");
+  $(".range-slider_graduation.is-higher").css("display", "flex");
+  $(this).remove();
+
+$('.pricing-step_range-module.is-lower').css('display', 'none');
+$('.pricing-step_range-module.is-lower').remove();
+$('.pricing-step_range-module.is-higher').css('display', 'flex');
+
+// window.fsAttributes = window.fsAttributes || [];
+//  window.fsAttributes.push([
+//    'rangeslider',
+//    (listInstances) => {
+//      window.fsAttributes.rangeslider.init();
+//    },
+//  ]);
+
+  // Log the change for debugging
+  console.log("Range slider updated to max 10000 and step 100");
+});
+
+
+
+let isThumbDragging = false; // Flag to track if the thumb is being dragged
+
+// Listen for mousedown on the .range-slider_thumb
+$('.range-slider_thumb').on('mousedown', function() {
+  console.log('Mouse down on range slider thumb');
+  isThumbDragging = true; // Set the flag to true when dragging starts
+});
+
+// Listen for mouseup anywhere in the document
+$(document).on('mouseup', function() {
+  if (isThumbDragging) { // Check if dragging was happening
+    console.log('Mouse up detected after dragging thumb');
+    isThumbDragging = false; // Reset the flag
+
+    // Scroll to #step-1
+    var scrollTarget = $('#step-1');
+    if (scrollTarget.length) { // Check if the target element exists
+      console.log('Scrolling to #step-1');
+      $('html, body').animate({
+        scrollTop: scrollTarget.offset().top - ($(window).height() * -0.1) // Scroll with a 20% offset
+      }, 400); // 400ms scroll duration
+    } else {
+      console.log('Element #step-1 not found');
     }
-
-    // Clear the previous timeout if there is any
-    clearTimeout(debounceTimeout);
-
-    // Set a new timeout to trigger the scroll after 1000ms of inactivity
-    debounceTimeout = setTimeout(function () {
-        // Scroll to #step-1 after 1000ms of inactivity
-        document.querySelector("#step-1").scrollIntoView({ behavior: "smooth" });
-    }, 500); // 1000ms delay
+  }
 });
 
 
@@ -249,7 +554,9 @@ function initTicketNumber() {
   $("#ticketRange").val(globalTicketNumber);
 
   // Pass the ticket number to DOM Element data-el="ticketNumber"
-  $('[data-el="ticketNumber"]').text(formatNumberWithCommas(globalTicketNumber));
+  $('[data-el="ticketNumber"]').text(
+    formatNumberWithCommas(globalTicketNumber)
+  );
 
   // After ticket input changes, trigger next steps
   determinePlan(globalTicketNumber);
@@ -257,6 +564,24 @@ function initTicketNumber() {
   updateLogosAndCTAs();
 }
 
+// Function to initialize at 2000 tickets on page load
+function initTicketNumber() {
+  // Set the ticket number to 2000
+  globalTicketNumber = 2000;
+
+  // Update the ticket range input value
+  $("#ticketRange-2").val(globalTicketNumber);
+
+  // Pass the ticket number to DOM Element data-el="ticketNumber"
+  $('[data-el="ticketNumber"]').text(
+    formatNumberWithCommas(globalTicketNumber)
+  );
+
+  // After ticket input changes, trigger next steps
+  determinePlan(globalTicketNumber);
+  updateActivePlanElement();
+  updateLogosAndCTAs();
+}
 
 /****************************
  *
@@ -360,7 +685,7 @@ let globalCurrentPlanPrice = 0; // This will hold the base price of the selected
 
 // Function to determine the plan based on the number of tickets
 function determinePlan(tickets) {
-  const previousPlanName = globalCurrentPlanName;  // Save the current plan name before updating
+  const previousPlanName = globalCurrentPlanName; // Save the current plan name before updating
   const plans = helpdeskPlans[globalBillingCycle]; // Choose the plans based on the current billing cycle
   let currentPlanIndex = 0; // Start with the first plan
   let applicablePlan = plans[currentPlanIndex]; // Default to the first plan
@@ -412,11 +737,17 @@ function determinePlan(tickets) {
     globalCurrentPlanPrice
   );
 
-    // Simpler condition to toggle to yearly if needed
-    if (previousPlanName === "Starter" && globalCurrentPlanName !== "Starter" && globalBillingCycle === "monthly") {
-      console.log("Toggling to yearly due to plan change from 'Starter' and monthly billing.");
-      toggleYearly();
-    }
+  // Simpler condition to toggle to yearly if needed
+  if (
+    previousPlanName === "Starter" &&
+    globalCurrentPlanName !== "Starter" &&
+    globalBillingCycle === "monthly"
+  ) {
+    console.log(
+      "Toggling to yearly due to plan change from 'Starter' and monthly billing."
+    );
+    toggleYearly();
+  }
 
   // After determining the plan, calculate automated ticket prices
   calculateAutomatePrices();
@@ -446,10 +777,26 @@ function calculateAutomatePrices() {
   globalAutomateTickets20 = Math.round(globalTicketNumber * 0.2);
   globalAutomateTickets30 = Math.round(globalTicketNumber * 0.3);
 
-  // For each percentage, update the DOM element with the calculated ticket count format numbers first
-  $('[data-el="automateTicketNumber10"]').text(formatNumberWithCommas(globalAutomateTickets10));
-  $('[data-el="automateTicketNumber20"]').text(formatNumberWithCommas(globalAutomateTickets20));
-  $('[data-el="automateTicketNumber30"]').text(formatNumberWithCommas(globalAutomateTickets30));
+  // For each percentage, update the DOM element with the calculated ticket count format numbers first and also pass updated amount of normal tickets to the DOM
+
+  $('[data-el="automateTicketNumber10"]').text(
+    formatNumberWithCommas(globalAutomateTickets10)
+  );
+  $('[data-el="ticketNumber10"]').text(
+    formatNumberWithCommas(globalTicketNumber - globalAutomateTickets10)
+  );
+  $('[data-el="automateTicketNumber20"]').text(
+    formatNumberWithCommas(globalAutomateTickets20)
+  );
+  $('[data-el="ticketNumber20"]').text(
+    formatNumberWithCommas(globalTicketNumber - globalAutomateTickets20)
+  );
+  $('[data-el="automateTicketNumber30"]').text(
+    formatNumberWithCommas(globalAutomateTickets30)
+  );
+  $('[data-el="ticketNumber30"]').text(
+    formatNumberWithCommas(globalTicketNumber - globalAutomateTickets30)
+  );
 
   // Fetch the automate plans for the current billing cycle
   const automatePlansForCycle = automatePlans[globalBillingCycle];
@@ -557,10 +904,9 @@ $('[data-el^="pricingCard"]').on("click", function () {
   // Enable the code radio buttons
   $(".code-radio").removeClass("is-inactive");
 
-// Find the chosen automation rate from selected card type and display in data-el="automationRate" element
+  // Find the chosen automation rate from selected card type and display in data-el="automationRate" element
   const automationRate = selectedCardType.replace("pricingCard", "");
   $('[data-el="automationRate"]').text(automationRate);
-  
 
   // Update chosen prices and summary total
   updateChosenPrices();
@@ -568,6 +914,11 @@ $('[data-el^="pricingCard"]').on("click", function () {
   calculateROISavings();
 });
 
+$('.pricing_card').on('click', function() {
+  $('html, body').animate({
+    scrollTop: $('#step-3').offset().top
+    }, 400); // The 1000 is the scroll speed in milliseconds (1 second in this case)
+});
 /****************************
  *
  * Function to Calculate ROI Savings Based on Chosen Plan
@@ -575,56 +926,87 @@ $('[data-el^="pricingCard"]').on("click", function () {
  ****************************/
 
 function calculateROISavings() {
-    const avgTimePerTicketWithoutGorgias = 8.6; // Average time per ticket without Gorgias, in minutes
-    const avgTimePerTicketWithGorgias = 6; // Average time per ticket with Gorgias, in minutes
-    const avgSupportSalary = 35; // Average support salary in USD/hour
-    
-    // Agent tickets is set to globalTicketNumber by default
-    const agentTickets = globalTicketNumber;
-    
-    // Ensure agent tickets are a valid number
-    if (isNaN(agentTickets)) {
-        console.error("Invalid agent ticket number");
-        return;
-    }
-    
-    // Calculate total support time without Gorgias (in hours)
-    const totalSupportTimeWithoutGorgias = (agentTickets * avgTimePerTicketWithoutGorgias) / 60;
-    
-    // Calculate total human cost without Gorgias
-    const totalHumanCostWithoutGorgias = totalSupportTimeWithoutGorgias * avgSupportSalary;
-    
-    // Calculate total support time with Gorgias (in hours)
-    const totalSupportTimeWithGorgias = (agentTickets * avgTimePerTicketWithGorgias) / 60;
-    
-    // Calculate total human cost with Gorgias
-    const totalHumanCostWithGorgias = totalSupportTimeWithGorgias * avgSupportSalary;
-    
-    // Calculate total Gorgias cost (helpdesk + automate prices)
-    const totalGorgiasCost = chosenHelpdeskPrice + chosenAutomatePrice;
-    
-    // Calculate time and money saved
-    const timeSaved = totalSupportTimeWithoutGorgias - totalSupportTimeWithGorgias;
-    const moneySaved = totalHumanCostWithoutGorgias - (totalHumanCostWithGorgias + totalGorgiasCost);
-  
-    // Log the results for debugging
-    console.log(`Agent tickets: ${agentTickets}`);
-    console.log(`Total support time without Gorgias (hours): ${totalSupportTimeWithoutGorgias}`);
-    console.log(`Total human cost without Gorgias: ${totalHumanCostWithoutGorgias}`);
-    console.log(`Chosen helpdesk price: ${chosenHelpdeskPrice}`);
-    console.log(`Chosen automate price: ${chosenAutomatePrice}`);
-    console.log(`Total Gorgias cost: ${totalGorgiasCost}`);
-    console.log(`Total support time with Gorgias (hours): ${totalSupportTimeWithGorgias}`);
-    console.log(`Total human cost with Gorgias: ${totalHumanCostWithGorgias}`);
-    console.log(`Time saved: ${timeSaved} hours`);
-    console.log(`Money saved: ${moneySaved} USD`);
-    
-    // Format money saved with comma separators
-    const formattedMoneySaved = formatNumberWithCommas(moneySaved.toFixed(0));
-    
-    // Update the DOM with time and formatted money saved
-    $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
-    $('[data-target="moneySaved"]').text(formattedMoneySaved);
+  const avgTimePerTicketWithoutGorgias = 8.6; // Average time per ticket without Gorgias, in minutes
+  const avgTimePerTicketWithGorgias = 6; // Average time per ticket with Gorgias, in minutes
+  const avgSupportSalary = 35; // Average support salary in USD/hour
+
+  // Agent tickets is set to globalTicketNumber by default
+  let agentTickets = globalTicketNumber;
+  let agentTicketsWithAutomate = globalTicketNumber; // Default to no automation if 0% is chosen
+
+  // Check which card is selected (automation rate)
+  if (selectedCardType === "pricingCard10") {
+    agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets10;
+    console.log("All tickets with 10% automate: ", agentTicketsWithAutomate);
+  } else if (selectedCardType === "pricingCard20") {
+    agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets20;
+    console.log("All tickets with 20% automate: ", agentTicketsWithAutomate);
+  } else if (selectedCardType === "pricingCard30") {
+    agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets30;
+    console.log("All tickets with 30% automate: ", agentTicketsWithAutomate);
+  }
+
+  // Ensure agent tickets are a valid number
+  if (isNaN(agentTickets)) {
+    console.error("Invalid agent ticket number");
+    return;
+  }
+
+  // Calculate total support time without Gorgias (in hours)
+  let totalSupportTimeWithoutGorgias =
+    (agentTickets * avgTimePerTicketWithoutGorgias) / 60;
+
+  // Calculate total human cost without Gorgias
+  let totalHumanCostWithoutGorgias =
+    totalSupportTimeWithoutGorgias * avgSupportSalary;
+
+  // If 0% automation, set agentTicketsWithAutomate to agentTickets (no automation applied)
+  if (selectedCardType === "pricingCard" || agentTicketsWithAutomate === globalTicketNumber) {
+    agentTicketsWithAutomate = agentTickets;
+    console.log("No automation selected, only helpdesk pricing considered");
+  }
+
+  // Calculate total support time with Gorgias (in hours)
+  let totalSupportTimeWithGorgias =
+    (agentTicketsWithAutomate * avgTimePerTicketWithGorgias) / 60;
+
+  // Calculate total human cost with Gorgias
+  let totalHumanCostWithGorgias =
+    totalSupportTimeWithGorgias * avgSupportSalary;
+
+  // Calculate total Gorgias cost (helpdesk + automate prices)
+  let totalGorgiasCost = chosenHelpdeskPrice + chosenAutomatePrice;
+
+  // Calculate time and money saved
+  let timeSaved = totalSupportTimeWithoutGorgias - totalSupportTimeWithGorgias;
+  let moneySaved =
+    totalHumanCostWithoutGorgias -
+    (totalHumanCostWithGorgias + totalGorgiasCost);
+
+  // Log the results for debugging
+  console.log(`Agent tickets: ${agentTickets}`);
+  console.log(
+    `Total support time without Gorgias (hours): ${totalSupportTimeWithoutGorgias}`
+  );
+  console.log(
+    `Total human cost without Gorgias: ${totalHumanCostWithoutGorgias}`
+  );
+  console.log(`Chosen helpdesk price: ${chosenHelpdeskPrice}`);
+  console.log(`Chosen automate price: ${chosenAutomatePrice}`);
+  console.log(`Total Gorgias cost: ${totalGorgiasCost}`);
+  console.log(
+    `Total support time with Gorgias (hours): ${totalSupportTimeWithGorgias}`
+  );
+  console.log(`Total human cost with Gorgias: ${totalHumanCostWithGorgias}`);
+  console.log(`Time saved: ${timeSaved} hours`);
+  console.log(`Money saved: ${moneySaved} USD`);
+
+  // Format money saved with comma separators
+  const formattedMoneySaved = formatNumberWithCommas(moneySaved.toFixed(0));
+
+  // Update the DOM with time and formatted money saved
+  $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
+  $('[data-target="moneySaved"]').text(formattedMoneySaved);
 }
 
 /****************************
@@ -688,6 +1070,17 @@ function updateChosenPrices() {
       break;
   }
 
+    // Check if automation is 0% and hide or show the automate summary
+    if (selectedCardType === "pricingCard") {
+      // Automate is 0%, hide the automate summary
+      $('[data-summary="automate"]').css("display", "none");
+      console.log("Automation is 0%, hiding automate summary.");
+    } else {
+      // Automate is not 0%, show the automate summary
+      $('[data-summary="automate"]').css("display", "flex");
+      console.log("Automation is not 0%, displaying automate summary.");
+    }
+
   // Log updated prices
   console.log("Updated chosenHelpdeskPrice:", chosenHelpdeskPrice);
   console.log("Updated chosenAutomatePrice:", chosenAutomatePrice);
@@ -715,7 +1108,11 @@ function calculateSummary() {
   }
 
   // Calculate the summary total
-  summaryTotal = chosenHelpdeskPrice + chosenAutomatePrice + voiceTicketPrice + smsTicketPrice;
+  summaryTotal =
+    chosenHelpdeskPrice +
+    chosenAutomatePrice +
+    voiceTicketPrice +
+    smsTicketPrice;
 
   // Log the calculated summary total
   console.log("Calculated summary total:", summaryTotal);
@@ -785,9 +1182,13 @@ function updateVoiceTicketPrice() {
   voiceTicketPrice = calculateVoiceTicketPrice(selectedTier, planType); // Update global variable
 
   // If there's a selected tier != "No Voice Tickets" .voice-ticket-price display block else display none
-  if (selectedTier === "Tier 0" || selectedTier === "Pay as you go" || selectedTier === "Tier 7") {
+  if (
+    selectedTier === "Tier 0" ||
+    selectedTier === "Pay as you go" ||
+    selectedTier === "Tier 7"
+  ) {
     $(".voice-ticket-price").css("display", "none");
-  } else { 
+  } else {
     $(".voice-ticket-price").css("display", "block");
   }
 
@@ -826,10 +1227,14 @@ function updateSmsTicketPrice() {
   const planType = globalBillingCycle; // Use the global billing cycle to determine the plan type
   smsTicketPrice = calculateSmsTicketPrice(selectedTier, planType); // Update global variable
 
-   // If there's a selected tier != "No Voice Tickets" .voice-ticket-price display block else display none
-   if (selectedTier === "Tier 0" || selectedTier === "Pay as you go" || selectedTier === "Tier 7"){
+  // If there's a selected tier != "No Voice Tickets" .voice-ticket-price display block else display none
+  if (
+    selectedTier === "Tier 0" ||
+    selectedTier === "Pay as you go" ||
+    selectedTier === "Tier 7"
+  ) {
     $(".sms-ticket-price").css("display", "none");
-  } else { 
+  } else {
     $(".sms-ticket-price").css("display", "block");
   }
 
@@ -922,7 +1327,7 @@ function resetVoicePrice() {
   const voiceTicketsDropdown = document.querySelector("#voice-tickets");
 
   // Set the dropdown to "No Voice Tickets"
-  voiceTicketsDropdown.value = "Tier 0"; 
+  voiceTicketsDropdown.value = "Tier 0";
 
   // Log to confirm the dropdown value is set correctly
   console.log("Voice tickets dropdown reset to Tier 0");
@@ -948,7 +1353,7 @@ function resetSmsPrice() {
   const smsTicketsDropdown = document.querySelector("#sms-tickets");
 
   // Set the dropdown to "No SMS Tickets"
-  smsTicketsDropdown.value = "Tier 0"; 
+  smsTicketsDropdown.value = "Tier 0";
 
   // Log to confirm the dropdown value is set correctly
   console.log("SMS tickets dropdown reset to Tier 0");
@@ -969,7 +1374,6 @@ function resetSmsPrice() {
   // Log the completion of the SMS reset process
   console.log("SMS reset completed");
 }
-
 
 $('[data-summary="voice-remove"]').on("click", function () {
   console.log("Voice remove button clicked");
@@ -1006,26 +1410,29 @@ function updateLogosAndCTAs() {
     $('[data-el="book-demo"]').css("display", "none");
     $('[data-el="start-free-trial"]').css("display", "block");
 
-    // Update buttons 
-    heroBtnLeft.find('div:first').text("Start Free Trial");
+    // Update buttons
+    heroBtnLeft.find("div:first").text("Start Free Trial");
     heroBtnLeft.attr("href", "/signup-2");
-    heroBtnRight.find('div:first').text("Book a Demo");
+    heroBtnRight.find("div:first").text("Book a Demo");
     heroBtnRight.attr("href", "/demo");
 
     $(".pricing_card-wrapper").css("display", "flex");
     $(".pricing-step_banner").css("display", "flex");
     $(".pricing-step_banner.is-enterprise").css("display", "none");
-  } else if (globalCurrentPlanName === "Advanced" || globalCurrentPlanName === "Pro") {
+  } else if (
+    globalCurrentPlanName === "Advanced" ||
+    globalCurrentPlanName === "Pro"
+  ) {
     $(".is-pro-logos").css("display", "none");
     $(".is-advanced-logos").css("display", "flex");
     $(".is-enterprise-logos").css("display", "none");
     $('[data-el="book-demo"]').css("display", "block");
     $('[data-el="start-free-trial"]').css("display", "none");
 
-    // Update buttons 
-    heroBtnLeft.find('div:first').text("Book a Demo");
+    // Update buttons
+    heroBtnLeft.find("div:first").text("Book a Demo");
     heroBtnLeft.attr("href", "/demo");
-    heroBtnRight.find('div:first').text("Start Free Trial");
+    heroBtnRight.find("div:first").text("Start Free Trial");
     heroBtnRight.attr("href", "/signup-2");
 
     $(".pricing_card-wrapper").css("display", "flex");
@@ -1041,7 +1448,6 @@ function updateLogosAndCTAs() {
   }
 }
 
-
 var Webflow = Webflow || [];
 Webflow.push(function () {
   // Initialize the ticket number input
@@ -1055,7 +1461,7 @@ Webflow.push(function () {
       // Pass specific classes to distinguish between voice and SMS
       processText(link, "voice-link", "sms-link");
     });
-  
+
     // Function to generate valid HTML IDs
     function generateValidId(text) {
       return text
@@ -1065,27 +1471,27 @@ Webflow.push(function () {
         .replace(/-+/g, "-") // Replace multiple hyphens with a single one
         .trim();
     }
-  
+
     // Function to split text and assign IDs for Voice and SMS links
     function processText(element, voiceClass, smsClass) {
       const text = element.textContent.trim();
-  
+
       if (text.includes("–")) {
         const [part1, part2] = text.split("–").map((part) => part.trim());
         element.innerHTML = `<span>${part1}</span> <span>${part2}</span>`;
-  
+
         // Set IDs based on class
         const prefix = element.classList.contains(voiceClass)
           ? "voice-"
           : element.classList.contains(smsClass)
           ? "sms-"
           : "";
-          
+
         // Assign valid ID to the element
         element.id = prefix + generateValidId(part1);
       }
     }
-  
+
     // Handle dropdown toggle for voice tickets
     const voiceDropdownToggle = document.querySelector("#w-dropdown-toggle-14");
     if (voiceDropdownToggle) {
@@ -1095,7 +1501,7 @@ Webflow.push(function () {
       });
       observer.observe(voiceDropdownToggle, { childList: true, subtree: true });
     }
-  
+
     // Handle dropdown toggle for SMS tickets
     const smsDropdownToggle = document.querySelector("#w-dropdown-toggle-15");
     if (smsDropdownToggle) {
@@ -1107,4 +1513,3 @@ Webflow.push(function () {
     }
   }, 2000); // Delay execution by 2 seconds to ensure the DOM is ready
 });
-
