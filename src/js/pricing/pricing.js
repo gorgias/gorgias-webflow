@@ -503,6 +503,22 @@ $('.pricing-step_range-module.is-lower').css('display', 'none');
 $('.pricing-step_range-module.is-lower').remove();
 $('.pricing-step_range-module.is-higher').css('display', 'flex');
 
+  // Set the ticket number to 2000
+  globalTicketNumber = 2500;
+
+  // Update the ticket range input value
+  $("#ticketRange-2").val(globalTicketNumber);
+
+  // Pass the ticket number to DOM Element data-el="ticketNumber"
+  $('[data-el="ticketNumber"]').text(
+    formatNumberWithCommas(globalTicketNumber)
+  );
+
+  // After ticket input changes, trigger next steps
+  determinePlan(globalTicketNumber);
+  updateActivePlanElement();
+  updateLogosAndCTAs();
+
 // window.fsAttributes = window.fsAttributes || [];
 //  window.fsAttributes.push([
 //    'rangeslider',
@@ -548,7 +564,7 @@ $(document).on('mouseup', function() {
 // Function to initialize at 2000 tickets on page load
 function initTicketNumber() {
   // Set the ticket number to 2000
-  globalTicketNumber = 2000;
+  globalTicketNumber = 1500;
 
   // Update the ticket range input value
   $("#ticketRange").val(globalTicketNumber);
@@ -564,24 +580,24 @@ function initTicketNumber() {
   updateLogosAndCTAs();
 }
 
-// Function to initialize at 2000 tickets on page load
-function initTicketNumber() {
-  // Set the ticket number to 2000
-  globalTicketNumber = 2000;
+// // Function to initialize at 2000 tickets on page load
+// function initTicketNumber() {
+//   // Set the ticket number to 2000
+//   globalTicketNumber = 2000;
 
-  // Update the ticket range input value
-  $("#ticketRange-2").val(globalTicketNumber);
+//   // Update the ticket range input value
+//   $("#ticketRange-2").val(globalTicketNumber);
 
-  // Pass the ticket number to DOM Element data-el="ticketNumber"
-  $('[data-el="ticketNumber"]').text(
-    formatNumberWithCommas(globalTicketNumber)
-  );
+//   // Pass the ticket number to DOM Element data-el="ticketNumber"
+//   $('[data-el="ticketNumber"]').text(
+//     formatNumberWithCommas(globalTicketNumber)
+//   );
 
-  // After ticket input changes, trigger next steps
-  determinePlan(globalTicketNumber);
-  updateActivePlanElement();
-  updateLogosAndCTAs();
-}
+//   // After ticket input changes, trigger next steps
+//   determinePlan(globalTicketNumber);
+//   updateActivePlanElement();
+//   updateLogosAndCTAs();
+// }
 
 /****************************
  *
