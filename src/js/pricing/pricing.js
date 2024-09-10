@@ -199,7 +199,11 @@ $("#ticketRange").on("input", function () {
   console.log("Step 1: Number of tickets selected:", globalTicketNumber);
 
   // Pass the ticket number to DOM Element data-el="ticketNumber" but format first
-  $('[data-el="ticketNumber"]').text(formatNumberWithCommas(globalTicketNumber));
+  $('[data-el="ticketNumber"]').text((globalTicketNumber));
+
+  console.log("Tickets without: " + globalTicketNumber + " 10% Automated tickets " + globalAutomatePrice10 + " Tickets less 10% automated tickets " + (globalTicketNumber - globalAutomateTickets10));
+  console.log("Tickets without: " + globalTicketNumber + " 20% Automated tickets " + globalAutomatePrice20 + " Tickets less 20% automated tickets " + (globalTicketNumber - globalAutomateTickets20));
+  console.log("Tickets without: " + globalTicketNumber + " 30% Automated tickets " + globalAutomatePrice30 + " Tickets less 30% automated tickets " + (globalTicketNumber - globalAutomateTickets30));
 
   // After ticket input changes, trigger next steps
   if (globalCurrentPlanName === "Starter") {
@@ -446,10 +450,15 @@ function calculateAutomatePrices() {
   globalAutomateTickets20 = Math.round(globalTicketNumber * 0.2);
   globalAutomateTickets30 = Math.round(globalTicketNumber * 0.3);
 
-  // For each percentage, update the DOM element with the calculated ticket count format numbers first
+  // For each percentage, update the DOM element with the calculated ticket count format numbers first and also pass updated amount of normal tickets to the DOM
+  
+
   $('[data-el="automateTicketNumber10"]').text(formatNumberWithCommas(globalAutomateTickets10));
+  $('[data-el="ticketNumber10"]').text((formatNumberWithCommas(globalTicketNumber - globalAutomateTickets10)));
   $('[data-el="automateTicketNumber20"]').text(formatNumberWithCommas(globalAutomateTickets20));
+  $('[data-el="ticketNumber20"]').text(formatNumberWithCommas((globalTicketNumber - globalAutomateTickets20)));
   $('[data-el="automateTicketNumber30"]').text(formatNumberWithCommas(globalAutomateTickets30));
+  $('[data-el="ticketNumber30"]').text((formatNumberWithCommas(globalTicketNumber - globalAutomateTickets30)));
 
   // Fetch the automate plans for the current billing cycle
   const automatePlansForCycle = automatePlans[globalBillingCycle];
@@ -568,6 +577,12 @@ $('[data-el^="pricingCard"]').on("click", function () {
   calculateROISavings();
 });
 
+
+// $('.pricing_card').on('click', function() {
+//   $('html, body').animate({
+//     scrollTop: $('#step-3').offset().top - ($('#step-3').offset().top * 0.25)
+//     }, 400); // The 1000 is the scroll speed in milliseconds (1 second in this case)
+// });
 /****************************
  *
  * Function to Calculate ROI Savings Based on Chosen Plan
@@ -580,8 +595,19 @@ function calculateROISavings() {
     const avgSupportSalary = 35; // Average support salary in USD/hour
     
     // Agent tickets is set to globalTicketNumber by default
-    const agentTickets = globalTicketNumber;
-    
+    let agentTickets = globalTicketNumber;
+    let agentTicketsWithAutomate
+    if (selectedCardType === "pricingCard10") {
+    agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets10;
+    console.log("All tickets with automate: ", agentTicketsWithAutomate);
+    } else if (selectedCardType === "pricingCard20") {
+    agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets20;
+    console.log("All tickets with automate: ", agentTicketsWithAutomate);
+    } else if (selectedCardType === "pricingCard30") {
+    agentTicketsWithAutomate = globalTicketNumber - globalAutomateTickets30;
+    console.log("All tickets with automate: ", agentTicketsWithAutomate);
+    }
+
     // Ensure agent tickets are a valid number
     if (isNaN(agentTickets)) {
         console.error("Invalid agent ticket number");
@@ -589,23 +615,23 @@ function calculateROISavings() {
     }
     
     // Calculate total support time without Gorgias (in hours)
-    const totalSupportTimeWithoutGorgias = (agentTickets * avgTimePerTicketWithoutGorgias) / 60;
+    let totalSupportTimeWithoutGorgias = (agentTickets * avgTimePerTicketWithoutGorgias) / 60;
     
     // Calculate total human cost without Gorgias
-    const totalHumanCostWithoutGorgias = totalSupportTimeWithoutGorgias * avgSupportSalary;
+    let totalHumanCostWithoutGorgias = totalSupportTimeWithoutGorgias * avgSupportSalary;
     
     // Calculate total support time with Gorgias (in hours)
-    const totalSupportTimeWithGorgias = (agentTickets * avgTimePerTicketWithGorgias) / 60;
+    let totalSupportTimeWithGorgias = (agentTicketsWithAutomate * avgTimePerTicketWithGorgias) / 60;
     
     // Calculate total human cost with Gorgias
-    const totalHumanCostWithGorgias = totalSupportTimeWithGorgias * avgSupportSalary;
+    let totalHumanCostWithGorgias = totalSupportTimeWithGorgias * avgSupportSalary;
     
     // Calculate total Gorgias cost (helpdesk + automate prices)
-    const totalGorgiasCost = chosenHelpdeskPrice + chosenAutomatePrice;
+    let totalGorgiasCost = chosenHelpdeskPrice + chosenAutomatePrice;
     
     // Calculate time and money saved
-    const timeSaved = totalSupportTimeWithoutGorgias - totalSupportTimeWithGorgias;
-    const moneySaved = totalHumanCostWithoutGorgias - (totalHumanCostWithGorgias + totalGorgiasCost);
+    let timeSaved = totalSupportTimeWithoutGorgias - totalSupportTimeWithGorgias;
+    let moneySaved = totalHumanCostWithoutGorgias - (totalHumanCostWithGorgias + totalGorgiasCost);
   
     // Log the results for debugging
     console.log(`Agent tickets: ${agentTickets}`);
