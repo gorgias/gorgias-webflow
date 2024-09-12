@@ -358,31 +358,6 @@ $("#ticketRange").on("input", function () {
   // Pass the ticket number to DOM Element data-el="ticketNumber" but format first
   $('[data-el="ticketNumber"]').text(globalTicketNumber);
 
-  console.log(
-    "Tickets without: " +
-      globalTicketNumber +
-      " 10% Automated tickets " +
-      globalAutomatePrice10 +
-      " Tickets less 10% automated tickets " +
-      (globalTicketNumber - globalAutomateTickets10)
-  );
-  console.log(
-    "Tickets without: " +
-      globalTicketNumber +
-      " 20% Automated tickets " +
-      globalAutomatePrice20 +
-      " Tickets less 20% automated tickets " +
-      (globalTicketNumber - globalAutomateTickets20)
-  );
-  console.log(
-    "Tickets without: " +
-      globalTicketNumber +
-      " 30% Automated tickets " +
-      globalAutomatePrice30 +
-      " Tickets less 30% automated tickets " +
-      (globalTicketNumber - globalAutomateTickets30)
-  );
-
   // After ticket input changes, trigger next steps
   if (globalCurrentPlanName === "Starter") {
     toggleMonthly();
@@ -415,31 +390,6 @@ $("#ticketRange-2").on("input", function () {
   // Pass the ticket number to DOM Element data-el="ticketNumber" but format first
   $('[data-el="ticketNumber"]').text(globalTicketNumber);
 
-  console.log(
-    "Tickets without: " +
-      globalTicketNumber +
-      " 10% Automated tickets " +
-      globalAutomatePrice10 +
-      " Tickets less 10% automated tickets " +
-      (globalTicketNumber - globalAutomateTickets10)
-  );
-  console.log(
-    "Tickets without: " +
-      globalTicketNumber +
-      " 20% Automated tickets " +
-      globalAutomatePrice20 +
-      " Tickets less 20% automated tickets " +
-      (globalTicketNumber - globalAutomateTickets20)
-  );
-  console.log(
-    "Tickets without: " +
-      globalTicketNumber +
-      " 30% Automated tickets " +
-      globalAutomatePrice30 +
-      " Tickets less 30% automated tickets " +
-      (globalTicketNumber - globalAutomateTickets30)
-  );
-
   // After ticket input changes, trigger next steps
   if (globalCurrentPlanName === "Starter") {
     toggleMonthly();
@@ -448,6 +398,7 @@ $("#ticketRange-2").on("input", function () {
   // Ensure that plan selection is valid before proceeding
   determinePlan(globalTicketNumber);
   updateLogosAndCTAs();
+  updateActivePlanElement();
   // Display alert
   displayAlert();
 
@@ -478,6 +429,10 @@ $("#ticketRange").on("change", function () {
   } else {
     $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
   }
+  // After ticket input changes, trigger next steps
+  determinePlan(globalTicketNumber);
+  updateActivePlanElement();
+  updateLogosAndCTAs();
   // Display alert
   displayAlert();
 });
@@ -1211,6 +1166,7 @@ function updateActivePlanElement() {
       globalCurrentPlanName.toLowerCase()
     ) {
       element.classList.add("is-active"); // Add the 'is-active' class if it matches
+      console.log('highlight updated');
     } else {
       element.classList.remove("is-active"); // Otherwise, remove the 'is-active' class
     }
