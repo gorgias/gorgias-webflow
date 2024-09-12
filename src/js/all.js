@@ -187,5 +187,26 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
+// Function to deactivate console logs in production
+(function () {
+  // Parse the current URL and look for the ?debug=gorgias parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const isDebugMode = urlParams.has('debug') && urlParams.get('debug') === 'gorgias';
+
+  // Function to disable console.log if not in debug mode (i.e., if on production)
+  function handleConsoleLogs() {
+    if (!isDebugMode) {
+      // Overwrite console.log to do nothing (production mode)
+      console.log = function() {};
+    } else {
+      // Debug mode, keep console.log as it is
+      console.log("Debug mode active - console.log is enabled.");
+    }
+  }
+
+  // Call the function to apply the console.log handling
+  handleConsoleLogs();
+})();
+
 
 

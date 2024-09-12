@@ -391,6 +391,8 @@ $("#ticketRange").on("input", function () {
   // Ensure that plan selection is valid before proceeding
   determinePlan(globalTicketNumber);
   updateLogosAndCTAs();
+  // Display alert
+  displayAlert();
 
   // Check if a valid plan has been determined
   if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
@@ -446,6 +448,8 @@ $("#ticketRange-2").on("input", function () {
   // Ensure that plan selection is valid before proceeding
   determinePlan(globalTicketNumber);
   updateLogosAndCTAs();
+  // Display alert
+  displayAlert();
 
   // Check if a valid plan has been determined
   if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
@@ -469,11 +473,13 @@ $("#ticketRange").on("change", function () {
   const ticketNumber = parseInt($(this).val(), 10);
 
   // Check if the ticket number is less than 3000
-  if (ticketNumber >= 2000) {
+  if (ticketNumber >= 1500) {
     $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
   } else {
     $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
   }
+  // Display alert
+  displayAlert();
 });
 
 $("#ticketRange-2").on("change", function () {
@@ -485,7 +491,7 @@ $("#ticketRange-2").on("change", function () {
   const ticketNumber = parseInt($(this).val(), 10);
 
   // Check if the ticket number is less than 3000
-  if (ticketNumber >= 2000) {
+  if (ticketNumber >= 1500) {
     $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
   } else {
     $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
@@ -493,17 +499,17 @@ $("#ticketRange-2").on("change", function () {
 });
 
 // Handle click event on the more-tickets-cta button
-$(".more-tickets-cta").on("click", function() {
+$(".more-tickets-cta").on("click", function () {
   // Hide the lower graduation and show the higher graduation
   $(".range-slider_graduation.is-lower").css("display", "none");
   $(".range-slider_graduation.is-higher").css("display", "flex");
   $(this).remove();
 
-$('.pricing-step_range-module.is-lower').css('display', 'none');
-$('.pricing-step_range-module.is-lower').remove();
-$('.pricing-step_range-module.is-higher').css('display', 'flex');
+  $(".pricing-step_range-module.is-lower").css("display", "none");
+  $(".pricing-step_range-module.is-lower").remove();
+  $(".pricing-step_range-module.is-higher").css("display", "flex");
 
-  // Set the ticket number to 2000
+  // Set the ticket number to 2500
   globalTicketNumber = 2500;
 
   // Update the ticket range input value
@@ -518,53 +524,49 @@ $('.pricing-step_range-module.is-higher').css('display', 'flex');
   determinePlan(globalTicketNumber);
   updateActivePlanElement();
   updateLogosAndCTAs();
-
-// window.fsAttributes = window.fsAttributes || [];
-//  window.fsAttributes.push([
-//    'rangeslider',
-//    (listInstances) => {
-//      window.fsAttributes.rangeslider.init();
-//    },
-//  ]);
+  // Display alert
+  displayAlert();
 
   // Log the change for debugging
   console.log("Range slider updated to max 10000 and step 100");
 });
 
-
-
 let isThumbDragging = false; // Flag to track if the thumb is being dragged
 
 // Listen for mousedown on the .range-slider_thumb
-$('.range-slider_thumb').on('mousedown', function() {
-  console.log('Mouse down on range slider thumb');
+$(".range-slider_thumb").on("mousedown", function () {
+  console.log("Mouse down on range slider thumb");
   isThumbDragging = true; // Set the flag to true when dragging starts
 });
 
 // Listen for mouseup anywhere in the document
-$(document).on('mouseup', function() {
-  if (isThumbDragging) { // Check if dragging was happening
-    console.log('Mouse up detected after dragging thumb');
+$(document).on("mouseup", function () {
+  if (isThumbDragging) {
+    // Check if dragging was happening
+    console.log("Mouse up detected after dragging thumb");
     isThumbDragging = false; // Reset the flag
 
     // Scroll to #step-1
-    var scrollTarget = $('#step-1');
-    if (scrollTarget.length) { // Check if the target element exists
-      console.log('Scrolling to #step-1');
-      $('html, body').animate({
-        scrollTop: scrollTarget.offset().top - ($(window).height() * -0.1) // Scroll with a 20% offset
-      }, 400); // 400ms scroll duration
+    var scrollTarget = $("#step-1");
+    if (scrollTarget.length) {
+      // Check if the target element exists
+      console.log("Scrolling to #step-1");
+      $("html, body").animate(
+        {
+          scrollTop: scrollTarget.offset().top - $(window).height() * -0.1, // Scroll with a 20% offset
+        },
+        400
+      ); // 400ms scroll duration
     } else {
-      console.log('Element #step-1 not found');
+      console.log("Element #step-1 not found");
     }
   }
 });
 
-
 // Function to initialize at 2000 tickets on page load
 function initTicketNumber() {
-  // Set the ticket number to 2000
-  globalTicketNumber = 1500;
+  // Set the ticket number to 1250
+  globalTicketNumber = 1250;
 
   // Update the ticket range input value
   $("#ticketRange").val(globalTicketNumber);
@@ -579,25 +581,6 @@ function initTicketNumber() {
   updateActivePlanElement();
   updateLogosAndCTAs();
 }
-
-// // Function to initialize at 2000 tickets on page load
-// function initTicketNumber() {
-//   // Set the ticket number to 2000
-//   globalTicketNumber = 2000;
-
-//   // Update the ticket range input value
-//   $("#ticketRange-2").val(globalTicketNumber);
-
-//   // Pass the ticket number to DOM Element data-el="ticketNumber"
-//   $('[data-el="ticketNumber"]').text(
-//     formatNumberWithCommas(globalTicketNumber)
-//   );
-
-//   // After ticket input changes, trigger next steps
-//   determinePlan(globalTicketNumber);
-//   updateActivePlanElement();
-//   updateLogosAndCTAs();
-// }
 
 /****************************
  *
@@ -643,6 +626,8 @@ $(".billing-toggle-radio").on("click", function () {
   updatePricesOnBillingCycleChange();
   // After changing the billing cycle, reinitialize plan pricing
   determinePlan(globalTicketNumber);
+  // Display alert
+  displayAlert();
 });
 
 // Function to toggle to monthly billing cycle
@@ -665,6 +650,8 @@ function toggleMonthly() {
     // Set yearly toggle button to pointer-events auto
     $(".billing-toggle-radio.is-yearly").css("pointer-events", "auto");
   }
+  // Display alert
+  displayAlert();
 }
 
 // Function to toggle to monthly billing cycle
@@ -686,6 +673,39 @@ function toggleYearly() {
   } else {
     // Set yearly toggle button to pointer-events auto
     $(".billing-toggle-radio.is-yearly").css("pointer-events", "auto");
+  }
+  // Display alert
+  displayAlert();
+}
+
+function displayAlert() {
+  // Hide all alerts initially
+  $(".yearly-billing-alert").css("display", "none");
+  $(".monthly-billing-alert").css("display", "none");
+  $(".starter-billing-alert").css("display", "none");
+
+  // Check for the conditions and show the appropriate alert
+  if (globalBillingCycle === "yearly") {
+    // Display yearly alert only if the billing cycle is yearly
+    $(".yearly-billing-alert").css("display", "flex");
+    $('.radio-wrap.billing-toggle-radio.is-yearly').removeClass('is-disabled');
+    console.log("Displaying yearly billing alert");
+  } else if (
+    globalBillingCycle === "monthly" &&
+    globalCurrentPlanName === "Starter"
+  ) {
+    // Display starter alert if the plan is Starter and billing cycle is monthly
+    $(".starter-billing-alert").css("display", "flex");
+    $('.radio-wrap.billing-toggle-radio.is-yearly').addClass('is-disabled');
+    console.log("Displaying starter monthly billing alert");
+  } else if (
+    globalBillingCycle === "monthly" &&
+    globalCurrentPlanName !== "Starter"
+  ) {
+    // Display monthly alert if billing cycle is monthly and plan is not Starter
+    $(".monthly-billing-alert").css("display", "flex");
+    $('.radio-wrap.billing-toggle-radio.is-yearly').removeClass('is-disabled');
+    console.log("Displaying monthly billing alert");
   }
 }
 
@@ -930,10 +950,13 @@ $('[data-el^="pricingCard"]').on("click", function () {
   calculateROISavings();
 });
 
-$('.pricing_card').on('click', function() {
-  $('html, body').animate({
-    scrollTop: $('#step-3').offset().top
-    }, 400); // The 1000 is the scroll speed in milliseconds (1 second in this case)
+$(".pricing_card").on("click", function () {
+  $("html, body").animate(
+    {
+      scrollTop: $("#step-3").offset().top,
+    },
+    400
+  ); // The 1000 is the scroll speed in milliseconds (1 second in this case)
 });
 /****************************
  *
@@ -977,7 +1000,10 @@ function calculateROISavings() {
     totalSupportTimeWithoutGorgias * avgSupportSalary;
 
   // If 0% automation, set agentTicketsWithAutomate to agentTickets (no automation applied)
-  if (selectedCardType === "pricingCard" || agentTicketsWithAutomate === globalTicketNumber) {
+  if (
+    selectedCardType === "pricingCard" ||
+    agentTicketsWithAutomate === globalTicketNumber
+  ) {
     agentTicketsWithAutomate = agentTickets;
     console.log("No automation selected, only helpdesk pricing considered");
   }
@@ -1086,16 +1112,16 @@ function updateChosenPrices() {
       break;
   }
 
-    // Check if automation is 0% and hide or show the automate summary
-    if (selectedCardType === "pricingCard") {
-      // Automate is 0%, hide the automate summary
-      $('[data-summary="automate"]').css("display", "none");
-      console.log("Automation is 0%, hiding automate summary.");
-    } else {
-      // Automate is not 0%, show the automate summary
-      $('[data-summary="automate"]').css("display", "flex");
-      console.log("Automation is not 0%, displaying automate summary.");
-    }
+  // Check if automation is 0% and hide or show the automate summary
+  if (selectedCardType === "pricingCard") {
+    // Automate is 0%, hide the automate summary
+    $('[data-summary="automate"]').css("display", "none");
+    console.log("Automation is 0%, hiding automate summary.");
+  } else {
+    // Automate is not 0%, show the automate summary
+    $('[data-summary="automate"]').css("display", "flex");
+    console.log("Automation is not 0%, displaying automate summary.");
+  }
 
   // Log updated prices
   console.log("Updated chosenHelpdeskPrice:", chosenHelpdeskPrice);
@@ -1315,11 +1341,22 @@ $('[data-summary="helpdesk-remove"]').on("click", function () {
   $(".code-radio").addClass("is-inactive");
   $(".pricing_card").removeClass("is-selected");
 
-  // Reset summary total price to "0,000.00"
-  $('[data-el="summaryTotalPrice"]').text("0,000.00");
+  // Reset summary total price to "0,000"
+  $('[data-el="summaryTotalPrice"]').text("0,000");
 
   // Optionally reset chosen helpdesk price
   chosenHelpdeskPrice = 0;
+  chosenAutomatePrice = 0;
+  console.log(
+    "Helpdesk remove button clicked. " +
+      "Helpdesk price equals " +
+      chosenHelpdeskPrice
+  );
+  console.log(
+    "Automate remove button clicked. " +
+      "Automate price equals " +
+      chosenAutomatePrice
+  );
 });
 
 // When click on automate-remove button
@@ -1332,11 +1369,22 @@ $('[data-summary="automate-remove"]').on("click", function () {
   $(".code-radio").addClass("is-inactive");
   $(".pricing_card").removeClass("is-selected");
 
-  // Reset summary total price to "0,000.00"
-  $('[data-el="summaryTotalPrice"]').text("0,000.00");
+  // Reset summary total price to "0,000"
+  $('[data-el="summaryTotalPrice"]').text("0,000");
 
   // Optionally reset chosen automate price
+  chosenHelpdeskPrice = 0;
   chosenAutomatePrice = 0;
+  console.log(
+    "Helpdesk remove button clicked. " +
+      "Helpdesk price equals " +
+      chosenHelpdeskPrice
+  );
+  console.log(
+    "Automate remove button clicked. " +
+      "Automate price equals " +
+      chosenAutomatePrice
+  );
 });
 
 function resetVoicePrice() {
@@ -1399,6 +1447,20 @@ $('[data-summary="voice-remove"]').on("click", function () {
 $('[data-summary="sms-remove"]').on("click", function () {
   console.log("SMS remove button clicked");
   resetSmsPrice(); // Call the SMS reset function
+});
+
+// If the user selects sms Tier 0, hide the sms summary
+smsTicketsSelect.addEventListener("change", function () {
+  if (smsTicketsSelect.value === "Tier 0") {
+    $(smsSummary).addClass("is-hidden");
+  }
+});
+
+// If the user selects voice Tier 0, hide the voice summary
+voiceTicketsSelect.addEventListener("change", function () {
+  if (voiceTicketsSelect.value === "Tier 0") {
+    $(voiceSummary).addClass("is-hidden");
+  }
 });
 
 /***************************
