@@ -423,18 +423,26 @@ $("#ticketRange").on("change", function () {
 
   const ticketNumber = parseInt($(this).val(), 10);
 
+
   // Check if the ticket number is less than 3000
-  if (ticketNumber >= 1500) {
+  if (ticketNumber > 1501) {
     $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
   } else {
     $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
-  }
+
   // After ticket input changes, trigger next steps
   determinePlan(globalTicketNumber);
   updateActivePlanElement();
   updateLogosAndCTAs();
   // Display alert
   displayAlert();
+
+    // Check if the ticket number is more than 1500
+    if (ticketNumber > 1501) {
+      $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are higher than 1501
+    } else {
+      $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are 1501 or less
+    }
 });
 
 $("#ticketRange-2").on("change", function () {
@@ -445,11 +453,11 @@ $("#ticketRange-2").on("change", function () {
 
   const ticketNumber = parseInt($(this).val(), 10);
 
-  // Check if the ticket number is less than 3000
-  if (ticketNumber >= 1500) {
-    $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
+  // Check if the ticket number is more than 1500
+  if (ticketNumber > 1501) {
+    $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are higher than 1501
   } else {
-    $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
+    $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are 1501 or less
   }
 });
 
@@ -1506,6 +1514,7 @@ Webflow.push(function () {
   initTicketNumber();
   // Initialize the active plan element
   updateActivePlanElement();
+  $(".more-tickets-cta").css("display", "none");
 
   setTimeout(() => {
     // Function to update the IDs and structure of text in the dropdown links
