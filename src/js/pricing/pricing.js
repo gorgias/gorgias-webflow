@@ -563,6 +563,23 @@ $(document).on("mouseup", function () {
   }
 });
 
+$('.range-slider_track.is-pricing').on("mouseup", function(){
+   // Scroll to #step-1
+   var scrollTarget = $("#step-1");
+   if (scrollTarget.length) {
+     // Check if the target element exists
+     console.log("Scrolling to #step-1");
+     $("html, body").animate(
+       {
+         scrollTop: scrollTarget.offset().top - $(window).height() * -0.1, // Scroll with a 20% offset
+       },
+       400
+     ); // 400ms scroll duration
+   } else {
+     console.log("Element #step-1 not found");
+   }
+});
+
 // Function to initialize at 2000 tickets on page load
 function initTicketNumber() {
   // Set the ticket number to 1250
@@ -575,7 +592,6 @@ function initTicketNumber() {
   $('[data-el="ticketNumber"]').text(
     formatNumberWithCommas(globalTicketNumber)
   );
-
   // After ticket input changes, trigger next steps
   determinePlan(globalTicketNumber);
   updateActivePlanElement();
@@ -920,6 +936,10 @@ function calculateOptionPrices() {
  * Step 6: Choosing a Plan
  *
  ****************************/
+// Global flag to track programmatic clicks
+let isProgrammaticClick = false;
+
+// Event listener for pricing card clicks
 $('[data-el^="pricingCard"]').on("click", function () {
   // Store the selected card type (e.g., "pricingCard", "pricingCard10", etc.)
   selectedCardType = $(this).attr("data-el");
@@ -948,15 +968,19 @@ $('[data-el^="pricingCard"]').on("click", function () {
   updateChosenPrices();
   calculateSummary();
   calculateROISavings();
-});
 
-$(".pricing_card").on("click", function () {
-  $("html, body").animate(
-    {
-      scrollTop: $("#step-3").offset().top,
-    },
-    400
-  ); // The 1000 is the scroll speed in milliseconds (1 second in this case)
+  // Only scroll to #step-3 if this is a user click
+  if (!isProgrammaticClick) {
+    $("html, body").animate(
+      {
+        scrollTop: $("#step-3").offset().top,
+      },
+      400 // Scroll speed in milliseconds
+    );
+    console.log("User clicked, scrolling to #step-3");
+  } else {
+    console.log("Programmatic click, skipping scroll to #step-3");
+  }
 });
 /****************************
  *
@@ -1361,30 +1385,24 @@ $('[data-summary="helpdesk-remove"]').on("click", function () {
 
 // When click on automate-remove button
 $('[data-summary="automate-remove"]').on("click", function () {
-  // Hide plan summary and show no-selection message
-  $(".plan_summary-layout").css("display", "none");
-  $(".plan_no-selection").css("display", "flex");
+  // Set the flag to true before triggering the programmatic click
+  isProgrammaticClick = true;
 
-  // Disable radio buttons and deselect pricing cards
-  $(".code-radio").addClass("is-inactive");
-  $(".pricing_card").removeClass("is-selected");
+  // Simulate a click on the "pricingCard" element (the default automation option, 0% automate)
+  const defaultPricingCard = document.querySelector('[data-el="pricingCard"]');
 
-  // Reset summary total price to "0,000"
-  $('[data-el="summaryTotalPrice"]').text("0,000");
+  // Check if the default pricing card exists before proceeding
+  if (defaultPricingCard) {
+    console.log('Simulating click on default pricing card for 0% automation');
+    defaultPricingCard.click(); // Trigger the click event on the pricing card
+  } else {
+    console.error('No pricing card found for default automation (0%)');
+  }
 
-  // Optionally reset chosen automate price
-  chosenHelpdeskPrice = 0;
-  chosenAutomatePrice = 0;
-  console.log(
-    "Helpdesk remove button clicked. " +
-      "Helpdesk price equals " +
-      chosenHelpdeskPrice
-  );
-  console.log(
-    "Automate remove button clicked. " +
-      "Automate price equals " +
-      chosenAutomatePrice
-  );
+  // Reset the flag after the programmatic click
+  setTimeout(() => {
+    isProgrammaticClick = false;
+  }, 0); // Ensures the flag is reset immediately after the click
 });
 
 function resetVoicePrice() {
