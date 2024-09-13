@@ -29,7 +29,7 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
     }
 
-    // // pricing page wip
+    // // pricing page
     if (path.includes('pricing')){
       newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
     }
