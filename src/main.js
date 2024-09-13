@@ -31,7 +31,7 @@ Webflow.push(function () {
 
     // // pricing page wip
     if (path.includes('wip-plans')){
-      newScript(scriptBase + '/src/js/pricing/alt-pricing'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
     //   // newScript(scriptBase + '/src/js/pricing-ui'+minBase+'.js','body', 1);
     }
 
