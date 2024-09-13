@@ -243,7 +243,7 @@ $("#ticketRange").on("change", function () {
     } else {
       $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are 1501 or less
     }
-});
+  }});
 
 $("#ticketRange-2").on("change", function () {
   // After ticket input changes, trigger next steps
