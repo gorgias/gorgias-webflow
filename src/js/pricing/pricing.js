@@ -222,6 +222,14 @@ $("#ticketRange").on("change", function () {
   }
 
   const ticketNumber = parseInt($(this).val(), 10);
+
+
+  // Check if the ticket number is less than 3000
+  if (ticketNumber > 1501) {
+    $(".more-tickets-cta").css("display", "flex"); // Show the CTA if tickets are 3000 or more
+  } else {
+    $(".more-tickets-cta").css("display", "none"); // Hide CTA if tickets are less than 3000
+
   // After ticket input changes, trigger next steps
   determinePlan(globalTicketNumber);
   updateActivePlanElement();
