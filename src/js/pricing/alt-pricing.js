@@ -117,6 +117,8 @@ const voiceTicketsSelect = document.querySelector(`[data-target="voice-tickets"]
 const smsTicketsSelect = document.querySelector(`[data-target="sms-tickets"]`);
 const voiceSummary = document.querySelector(`[data-summary="voice"]`);
 const smsSummary = document.querySelector(`[data-summary="sms"]`);
+let chosenAutomatedTickets = document.querySelector(`[data-el="chosen-automated-tickets"]`);
+let chosenHelpdeskTickets = document.querySelector(`[data-el="chosen-helpdesk-tickets"]`);
 
 /****************************
  *
@@ -523,6 +525,13 @@ $('[data-el^="pricingCard"]').on("click", function () {
   const automationRate = selectedCardType.replace("pricingCard", "") || "0";
   $('[data-el="automationRate"]').text(automationRate);
 
+  // Update chosenAutomatedTickets and chosenHelpdeskTickets
+  const automateTickets = window[`globalAutomateTickets${automationRate}`] || 0;
+  const helpdeskTickets = globalTicketNumber - automateTickets;
+
+  chosenAutomatedTickets.textContent = formatNumberWithCommas(automateTickets);
+  chosenHelpdeskTickets.textContent = formatNumberWithCommas(helpdeskTickets);
+
   // Update chosen prices and summary total
   updateChosenPrices();
   calculateSummary();
@@ -863,6 +872,7 @@ function updateLogosAndCTAs() {
     $(".is-pro-logos").css("display", "flex");
     $(".is-advanced-logos, .is-enterprise-logos").css("display", "none");
     $('[data-el="book-demo"]').css("display", "none");
+    $('[data-el="contact-sales"]').css("display", "none");
     $('[data-el="start-free-trial"]').css("display", "block");
 
     heroBtnLeft.find("div:first").text("Start Free Trial").end().attr("href", "/signup-2");
@@ -874,6 +884,7 @@ function updateLogosAndCTAs() {
     $(".is-advanced-logos").css("display", "flex");
     $(".is-pro-logos, .is-enterprise-logos").css("display", "none");
     $('[data-el="book-demo"]').css("display", "block");
+    $('[data-el="contact-sales"]').css("display", "none");
     $('[data-el="start-free-trial"]').css("display", "none");
 
     heroBtnLeft.find("div:first").text("Book a Demo").end().attr("href", "/demo");
@@ -886,6 +897,8 @@ function updateLogosAndCTAs() {
     $(".is-pro-logos, .is-advanced-logos").css("display", "none");
     $(".pricing_card-wrapper, .pricing-step_banner").css("display", "none");
     $(".pricing-step_banner.is-enterprise").css("display", "flex");
+    $('[data-el="book-demo"]').css("display", "none");
+    $('[data-el="contact-sales"]').css("display", "block");
   }
 }
 
