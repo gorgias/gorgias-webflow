@@ -590,8 +590,11 @@ function calculateROISavings() {
 
   // Update the DOM with time and formatted money saved
   $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
+  if(moneySaved > 0) {
   $('[data-target="moneySaved"]').text(formattedMoneySaved);
-}
+} else {  
+  $('[data-target="moneySaved"]').text("");
+}}
 
 /****************************
  *
