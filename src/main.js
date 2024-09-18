@@ -14,6 +14,7 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
     // newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
+    newScript(scriptBase + '/src/js/get-started'+minBase+'.js','body',1);
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/global-styles'+minBase+'.css','head');
     newStyle(scriptBase + '/src/css/cookies'+minBase+'.css','body');
