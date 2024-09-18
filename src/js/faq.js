@@ -11,11 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Get all elements with the class 'new-faq_content'
     const faqElements = document.querySelectorAll(".new-faq_content");
-  
-    faqElements.forEach((element) => {
-      // Get the inner HTML of the element
-      let content = element.innerHTML;
-  
+    const accordionElements = document.querySelectorAll('[g-accordion-element="content"]');
+
+    const replaceURLsWithAnchors = (content) => {
       // Replace the URLs in the content with anchor tags
       const updatedContent = content.replace(urlPattern, (url) => {
         // Ensure the URL starts with http:// or https://
@@ -23,9 +21,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const link = `<a class="faq-link" href="${href}" target="_blank">${url}</a>`;
         return link;
       });
-  
+
+      return updatedContent;
+    };
+
+    faqElements.forEach((element) => {
+      // Get the inner HTML of the element
+      let content = element.innerHTML;
+
       // Update the element's HTML content
-      element.innerHTML = updatedContent;
+      element.innerHTML = replaceURLsWithAnchors(content);
+    });
+
+    accordionElements.forEach((element) => {
+      // Get the inner HTML of the element
+      let content = element.innerHTML;
+
+      // Update the element's HTML content
+      element.innerHTML = replaceURLsWithAnchors(content);
     });
   });
   
