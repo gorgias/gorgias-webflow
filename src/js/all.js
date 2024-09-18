@@ -158,6 +158,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
+// Animation to show modal on get started cta click
+$("[data-el='get-started-cta']").click(function() {
+  // Show the component and wrapper first
+  $(".get-starter_component").removeClass('is-hidden');
+  $(".get-started_wrapper").removeClass("is-hidden");
+
+  console.log("get started component and wrapper displayed");
+
+  // After a delay, show the form
+  setTimeout(function() {
+    $(".get-started-form").removeClass("is-hidden");
+    console.log("get started form displayed");
+  }, 100);
+});
+
+// Use event delegation to handle dynamically added elements
+$(document).on('click', '#closeGetStartedModal', function() {
+  // First, hide the form
+  console.log("closing get started form");
+  $(".get-started-form").addClass("is-hidden");
+
+  // After a delay, hide the wrapper and component
+  setTimeout(function() {
+    $(".get-started_wrapper").addClass("is-hidden");
+    $(".get-starter_component").addClass("is-hidden");
+    console.log("get started component and wrapper hidden");
+  }, 700);  // Adjust the delay to sync with the form hide animation
+});
 
 /****************************
  * 
@@ -207,6 +235,4 @@ document.addEventListener("DOMContentLoaded", function() {
   // Call the function to apply the console.log handling
   handleConsoleLogs();
 })();
-
-
 
