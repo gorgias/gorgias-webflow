@@ -1,55 +1,69 @@
-// Get all <a> tags
-let links = document.querySelectorAll('a, link');
+// Add URL ref and ref-position parameters to all links with /demo, /signup, or /signup-2 based on the page and position of the link and the url of current page
 
-// Loop through each <a> tag
-links.forEach(link => {
-    let href = link.getAttribute('href');
+// Function to add URL parameters
+function addUrlParameter(url, param, value) {
+    let urlObj = new URL(url, window.location.origin);
+    if (!urlObj.searchParams.has(param)) {
+        urlObj.searchParams.append(param, value);
+    }
+    return urlObj.toString();
+}
+
+// Function to update href with ref and ref-position parameters
+function updateHrefWithParams(element) {
+    let href = element.getAttribute('href') || '';
+    let ctaAttr = element.getAttribute('cta') || '';
+    let refValue = '';
+    let refPositionValue = '';
     let updatedHref = '';
-
-    // Check if href contains /demo, /signup, or /signup-2 but not /signup-2/account or /signup/account
+    let path = window.location.pathname;
+    // Target the right links by checking if href contains /demo, /signup, or /signup-2 but not /signup-2/account or /signup/account
     if (
-        (href.includes('/demo') || href.includes('/signup') || href.includes('/get-started') || href.includes('/signup-2')) &&
+        (href.includes('/demo') || href.includes('/signup') || (href=='#' && ctaAttr.includes('get-started')) || href.includes('/signup-2')) &&
         !href.includes('/signup-2/account') &&
         !href.includes('/signup/account')
     ) {
-    // Get the current path and modify it
-    let path = window.location.pathname
-    
-    if (path === '/') {
-        path = 'home';
-    }
-    else{
-        path = path.slice(1).replace(/\//g, '-');
-    }
- 
-    console.log(href);
-    // Append the "ref" parameter to the href
-    // Check if href already has a ref parameter
-    if (!href.includes('ref=')) {
-        updatedHref = href.includes('?') ? `${href}&ref=${path}` : `${href}?ref=${path}`;
-        // Update the href attribute
-        console.log(updatedHref);
-    }
-    else {
-        console.log(href);
-    }
+        // Set ref value based on the path and overide ref value for home page
+        if (path === '/') {
+            refValue = 'home';
+        } else {
+            refValue = path.slice(1).replace(/\//g, '-');
+        }
+        // Add get-started to ref value if the cta clicked is a Get Started button
+        if(ctaAttr.includes('get-started')){
+            refValue = refValue + '-get-started';
+        }
+        // Add ref value to the href
+        updatedHref = addUrlParameter(href, 'ref', refValue);
 
-    // Check if the <a> tag is a child of a section with class "hero"
-    if (link.closest('[class*="hero"]')) {
-        updatedHref = updatedHref.includes('?') ? `${updatedHref}&ref-position=hero` : `${updatedHref}?ref-position=hero`;
-    }else if (link.closest('[class*="footer-cta"]')) {
-        updatedHref = updatedHref.includes('?') ? `${updatedHref}&ref-position=footer-cta` : `${updatedHref}?ref-position=footer-cta`;
-    }else if (link.closest('[class*="reassurance"]')) {
-        updatedHref = updatedHref.includes('?') ? `${updatedHref}&ref-position=reassurance` : `${updatedHref}?ref-position=reassurance`;
-    }else if (link.closest('[class*="ctas-bar-container"]')) {
-        updatedHref = updatedHref.includes('?') ? `${updatedHref}&ref-position=stciky-cta-bar` : `${updatedHref}?ref-position=stciky-cta-bar`;
-    }else if (link.closest('[class*="main-nav"]')) {
-        updatedHref = updatedHref.includes('?') ? `${updatedHref}&ref-position=menu` : `${updatedHref}?ref-position=menu`;
-    }else {
-        updatedHref = updatedHref.includes('?') ? `${updatedHref}&ref-position=other` : `${updatedHref}?ref-position=other`;
-    }
+        // Set the ref-position value based on the position of the link on the page
+        // Check if the element is a child of a section with specific classes
+        if (element.closest('[class*="hero"]')) {
+            refPositionValue = 'hero';
+        } else if (element.closest('[class*="footer-cta"]')) {
+            refPositionValue = 'footer-cta';
+        } else if (element.closest('[class*="reassurance"]')) {
+            refPositionValue = 'reassurance';
+        } else if (element.closest('[class*="ctas-bar-container"]')) {
+            refPositionValue = 'stciky-cta-bar'
+        } else if (element.closest('[class*="main-nav"]')) {
+            refPositionValue = 'menu';
+        } else {
+            refPositionValue = 'other';
+        }
 
-    link.setAttribute('href', updatedHref);
-        
+        // Add ref-position value to the href
+        updatedHref = addUrlParameter(updatedHref, 'ref-position', refPositionValue);
+
+        // Update the href attribute of the link
+        element.href = updatedHref;
     }
+}
+
+// Get all <a> tags
+let links = document.querySelectorAll('a, link');
+
+// update href with ref and ref-position parameters for each link
+links.forEach(link => {
+    updateHrefWithParams(link);
 });
