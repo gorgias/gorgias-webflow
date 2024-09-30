@@ -90,9 +90,7 @@ $("[data-el='get-started-cta']").click(function() {
 // Check if the current path is /demo and the ref parameter contains "get-started"
 if (currentPath === '/demo') {
     if (currentSearch.includes('get-started')) {   
-        $('.demo-from-getstarted').removeClass('is-hidden');
-        $('.demo-new_container').addClass('is-hidden');
-        $('.demo-new_container').style.display = 'none !important';
-
+        $('[data-el=demo-content-control]').addClass('is-hidden');
+        $('[data-el=demo-content-variant]').removeClass('is-hidden');
     }
 }
