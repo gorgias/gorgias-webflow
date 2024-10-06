@@ -29,90 +29,59 @@ Webflow.push(function () {
 
 
     // Initialize the "thumbs" slider (mySwiper)
-    var mySwiper = new Swiper(".myswiper", {
-      slidesPerView: 'auto',
-      spaceBetween: 10,
-      slideToClickedSlide: true,  // Clicking thumbs moves the main slider
-      watchSlidesProgress: true,  // Monitor progress for syncing
-      watchSlidesVisibility: true, // Track visibility for better syncing
-      on: {
-        init: function() {
-          console.log('Thumbs slider (mySwiper) initialized successfully.');
-        },
-        slideChange: function() {
-          // Just logging the thumb slide change
-          console.log('Thumbs slider changed, syncing main vertical slider to index:', this.activeIndex);
-        }
-      }
-    });
-  
-    // Initialize the "main vertical" slider (mySwiper3)
-    var mySwiper3 = new Swiper(".myswiper3", {
-      direction: 'vertical',
-      slidesPerView: 1,
-      spaceBetween: 0,
-      autoHeight: true,  // Adjust slider height based on content
-      mousewheel: {
-        releaseOnEdges: true,  // Release control when at the edge
+  var mySwiper = new Swiper(".myswiper", {
+    slidesPerView: 'auto',  // Show multiple thumbs
+    spaceBetween: 10,       // Space between thumbs
+    watchSlidesProgress: true,  // Ensure thumbs stay in sync with progress
+    watchSlidesVisibility: true, // Ensure thumbs stay visible
+    slideToClickedSlide: true,   // Enable clicking on thumbs to change main slider
+    on: {
+      init: function() {
+        console.log('Thumbs slider (mySwiper) initialized successfully.');
       },
-      on: {
-        init: function() {
-          console.log('Main vertical slider (mySwiper3) initialized successfully.');
-        },
-        slideChange: function() {
-          console.log('Main vertical slider (mySwiper3) changed to index:', this.activeIndex);
-          if (mySwiper2) {
-            mySwiper2.slideTo(this.activeIndex);  // Sync with fade effect slider
-            console.log('Syncing fade effect slider (mySwiper2) to index:', this.activeIndex);
-          }
-        }
+    }
+  });
+
+  // Initialize the "main vertical" slider (mySwiper3)
+  var mySwiper3 = new Swiper(".myswiper3", {
+    direction: 'vertical',
+    slidesPerView: 1,    // Only one slide in view at a time
+    spaceBetween: 0,     // No space between slides
+    autoHeight: true,    // Automatically adjust height based on content
+    mousewheel: {
+      releaseOnEdges: true,  // Allow scrolling beyond edges
+    },
+    thumbs: {             // Use the thumbs component to connect to mySwiper
+      swiper: mySwiper,    // Link the thumbs slider (mySwiper) to this main slider
+    },
+    on: {
+      init: function() {
+        console.log('Main vertical slider (mySwiper3) initialized successfully.');
       },
-      controller: {
-        control: mySwiper  // Link thumbs slider to main vertical slider
-      }
-    });
-  
-    // Initialize the "fade effect" slider (mySwiper2)
-    var mySwiper2 = new Swiper(".myswiper2", {
-      effect: 'fade',
-      fadeEffect: { crossFade: true },  // Smooth fade effect
-      slidesPerView: 1,
-      spaceBetween: 0,  // No space between slides
-      on: {
-        init: function() {
-          console.log('Fade effect slider (mySwiper2) initialized successfully.');
-        },
-        slideChange: function() {
-          // Sync happens when `mySwiper3` changes, no direct control needed
-          console.log('Fade effect slider (mySwiper2) changed to index:', this.activeIndex);
+      slideChange: function() {
+        console.log('Main vertical slider (mySwiper3) changed to index:', this.activeIndex);
+        if (mySwiper2) {
+          mySwiper2.slideTo(this.activeIndex);  // Sync with fade effect slider
+          console.log('Syncing fade effect slider (mySwiper2) to index:', this.activeIndex);
         }
       }
-    });
-  
-    // Controller Setup: mySwiper controls mySwiper3 (but not vice versa)
-    mySwiper.controller.control = mySwiper3;  // Thumbs control the main slider
-  
-    // mySwiper3 syncs with mySwiper2 for the fade effect
-    mySwiper3.controller.control = mySwiper2;
-  
-  
-    // Check if the elements for each slider exist in the DOM
-    if (document.querySelector('.myswiper')) {
-      console.log('Thumbs slider element (.myswiper) found.');
-    } else {
-      console.error('Thumbs slider element (.myswiper) not found!');
     }
-  
-    if (document.querySelector('.myswiper3')) {
-      console.log('Main vertical slider element (.myswiper3) found.');
-    } else {
-      console.error('Main vertical slider element (.myswiper3) not found!');
+  });
+
+  // Initialize the "fade effect" slider (mySwiper2)
+  var mySwiper2 = new Swiper(".myswiper2", {
+    effect: 'fade',                   // Fade effect for smoother transitions
+    fadeEffect: { crossFade: true },   // Crossfade effect for transitions
+    slidesPerView: 1,                 // Only one slide visible at a time
+    spaceBetween: 0,                  // No space between slides
+    on: {
+      init: function() {
+        console.log('Fade effect slider (mySwiper2) initialized successfully.');
+      },
+      slideChange: function() {
+        console.log('Fade effect slider (mySwiper2) changed to index:', this.activeIndex);
+      }
     }
-  
-    if (document.querySelector('.myswiper2')) {
-      console.log('Fade effect slider element (.myswiper2) found.');
-    } else {
-      console.error('Fade effect slider element (.myswiper2) not found!');
-    }
+  });
 
 });
