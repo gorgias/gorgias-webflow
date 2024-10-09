@@ -120,6 +120,7 @@ const smsSummary = document.querySelector(`[data-summary="sms"]`);
 let chosenAutomatedTickets = document.querySelector(`[data-el="chosen-automated-tickets"]`);
 let chosenHelpdeskTickets = document.querySelector(`[data-el="chosen-helpdesk-tickets"]`);
 
+
 /****************************
  *
  * Global Functions
@@ -151,10 +152,12 @@ let globalTicketNumber = 0;
 // Function to update the display of .more-tickets-cta
 function updateMoreTicketsCTA() {
   console.log("updateMoreTicketsCTA called, globalTicketNumber:", globalTicketNumber);
-  if (globalTicketNumber >= 1500) {
-    $(".more-tickets-cta").css("display", "flex");
+  if (globalTicketNumber < 1250) {
+    $(".more-tickets-cta").css("opacity", "1");
+    $(".more-tickets-cta").css("pointer-events", "auto");
   } else {
-    $(".more-tickets-cta").css("display", "none");
+    $(".more-tickets-cta").css("opacity", "0");
+    $(".more-tickets-cta").css("pointer-events", "none");
   }
 }
 
@@ -172,11 +175,6 @@ $("#ticketRange, #ticketRange-2").on("input change", function () {
   // Update the display of .more-tickets-cta
   updateMoreTicketsCTA();
 
-  // After ticket input changes, trigger next steps
-  if (globalCurrentPlanName === "Starter") {
-    toggleMonthly();
-  }
-
   // Ensure that plan selection is valid before proceeding
   determinePlan(globalTicketNumber);
   updateActivePlanElement();
@@ -185,14 +183,22 @@ $("#ticketRange, #ticketRange-2").on("input change", function () {
   // Display alert
   displayAlert();
 
+  // If a card has already been selected, update the plan selection
+  if (selectedCardType) {
+    updatePlanSelection(selectedCardType);
+  }
+
   // Check if a valid plan has been determined
   if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
     // Update prices, UI elements, and calculate the summary
     updatePricesOnBillingCycleChange();
     calculateSummary();
+    
   } else {
     console.warn("No valid plan selected, skipping summary calculation.");
   }
+
+
 });
 
 // Handle click event on the more-tickets-cta button
@@ -206,10 +212,10 @@ $(".more-tickets-cta").on("click", function () {
   $(".pricing-step_range-module.is-higher").css("display", "flex");
 
   // Set the ticket number to 2500
-  globalTicketNumber = 2500;
+  globalTicketNumber = 1250;
 
   // Update the ticket range input value
-  $("#ticketRange-2").val(globalTicketNumber);
+  $("#ticketRange").val(globalTicketNumber);
 
   // Update the ticket number in the DOM
   $('[data-el="ticketNumber"]').text(formatNumberWithCommas(globalTicketNumber));
@@ -268,7 +274,7 @@ function scrollToStep1() {
 // Function to initialize at 1250 tickets on page load
 function initTicketNumber() {
   // Set the ticket number to 1250
-  globalTicketNumber = 1250;
+  globalTicketNumber = 2500;
 
   // Update the ticket range input values
   $("#ticketRange, #ticketRange-2").val(globalTicketNumber);
@@ -363,6 +369,8 @@ function displayAlert() {
 // Global variables for current plan
 let globalCurrentPlanName = "";
 let globalCurrentPlanPrice = 0; // This will hold the base price of the selected plan
+let globalCurrentPlanOverageCost = 0;
+let globalCurrentPlanOverageTickets = 0;
 
 // Function to determine the plan based on the number of tickets
 function determinePlan(tickets) {
@@ -391,10 +399,17 @@ function determinePlan(tickets) {
     } else {
       break;
     }
+
+ 
   }
 
   globalCurrentPlanName = applicablePlan.name;
   globalCurrentPlanPrice = applicablePlan.monthly_cost;
+  globalCurrentPlanOverageTickets = tickets - applicablePlan.tickets_per_month;
+  globalCurrentPlanOverageCostPerTicket = applicablePlan.cost_per_overage_ticket;
+  globalCurrentPlanTicketsPerMonth = applicablePlan.tickets_per_month;
+
+  // Update plan name in the DOM
   $('[data-el="planName"]').text(globalCurrentPlanName);
 
   console.log(
@@ -413,7 +428,24 @@ function determinePlan(tickets) {
     toggleYearly();
   }
 
+  // Update overages display
+  updateOveragesDisplay();
+
+  // Recalculate automate prices
   calculateAutomatePrices();
+}
+
+// Function to update the overages display
+function updateOveragesDisplay() {
+  const overagesElement = $('[data-el="overages"]');
+  if (globalCurrentPlanOverageTickets > 0) {
+    const overageRate = globalCurrentPlanOverageCostPerTicket.toFixed(2);
+    overagesElement.text(`$${overageRate}/overage ticket`);
+    console.log(`Overages apply: $${overageRate} per overage ticket`);
+  } else {
+    overagesElement.text("Overages may apply");
+    console.log("No overages apply");
+  }
 }
 
 /****************************
@@ -438,7 +470,7 @@ function calculateAutomatePrices() {
   const automatePlansForCycle = automatePlans[globalBillingCycle];
 
   percentages.forEach((percentage) => {
-    let automateTickets = Math.round(globalTicketNumber * (percentage / 100));
+    let automateTickets = Math.round(globalCurrentPlanTicketsPerMonth * (percentage / 100));
     let automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
 
     // Update global variables dynamically
@@ -447,14 +479,17 @@ function calculateAutomatePrices() {
 
     // Update DOM elements
     if (percentage !== 0) {
-      $('[data-el="automateTicketNumber' + percentage + '"]').text(
-        formatNumberWithCommas(automateTickets)
-      );
+      const totalTickets = formatNumberWithCommas(globalCurrentPlanTicketsPerMonth);
+      const automateTicketsFormatted = formatNumberWithCommas(automateTickets);
       $('[data-el="ticketNumber' + percentage + '"]').text(
-        formatNumberWithCommas(globalTicketNumber - automateTickets)
+        `${totalTickets} tickets | ${automateTicketsFormatted} automated tickets`
       );
     }
   });
+
+  // Update main ticket number display
+  const totalTicketsText = `Up to ${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} tickets`;
+  $('[data-el="ticketNumber"]').text(totalTicketsText);
 
   calculateOptionPrices();
 }
@@ -496,23 +531,22 @@ function calculateOptionPrices() {
  *
  ****************************/
 
-// Initialize selectedCardType to a default value
-let selectedCardType = "pricingCard"; // Default value if no card is selected
+// Initialize selectedCardType to null to indicate no card selected initially
+let selectedCardType = null;
 let isProgrammaticClick = false; // Flag to track programmatic clicks
 
-// Event listener for pricing card clicks
-$('[data-el^="pricingCard"]').on("click", function () {
-  // Store the selected card type
-  selectedCardType = $(this).attr("data-el");
-  console.log("Selected card type:", selectedCardType);
+// Function to update the plan selection based on the selected card type
+function updatePlanSelection(selectedCardType) {
+  console.log("Updating plan selection for card type:", selectedCardType);
 
   // Deselect all cards and their automate pills
   $(".pricing_card").removeClass("is-selected");
   $(".pricing_card .pricing_automate-pill").removeClass("is-selected");
 
-  // Select the clicked card and its automate pill
-  $(this).toggleClass("is-selected");
-  $(this).find(".pricing_automate-pill").toggleClass("is-selected");
+  // Select the appropriate card and its automate pill
+  const selectedCard = $('[data-el="' + selectedCardType + '"]');
+  selectedCard.addClass("is-selected");
+  selectedCard.find(".pricing_automate-pill").addClass("is-selected");
 
   // Display the selected plan summary and hide the no-selection message
   $(".plan_summary-layout").css("display", "flex");
@@ -536,6 +570,16 @@ $('[data-el^="pricingCard"]').on("click", function () {
   updateChosenPrices();
   calculateSummary();
   calculateROISavings();
+}
+
+// Event listener for pricing card clicks
+$('[data-el^="pricingCard"]').on("click", function () {
+  // Store the selected card type
+  selectedCardType = $(this).attr("data-el");
+  console.log("Selected card type:", selectedCardType);
+
+  // Call the updatePlanSelection function
+  updatePlanSelection(selectedCardType);
 
   // Only scroll to #step-3 if this is a user click
   if (!isProgrammaticClick) {
@@ -590,11 +634,12 @@ function calculateROISavings() {
 
   // Update the DOM with time and formatted money saved
   $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
-  if(moneySaved > 0) {
-  $('[data-target="moneySaved"]').text(formattedMoneySaved);
-} else {  
-  $('[data-target="moneySaved"]').text("");
-}}
+  if (moneySaved > 0) {
+    $('[data-target="moneySaved"]').text(formattedMoneySaved);
+  } else {
+    $('[data-target="moneySaved"]').text("");
+  }
+}
 
 /****************************
  *
@@ -611,11 +656,14 @@ function updatePricesOnBillingCycleChange() {
   updateVoiceTicketPrice();
   updateSmsTicketPrice();
 
+
   // Ensure that chosen prices are updated after recalculating plans
   setTimeout(() => {
     updateChosenPrices();
     calculateSummary();
     calculateROISavings();
+
+ 
   }, 100);
 }
 
