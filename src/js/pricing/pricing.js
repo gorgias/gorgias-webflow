@@ -570,6 +570,7 @@ function updatePlanSelection(selectedCardType) {
   updateChosenPrices(automateTickets, automationRate);
   calculateSummary();
   calculateROISavings();
+  console.log("Updated plan selection for card type:", selectedCardType);
 }
 
 // Event listener for pricing card clicks
