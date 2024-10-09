@@ -470,7 +470,7 @@ function calculateAutomatePrices() {
   const automatePlansForCycle = automatePlans[globalBillingCycle];
 
   percentages.forEach((percentage) => {
-    let automateTickets = Math.round(globalCurrentPlanTicketsPerMonth * (percentage / 100));
+    let automateTickets = Math.round(globalTicketNumber * (percentage / 100));
     let automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
 
     // Update global variables dynamically
@@ -479,16 +479,16 @@ function calculateAutomatePrices() {
 
     // Update DOM elements
     if (percentage !== 0) {
-      const totalTickets = formatNumberWithCommas(globalCurrentPlanTicketsPerMonth);
+      const totalTickets = formatNumberWithCommas(globalTicketNumber);
       const automateTicketsFormatted = formatNumberWithCommas(automateTickets);
       $('[data-el="ticketNumber' + percentage + '"]').text(
-        `${totalTickets} tickets | ${automateTicketsFormatted} automated tickets`
+        `${totalTickets} | ${automateTicketsFormatted} automated tickets`
       );
     }
   });
 
   // Update main ticket number display
-  const totalTicketsText = `Up to ${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} tickets`;
+  const totalTicketsText = `Up to ${formatNumberWithCommas(globalTicketNumber)} tickets`;
   $('[data-el="ticketNumber"]').text(totalTicketsText);
 
   calculateOptionPrices();
@@ -560,14 +560,14 @@ function updatePlanSelection(selectedCardType) {
   $('[data-el="automationRate"]').text(automationRate);
 
   // Update chosenAutomatedTickets and chosenHelpdeskTickets
-  const automateTickets = window[`globalAutomateTickets${automationRate}`] || 0;
+  const automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
   const helpdeskTickets = globalTicketNumber - automateTickets;
 
   chosenAutomatedTickets.textContent = formatNumberWithCommas(automateTickets);
   chosenHelpdeskTickets.textContent = formatNumberWithCommas(helpdeskTickets);
 
   // Update chosen prices and summary total
-  updateChosenPrices();
+  updateChosenPrices(automateTickets, automationRate);
   calculateSummary();
   calculateROISavings();
 }
