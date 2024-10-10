@@ -117,8 +117,13 @@ const voiceTicketsSelect = document.querySelector(`[data-target="voice-tickets"]
 const smsTicketsSelect = document.querySelector(`[data-target="sms-tickets"]`);
 const voiceSummary = document.querySelector(`[data-summary="voice"]`);
 const smsSummary = document.querySelector(`[data-summary="sms"]`);
+const helpdeskBase = document.querySelector(`[data-summary="helpdesk-base"]`);
+const helpdeskOverages = document.querySelector(`[data-summary="helpdesk-overage"]`);
 let chosenAutomatedTickets = document.querySelector(`[data-el="chosen-automated-tickets"]`);
 let chosenHelpdeskTickets = document.querySelector(`[data-el="chosen-helpdesk-tickets"]`);
+let helpdeskOverageCost = 0;
+
+
 
 /****************************
  *
@@ -151,10 +156,12 @@ let globalTicketNumber = 0;
 // Function to update the display of .more-tickets-cta
 function updateMoreTicketsCTA() {
   console.log("updateMoreTicketsCTA called, globalTicketNumber:", globalTicketNumber);
-  if (globalTicketNumber >= 1500) {
-    $(".more-tickets-cta").css("display", "flex");
+  if (globalTicketNumber < 1250) {
+    $(".more-tickets-cta").css("opacity", "1");
+    $(".more-tickets-cta").css("pointer-events", "auto");
   } else {
-    $(".more-tickets-cta").css("display", "none");
+    $(".more-tickets-cta").css("opacity", "0");
+    $(".more-tickets-cta").css("pointer-events", "none");
   }
 }
 
@@ -172,27 +179,42 @@ $("#ticketRange, #ticketRange-2").on("input change", function () {
   // Update the display of .more-tickets-cta
   updateMoreTicketsCTA();
 
-  // After ticket input changes, trigger next steps
-  if (globalCurrentPlanName === "Starter") {
-    toggleMonthly();
-  }
-
   // Ensure that plan selection is valid before proceeding
   determinePlan(globalTicketNumber);
   updateActivePlanElement();
   updateLogosAndCTAs();
-
+  updateSummaryDetails();
   // Display alert
   displayAlert();
+
+  // After ticket input changes, handle plan-specific logic
+  if (globalCurrentPlanName === "Starter") {
+    toggleMonthly();
+    $(".addons_cards").addClass("is-disabled");
+    $('.starter-plan-alert').css("display", "block");
+  } else {
+    $(".addons_cards").removeClass("is-disabled");
+    $('.starter-plan-alert').css("display", "none");
+  }
+
+  // If a card has already been selected, update the plan selection
+  if (selectedCardType) {
+    updatePlanSelection(selectedCardType);
+    updateSummaryDetails();
+  }
 
   // Check if a valid plan has been determined
   if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
     // Update prices, UI elements, and calculate the summary
     updatePricesOnBillingCycleChange();
     calculateSummary();
+    updateSummaryDetails();
+    
   } else {
     console.warn("No valid plan selected, skipping summary calculation.");
   }
+
+
 });
 
 // Handle click event on the more-tickets-cta button
@@ -206,10 +228,10 @@ $(".more-tickets-cta").on("click", function () {
   $(".pricing-step_range-module.is-higher").css("display", "flex");
 
   // Set the ticket number to 2500
-  globalTicketNumber = 2500;
+  globalTicketNumber = 1250;
 
   // Update the ticket range input value
-  $("#ticketRange-2").val(globalTicketNumber);
+  $("#ticketRange").val(globalTicketNumber);
 
   // Update the ticket number in the DOM
   $('[data-el="ticketNumber"]').text(formatNumberWithCommas(globalTicketNumber));
@@ -268,7 +290,7 @@ function scrollToStep1() {
 // Function to initialize at 1250 tickets on page load
 function initTicketNumber() {
   // Set the ticket number to 1250
-  globalTicketNumber = 1250;
+  globalTicketNumber = 2500;
 
   // Update the ticket range input values
   $("#ticketRange, #ticketRange-2").val(globalTicketNumber);
@@ -283,6 +305,7 @@ function initTicketNumber() {
   determinePlan(globalTicketNumber);
   updateActivePlanElement();
   updateLogosAndCTAs();
+  updateSummaryDetails()
 }
 
 /****************************
@@ -363,6 +386,8 @@ function displayAlert() {
 // Global variables for current plan
 let globalCurrentPlanName = "";
 let globalCurrentPlanPrice = 0; // This will hold the base price of the selected plan
+let globalCurrentPlanOverageCost = 0;
+let globalCurrentPlanOverageTickets = 0;
 
 // Function to determine the plan based on the number of tickets
 function determinePlan(tickets) {
@@ -391,10 +416,28 @@ function determinePlan(tickets) {
     } else {
       break;
     }
+    if (selectedCardType) {
+      // Extract automationRate from selectedCardType
+      const automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
+    
+      // Calculate automateTickets based on globalTicketNumber and automationRate
+      const automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
+    
+      // Update chosen prices and recalculate summary
+      updateChosenPrices(automateTickets, automationRate);
+      calculateSummary();
+      calculateROISavings();
+    }
+ 
   }
 
   globalCurrentPlanName = applicablePlan.name;
   globalCurrentPlanPrice = applicablePlan.monthly_cost;
+  globalCurrentPlanOverageTickets = tickets - applicablePlan.tickets_per_month;
+  globalCurrentPlanOverageCostPerTicket = applicablePlan.cost_per_overage_ticket;
+  globalCurrentPlanTicketsPerMonth = applicablePlan.tickets_per_month;
+
+  // Update plan name in the DOM
   $('[data-el="planName"]').text(globalCurrentPlanName);
 
   console.log(
@@ -413,7 +456,25 @@ function determinePlan(tickets) {
     toggleYearly();
   }
 
+  // Update overages display
+  updateOveragesDisplay();
+
+  // Recalculate automate prices
   calculateAutomatePrices();
+}
+
+// Function to update the overages display
+function updateOveragesDisplay() {
+  const overagesElement = $('[data-el="overages"]');
+  if (globalCurrentPlanOverageTickets > 0) {
+    const overageRate = globalCurrentPlanOverageCostPerTicket.toFixed(2);
+    overagesElement.css("opacity", "1");
+    overagesElement.text(`$${overageRate}/overage helpdesk ticket`);
+    console.log(`Overages apply: $${overageRate} per overage ticket`);
+  } else {
+    overagesElement.css("opacity", "0");
+    console.log("No overages apply");
+  }
 }
 
 /****************************
@@ -438,23 +499,26 @@ function calculateAutomatePrices() {
   const automatePlansForCycle = automatePlans[globalBillingCycle];
 
   percentages.forEach((percentage) => {
-    let automateTickets = Math.round(globalTicketNumber * (percentage / 100));
+    let automateTickets = Math.round(globalCurrentPlanTicketsPerMonth * (percentage / 100));
     let automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
 
     // Update global variables dynamically
     window[`globalAutomateTickets${percentage}`] = automateTickets;
     window[`globalAutomatePrice${percentage}`] = automatePrice;
 
-    // Update DOM elements
+    // Update DOM elements for the pricing cards
     if (percentage !== 0) {
-      $('[data-el="automateTicketNumber' + percentage + '"]').text(
-        formatNumberWithCommas(automateTickets)
-      );
+      const totalTickets = formatNumberWithCommas(globalCurrentPlanTicketsPerMonth);
+      const automateTicketsFormatted = formatNumberWithCommas(automateTickets);
       $('[data-el="ticketNumber' + percentage + '"]').text(
-        formatNumberWithCommas(globalTicketNumber - automateTickets)
+        `${automateTicketsFormatted} automated`
       );
     }
   });
+
+  // Update main ticket number display
+  const totalTicketsText = `${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} helpdesk tickets`;
+  $('[data-el="ticketNumber"]').text(totalTicketsText);
 
   calculateOptionPrices();
 }
@@ -470,6 +534,8 @@ function findAutomatePrice(tickets, plans) {
   }
   return selectedPlan.monthly_cost;
 }
+
+
 
 /****************************
  *
@@ -496,23 +562,22 @@ function calculateOptionPrices() {
  *
  ****************************/
 
-// Initialize selectedCardType to a default value
-let selectedCardType = "pricingCard"; // Default value if no card is selected
+// Initialize selectedCardType to null to indicate no card selected initially
+let selectedCardType = null;
 let isProgrammaticClick = false; // Flag to track programmatic clicks
 
-// Event listener for pricing card clicks
-$('[data-el^="pricingCard"]').on("click", function () {
-  // Store the selected card type
-  selectedCardType = $(this).attr("data-el");
-  console.log("Selected card type:", selectedCardType);
+// Function to update the plan selection based on the selected card type
+function updatePlanSelection(selectedCardType) {
+  console.log("Updating plan selection for card type:", selectedCardType);
 
   // Deselect all cards and their automate pills
   $(".pricing_card").removeClass("is-selected");
   $(".pricing_card .pricing_automate-pill").removeClass("is-selected");
 
-  // Select the clicked card and its automate pill
-  $(this).toggleClass("is-selected");
-  $(this).find(".pricing_automate-pill").toggleClass("is-selected");
+  // Select the appropriate card and its automate pill
+  const selectedCard = $('[data-el="' + selectedCardType + '"]');
+  selectedCard.addClass("is-selected");
+  selectedCard.find(".pricing_automate-pill").addClass("is-selected");
 
   // Display the selected plan summary and hide the no-selection message
   $(".plan_summary-layout").css("display", "flex");
@@ -525,17 +590,29 @@ $('[data-el^="pricingCard"]').on("click", function () {
   const automationRate = selectedCardType.replace("pricingCard", "") || "0";
   $('[data-el="automationRate"]').text(automationRate);
 
-  // Update chosenAutomatedTickets and chosenHelpdeskTickets
-  const automateTickets = window[`globalAutomateTickets${automationRate}`] || 0;
-  const helpdeskTickets = globalTicketNumber - automateTickets;
+  // Calculate automated and helpdesk tickets based on the user's ticket number
+  const automateTickets = Math.round(globalTicketNumber * (parseInt(automationRate) / 100));
+  const helpdeskTickets = globalTicketNumber //- automateTickets;
 
+  // Update chosenAutomatedTickets and chosenHelpdeskTickets in the summary
   chosenAutomatedTickets.textContent = formatNumberWithCommas(automateTickets);
   chosenHelpdeskTickets.textContent = formatNumberWithCommas(helpdeskTickets);
 
   // Update chosen prices and summary total
-  updateChosenPrices();
+  updateChosenPrices(automateTickets, automationRate);
   calculateSummary();
   calculateROISavings();
+  updateSummaryDetails();
+}
+
+// Event listener for pricing card clicks
+$('[data-el^="pricingCard"]').on("click", function () {
+  // Store the selected card type
+  selectedCardType = $(this).attr("data-el");
+  console.log("Selected card type:", selectedCardType);
+
+  // Call the updatePlanSelection function
+  updatePlanSelection(selectedCardType);
 
   // Only scroll to #step-3 if this is a user click
   if (!isProgrammaticClick) {
@@ -550,6 +627,26 @@ $('[data-el^="pricingCard"]').on("click", function () {
     console.log("Programmatic click, skipping scroll to #step-3");
   }
 });
+
+/****************************
+ *
+ * Function to handle summary UI details
+ *
+ ****************************/
+
+function updateSummaryDetails() {
+  // Update helpdeskBase
+  helpdeskBase.textContent = `${globalCurrentPlanPrice.toFixed(0)}`;
+
+  // Update helpdeskOverages display
+  if (globalCurrentPlanOverageTickets > 0) {
+    helpdeskOverages.textContent = `${helpdeskOverageCost.toFixed(0)}`;
+    $('.summary_plan-breakdown').css('display', 'block');
+  } else {
+    helpdeskOverages.textContent = '0';
+    $('.summary_plan-breakdown').css('display', 'none');
+  }
+}
 
 /****************************
  *
@@ -590,11 +687,12 @@ function calculateROISavings() {
 
   // Update the DOM with time and formatted money saved
   $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
-  if(moneySaved > 0) {
-  $('[data-target="moneySaved"]').text(formattedMoneySaved);
-} else {  
-  $('[data-target="moneySaved"]').text("");
-}}
+  if (moneySaved > 0) {
+    $('[data-target="moneySaved"]').text(formattedMoneySaved);
+  } else {
+    $('[data-target="moneySaved"]').text("");
+  }
+}
 
 /****************************
  *
@@ -612,11 +710,19 @@ function updatePricesOnBillingCycleChange() {
   updateSmsTicketPrice();
 
   // Ensure that chosen prices are updated after recalculating plans
-  setTimeout(() => {
-    updateChosenPrices();
+  if (selectedCardType) {
+    // Extract automationRate from selectedCardType
+    const automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
+
+    // Calculate automateTickets based on globalTicketNumber and automationRate
+    const automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
+
+    // Update chosen prices and recalculate summary
+    updateChosenPrices(automateTickets, automationRate);
     calculateSummary();
     calculateROISavings();
-  }, 100);
+    updateSummaryDetails();
+  }
 }
 
 /****************************
@@ -625,15 +731,44 @@ function updatePricesOnBillingCycleChange() {
  *
  ****************************/
 
-function updateChosenPrices() {
+function updateChosenPrices(automateTicketsParam, automationRateParam) {
   console.log("Updating prices for selected card:", selectedCardType);
 
-  const percentage = selectedCardType.replace("pricingCard", "") || "0";
-  chosenHelpdeskPrice = globalCurrentPlanPrice;
-  chosenAutomatePrice = window[`globalAutomatePrice${percentage}`];
+  // Calculate helpdesk overage cost
+  if (globalCurrentPlanOverageTickets > 0) {
+    helpdeskOverageCost = globalCurrentPlanOverageTickets * globalCurrentPlanOverageCostPerTicket;
+  } else {
+    helpdeskOverageCost = 0;
+  }
+
+  // Update chosenHelpdeskPrice to include overages
+  chosenHelpdeskPrice = globalCurrentPlanPrice + helpdeskOverageCost;
+
+  let automateTickets = automateTicketsParam;
+  let automationRate = automationRateParam;
+
+  // If parameters are undefined, calculate them based on selectedCardType
+  if (typeof automateTickets === 'undefined' || typeof automationRate === 'undefined') {
+    if (selectedCardType) {
+      automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
+      automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
+    } else {
+      automationRate = 0;
+      automateTickets = 0;
+    }
+  }
+
+  // Recalculate automatePrice based on actual number of automated tickets
+  const automatePlansForCycle = automatePlans[globalBillingCycle];
+  const automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
+
+  chosenAutomatePrice = automatePrice;
+
+  console.log("Chosen Helpdesk Price (including overages):", chosenHelpdeskPrice);
+  console.log("Chosen Automate Price:", chosenAutomatePrice);
 
   // Check if automation is 0% and hide or show the automate summary
-  if (percentage === "0") {
+  if (automationRate === 0) {
     $('[data-summary="automate"]').css("display", "none");
     console.log("Automation is 0%, hiding automate summary.");
   } else {
@@ -642,8 +777,8 @@ function updateChosenPrices() {
   }
 
   // Update the DOM with the chosen prices
-  $('[data-el="chosenHelpdeskPrice"]').text(chosenHelpdeskPrice);
-  $('[data-el="chosenAutomatePrice"]').text(chosenAutomatePrice);
+  $('[data-el="chosenHelpdeskPrice"]').text(chosenHelpdeskPrice.toFixed(0));
+  $('[data-el="chosenAutomatePrice"]').text(chosenAutomatePrice.toFixed(0));
 }
 
 /****************************
@@ -658,14 +793,17 @@ let chosenAutomatePrice = 0;
 let voiceTicketPrice = 0;
 let smsTicketPrice = 0;
 
-// Function to calculate and update the summary total
 function calculateSummary() {
   if (!chosenHelpdeskPrice || chosenHelpdeskPrice === 0) {
     console.warn("No plan has been selected yet.");
     return;
   }
 
-  const summaryTotal = chosenHelpdeskPrice + chosenAutomatePrice + voiceTicketPrice + smsTicketPrice;
+  const summaryTotal =
+    chosenHelpdeskPrice +
+    chosenAutomatePrice +
+    voiceTicketPrice +
+    smsTicketPrice;
   const formattedTotal = formatNumberWithCommas(summaryTotal.toFixed(0));
 
   $('[data-el="summaryTotalPrice"]').text(formattedTotal);
@@ -798,6 +936,7 @@ $('[data-summary="helpdesk-remove"]').on("click", function () {
 
 $('[data-summary="automate-remove"]').on("click", function () {
   isProgrammaticClick = true;
+   
   const defaultPricingCard = document.querySelector('[data-el="pricingCard"]');
   if (defaultPricingCard) {
     console.log("Simulating click on default pricing card for 0% automation");
@@ -805,6 +944,7 @@ $('[data-summary="automate-remove"]').on("click", function () {
   } else {
     console.error("No pricing card found for default automation (0%)");
   }
+  $('[data-summary="automate"]').css("display", "none");
   setTimeout(() => {
     isProgrammaticClick = false;
   }, 0);
