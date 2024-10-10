@@ -306,6 +306,7 @@ function initTicketNumber() {
   updateActivePlanElement();
   updateLogosAndCTAs();
   updateSummaryDetails()
+  updateOveragesDisplay()
 }
 
 /****************************
