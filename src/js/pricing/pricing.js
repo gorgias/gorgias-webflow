@@ -1052,6 +1052,9 @@ Webflow.push(function () {
   initTicketNumber();
   // Initialize the active plan element
   updateActivePlanElement();
+  // Initialize overages
+  updateOveragesDisplay();
+  overagesElement.css("opacity", "1");
 
   setTimeout(() => {
     // Function to generate valid HTML IDs
