@@ -307,6 +307,7 @@ function initTicketNumber() {
   updateLogosAndCTAs();
   updateSummaryDetails();
   updateOveragesDisplay();
+
 }
 
 /****************************
