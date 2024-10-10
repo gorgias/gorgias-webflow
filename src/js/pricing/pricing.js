@@ -305,8 +305,8 @@ function initTicketNumber() {
   determinePlan(globalTicketNumber);
   updateActivePlanElement();
   updateLogosAndCTAs();
-  updateSummaryDetails()
-  updateOveragesDisplay()
+  updateSummaryDetails();
+  updateOveragesDisplay();
 }
 
 /****************************
