@@ -4,6 +4,7 @@ document.getElementById('form-button-start-generating-skus').onclick = function 
   
     // Display the template-policy element
     $('#template-policy').css('display', 'block'); 
+    $(".tools_form-block").css('display', 'none');
     console.log('sku generator displayed');
   
     // Capture the email from the input field
