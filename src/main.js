@@ -127,5 +127,15 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/ecommerce'+minBase+'.js','head', 1);
     }
 
+    // page is theme-detector
+    if(path.includes('/shopify-theme-detector')){
+        newScript(scriptBase + '/src/js/tools/theme-detector'+minBase+'.js','head', 1);
+    }
+
+    // page is sku-generator
+    if(path.includes('/sku-generator')){
+        newScript(scriptBase + '/src/js/tools/sku-generator'+minBase+'.js','head', 1);
+    }
+
 })
 
