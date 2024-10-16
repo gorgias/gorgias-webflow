@@ -37,7 +37,7 @@ let table = new Tabulator("#sku-table", {
     height: "100%",
     addRowPos: "top",
     pagination: "local",
-    paginationSize: 8,
+    paginationSize: 14,
     columns: [
         {title: "Product Type", field: "product_type", editor: "input"},
         {title: "Product Name", field: "product_name", editor: "input"},
