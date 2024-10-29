@@ -137,5 +137,10 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/tools/sku-generator'+minBase+'.js','head', 1);
     }
 
+
+   // page is enterprise
+    if(path.includes('/enterprise')){
+      newScript(scriptBase + '/src/js/enterprise'+minBase+'.js','head', 1);
+    }
 })
 

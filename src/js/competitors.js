@@ -27,7 +27,7 @@ Webflow.push(function () {
   observer.observe(document.querySelector('#num-values'));
 
 
-window.fsComponents = window.fsComponents || [];
+  window.fsComponents = window.fsComponents || [];
 window.fsComponents.push([
   'slider',
   (sliderInstances) => {
@@ -67,76 +67,18 @@ window.fsComponents.push([
   },
 ]);
 
+
+
+$(document).ready(function () {
+  // Select all elements with the attribute 'data-competitor'
+  $('[data-competitor]').each(function () {
+    // Get the value of the 'data-competitor' attribute
+    let competitorValue = $(this).attr('data-competitor');
+    
+    // Replace the text content of the element with the 'data-competitor' value
+    $(this).text(competitorValue);
+  });
 });
 
 
-// REVERT TO THIS CODE IF NEEDED FOR SLIDERS
-
-/*
-    // Initialize the "thumbs" slider (mySwiper)
-  var mySwiper = new Swiper(".myswiper", {
-    slidesPerView: 'auto',  // Show multiple thumbs
-    slidesPerGroup: 1,  // Ensure only 1 slide moves at a time
-    spaceBetween: 10,       // Space between thumbs
-    watchSlidesProgress: true,  // Ensure thumbs stay in sync with progress
-    watchSlidesVisibility: true, // Ensure thumbs stay visible
-    slideToClickedSlide: true,   // Enable clicking on thumbs to change main slider
-    on: {
-      init: function() {
-        console.log('Thumbs slider (mySwiper) initialized successfully.');
-      },
-    }
-  });
-
-  // Initialize the "main vertical" slider (mySwiper3)
-  var mySwiper3 = new Swiper(".myswiper3", {
-    direction: 'vertical',
-    slidesPerView: 1,    // Only one slide in view at a time
-    slidesPerGroup: 1,  // Ensure only 1 slide moves at a time
-    spaceBetween: 0,     // No space between slides
-    autoHeight: true,    // Automatically adjust height based on content
-    speed: 400,          // Slow down the transition speed
-    mousewheel: {
-      releaseOnEdges: true,  // Allow scrolling beyond edges
-    },
-    thumbs: {             // Use the thumbs component to connect to mySwiper
-      swiper: mySwiper,    // Link the thumbs slider (mySwiper) to this main slider
-    },
-    on: {
-      init: function() {
-        console.log('Main vertical slider (mySwiper3) initialized successfully.');
-      },
-      slideChange: function() {
-        console.log('Main vertical slider (mySwiper3) changed to index:', this.activeIndex);
-        if (mySwiper2) {
-          mySwiper2.slideTo(this.activeIndex);  // Sync with fade effect slider
-          console.log('Syncing fade effect slider (mySwiper2) to index:', this.activeIndex);
-        }
-      }
-    }
-  });
-
-  // Initialize the "fade effect" slider (mySwiper2)
-  var mySwiper2 = new Swiper(".myswiper2", {
-    effect: 'fade',                   // Fade effect for smoother transitions
-    fadeEffect: { crossFade: true },   // Crossfade effect for transitions
-    slidesPerView: 1,                 // Only one slide visible at a time
-    slidesPerGroup: 1,  // Ensure only 1 slide moves at a time
-    spaceBetween: 0,                  // No space between slides
-    speed: 400,          // Slow down the transition speed
-    mousewheel: {
-      releaseOnEdges: true,  // Allow scrolling beyond edges
-    },
-    on: {
-      init: function() {
-        console.log('Fade effect slider (mySwiper2) initialized successfully.');
-      },
-      slideChange: function() {
-        console.log('Fade effect slider (mySwiper2) changed to index:', this.activeIndex);
-        if (mySwiper3) {
-          mySwiper3.slideTo(this.activeIndex);  // Sync with fade effect slider
-        }
-      }
-    }
-  });
-*/
+});
