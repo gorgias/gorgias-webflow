@@ -214,7 +214,7 @@ a,
 }
 
 /* Card hovers with underline link */ 
- .cx_card:hover .hover-underline,  .helpdesk_card:hover .hover-underline,  .playbook-chapter_content:hover .hover-underline{
+ .cx_card:hover .hover-underline, .three-col_card:hover .hover-underline, .helpdesk_card:hover .hover-underline,  .playbook-chapter_content:hover .hover-underline{
     	background-size: 100% 100%;
  }
 
