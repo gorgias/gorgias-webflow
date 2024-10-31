@@ -31,7 +31,7 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
     }
 
-    if ( path.includes('/alternative/')){
+    if ( path.includes('/comparison/')){
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);
 
     }
