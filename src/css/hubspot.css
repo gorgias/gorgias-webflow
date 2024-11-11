@@ -1,4 +1,4 @@
-body:not(.is-ebook,.is-event, .is-partner-referral, .is-partner-loyalty-program) div.submitted-message{
+[data-el="has-hs"] {
   height:0 !important;
   width:0 !important;
   display:none!important;
