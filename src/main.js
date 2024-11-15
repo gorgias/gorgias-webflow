@@ -31,7 +31,7 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
     }
 
-    if ( path.includes('/alternative/')){
+    if ( path.includes('/comparison/')){
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);
 
     }
@@ -137,5 +137,15 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/tools/sku-generator'+minBase+'.js','head', 1);
     }
 
+    // page is salary calculator
+      if(path.includes('/salary-calculator')){
+          newScript(scriptBase + '/src/js/tools/support-agent-salary'+minBase+'.js','head', 1);
+    }
+
+
+   // page is enterprise
+    if(path.includes('/enterprise')){
+      newScript(scriptBase + '/src/js/enterprise'+minBase+'.js','head', 1);
+    }
 })
 
