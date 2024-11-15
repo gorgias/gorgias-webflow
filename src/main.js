@@ -142,6 +142,12 @@ Webflow.push(function () {
           newScript(scriptBase + '/src/js/tools/support-agent-salary'+minBase+'.js','head', 1);
     }
 
+    // page is return policy template generator
+    if(path.includes('/return-policy-template-generator')){
+          newScript(scriptBase + '/src/js/tools/return-policy'+minBase+'.js','head', 1);
+    }
+
+
 
    // page is enterprise
     if(path.includes('/enterprise')){
