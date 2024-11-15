@@ -1,26 +1,33 @@
-// Add event listener to button click to generate SKUs
-document.getElementById('form-button-start-generating-skus').onclick = function (e) {
-    e.preventDefault(); // Prevent default form submission behavior if it's within a form
+window.addEventListener("message", function (event) {
+    // Check if the form is ready
+    if (event.data.type === "hsFormCallback" && event.data.eventName === "onFormReady") {
+        console.log("HubSpot form is ready.");
 
-    // Display the template-policy element
-    $('#template-policy').css('display', 'block');
-    $(".tools_form-block").css('display', 'none');
-    console.log('sku generator displayed');
+        // Add click event listener to the submit button
+        $('.hs-button').on('click', function () {
+            console.log('Submit button clicked');
+            
+            // Show the template-policy element
+            const templatePolicyElement = $('#template-policy');
+            const toolsFormBlockElement = $('.tools_form-block');
+            
+            if (templatePolicyElement.length > 0) {
+                templatePolicyElement.css('display', 'block');
+                console.log('template-policy element displayed');
+            } else {
+                console.warn('#template-policy not found');
+            }
 
-    // Capture the email from the input field
-    let email = document.getElementById("form-cta-top-email").value;
-
-    // Send an analytics tracking event for 'Tool Interaction Made'
-    if (window.analytics) {
-        analytics.track('Tool Interaction Made', {
-            interaction: 'Start Generating SKUs',
-            parameter: 'email: ' + email,
-            url: window.location.href,
+            // Hide the tools_form-block element
+            if (toolsFormBlockElement.length > 0) {
+                toolsFormBlockElement.css('display', 'none');
+                console.log('tools_form-block element hidden');
+            } else {
+                console.warn('.tools_form-block not found');
+            }
         });
-    } else {
-        console.error("Analytics is not defined.");
     }
-};
+});
 
 // Function to generate the SKU based on inputs
 function getSku(type, name, att1, att2, att3) {
