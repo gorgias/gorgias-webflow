@@ -9,6 +9,9 @@ const emeaCountries = [
     "RS", "SC", "SL", "SK", "SI", "ZA", "ES", "SD", "SZ", "SE", "CH", "SY", "TZ", "TG", "TN", "TR", "TM", "UG",
     "UA", "AE", "GB", "UZ", "EH", "ZM", "ZW"
   ];
+
+// Define Australia and New Zealand
+const anzCountries = ["AU", "NZ"];
   
   // Fetch user's location using IP
   fetch('https://ipinfo.io/json?token=16b2fa7a6332cb')
@@ -20,6 +23,7 @@ const emeaCountries = [
       // Select elements
       const marqueeNa = document.querySelector('[data-el="marquee-na"]');
       const marqueeEmea = document.querySelector('[data-el="marquee-emea"]');
+      const marqueeAnz = document.querySelector('[data-el="marquee-anz"]');
   
       // Check if the user's country is in the EMEA region
       if (emeaCountries.includes(userCountry)) {
@@ -27,6 +31,12 @@ const emeaCountries = [
         marqueeEmea.classList.remove('is-hidden');
         marqueeNa.classList.add('is-hidden');
         console.log("User is in EMEA, showing EMEA marquee");
+      } else if (anzCountries.includes(userCountry)) {
+        // User is in ANZ - show ANZ marquee and hide EMEA marquee
+        marqueeEmea.classList.add('is-hidden');
+        marqueeNa.classList.add('is-hidden');
+        marqueeAnz.classList.remove('is-hidden');
+        console.log("User is in ANZ, showing ANZ marquee");
       } else {
         // User is outside EMEA - show NA marquee and hide EMEA marquee
         marqueeEmea.classList.add('is-hidden');
