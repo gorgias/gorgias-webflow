@@ -146,7 +146,10 @@ Webflow.push(function () {
     if(path.includes('/return-policy-template-generator')){
           newScript(scriptBase + '/src/js/tools/return-policy'+minBase+'.js','head', 1);
     }
-
+  // page is cx audit
+  if(path.includes('/cx-audit')){
+    newScript(scriptBase + '/src/js/cx-audit'+minBase+'.js','head', 1);
+  }
 
 
    // page is enterprise
