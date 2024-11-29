@@ -130,6 +130,19 @@ observeChart("barChart", () => {
 
     const options = {
       responsive: true,
+      maintainAspectRatio: true,
+      animation: {
+        duration: 1000, // Smooth animations
+      },
+      responsiveAnimationDuration: 0, // Disable responsiveness-triggered animations
+      layout: {
+        padding: {
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: 10,
+        },
+      },
       plugins: {
         legend: {
           position: "bottom",
@@ -157,7 +170,19 @@ observeChart("barChart", () => {
       },
     };
 
-    createChart("line", "barChart", labels, datasets, options);
+    const ctx = document.getElementById("barChart").getContext("2d");
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clear canvas before drawing
+
+    const chartInstance = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: datasets,
+      },
+      options: options,
+    });
+
+    chartInstance.update("none"); // Force redraw without animations
   }
 });
 
