@@ -137,6 +137,9 @@ observeChart("barChart", () => {
       animation: {
         duration: 1000, // Smooth animations
       },
+
+      responsiveAnimationDuration: 0, // Disable responsiveness-triggered animations
+
       layout: {
         padding: {
           top: 10,
