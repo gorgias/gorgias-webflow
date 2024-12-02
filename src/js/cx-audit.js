@@ -1,6 +1,12 @@
 // Shared Color Palette
 const colorPalette = ["#faeaff", "#f5d4ff", "#cb55ef", "#6f0c86", "#db90ff", "#9c49eb", "#6007c3"];
 
+// Global Chart.js Configuration for Animation Easing
+Chart.defaults.animation = {
+  duration: 800, // 2 seconds animation
+  easing: 'easeInOutQuad', // Smooth acceleration and deceleration
+};
+
 /**
  * Function to parse JSON and handle missing brackets
  */
@@ -67,7 +73,7 @@ function observeChart(canvasId, initializeChartCallback) {
 }
 
 
-// Chart 1: Sentiment Overtime Line Chart with Filled Backgrounds
+// Chart 1: Sentiment Overtime Line Chart with Lines Only
 observeChart("barChart", () => {
   const element = document.querySelector('[data-el="sentiment-overtime"]');
   const rawContent = element.textContent.trim();
@@ -102,28 +108,25 @@ observeChart("barChart", () => {
       {
         label: "Positive",
         data: positiveData,
-        backgroundColor: "rgba(250, 234, 255, 0.5)", // Semi-transparent fill
-        borderColor: "rgb(250, 234, 255)", // Line color
+        borderColor: colorPalette[2], // Third color in the palette
         borderWidth: 2,
-        fill: true, // Enable fill under the line
+        fill: false, // Remove fill under the line
         tension: 0.4, // Smooth curves
       },
       {
         label: "Neutral",
         data: neutralData,
-        backgroundColor: "rgba(245, 212, 255, 0.5)", // Semi-transparent fill
-        borderColor: "rgb(245, 212, 255)", // Line color
+        borderColor: colorPalette[4], // Fifth color in the palette
         borderWidth: 2,
-        fill: true,
+        fill: false,
         tension: 0.4,
       },
       {
         label: "Negative",
         data: negativeData,
-        backgroundColor: "rgba(203, 85, 239, 0.5)", // Semi-transparent fill
-        borderColor: "rgb(203, 85, 239)", // Line color
+        borderColor: colorPalette[6], // Seventh color in the palette
         borderWidth: 2,
-        fill: true,
+        fill: false,
         tension: 0.4,
       },
     ];
@@ -134,7 +137,9 @@ observeChart("barChart", () => {
       animation: {
         duration: 1000, // Smooth animations
       },
+
       responsiveAnimationDuration: 0, // Disable responsiveness-triggered animations
+
       layout: {
         padding: {
           top: 10,
@@ -251,8 +256,7 @@ observeChart("topic-avg", () => {
 
     const datasets = [
       {
-        label: "Average Score Per Topic", // Single overarching label
-        data: dataValues,
+        data: dataValues, // Removed the `label` field from the dataset
         backgroundColor: "#cb55ef",
         borderColor: "#cb55ef",
         borderWidth: 1,
@@ -265,8 +269,7 @@ observeChart("topic-avg", () => {
       aspectRatio: 2, // Custom aspect ratio (2 means width is twice the height)
       plugins: {
         legend: {
-          position: "bottom",
-          labels: { font: { family: "Inter Tight" } },
+          display: false, // Hides the legend
         },
         tooltip: {
           titleFont: { family: "Inter Tight", size: 12 },
@@ -407,9 +410,9 @@ observeChart("sub-categories", () => {
   }
 });
 
-// Chart 5: Industry Benchmark Radar Chart
+// Chart 5: Industry Benchmark - Dynamic Chart Type
 observeChart("industry-benchmark", () => {
-  console.log("Initializing Industry Benchmark radar chart...");
+  console.log("Initializing Industry Benchmark chart...");
 
   const element = document.querySelector('[data-el="industry-benchmark"]');
   const rawContent = element.textContent.trim();
@@ -424,10 +427,13 @@ observeChart("industry-benchmark", () => {
   }
 
   if (parsedData) {
-    console.log("Transforming data for radar chart...");
+    console.log("Checking data size for chart type...");
 
     // Extract labels (topics) and datasets for company and industry
-    const labels = parsedData.map((item) => item.key.replace(/_/g, " ")); // Replace underscores with spaces for readability
+    const labels = parsedData.map((item) =>
+      item.key.replace(/_/g, " ").toLowerCase().replace(/(?:^|\s)\S/g, (match) => match.toUpperCase())
+    ); // Replace underscores with spaces and capitalize
+
     const companyRatings = parsedData.map(
       (item) => JSON.parse(item.value).company_avg_topic_rating
     );
@@ -435,78 +441,148 @@ observeChart("industry-benchmark", () => {
       (item) => JSON.parse(item.value).industry_avg_topic_rating
     );
 
-    const datasets = [
-      {
-        label: "Company Avg. Topic Rating",
-        data: companyRatings,
-        backgroundColor: `${colorPalette[2]}33`, // Semi-transparent fill using colorPalette
-        borderColor: colorPalette[2], // Line color
-        pointBackgroundColor: colorPalette[2], // Point fill color
-        borderWidth: 2,
-      },
-      {
-        label: "Industry Avg. Topic Rating",
-        data: industryRatings,
-        backgroundColor: `${colorPalette[5]}33`, // Semi-transparent fill using colorPalette
-        borderColor: colorPalette[5], // Line color
-        pointBackgroundColor: colorPalette[5], // Point fill color
-        borderWidth: 2,
-      },
-    ];
+    if (labels.length <= 2) {
+      console.log("Insufficient data for radar chart. Generating a Polar Area Chart...");
 
-    console.log("Final datasets:", datasets);
+      // Prepare datasets for Polar Area Chart
+      const datasets = [
+        {
+          data: companyRatings,
+          backgroundColor: colorPalette.slice(0, companyRatings.length), // Dynamic colors
+          label: "Company Avg. Topic Rating",
+        },
+        {
+          data: industryRatings,
+          backgroundColor: colorPalette.slice(companyRatings.length, companyRatings.length + industryRatings.length),
+          label: "Industry Avg. Topic Rating",
+        },
+      ];
 
-    const options = {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: {
-          position: "top",
-          labels: {
-            font: {
+      const options = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            position: "bottom", // Position the legends at the bottom
+            labels: {
+              font: {
+                family: "Inter Tight",
+                size: 12,
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              title: (context) => context[0].label, // Display key as title
+              label: (context) => {
+                const datasetLabel = context.dataset.label;
+                const value = context.raw;
+                return `${datasetLabel}: ${value}`;
+              },
+            },
+            titleFont: {
+              family: "Inter Tight",
+              size: 12,
+            },
+            bodyFont: {
               family: "Inter Tight",
               size: 12,
             },
           },
         },
-        tooltip: {
-          titleFont: {
-            family: "Inter Tight",
-            size: 12,
-          },
-          bodyFont: {
-            family: "Inter Tight",
-            size: 12,
-          },
-        },
-      },
-      scales: {
-        r: {
-          angleLines: {
-            display: true, // Display angle lines
-          },
-          suggestedMin: 0, // Ensure radar starts at 0
-          suggestedMax: 5, // Cap radar scale at 5
-          ticks: {
-            stepSize: 1, // Set step size to 1
-            font: {
-              family: "Inter Tight",
-              size: 12,
-            },
-            backdropColor: 'transparent', // Remove background from tick numbers
-          },
-          pointLabels: {
-            font: {
-              family: "Inter Tight",
-              size: 12,
+        scales: {
+          r: {
+            ticks: {
+              display: false, // Hide the tick labels like "4"
             },
           },
         },
-      },
-    };
+      };
 
-    console.log("Creating radar chart with options:", options);
+      console.log("Creating Polar Area Chart with options:", options);
+      createChart("polarArea", "industry-benchmark", labels, datasets, options);
+    } else {
+      console.log("Sufficient data for radar chart. Generating a Radar Chart...");
 
-    createChart("radar", "industry-benchmark", labels, datasets, options);
+      // Prepare datasets for Radar Chart
+      const datasets = [
+        {
+          label: "Company Avg. Topic Rating",
+          data: companyRatings,
+          backgroundColor: `${colorPalette[2]}33`, // Semi-transparent fill using colorPalette
+          borderColor: colorPalette[2], // Line color
+          pointBackgroundColor: colorPalette[2], // Point fill color
+          borderWidth: 2,
+        },
+        {
+          label: "Industry Avg. Topic Rating",
+          data: industryRatings,
+          backgroundColor: `${colorPalette[5]}33`, // Semi-transparent fill using colorPalette
+          borderColor: colorPalette[5], // Line color
+          pointBackgroundColor: colorPalette[5], // Point fill color
+          borderWidth: 2,
+        },
+      ];
+
+      const options = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            position: "bottom", // Position the legends at the bottom
+            labels: {
+              font: {
+                family: "Inter Tight",
+                size: 12,
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              title: (context) => context[0].label, // Display key as title
+              label: (context) => {
+                const datasetLabel = context.dataset.label;
+                const value = context.raw;
+                return `${datasetLabel}: ${value}`;
+              },
+            },
+            titleFont: {
+              family: "Inter Tight",
+              size: 12,
+            },
+            bodyFont: {
+              family: "Inter Tight",
+              size: 12,
+            },
+          },
+        },
+        scales: {
+          r: {
+            angleLines: {
+              display: true, // Display angle lines
+            },
+            suggestedMin: 0, // Ensure radar starts at 0
+            suggestedMax: 5, // Cap radar scale at 5
+            ticks: {
+              stepSize: 1, // Set step size to 1
+              font: {
+                family: "Inter Tight",
+                size: 12,
+              },
+              backdropColor: "transparent", // Remove background from tick numbers
+            },
+            pointLabels: {
+              font: {
+                family: "Inter Tight",
+                size: 12,
+              },
+            },
+          },
+        },
+      };
+
+      console.log("Creating Radar Chart with options:", options);
+      createChart("radar", "industry-benchmark", labels, datasets, options);
+    }
   }
 });
