@@ -1,11 +1,11 @@
 // Shared Color Palette
 const colorPalette = ["#faeaff", "#f5d4ff", "#cb55ef", "#6f0c86", "#db90ff", "#9c49eb", "#6007c3"];
 
-// Global Chart.js Configuration for Animation Easing
-Chart.defaults.animation = {
-  duration: 800, // 2 seconds animation
-  easing: 'easeInOutQuad', // Smooth acceleration and deceleration
-};
+// // Global Chart.js Configuration for Animation Easing
+// Chart.defaults.animation = {
+//   duration: 800, // 2 seconds animation
+//   easing: 'easeInOutQuad', // Smooth acceleration and deceleration
+// };
 
 /**
  * Function to parse JSON and handle missing brackets
@@ -190,6 +190,7 @@ observeChart("barChart", () => {
     chartInstance.update("none"); // Force redraw without animations
   }
 });
+
 
 // Chart 2: Sentiment Aggregated Pie Chart
 observeChart("sentiment-aggregated-breakdown", () => {
