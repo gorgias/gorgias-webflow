@@ -188,6 +188,7 @@ observeChart("barChart", () => {
   }
 });
 
+
 // Chart 2: Sentiment Aggregated Pie Chart
 observeChart("sentiment-aggregated-breakdown", () => {
   const element = document.querySelector('[data-el="sentiment-breakdown"]');
