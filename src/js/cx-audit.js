@@ -381,13 +381,14 @@ observeChart("sub-categories", () => {
           },
         },
         y: {
+          position: "right", // Move labels to the right side
           ticks: {
             font: {
               family: "Inter Tight",
-              size: 12,
+              size: 10,
             },
-            maxRotation: 45, // Rotate labels to save space
-            minRotation: 20, // Minimum rotation angle
+            maxRotation: 55, // Rotate labels to save space
+            minRotation: 30, // Minimum rotation angle
           },
           stacked: true, // Stack the bars
           grid: {
