@@ -292,7 +292,7 @@ observeChart("topic-avg", () => {
   }
 });
 
-// Chart 4: Sub-Categories Stacked Horizontal Bar Chart
+// Chart 4: Sub-Categories Stacked Vertical Bar Chart
 observeChart("sub-categories", () => {
   console.log("Initializing Sub-Categories chart...");
 
@@ -309,7 +309,7 @@ observeChart("sub-categories", () => {
   }
 
   if (parsedData) {
-    console.log("Transforming data for stacked bar chart...");
+    console.log("Transforming data for stacked vertical bar chart...");
 
     // Extract the main categories (keys) and sub-categories (values)
     const mainCategories = parsedData.map((item) => item.key);
@@ -348,65 +348,62 @@ observeChart("sub-categories", () => {
     console.log("Final datasets:", datasets);
 
     const options = {
-      responsive: true,
-      maintainAspectRatio: true,
-      indexAxis: "y", // Horizontal bar chart
-      plugins: {
-        legend: {
-          display: false, // Hide the legend
-        },
-        tooltip: {
-          titleFont: {
-            family: "Inter Tight",
-            size: 12,
-          },
-          bodyFont: {
-            family: "Inter Tight",
-            size: 12,
-          },
+  responsive: true,
+  maintainAspectRatio: true,
+  indexAxis: "x", // Set to "x" for vertical bar chart (default behavior)
+  plugins: {
+    legend: {
+      display: false, // Hides the legend at the bottom
+    },
+    tooltip: {
+      titleFont: {
+        family: "Inter Tight",
+        size: 12,
+      },
+      bodyFont: {
+        family: "Inter Tight",
+        size: 12,
+      },
+    },
+  },
+  scales: {
+    x: {
+      stacked: true, // Enable stacking on the X axis
+      ticks: {
+        font: {
+          family: "Inter Tight",
+          size: 12,
         },
       },
-      scales: {
-        x: {
-          ticks: {
-            stepSize: 10, // Gradations in increments of 10
-            font: {
-              family: "Inter Tight",
-              size: 12,
-            },
-          },
-          stacked: true, // Stack the bars
-          grid: {
-            drawBorder: false,
-          },
-        },
-        y: {
-          position: "right", // Move labels to the right side
-          ticks: {
-            font: {
-              family: "Inter Tight",
-              size: 10,
-            },
-            maxRotation: 55, // Rotate labels to save space
-            minRotation: 30, // Minimum rotation angle
-          },
-          stacked: true, // Stack the bars
-          grid: {
-            drawBorder: false,
-          },
+      grid: {
+        drawBorder: false,
+      },
+    },
+    y: {
+      stacked: true, // Enable stacking on the Y axis
+      ticks: {
+        stepSize: 10, // Gradations in increments of 10
+        font: {
+          family: "Inter Tight",
+          size: 12,
         },
       },
-      layout: {
-        padding: {
-          top: 10,
-          left: 10,
-          right: 10,
-          bottom: 10,
-        },
+      grid: {
+        drawBorder: false,
       },
-    };
+    },
+  },
+  layout: {
+    padding: {
+      top: 10,
+      left: 10,
+      right: 10,
+      bottom: 10,
+    },
+  },
+};
 
-    console.log("Creating chart with options:", options);
+    console.log("Creating vertical stacked bar chart with options:", options);
 
     createChart("bar", "sub-categories", mainCategories, datasets, options);
   }
@@ -588,3 +585,38 @@ observeChart("industry-benchmark", () => {
     }
   }
 });
+
+
+// Convert number to %
+// Select all elements with data-el="negative-reviews"
+const negativeReviewsElements = document.querySelectorAll('[data-el="negative-reviews"]');
+
+// Check if there are any elements
+if (negativeReviewsElements.length > 0) {
+    negativeReviewsElements.forEach(element => {
+        // Get the decimal value from the element
+        let decimalValue = parseFloat(element.textContent);
+
+        // Ensure the value is a valid number and between 0 and 1
+        if (!isNaN(decimalValue) && decimalValue >= 0 && decimalValue <= 1) {
+            // Convert to percentage
+            let percentageValue = (decimalValue * 100).toFixed(0) + '%';
+
+            // Update the element's text content with the percentage value
+            element.textContent = percentageValue;
+        } else {
+            console.warn('Invalid decimal value for:', element);
+        }
+    });
+}
+
+// Hide insights section if empty
+// Select the section with id="insights"
+const insightSection = document.getElementById('insights');
+
+// Check if any element inside the section has the class .w-dyn-bind-empty
+if (insightSection.querySelector('.w-dyn-bind-empty')) {
+    // Hide the section
+    insightSection.style.display = 'none';
+    console.log('Insight section hidden due to .w-dyn-bind-empty');
+}
