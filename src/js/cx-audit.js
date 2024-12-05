@@ -1,11 +1,11 @@
+/****************************
+ *
+ * Global Functions
+ *
+ ****************************/
+
 // Shared Color Palette
 const colorPalette = ["#faeaff", "#f5d4ff", "#cb55ef", "#6f0c86", "#db90ff", "#9c49eb", "#6007c3"];
-
-// // Global Chart.js Configuration for Animation Easing
-// Chart.defaults.animation = {
-//   duration: 800, // 2 seconds animation
-//   easing: 'easeInOutQuad', // Smooth acceleration and deceleration
-// };
 
 /**
  * Function to parse JSON and handle missing brackets
@@ -66,133 +66,54 @@ function observeChart(canvasId, initializeChartCallback) {
     },
     {
       root: null, // Use the viewport
-      threshold: 0.7, // Trigger when the chart is almost fully visible
+      threshold: 0.5, // Trigger when the chart is almost fully visible
     }
   );
   observer.observe(target);
 }
 
+// Hide insights section if empty
+// Select the section with id="insights"
+const insightSection = document.getElementById('insights');
 
-// Chart 1: Sentiment Overtime Line Chart with Lines Only
-observeChart("barChart", () => {
-  const element = document.querySelector('[data-el="sentiment-overtime"]');
-  const rawContent = element.textContent.trim();
-  let parsedData;
+// Check if any element inside the section has the class .w-dyn-bind-empty
+if (insightSection.querySelector('.w-dyn-bind-empty')) {
+    // Hide the section
+    insightSection.style.display = 'none';
+    console.log('Insight section hidden due to .w-dyn-bind-empty');
+}
 
-  try {
-    parsedData = parseJSONWithCorrection(rawContent);
-  } catch (error) {
-    console.error("Unable to parse JSON:", error);
-  }
-
-  if (parsedData) {
-    const rawLabels = parsedData.map((item) => item.key);
-    const labels = capitalizeLabels(rawLabels); // Capitalize labels
-    const positiveData = parsedData.map(
-      (item) =>
-        item.value.find((subItem) => subItem.positive !== undefined)
-          ?.positive || 0
-    );
-    const neutralData = parsedData.map(
-      (item) =>
-        item.value.find((subItem) => subItem.neutral !== undefined)?.neutral ||
-        0
-    );
-    const negativeData = parsedData.map(
-      (item) =>
-        item.value.find((subItem) => subItem.negative !== undefined)
-          ?.negative || 0
-    );
-
-    const datasets = [
-      {
-        label: "Positive",
-        data: positiveData,
-        borderColor: colorPalette[2], // Third color in the palette
-        borderWidth: 2,
-        fill: false, // Remove fill under the line
-        tension: 0.4, // Smooth curves
-      },
-      {
-        label: "Neutral",
-        data: neutralData,
-        borderColor: colorPalette[4], // Fifth color in the palette
-        borderWidth: 2,
-        fill: false,
-        tension: 0.4,
-      },
-      {
-        label: "Negative",
-        data: negativeData,
-        borderColor: colorPalette[6], // Seventh color in the palette
-        borderWidth: 2,
-        fill: false,
-        tension: 0.4,
-      },
-    ];
-
-    const options = {
-      responsive: true,
-      maintainAspectRatio: true,
-      animation: {
-        duration: 1000, // Smooth animations
-      },
-
-      responsiveAnimationDuration: 0, // Disable responsiveness-triggered animations
-
-      layout: {
-        padding: {
-          top: 10,
-          left: 10,
-          right: 10,
-          bottom: 10,
-        },
-      },
-      plugins: {
-        legend: {
-          position: "bottom",
-          labels: {
-            font: { family: "Inter Tight" },
-          },
-        },
-        tooltip: {
-          titleFont: { family: "Inter Tight", size: 12 },
-          bodyFont: { family: "Inter Tight", size: 12 },
-        },
-      },
-      scales: {
-        x: {
-          ticks: { font: { family: "Inter Tight" } },
-        },
-        y: {
-          ticks: {
-            callback: function (value) {
-              return value + "%"; // Append "%" to tick labels
-            },
-            font: { family: "Inter Tight" },
-          },
-        },
-      },
-    };
-
-    const ctx = document.getElementById("barChart").getContext("2d");
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clear canvas before drawing
-
-    const chartInstance = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: datasets,
-      },
-      options: options,
-    });
-
-    chartInstance.update("none"); // Force redraw without animations
+// Script to replace the text of elements with the `data-brand` attribute
+document.querySelectorAll('[data-brand]').forEach(element => {
+  const brandText = element.getAttribute('data-brand');
+  if (brandText) {
+    element.textContent = brandText;
   }
 });
 
+// Find the element with the attribute `data-days`
+const daysElement = document.querySelector('[data-days]');
 
-// Chart 2: Sentiment Aggregated Pie Chart
+// Check if the element exists and get its value
+if (daysElement) {
+  const daysValue = parseInt(daysElement.getAttribute('data-days'), 10); // Convert to a number
+
+  // If the value is exactly 1, find the element with `data-el="days"` and remove it from the DOM
+  if (daysValue === 1) {
+    const targetElement = document.querySelector('[data-el="days"]');
+    if (targetElement) {
+      targetElement.remove(); // Remove the element
+    }
+  }
+}
+
+/****************************
+ *
+ * Charts and dynamic text
+ *
+ ****************************/
+
+// Chart: Sentiment Aggregated Pie Chart
 observeChart("sentiment-aggregated-breakdown", () => {
   const element = document.querySelector('[data-el="sentiment-breakdown"]');
   const rawContent = element.textContent.trim();
@@ -238,7 +159,8 @@ observeChart("sentiment-aggregated-breakdown", () => {
   }
 });
 
-// Chart 3: Topic Average Bar Chart
+
+// Chart: Topic Average Bar Chart with Dynamic Top 3 Topics
 observeChart("topic-avg", () => {
   const element = document.querySelector('[data-el="topic-avg"]');
   const rawContent = element.textContent.trim();
@@ -254,6 +176,31 @@ observeChart("topic-avg", () => {
     const rawLabels = parsedData.map((item) => item.key.replace(/_/g, " "));
     const labels = capitalizeLabels(rawLabels); // Capitalize labels
     const dataValues = parsedData.map((item) => item.value);
+
+    // Identify top 3 topics
+    const topTopics = dataValues
+      .map((value, index) => ({ label: labels[index], value })) // Map labels with their values
+      .sort((a, b) => b.value - a.value) // Sort descending by value
+      .slice(0, 3); // Get the top 3
+
+    const topTopicsText = topTopics
+      .map((topic) => `${topic.label} (${topic.value.toFixed(1)})`) // Format the text
+      .join(", ");
+
+    console.log("Top 3 Topics:", topTopicsText);
+
+// Generate the dynamic text with "and" for the last item
+const topTopicLabels = topTopics.map((topic) => topic.label);
+const dynamicText =
+  topTopicLabels.length > 1
+    ? `Your customers value your strengths in ${topTopicLabels.slice(0, -1).join(", ")} and ${topTopicLabels.slice(-1)}. Keep leveraging these areas to build trust and loyalty.`
+    : `Your customers value your strength in ${topTopicLabels[0]}. Keep leveraging this area to build trust and loyalty.`;
+
+// Update DOM with dynamic text
+const dynamicTextElement = document.querySelector("#avg-score-text");
+if (dynamicTextElement) {
+  dynamicTextElement.textContent = dynamicText;
+}
 
     const datasets = [
       {
@@ -276,21 +223,31 @@ observeChart("topic-avg", () => {
           titleFont: { family: "Inter Tight", size: 12 },
           bodyFont: { family: "Inter Tight", size: 12 },
         },
+        title: {
+          display: true,
+          text: "Hover over a bar to see the category", // Add the helper text
+          font: {
+            family: "Inter Tight",
+            size: 14,
+            weight: "normal",
+          },
+          padding: {
+            top: 10,
+            bottom: 10,
+          },
+        },
       },
       scales: {
         x: {
           ticks: {
-            display: true, // Enable labels for each bar
-            font: {
-              family: "Inter Tight",
-              size: 12,
-            },
+            display: false, // Hides X-axis ticks
           },
         },
         y: {
           min: 0,
           max: 5,
           ticks: {
+            stepSize: 1, // Increment ticks by 1
             font: {
               family: "Inter Tight",
               size: 12,
@@ -305,7 +262,7 @@ observeChart("topic-avg", () => {
 });
 
 
-// Chart 4: Sub-Categories Stacked Vertical Bar Chart
+// Chart: Sub-Categories Stacked Vertical Bar Chart
 observeChart("sub-categories", () => {
   console.log("Initializing Sub-Categories chart...");
 
@@ -328,12 +285,16 @@ observeChart("sub-categories", () => {
     const mainCategories = parsedData.map((item) => item.key);
     const allSubCategories = {};
     const datasets = [];
+    const categoryTotals = [];
 
     parsedData.forEach((category, index) => {
+      let categoryTotal = 0; // Track total value per category
       category.value.forEach((subCategory) => {
         // Parse the sub-category object
         const parsedSubCategory = JSON.parse(subCategory);
         const [subCategoryKey, subCategoryValue] = Object.entries(parsedSubCategory)[0];
+
+        categoryTotal += subCategoryValue; // Accumulate category total
 
         // Ensure the sub-category is tracked globally for consistent order
         if (!allSubCategories[subCategoryKey]) {
@@ -343,7 +304,26 @@ observeChart("sub-categories", () => {
         // Fill missing data for other categories with 0 to ensure proper stacking
         allSubCategories[subCategoryKey][index] = subCategoryValue || 0;
       });
+      categoryTotals.push({ label: mainCategories[index], total: categoryTotal });
     });
+
+    // Sort categories by total descending to find the top 3
+    const topNegativeCategories = categoryTotals
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 3);
+
+// Generate the dynamic text with "and" for the last item
+const topNegativeLabels = topNegativeCategories.map((category) => category.label);
+const dynamicText =
+  topNegativeLabels.length > 1
+    ? `These topics ${topNegativeLabels.slice(0, -1).join(", ")} and ${topNegativeLabels.slice(-1)} are driving the most negative reviews. Hover over each bar to see more details.`
+    : `This topic ${topNegativeLabels[0]} is driving the most negative reviews. Hover over the bar to see more details.`;
+
+// Insert the text into the element with ID "negative-text"
+const negativeTextElement = document.querySelector("#negative-text");
+if (negativeTextElement) {
+  negativeTextElement.textContent = dynamicText;
+}
 
     // Build datasets for each sub-category
     Object.entries(allSubCategories).forEach(([subCategoryName, values], colorIndex) => {
@@ -361,60 +341,60 @@ observeChart("sub-categories", () => {
     console.log("Final datasets:", datasets);
 
     const options = {
-  responsive: true,
-  maintainAspectRatio: true,
-  indexAxis: "x", // Set to "x" for vertical bar chart (default behavior)
-  plugins: {
-    legend: {
-      display: false, // Hides the legend at the bottom
-    },
-    tooltip: {
-      titleFont: {
-        family: "Inter Tight",
-        size: 12,
-      },
-      bodyFont: {
-        family: "Inter Tight",
-        size: 12,
-      },
-    },
-  },
-  scales: {
-    x: {
-      stacked: true, // Enable stacking on the X axis
-      ticks: {
-        font: {
-          family: "Inter Tight",
-          size: 12,
+      responsive: true,
+      maintainAspectRatio: true,
+      indexAxis: "x", // Set to "x" for vertical bar chart (default behavior)
+      plugins: {
+        legend: {
+          display: false, // Hides the legend at the bottom
+        },
+        tooltip: {
+          titleFont: {
+            family: "Inter Tight",
+            size: 12,
+          },
+          bodyFont: {
+            family: "Inter Tight",
+            size: 12,
+          },
         },
       },
-      grid: {
-        drawBorder: false,
-      },
-    },
-    y: {
-      stacked: true, // Enable stacking on the Y axis
-      ticks: {
-        stepSize: 10, // Gradations in increments of 10
-        font: {
-          family: "Inter Tight",
-          size: 12,
+      scales: {
+        x: {
+          stacked: true, // Enable stacking on the X axis
+          ticks: {
+            font: {
+              family: "Inter Tight",
+              size: 12,
+            },
+          },
+          grid: {
+            drawBorder: false,
+          },
+        },
+        y: {
+          stacked: true, // Enable stacking on the Y axis
+          ticks: {
+            stepSize: 10, // Gradations in increments of 10
+            font: {
+              family: "Inter Tight",
+              size: 12,
+            },
+          },
+          grid: {
+            drawBorder: false,
+          },
         },
       },
-      grid: {
-        drawBorder: false,
+      layout: {
+        padding: {
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: 10,
+        },
       },
-    },
-  },
-  layout: {
-    padding: {
-      top: 10,
-      left: 10,
-      right: 10,
-      bottom: 10,
-    },
-  },
-};
+    };
 
     console.log("Creating vertical stacked bar chart with options:", options);
 
@@ -422,7 +402,7 @@ observeChart("sub-categories", () => {
   }
 });
 
-// Chart 5: Industry Benchmark - Dynamic Chart Type
+// Chart: Industry Benchmark - Dynamic Chart Type
 observeChart("industry-benchmark", () => {
   console.log("Initializing Industry Benchmark chart...");
 
@@ -442,59 +422,64 @@ observeChart("industry-benchmark", () => {
   }
 
   if (parsedData) {
-    // Variables to store better and worse performing categories
+    console.log("Checking data size for chart type...");
+
+    // Initialize arrays for labels and datasets
+    const labels = [];
+    const companyRatings = [];
+    const industryRatings = [];
     const betterCategories = [];
     const worseCategories = [];
 
     // Process data
     parsedData.forEach((item) => {
+      const topic = item.key.replace(/_/g, " ").toLowerCase().replace(/(?:^|\s)\S/g, (match) => match.toUpperCase());
       const parsedValue = JSON.parse(item.value);
       const companyRating = parsedValue.company_avg_topic_rating;
       const industryRating = parsedValue.industry_avg_topic_rating;
 
+      labels.push(topic);
+      companyRatings.push(companyRating);
+      industryRatings.push(industryRating);
+
+      // Compare ratings for dynamic message
       if (companyRating > industryRating) {
-        betterCategories.push(item.key.replace(/_/g, " ").toLowerCase().replace(/(?:^|\s)\S/g, (match) => match.toUpperCase()));
+        betterCategories.push(topic);
       } else if (companyRating < industryRating) {
-        worseCategories.push(item.key.replace(/_/g, " ").toLowerCase().replace(/(?:^|\s)\S/g, (match) => match.toUpperCase()));
+        worseCategories.push(topic);
       }
     });
 
-    // Original text
-    const originalText = "See how your brand stacks up against competitors. Identify strengths and areas where you can outperform the industry standard to stay ahead of the curve.";
+    // Generate the dynamic message with "and" for the last item
+    const formatCategories = (categories) => {
+      if (categories.length > 1) {
+        return `${categories.slice(0, -1).join(", ")} and ${categories.slice(-1)}`;
+      } else if (categories.length === 1) {
+        return categories[0];
+      }
+      return "";
+    };
 
-    let finalMessage;
+    const betterMessage =
+      betterCategories.length > 0
+        ? `You’re performing better than the industry on ${formatCategories(betterCategories)}`
+        : "";
+    const worseMessage =
+      worseCategories.length > 0
+        ? `but you struggle with ${formatCategories(worseCategories)} categories.`
+        : "";
 
-    // Conditional Text Generation
-    if (betterCategories.length === 0 && worseCategories.length > 0) {
-      // Case 1: The industry performs better everywhere
-      console.log("Industry performs better everywhere. Keeping original text.");
-      finalMessage = originalText;
-    } else if (betterCategories.length > 0 && worseCategories.length === 0) {
-      // Case 2: The company outperforms the industry in all categories
-      console.log("Company outperforms the industry in all categories. Adding congratulatory message.");
-      finalMessage = `${originalText} Congratulations! Your brand is outperforming the industry in all key areas. Keep up the excellent work!`;
-    } else {
-      // Case 3: The company does better in some domains but worse in others
-      console.log("Company does better in some categories and worse in others. Highlighting strengths and weaknesses.");
-      const betterMessage = `You’re performing better than the industry on ${betterCategories.join(", ")}`;
-      const worseMessage = `but you struggle with ${worseCategories.join(", ")} categories.`;
-      finalMessage = `${betterMessage} ${worseMessage}`;
-    }
+    const finalMessage = `${betterMessage} ${worseMessage}`.trim();
+    console.log(finalMessage);
 
-    // Update the DOM with the final message
-    console.log("Final Message:", finalMessage);
-    $("#dynamic-message").text(finalMessage);
+    // Insert the message into the DOM
+    $("#benchmark-text").text(finalMessage);
 
-    // Chart Generation Logic
-    const labels = parsedData.map((item) =>
-      item.key.replace(/_/g, " ").toLowerCase().replace(/(?:^|\s)\S/g, (match) => match.toUpperCase())
-    );
-    const companyRatings = parsedData.map((item) => JSON.parse(item.value).company_avg_topic_rating);
-    const industryRatings = parsedData.map((item) => JSON.parse(item.value).industry_avg_topic_rating);
-
+    // Chart generation
     if (labels.length <= 2) {
       console.log("Insufficient data for radar chart. Generating a Polar Area Chart...");
 
+      // Prepare datasets for Polar Area Chart
       const datasets = [
         {
           data: companyRatings,
@@ -589,39 +574,131 @@ observeChart("industry-benchmark", () => {
 });
 
 
-// Convert number to %
-// Select all elements with data-el="negative-reviews"
-const negativeReviewsElements = document.querySelectorAll('[data-el="negative-reviews"]');
 
-// Check if there are any elements
-if (negativeReviewsElements.length > 0) {
-    negativeReviewsElements.forEach(element => {
-        // Get the decimal value from the element
-        let decimalValue = parseFloat(element.textContent);
+/****************************
+ *
+ * Playground
+ *
+ ****************************/
 
-        // Ensure the value is a valid number and between 0 and 1
-        if (!isNaN(decimalValue) && decimalValue >= 0 && decimalValue <= 1) {
-            // Convert to percentage
-            let percentageValue = (decimalValue * 100).toFixed(0) + '%';
 
-            // Update the element's text content with the percentage value
-            element.textContent = percentageValue;
-        } else {
-            console.warn('Invalid decimal value for:', element);
-        }
-    });
-}
+// // Chart 1: Sentiment Overtime Line Chart with Lines Only
+// observeChart("barChart", () => {
+//   const element = document.querySelector('[data-el="sentiment-overtime"]');
+//   const rawContent = element.textContent.trim();
+//   let parsedData;
 
-// Hide insights section if empty
-// Select the section with id="insights"
-const insightSection = document.getElementById('insights');
+//   try {
+//     parsedData = parseJSONWithCorrection(rawContent);
+//   } catch (error) {
+//     console.error("Unable to parse JSON:", error);
+//   }
 
-// Check if any element inside the section has the class .w-dyn-bind-empty
-if (insightSection.querySelector('.w-dyn-bind-empty')) {
-    // Hide the section
-    insightSection.style.display = 'none';
-    console.log('Insight section hidden due to .w-dyn-bind-empty');
-}
+//   if (parsedData) {
+//     const rawLabels = parsedData.map((item) => item.key);
+//     const labels = capitalizeLabels(rawLabels); // Capitalize labels
+//     const positiveData = parsedData.map(
+//       (item) =>
+//         item.value.find((subItem) => subItem.positive !== undefined)
+//           ?.positive || 0
+//     );
+//     const neutralData = parsedData.map(
+//       (item) =>
+//         item.value.find((subItem) => subItem.neutral !== undefined)?.neutral ||
+//         0
+//     );
+//     const negativeData = parsedData.map(
+//       (item) =>
+//         item.value.find((subItem) => subItem.negative !== undefined)
+//           ?.negative || 0
+//     );
+
+//     const datasets = [
+//       {
+//         label: "Positive",
+//         data: positiveData,
+//         borderColor: colorPalette[2], // Third color in the palette
+//         borderWidth: 2,
+//         fill: false, // Remove fill under the line
+//         tension: 0.4, // Smooth curves
+//       },
+//       {
+//         label: "Neutral",
+//         data: neutralData,
+//         borderColor: colorPalette[4], // Fifth color in the palette
+//         borderWidth: 2,
+//         fill: false,
+//         tension: 0.4,
+//       },
+//       {
+//         label: "Negative",
+//         data: negativeData,
+//         borderColor: colorPalette[6], // Seventh color in the palette
+//         borderWidth: 2,
+//         fill: false,
+//         tension: 0.4,
+//       },
+//     ];
+
+//     const options = {
+//       responsive: true,
+//       maintainAspectRatio: true,
+//       animation: {
+//         duration: 1000, // Smooth animations
+//       },
+
+//       responsiveAnimationDuration: 0, // Disable responsiveness-triggered animations
+
+//       layout: {
+//         padding: {
+//           top: 10,
+//           left: 10,
+//           right: 10,
+//           bottom: 10,
+//         },
+//       },
+//       plugins: {
+//         legend: {
+//           position: "bottom",
+//           labels: {
+//             font: { family: "Inter Tight" },
+//           },
+//         },
+//         tooltip: {
+//           titleFont: { family: "Inter Tight", size: 12 },
+//           bodyFont: { family: "Inter Tight", size: 12 },
+//         },
+//       },
+//       scales: {
+//         x: {
+//           ticks: { font: { family: "Inter Tight" } },
+//         },
+//         y: {
+//           ticks: {
+//             callback: function (value) {
+//               return value + "%"; // Append "%" to tick labels
+//             },
+//             font: { family: "Inter Tight" },
+//           },
+//         },
+//       },
+//     };
+
+//     const ctx = document.getElementById("barChart").getContext("2d");
+//     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clear canvas before drawing
+
+//     const chartInstance = new Chart(ctx, {
+//       type: "line",
+//       data: {
+//         labels: labels,
+//         datasets: datasets,
+//       },
+//       options: options,
+//     });
+
+//     chartInstance.update("none"); // Force redraw without animations
+//   }
+// });
 
 
 // // Sort brands by gmv and hide more than 3
@@ -793,3 +870,26 @@ if (insightSection.querySelector('.w-dyn-bind-empty')) {
 //       }
 //   });
 // });
+
+// Convert number to %
+// Select all elements with data-el="negative-reviews"
+// const negativeReviewsElements = document.querySelectorAll('[data-el="negative-reviews"]');
+
+// // Check if there are any elements
+// if (negativeReviewsElements.length > 0) {
+//     negativeReviewsElements.forEach(element => {
+//         // Get the decimal value from the element
+//         let decimalValue = parseFloat(element.textContent);
+
+//         // Ensure the value is a valid number and between 0 and 1
+//         if (!isNaN(decimalValue) && decimalValue >= 0 && decimalValue <= 1) {
+//             // Convert to percentage
+//             let percentageValue = (decimalValue * 100).toFixed(0) + '%';
+
+//             // Update the element's text content with the percentage value
+//             element.textContent = percentageValue;
+//         } else {
+//             console.warn('Invalid decimal value for:', element);
+//         }
+//     });
+// }
