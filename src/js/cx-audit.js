@@ -107,6 +107,26 @@ if (daysElement) {
   }
 }
 
+// Find the element with the attribute data-el="negative-reviews"
+const negativeReviewsElement = document.querySelector('[data-el="negative-reviews"]');
+
+if (negativeReviewsElement) {
+  // Get the text content of the element
+  let textContent = negativeReviewsElement.textContent.trim();
+
+  // Convert the text to a number and remove decimals
+  let numericValue = Math.floor(Number(textContent));
+
+  // Replace the existing text with the updated value
+  if (!isNaN(numericValue)) {
+    negativeReviewsElement.textContent = numericValue;
+  } else {
+    console.error("The text content could not be converted to a valid number.");
+  }
+} else {
+  console.error("Element with data-el=\"negative-reviews\" not found.");
+}
+
 /****************************
  *
  * Charts and dynamic text
@@ -133,7 +153,11 @@ observeChart("sentiment-aggregated-breakdown", () => {
     const datasets = [
       {
         data: dataValues,
-        backgroundColor: colorPalette.slice(0, labels.length),
+        backgroundColor: [
+          "#CB55EF", // Positive
+          "#DB90FF", // Negative
+          "#FAEAFF", // Neutral (previously Positive)
+        ],
       },
     ];
 
