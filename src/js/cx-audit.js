@@ -474,30 +474,35 @@ observeChart("industry-benchmark", () => {
       }
     });
 
-    // Generate the dynamic message with "and" for the last item
-    const formatCategories = (categories) => {
-      if (categories.length > 1) {
-        return `${categories.slice(0, -1).join(", ")} and ${categories.slice(-1)}`;
-      } else if (categories.length === 1) {
-        return categories[0];
-      }
-      return "";
-    };
+// Generate the dynamic message with "and" for the last item
+const formatCategories = (categories) => {
+  if (categories.length > 1) {
+    return `${categories.slice(0, -1).join(", ")} and ${categories.slice(-1)}`;
+  } else if (categories.length === 1) {
+    return categories[0];
+  }
+  return "";
+};
 
-    const betterMessage =
-      betterCategories.length > 0
-        ? `You’re performing better than the industry on ${formatCategories(betterCategories)}`
-        : "";
-    const worseMessage =
-      worseCategories.length > 0
-        ? `but you struggle with ${formatCategories(worseCategories)} categories.`
-        : "";
+let finalMessage = ""; // Initialize the message
 
-    const finalMessage = `${betterMessage} ${worseMessage}`.trim();
-    console.log(finalMessage);
+if (betterCategories.length > 0 && worseCategories.length > 0) {
+  // Case 1: The company is doing better in some areas and worse in others
+  const betterMessage = `You’re performing better than the industry on ${formatCategories(betterCategories)}`;
+  const worseMessage = `but you struggle with ${formatCategories(worseCategories)} categories.`;
+  finalMessage = `${betterMessage} ${worseMessage}`;
+} else if (betterCategories.length > 0 && worseCategories.length === 0) {
+  // Case 2: The company is doing better everywhere
+  finalMessage = `Congrats, you're currently doing better than the industry on ${formatCategories(betterCategories)} topics.`;
+} else if (betterCategories.length === 0 && worseCategories.length > 0) {
+  // Case 3: The company is doing worse everywhere
+  finalMessage = "Identify your areas of improvement and stay ahead of the curve.";
+}
 
-    // Insert the message into the DOM
-    $("#benchmark-text").text(finalMessage);
+console.log(finalMessage);
+
+// Insert the message into the DOM
+$("#benchmark-text").text(finalMessage);
 
     // Chart generation
     if (labels.length <= 2) {
