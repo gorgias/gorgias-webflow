@@ -146,39 +146,92 @@ observeChart("sentiment-aggregated-breakdown", () => {
   }
 
   if (parsedData) {
+    // Extract labels and data values
     const rawLabels = parsedData.map((item) => item.key);
     const labels = capitalizeLabels(rawLabels); // Capitalize labels
     const dataValues = parsedData.map((item) => item.value);
 
+    // Calculate total and percentages
+    const total = dataValues.reduce((sum, value) => sum + value, 0);
+    const percentages = dataValues.map((value) => total > 0 ? ((value / total) * 100).toFixed(1) : 0); // Ensure no NaN
+
+    // Assign percentage values by sentiment type
+    const sentimentMap = {};
+    rawLabels.forEach((key, index) => {
+      sentimentMap[key.toLowerCase()] = parseFloat(percentages[index]);
+    });
+
+    const positivePercentage = sentimentMap["positive"] || 0;
+    const negativePercentage = sentimentMap["negative"] || 0;
+    const neutralPercentage = sentimentMap["neutral"] || 0;
+
+    // Dynamic Text Generation
+    let sentimentMessage = "";
+    if (positivePercentage > negativePercentage && positivePercentage > neutralPercentage) {
+      sentimentMessage = `Your reviews are mainly positive (${positivePercentage}%). This shows that your customers are satisfied with your service and products. Keep up the excellent work to maintain this positive sentiment!`;
+    } else if (negativePercentage > positivePercentage && negativePercentage > neutralPercentage) {
+      sentimentMessage = `Your reviews are mainly negative (${negativePercentage}%). This suggests there are areas where your service or products need improvement. Focusing on these areas can help improve customer satisfaction.`;
+    } else if (neutralPercentage > positivePercentage && neutralPercentage > negativePercentage) {
+      sentimentMessage = `Your reviews are largely neutral (${neutralPercentage}%). This indicates that customers have mixed feelings about your service or products. Engaging with customers and addressing their concerns can help turn neutral reviews into positive ones.`;
+    } else {
+      sentimentMessage = `Your reviews are evenly distributed across sentiment types. Focus on key drivers of customer satisfaction to improve your overall sentiment.`;
+    }
+
+    // Insert the message into the DOM
+    const sentimentTextElement = document.querySelector("#sentiment-text");
+    if (sentimentTextElement) {
+      sentimentTextElement.textContent = sentimentMessage;
+    }
+
+    // Dataset with percentages for chart
     const datasets = [
       {
         data: dataValues,
         backgroundColor: [
           "#CB55EF", // Positive
           "#DB90FF", // Negative
-          "#FAEAFF", // Neutral (previously Positive)
+          "#FAEAFF", // Neutral
         ],
+        labels: percentages.map((percent, index) => `${labels[index]}: ${percent}%`), // Add percentage to legend
       },
     ];
 
+    // Chart options with percentage labels
+    const options = {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { font: { family: "Inter Tight" } },
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const label = context.label || "";
+              const value = context.raw || 0;
+              const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+              return `${label}: ${value} (${percentage}%)`;
+            },
+          },
+          titleFont: { family: "Inter Tight", size: 12 },
+          bodyFont: { family: "Inter Tight", size: 12 },
+        },
+        datalabels: {
+          display: true,
+          color: "#000",
+          font: { family: "Inter Tight", size: 14 },
+          formatter: (value, context) => `${percentages[context.dataIndex]}%`,
+        },
+      },
+    };
+
+    // Create the chart
     createChart(
       "doughnut",
       "sentiment-aggregated-breakdown",
       labels,
       datasets,
-      {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "bottom",
-            labels: { font: { family: "Inter Tight" } },
-          },
-          tooltip: {
-            titleFont: { family: "Inter Tight", size: 12 },
-            bodyFont: { family: "Inter Tight", size: 12 },
-          },
-        },
-      }
+      options
     );
   }
 });
@@ -213,18 +266,20 @@ observeChart("topic-avg", () => {
 
     console.log("Top 3 Topics:", topTopicsText);
 
-// Generate the dynamic text with "and" for the last item
-const topTopicLabels = topTopics.map((topic) => topic.label);
-const dynamicText =
-  topTopicLabels.length > 1
-    ? `Your customers value your strengths in ${topTopicLabels.slice(0, -1).join(", ")} and ${topTopicLabels.slice(-1)}. Keep leveraging these areas to build trust and loyalty.`
-    : `Your customers value your strength in ${topTopicLabels[0]}. Keep leveraging this area to build trust and loyalty.`;
+    // Generate the dynamic text with "and" for the last item
+    const topTopicLabels = topTopics.map((topic) => topic.label);
+    const dynamicText =
+      topTopicLabels.length > 1
+        ? `Your customers value your strengths in ${topTopicLabels
+            .slice(0, -1)
+            .join(", ")} and ${topTopicLabels.slice(-1)}. Keep leveraging these areas to build trust and loyalty.`
+        : `Your customers value your strength in ${topTopicLabels[0]}. Keep leveraging this area to build trust and loyalty.`;
 
-// Update DOM with dynamic text
-const dynamicTextElement = document.querySelector("#avg-score-text");
-if (dynamicTextElement) {
-  dynamicTextElement.textContent = dynamicText;
-}
+    // Update DOM with dynamic text
+    const dynamicTextElement = document.querySelector("#avg-score-text");
+    if (dynamicTextElement) {
+      dynamicTextElement.textContent = dynamicText;
+    }
 
     const datasets = [
       {
@@ -281,7 +336,25 @@ if (dynamicTextElement) {
       },
     };
 
-    createChart("bar", "topic-avg", labels, datasets, options);
+    // Create the chart
+    const chartInstance = new Chart(
+      document.getElementById("topic-avg").getContext("2d"),
+      {
+        type: "bar",
+        data: { labels, datasets },
+        options,
+      }
+    );
+
+    // Display a default tooltip for the first bar
+    chartInstance.options.plugins.tooltip.enabled = true; // Ensure tooltips are enabled
+    chartInstance.update();
+
+    chartInstance.tooltip.setActiveElements(
+      [{ datasetIndex: 0, index: 0 }], // Tooltip for the first bar
+      { x: 0, y: 0 } // Tooltip position (defaults to the first bar)
+    );
+    chartInstance.tooltip.update();
   }
 });
 
@@ -336,18 +409,18 @@ observeChart("sub-categories", () => {
       .sort((a, b) => b.total - a.total)
       .slice(0, 3);
 
-// Generate the dynamic text with "and" for the last item
-const topNegativeLabels = topNegativeCategories.map((category) => category.label);
-const dynamicText =
-  topNegativeLabels.length > 1
-    ? `These topics ${topNegativeLabels.slice(0, -1).join(", ")} and ${topNegativeLabels.slice(-1)} are driving the most negative reviews. Hover over each bar to see more details.`
-    : `This topic ${topNegativeLabels[0]} is driving the most negative reviews. Hover over the bar to see more details.`;
+    // Generate the dynamic text with "and" for the last item
+    const topNegativeLabels = topNegativeCategories.map((category) => category.label);
+    const dynamicText =
+      topNegativeLabels.length > 1
+        ? `These topics ${topNegativeLabels.slice(0, -1).join(", ")} and ${topNegativeLabels.slice(-1)} are driving the most negative reviews. Hover over each bar to see more details.`
+        : `This topic ${topNegativeLabels[0]} is driving the most negative reviews. Hover over the bar to see more details.`;
 
-// Insert the text into the element with ID "negative-text"
-const negativeTextElement = document.querySelector("#negative-text");
-if (negativeTextElement) {
-  negativeTextElement.textContent = dynamicText;
-}
+    // Insert the text into the element with ID "negative-text"
+    const negativeTextElement = document.querySelector("#negative-text");
+    if (negativeTextElement) {
+      negativeTextElement.textContent = dynamicText;
+    }
 
     // Build datasets for each sub-category
     Object.entries(allSubCategories).forEach(([subCategoryName, values], colorIndex) => {
@@ -420,9 +493,25 @@ if (negativeTextElement) {
       },
     };
 
-    console.log("Creating vertical stacked bar chart with options:", options);
+    // Create the chart
+    const chartInstance = new Chart(
+      document.getElementById("sub-categories").getContext("2d"),
+      {
+        type: "bar",
+        data: { labels: mainCategories, datasets },
+        options,
+      }
+    );
 
-    createChart("bar", "sub-categories", mainCategories, datasets, options);
+    // Display a default tooltip for the first bar
+    chartInstance.options.plugins.tooltip.enabled = true; // Ensure tooltips are enabled
+    chartInstance.update();
+
+    chartInstance.tooltip.setActiveElements(
+      [{ datasetIndex: 0, index: 0 }], // Tooltip for the first bar
+      { x: 0, y: 0 } // Tooltip position (defaults to the first bar)
+    );
+    chartInstance.tooltip.update();
   }
 });
 
