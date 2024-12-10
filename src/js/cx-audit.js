@@ -153,7 +153,9 @@ observeChart("sentiment-aggregated-breakdown", () => {
 
     // Calculate total and percentages
     const total = dataValues.reduce((sum, value) => sum + value, 0);
-    const percentages = dataValues.map((value) => total > 0 ? ((value / total) * 100).toFixed(1) : 0); // Ensure no NaN
+    const percentages = dataValues.map((value) =>
+      total > 0 ? ((value / total) * 100).toFixed(1) : 0
+    ); // Ensure no NaN
 
     // Assign percentage values by sentiment type
     const sentimentMap = {};
@@ -167,11 +169,21 @@ observeChart("sentiment-aggregated-breakdown", () => {
 
     // Dynamic Text Generation
     let sentimentMessage = "";
-    if (positivePercentage > negativePercentage && positivePercentage > neutralPercentage) {
+    if (
+      positivePercentage > negativePercentage &&
+      positivePercentage > neutralPercentage
+    ) {
       sentimentMessage = `Your reviews are mainly positive (${positivePercentage}%). This shows that your customers are satisfied with your service and products. Keep up the excellent work to maintain this positive sentiment!`;
     } else if (negativePercentage > positivePercentage && negativePercentage > neutralPercentage) {
+    } else if (
+      negativePercentage > positivePercentage &&
+      negativePercentage > neutralPercentage
+    ) {
       sentimentMessage = `Your reviews are mainly negative (${negativePercentage}%). This suggests there are areas where your service or products need improvement. Focusing on these areas can help improve customer satisfaction.`;
-    } else if (neutralPercentage > positivePercentage && neutralPercentage > negativePercentage) {
+    } else if (
+      neutralPercentage > positivePercentage &&
+      neutralPercentage > negativePercentage
+    ) {
       sentimentMessage = `Your reviews are largely neutral (${neutralPercentage}%). This indicates that customers have mixed feelings about your service or products. Engaging with customers and addressing their concerns can help turn neutral reviews into positive ones.`;
     } else {
       sentimentMessage = `Your reviews are evenly distributed across sentiment types. Focus on key drivers of customer satisfaction to improve your overall sentiment.`;
@@ -188,11 +200,10 @@ observeChart("sentiment-aggregated-breakdown", () => {
       {
         data: dataValues,
         backgroundColor: [
-          "#CB55EF", // Positive
-          "#DB90FF", // Negative
-          "#FAEAFF", // Neutral
+          "#C652E7", // Positive
+          "#FAE7FE", // Negative
+          "#D889FA", // Neutral
         ],
-        labels: percentages.map((percent, index) => `${labels[index]}: ${percent}%`), // Add percentage to legend
       },
     ];
 
@@ -216,23 +227,32 @@ observeChart("sentiment-aggregated-breakdown", () => {
           titleFont: { family: "Inter Tight", size: 12 },
           bodyFont: { family: "Inter Tight", size: 12 },
         },
-        datalabels: {
-          display: true,
-          color: "#000",
-          font: { family: "Inter Tight", size: 14 },
-          formatter: (value, context) => `${percentages[context.dataIndex]}%`,
-        },
       },
     };
 
-    // Create the chart
-    createChart(
-      "doughnut",
-      "sentiment-aggregated-breakdown",
-      labels,
-      datasets,
-      options
+    // Create the chart instance
+    const chartInstance = new Chart(
+      document.getElementById("sentiment-aggregated-breakdown").getContext("2d"),
+      {
+        type: "doughnut",
+        data: { labels, datasets },
+        options,
+      }
     );
+
+    // Display all tooltips by default
+    chartInstance.options.plugins.tooltip.enabled = true; // Ensure tooltips are enabled
+    const tooltipItems = datasets[0].data.map((_, index) => ({
+      datasetIndex: 0,
+      index,
+    }));
+    chartInstance.update();
+
+    chartInstance.tooltip.setActiveElements(tooltipItems, {
+      x: 0,
+      y: 0,
+    });
+    chartInstance.tooltip.update();
   }
 });
 
@@ -691,7 +711,31 @@ $("#benchmark-text").text(finalMessage);
   }
 });
 
+/****************************
+ *
+ * GSAP
+ *
+ ****************************/
 
+gsap.registerPlugin(ScrollTrigger);
+
+$(".insights_grid-item").each(function (index) {
+  let tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: $(this),
+      start: "top 60%", // 40% visible
+      end: "top 40%",
+      toggleActions: "play reverse play reverse", // Play on scroll down, reverse on scroll up
+    }
+  });
+
+  tl.from($(this), {
+    y: "100%",
+    duration: 0.5,
+    ease: "power2.out",
+    stagger: { amount: 0.5 } // Stagger effect for smoother transitions
+  });
+});
 
 /****************************
  *
