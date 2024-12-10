@@ -174,7 +174,6 @@ observeChart("sentiment-aggregated-breakdown", () => {
       positivePercentage > neutralPercentage
     ) {
       sentimentMessage = `Your reviews are mainly positive (${positivePercentage}%). This shows that your customers are satisfied with your service and products. Keep up the excellent work to maintain this positive sentiment!`;
-    } else if (negativePercentage > positivePercentage && negativePercentage > neutralPercentage) {
     } else if (
       negativePercentage > positivePercentage &&
       negativePercentage > neutralPercentage
