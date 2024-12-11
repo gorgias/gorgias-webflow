@@ -21,15 +21,15 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/cookies'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
     // demo pages
-    newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
-    if (path === '/demo-2' || path === '/wip/demo') {
-      newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
-    }
+   newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
+    // if (path === '/demo-2' || path === '/wip/demo' || path === '/demo-alt') {
+    //   newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
+    // }
 
-    // demo page
-    if (path === '/demo'){
-        newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
-    }
+    // // demo page
+    // if (path === '/demo'){
+    //     newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
+    // }
 
     if ( path.includes('/comparison/')){
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);

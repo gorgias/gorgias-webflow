@@ -712,32 +712,6 @@ $("#benchmark-text").text(finalMessage);
 
 /****************************
  *
- * GSAP
- *
- ****************************/
-
-gsap.registerPlugin(ScrollTrigger);
-
-$(".insights_grid-item").each(function (index) {
-  let tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: $(this),
-      start: "top 60%", // 40% visible
-      end: "top 40%",
-      toggleActions: "play reverse play reverse", // Play on scroll down, reverse on scroll up
-    }
-  });
-
-  tl.from($(this), {
-    y: "100%",
-    duration: 0.5,
-    ease: "power2.out",
-    stagger: { amount: 0.5 } // Stagger effect for smoother transitions
-  });
-});
-
-/****************************
- *
  * Playground
  *
  ****************************/
