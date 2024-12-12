@@ -72,16 +72,16 @@ function observeChart(canvasId, initializeChartCallback) {
   observer.observe(target);
 }
 
-// Hide insights section if empty
-// Select the section with id="insights"
-const insightSection = document.getElementById('insights');
+// // Hide insights section if empty
+// // Select the section with id="insights"
+// const insightSection = document.getElementById('insights');
 
-// Check if any element inside the section has the class .w-dyn-bind-empty
-if (insightSection.querySelector('.w-dyn-bind-empty')) {
-    // Hide the section
-    insightSection.style.display = 'none';
-    console.log('Insight section hidden due to .w-dyn-bind-empty');
-}
+// // Check if any element inside the section has the class .w-dyn-bind-empty
+// if (insightSection.querySelector('.w-dyn-bind-empty')) {
+//     // Hide the section
+//     insightSection.style.display = 'none';
+//     console.log('Insight section hidden due to .w-dyn-bind-empty');
+// }
 
 // Script to replace the text of elements with the `data-brand` attribute
 document.querySelectorAll('[data-brand]').forEach(element => {
@@ -107,25 +107,25 @@ if (daysElement) {
   }
 }
 
-// Find the element with the attribute data-el="negative-reviews"
-const negativeReviewsElement = document.querySelector('[data-el="negative-reviews"]');
+// // Find the element with the attribute data-el="negative-reviews"
+// const negativeReviewsElement = document.querySelector('[data-el="negative-reviews"]');
 
-if (negativeReviewsElement) {
-  // Get the text content of the element
-  let textContent = negativeReviewsElement.textContent.trim();
+// if (negativeReviewsElement) {
+//   // Get the text content of the element
+//   let textContent = negativeReviewsElement.textContent.trim();
 
-  // Convert the text to a number and remove decimals
-  let numericValue = Math.floor(Number(textContent));
+//   // Convert the text to a number and remove decimals
+//   let numericValue = Math.floor(Number(textContent));
 
-  // Replace the existing text with the updated value
-  if (!isNaN(numericValue)) {
-    negativeReviewsElement.textContent = numericValue;
-  } else {
-    console.error("The text content could not be converted to a valid number.");
-  }
-} else {
-  console.error("Element with data-el=\"negative-reviews\" not found.");
-}
+//   // Replace the existing text with the updated value
+//   if (!isNaN(numericValue)) {
+//     negativeReviewsElement.textContent = numericValue;
+//   } else {
+//     console.error("The text content could not be converted to a valid number.");
+//   }
+// } else {
+//   console.error("Element with data-el=\"negative-reviews\" not found.");
+// }
 
 /****************************
  *
@@ -167,31 +167,20 @@ observeChart("sentiment-aggregated-breakdown", () => {
     const negativePercentage = sentimentMap["negative"] || 0;
     const neutralPercentage = sentimentMap["neutral"] || 0;
 
-    // Dynamic Text Generation
-    let sentimentMessage = "";
-    if (
-      positivePercentage > negativePercentage &&
-      positivePercentage > neutralPercentage
-    ) {
-      sentimentMessage = `Your reviews are mainly positive (${positivePercentage}%). This shows that your customers are satisfied with your service and products. Keep up the excellent work to maintain this positive sentiment!`;
-    } else if (
-      negativePercentage > positivePercentage &&
-      negativePercentage > neutralPercentage
-    ) {
-      sentimentMessage = `Your reviews are mainly negative (${negativePercentage}%). This suggests there are areas where your service or products need improvement. Focusing on these areas can help improve customer satisfaction.`;
-    } else if (
-      neutralPercentage > positivePercentage &&
-      neutralPercentage > negativePercentage
-    ) {
-      sentimentMessage = `Your reviews are largely neutral (${neutralPercentage}%). This indicates that customers have mixed feelings about your service or products. Engaging with customers and addressing their concerns can help turn neutral reviews into positive ones.`;
-    } else {
-      sentimentMessage = `Your reviews are evenly distributed across sentiment types. Focus on key drivers of customer satisfaction to improve your overall sentiment.`;
+    // Update the text of elements with the calculated percentages
+    const positiveElement = document.querySelector('[data-el="percent-pos"]');
+    if (positiveElement) {
+      positiveElement.textContent = `${positivePercentage}`;
     }
 
-    // Insert the message into the DOM
-    const sentimentTextElement = document.querySelector("#sentiment-text");
-    if (sentimentTextElement) {
-      sentimentTextElement.textContent = sentimentMessage;
+    const neutralElement = document.querySelector('[data-el="percent-neu"]');
+    if (neutralElement) {
+      neutralElement.textContent = `${neutralPercentage}`;
+    }
+
+    const negativeElement = document.querySelector('[data-el="percent-neg"]');
+    if (negativeElement) {
+      negativeElement.textContent = `${negativePercentage}`;
     }
 
     // Dataset with percentages for chart
@@ -251,128 +240,6 @@ observeChart("sentiment-aggregated-breakdown", () => {
       x: 0,
       y: 0,
     });
-    chartInstance.tooltip.update();
-  }
-});
-
-
-// Chart: Topic Average Bar Chart with Dynamic Top 3 Topics
-observeChart("topic-avg", () => {
-  const element = document.querySelector('[data-el="topic-avg"]');
-  const rawContent = element.textContent.trim();
-  let parsedData;
-
-  try {
-    parsedData = parseJSONWithCorrection(rawContent);
-  } catch (error) {
-    console.error("Unable to parse topic average data:", error);
-  }
-
-  if (parsedData) {
-    const rawLabels = parsedData.map((item) => item.key.replace(/_/g, " "));
-    const labels = capitalizeLabels(rawLabels); // Capitalize labels
-    const dataValues = parsedData.map((item) => item.value);
-
-    // Identify top 3 topics
-    const topTopics = dataValues
-      .map((value, index) => ({ label: labels[index], value })) // Map labels with their values
-      .sort((a, b) => b.value - a.value) // Sort descending by value
-      .slice(0, 3); // Get the top 3
-
-    const topTopicsText = topTopics
-      .map((topic) => `${topic.label} (${topic.value.toFixed(1)})`) // Format the text
-      .join(", ");
-
-    console.log("Top 3 Topics:", topTopicsText);
-
-    // Generate the dynamic text with "and" for the last item
-    const topTopicLabels = topTopics.map((topic) => topic.label);
-    const dynamicText =
-      topTopicLabels.length > 1
-        ? `Your customers value your strengths in ${topTopicLabels
-            .slice(0, -1)
-            .join(", ")} and ${topTopicLabels.slice(-1)}. Keep leveraging these areas to build trust and loyalty.`
-        : `Your customers value your strength in ${topTopicLabels[0]}. Keep leveraging this area to build trust and loyalty.`;
-
-    // Update DOM with dynamic text
-    const dynamicTextElement = document.querySelector("#avg-score-text");
-    if (dynamicTextElement) {
-      dynamicTextElement.textContent = dynamicText;
-    }
-
-    const datasets = [
-      {
-        data: dataValues, // Removed the `label` field from the dataset
-        backgroundColor: "#cb55ef",
-        borderColor: "#cb55ef",
-        borderWidth: 1,
-      },
-    ];
-
-    const options = {
-      responsive: true, // Chart adjusts to container size
-      maintainAspectRatio: true, // Keeps aspect ratio
-      aspectRatio: 2, // Custom aspect ratio (2 means width is twice the height)
-      plugins: {
-        legend: {
-          display: false, // Hides the legend
-        },
-        tooltip: {
-          titleFont: { family: "Inter Tight", size: 12 },
-          bodyFont: { family: "Inter Tight", size: 12 },
-        },
-        title: {
-          display: true,
-          text: "Hover over a bar to see the category", // Add the helper text
-          font: {
-            family: "Inter Tight",
-            size: 14,
-            weight: "normal",
-          },
-          padding: {
-            top: 10,
-            bottom: 10,
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            display: false, // Hides X-axis ticks
-          },
-        },
-        y: {
-          min: 0,
-          max: 5,
-          ticks: {
-            stepSize: 1, // Increment ticks by 1
-            font: {
-              family: "Inter Tight",
-              size: 12,
-            },
-          },
-        },
-      },
-    };
-
-    // Create the chart
-    const chartInstance = new Chart(
-      document.getElementById("topic-avg").getContext("2d"),
-      {
-        type: "bar",
-        data: { labels, datasets },
-        options,
-      }
-    );
-
-    // Display a default tooltip for the first bar
-    chartInstance.options.plugins.tooltip.enabled = true; // Ensure tooltips are enabled
-    chartInstance.update();
-
-    chartInstance.tooltip.setActiveElements(
-      [{ datasetIndex: 0, index: 0 }], // Tooltip for the first bar
-      { x: 0, y: 0 } // Tooltip position (defaults to the first bar)
-    );
     chartInstance.tooltip.update();
   }
 });
@@ -1028,3 +895,124 @@ $("#benchmark-text").text(finalMessage);
 //         }
 //     });
 // }
+
+// // Chart: Topic Average Bar Chart with Dynamic Top 3 Topics
+// observeChart("topic-avg", () => {
+//   const element = document.querySelector('[data-el="topic-avg"]');
+//   const rawContent = element.textContent.trim();
+//   let parsedData;
+
+//   try {
+//     parsedData = parseJSONWithCorrection(rawContent);
+//   } catch (error) {
+//     console.error("Unable to parse topic average data:", error);
+//   }
+
+//   if (parsedData) {
+//     const rawLabels = parsedData.map((item) => item.key.replace(/_/g, " "));
+//     const labels = capitalizeLabels(rawLabels); // Capitalize labels
+//     const dataValues = parsedData.map((item) => item.value);
+
+//     // Identify top 3 topics
+//     const topTopics = dataValues
+//       .map((value, index) => ({ label: labels[index], value })) // Map labels with their values
+//       .sort((a, b) => b.value - a.value) // Sort descending by value
+//       .slice(0, 3); // Get the top 3
+
+//     const topTopicsText = topTopics
+//       .map((topic) => `${topic.label} (${topic.value.toFixed(1)})`) // Format the text
+//       .join(", ");
+
+//     console.log("Top 3 Topics:", topTopicsText);
+
+//     // Generate the dynamic text with "and" for the last item
+//     const topTopicLabels = topTopics.map((topic) => topic.label);
+//     const dynamicText =
+//       topTopicLabels.length > 1
+//         ? `Your customers value your strengths in ${topTopicLabels
+//             .slice(0, -1)
+//             .join(", ")} and ${topTopicLabels.slice(-1)}. Keep leveraging these areas to build trust and loyalty.`
+//         : `Your customers value your strength in ${topTopicLabels[0]}. Keep leveraging this area to build trust and loyalty.`;
+
+//     // Update DOM with dynamic text
+//     const dynamicTextElement = document.querySelector("#avg-score-text");
+//     if (dynamicTextElement) {
+//       dynamicTextElement.textContent = dynamicText;
+//     }
+
+//     const datasets = [
+//       {
+//         data: dataValues, // Removed the `label` field from the dataset
+//         backgroundColor: "#cb55ef",
+//         borderColor: "#cb55ef",
+//         borderWidth: 1,
+//       },
+//     ];
+
+//     const options = {
+//       responsive: true, // Chart adjusts to container size
+//       maintainAspectRatio: true, // Keeps aspect ratio
+//       aspectRatio: 2, // Custom aspect ratio (2 means width is twice the height)
+//       plugins: {
+//         legend: {
+//           display: false, // Hides the legend
+//         },
+//         tooltip: {
+//           titleFont: { family: "Inter Tight", size: 12 },
+//           bodyFont: { family: "Inter Tight", size: 12 },
+//         },
+//         title: {
+//           display: true,
+//           text: "Hover over a bar to see the category", // Add the helper text
+//           font: {
+//             family: "Inter Tight",
+//             size: 14,
+//             weight: "normal",
+//           },
+//           padding: {
+//             top: 10,
+//             bottom: 10,
+//           },
+//         },
+//       },
+//       scales: {
+//         x: {
+//           ticks: {
+//             display: false, // Hides X-axis ticks
+//           },
+//         },
+//         y: {
+//           min: 0,
+//           max: 5,
+//           ticks: {
+//             stepSize: 1, // Increment ticks by 1
+//             font: {
+//               family: "Inter Tight",
+//               size: 12,
+//             },
+//           },
+//         },
+//       },
+//     };
+
+//     // Create the chart
+//     const chartInstance = new Chart(
+//       document.getElementById("topic-avg").getContext("2d"),
+//       {
+//         type: "bar",
+//         data: { labels, datasets },
+//         options,
+//       }
+//     );
+
+//     // Display a default tooltip for the first bar
+//     chartInstance.options.plugins.tooltip.enabled = true; // Ensure tooltips are enabled
+//     chartInstance.update();
+
+//     chartInstance.tooltip.setActiveElements(
+//       [{ datasetIndex: 0, index: 0 }], // Tooltip for the first bar
+//       { x: 0, y: 0 } // Tooltip position (defaults to the first bar)
+//     );
+//     chartInstance.tooltip.update();
+//   }
+// });
