@@ -738,7 +738,9 @@ observeChart("sub-categories-2", () => {
 
     // Create the new chart
     const chartInstance = new Chart(
+
       document.getElementById("sub-categories-2").getContext("2d"),
+
       {
         type: "bar", // Bar chart
         data: { labels: mainCategories, datasets }, // Data for grouped bars
