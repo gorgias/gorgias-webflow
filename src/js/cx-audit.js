@@ -583,6 +583,140 @@ $("#benchmark-text").text(finalMessage);
  *
  ****************************/
 
+// Fake chart
+// Chart: Sub-Categories Stacked Vertical Bar Chart
+observeChart("sub-categories", () => {
+  console.log("Initializing Sub-Categories chart...");
+
+  const element = document.querySelector('[data-el="sub-categories"]');
+  const rawContent = element.textContent.trim();
+  let parsedData;
+
+  try {
+    console.log("Parsing sub-categories JSON...");
+    parsedData = parseJSONWithCorrection(rawContent);
+    console.log("Parsed data:", parsedData);
+  } catch (error) {
+    console.error("Unable to parse sub-categories data:", error);
+  }
+
+  if (parsedData) {
+    console.log("Transforming data for stacked vertical bar chart...");
+
+    // Extract the main categories (keys) and sub-categories (values)
+    const mainCategories = parsedData.map((item) => item.key);
+    const allSubCategories = {};
+    const datasets = [];
+
+    parsedData.forEach((category, index) => {
+      category.value.forEach((subCategory) => {
+        // Parse the sub-category object
+        const parsedSubCategory = JSON.parse(subCategory);
+        const [subCategoryKey, subCategoryValue] = Object.entries(parsedSubCategory)[0];
+
+        // Ensure the sub-category is tracked globally for consistent order
+        if (!allSubCategories[subCategoryKey]) {
+          allSubCategories[subCategoryKey] = [];
+        }
+
+        // Fill missing data for other categories with 0 to ensure proper stacking
+        allSubCategories[subCategoryKey][index] = subCategoryValue || 0;
+      });
+    });
+
+    // Build datasets for each sub-category
+    Object.entries(allSubCategories).forEach(([subCategoryName, values], colorIndex) => {
+      // Fill missing data with 0 for any main categories not represented
+      const normalizedValues = mainCategories.map((_, i) => values[i] || 0);
+
+      datasets.push({
+        label: subCategoryName,
+        data: normalizedValues,
+        backgroundColor: colorPalette[colorIndex % colorPalette.length],
+        borderWidth: 1,
+      });
+    });
+
+    console.log("Final datasets:", datasets);
+
+    const options = {
+      responsive: true,
+      maintainAspectRatio: true,
+      indexAxis: "x", // Set to "x" for vertical bar chart (default behavior)
+      plugins: {
+        legend: {
+          display: false, // Hides the legend at the bottom
+        },
+        tooltip: {
+          titleFont: {
+            family: "Inter Tight",
+            size: 12,
+          },
+          bodyFont: {
+            family: "Inter Tight",
+            size: 12,
+          },
+        },
+      },
+      scales: {
+        x: {
+          stacked: true, // Enable stacking on the X axis
+          ticks: {
+            font: {
+              family: "Inter Tight",
+              size: 12,
+            },
+          },
+          grid: {
+            drawBorder: false,
+          },
+        },
+        y: {
+          stacked: true, // Enable stacking on the Y axis
+          ticks: {
+            stepSize: 10, // Gradations in increments of 10
+            font: {
+              family: "Inter Tight",
+              size: 12,
+            },
+          },
+          grid: {
+            drawBorder: false,
+          },
+        },
+      },
+      layout: {
+        padding: {
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: 10,
+        },
+      },
+    };
+
+    // Create the chart
+    const chartInstance = new Chart(
+      document.getElementById("sub-categories").getContext("2d"),
+      {
+        type: "bar",
+        data: { labels: mainCategories, datasets },
+        options,
+      }
+    );
+
+    // Display a default tooltip for the first bar
+    chartInstance.options.plugins.tooltip.enabled = true; // Ensure tooltips are enabled
+    chartInstance.update();
+
+    chartInstance.tooltip.setActiveElements(
+      [{ datasetIndex: 0, index: 0 }], // Tooltip for the first bar
+      { x: 0, y: 0 } // Tooltip position (defaults to the first bar)
+    );
+    chartInstance.tooltip.update();
+  }
+});
+
 
 // // Chart 1: Sentiment Overtime Line Chart with Lines Only
 // observeChart("barChart", () => {

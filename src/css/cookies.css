@@ -35,7 +35,7 @@ input:checked+.ot-switch .ot-switch-nob:before {
 
 #ot-sdk-btn-floating.ot-floating-button {
     left: 20px !important;
-    bottom: 20px !important;
+    bottom: 30px !important;
 }
 
 #ot-sdk-btn-floating .ot-floating-button__back svg {
