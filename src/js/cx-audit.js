@@ -697,7 +697,7 @@ observeChart("sub-categories", () => {
 
     // Create the chart
     const chartInstance = new Chart(
-      document.getElementById("sub-categories").getContext("2d"),
+      document.getElementById("sub-categories-2").getContext("2d"),
       {
         type: "bar",
         data: { labels: mainCategories, datasets },
