@@ -583,10 +583,48 @@ $("#benchmark-text").text(finalMessage);
  *
  ****************************/
 
+// Autoplay toggle
+window.fsComponents = window.fsComponents || [];
+window.fsComponents.push([
+  'slider',
+  (sliderInstances) => {
+    console.log('Slider Successfully loaded!');
+
+    // Find the specific slider instance with class 'cx-audit_instance'
+    const auditSlider = sliderInstances.find((sliderInstance) => 
+      sliderInstance.el.classList.contains('cx-audit_instance')
+    );
+
+    if (auditSlider) {
+      console.log('Configuring autoplay toggle for cx-audit_instance slider');
+
+      // Initial autoplay state
+      let isPlaying = false;
+
+      // Create a button to toggle autoplay
+      const toggleButton = document.getElementById('toggle-autoplay');
+
+      // Add click event listener to toggle autoplay
+      toggleButton.addEventListener('click', () => {
+        if (isPlaying) {
+          auditSlider.autoplay.stop();
+          
+        } else {
+          auditSlider.autoplay.start();
+
+        }
+        isPlaying = !isPlaying;
+      });
+    } else {
+      console.log('No cx-audit_instance slider found.');
+    }
+  },
+]);
+
 // Fake chart
-// Chart: Sub-Categories Stacked Vertical Bar Chart
-observeChart("sub-categories", () => {
-  console.log("Initializing Sub-Categories chart...");
+// Chart: Horizontal Grouped Bar Chart
+observeChart("sub-categories-2", () => {
+  console.log("Initializing Grouped Bar Chart...");
 
   const element = document.querySelector('[data-el="sub-categories"]');
   const rawContent = element.textContent.trim();
@@ -601,7 +639,7 @@ observeChart("sub-categories", () => {
   }
 
   if (parsedData) {
-    console.log("Transforming data for stacked vertical bar chart...");
+    console.log("Transforming data for grouped bar chart...");
 
     // Extract the main categories (keys) and sub-categories (values)
     const mainCategories = parsedData.map((item) => item.key);
@@ -619,14 +657,13 @@ observeChart("sub-categories", () => {
           allSubCategories[subCategoryKey] = [];
         }
 
-        // Fill missing data for other categories with 0 to ensure proper stacking
+        // Fill missing data for other categories with 0 to ensure proper grouping
         allSubCategories[subCategoryKey][index] = subCategoryValue || 0;
       });
     });
 
     // Build datasets for each sub-category
     Object.entries(allSubCategories).forEach(([subCategoryName, values], colorIndex) => {
-      // Fill missing data with 0 for any main categories not represented
       const normalizedValues = mainCategories.map((_, i) => values[i] || 0);
 
       datasets.push({
@@ -642,10 +679,16 @@ observeChart("sub-categories", () => {
     const options = {
       responsive: true,
       maintainAspectRatio: true,
-      indexAxis: "x", // Set to "x" for vertical bar chart (default behavior)
+      indexAxis: "y", // Horizontal bar chart
       plugins: {
         legend: {
-          display: false, // Hides the legend at the bottom
+          position: "top", // Place the legend at the top
+          labels: {
+            font: {
+              family: "Inter Tight",
+              size: 12,
+            },
+          },
         },
         tooltip: {
           titleFont: {
@@ -660,21 +703,19 @@ observeChart("sub-categories", () => {
       },
       scales: {
         x: {
-          stacked: true, // Enable stacking on the X axis
           ticks: {
             font: {
               family: "Inter Tight",
               size: 12,
             },
+            stepSize: 10, // Increment ticks by 10
           },
           grid: {
             drawBorder: false,
           },
         },
         y: {
-          stacked: true, // Enable stacking on the Y axis
           ticks: {
-            stepSize: 10, // Gradations in increments of 10
             font: {
               family: "Inter Tight",
               size: 12,
@@ -695,19 +736,19 @@ observeChart("sub-categories", () => {
       },
     };
 
-    // Create the chart
+    // Create the new chart
     const chartInstance = new Chart(
 
       document.getElementById("sub-categories-2").getContext("2d"),
 
       {
-        type: "bar",
-        data: { labels: mainCategories, datasets },
+        type: "bar", // Bar chart
+        data: { labels: mainCategories, datasets }, // Data for grouped bars
         options,
       }
     );
 
-    // Display a default tooltip for the first bar
+    // Optionally display a default tooltip for the first bar
     chartInstance.options.plugins.tooltip.enabled = true; // Ensure tooltips are enabled
     chartInstance.update();
 
