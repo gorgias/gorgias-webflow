@@ -502,56 +502,44 @@ $("#benchmark-text").text(finalMessage);
  *
  ****************************/
 
-// // Autoplay toggle
-// window.fsComponents = window.fsComponents || [];
-// window.fsComponents.push([
-//   'slider',
-//   (sliderInstances) => {
-//     console.log('Slider Successfully loaded!');
 
-//     // Find the specific slider instance with class 'cx-audit_instance'
-//     const auditSlider = sliderInstances.find((sliderInstance) => 
-//       sliderInstance.el.classList.contains('cx-audit_instance')
-//     );
+// Autoplay toggle
+window.fsComponents = window.fsComponents || [];
+window.fsComponents.push([
+  'slider',
+  (sliderInstances) => {
+    console.log('Slider Successfully loaded!');
 
-//     if (auditSlider) {
-//       console.log('Found cx-audit_instance slider:', auditSlider);
+    // Find the specific slider instance with class 'cx-audit_instance'
+    const auditSlider = sliderInstances.find((sliderInstance) => 
+      sliderInstance.el.classList.contains('cx-audit_instance')
+    );
 
-//       // Initial autoplay state
-//       let isPlaying = false;
+    if (auditSlider) {
+      console.log('Configuring autoplay toggle for cx-audit_instance slider');
 
-//       // Get the toggle button from the UI
-//       const toggleButton = document.getElementById('toggle-autoplay');
+      // Initial autoplay state
+      let isPlaying = false;
 
-//       if (!toggleButton) {
-//         console.error('Toggle button with ID "toggle-autoplay" not found!');
-//         return;
-//       }
+      // Create a button to toggle autoplay
+      const toggleButton = document.getElementById('toggle-autoplay');
 
-//       console.log('Toggle button found:', toggleButton);
+      // Add click event listener to toggle autoplay
+      toggleButton.addEventListener('click', () => {
+        if (isPlaying) {
+          auditSlider.autoplay.stop();
+          
+        } else {
+          auditSlider.autoplay.start();
 
-//       // Add click event listener to toggle autoplay
-//       toggleButton.addEventListener('click', () => {
-//         console.log(`Autoplay state before toggle: ${isPlaying ? 'Playing' : 'Paused'}`);
-
-//         if (isPlaying) {
-//           console.log('Stopping autoplay...');
-//           auditSlider.autoplay.stop();
-//         } else {
-//           console.log('Starting autoplay...');
-//           auditSlider.autoplay.start();
-//         }
-
-//         // Toggle the state
-//         isPlaying = !isPlaying;
-
-//         console.log(`Autoplay state after toggle: ${isPlaying ? 'Playing' : 'Paused'}`);
-//       });
-//     } else {
-//       console.error('No cx-audit_instance slider found.');
-//     }
-//   },
-// ]);
+        }
+        isPlaying = !isPlaying;
+      });
+    } else {
+      console.log('No cx-audit_instance slider found.');
+    }
+  },
+]);
 
 // Fake chart
 // Chart: Horizontal Grouped Bar Chart
