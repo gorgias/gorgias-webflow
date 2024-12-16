@@ -679,3 +679,5 @@ observeChart("sub-categories-2", () => {
     chartInstance.tooltip.update();
   }
 });
+
+console.log('Script loaded successfully!');
