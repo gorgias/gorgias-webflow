@@ -27,7 +27,7 @@ Webflow.push(function () {
   observer.observe(document.querySelector('#num-values'));
 
 
-  window.fsComponents = window.fsComponents || [];
+window.fsComponents = window.fsComponents || [];
 window.fsComponents.push([
   'slider',
   (sliderInstances) => {
