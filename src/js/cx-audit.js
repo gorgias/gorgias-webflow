@@ -567,7 +567,6 @@ window.fsComponents.push([
   (sliderInstances) => {
     console.log('Slider Successfully loaded!');
 
-    // Helper function to find slider instance with retry
     function waitForSliderInstance() {
       console.log('Checking for Swiper instances...');
 
@@ -582,29 +581,26 @@ window.fsComponents.push([
       if (auditSlider) {
         console.log('Found cx--audit_instance slider:', auditSlider);
 
-        // Set autoplay parameters
+        // Set autoplay and other configurations
         auditSlider.params.autoplay = {
-          delay: 5000,                // Slide every 5 seconds
-          disableOnInteraction: true, // Stop autoplay on user interaction
+          delay: 5000,
+          disableOnInteraction: true,
         };
-        auditSlider.params.loop = false; // No looping
-        auditSlider.autoplay.stop(); // Start with autoplay disabled
+        auditSlider.params.loop = false;
+        auditSlider.autoplay.stop();
+        console.log('Autoplay configured and stopped by default.');
 
-        // Add hashNavigation parameter
-        auditSlider.params.hashNavigation = {
-          watchState: true, // Update URL hash on slide change
-        };
-
-        // Reinitialize the Swiper instance to apply the new parameter
-        auditSlider.update();
-
-        console.log('Autoplay and hashNavigation configured and autoplay disabled on load.');
-
-        // Log current hash on slide change
+        // Log the current hash and update the URL manually
         auditSlider.on('slideChange', () => {
           const currentSlide = auditSlider.slides[auditSlider.activeIndex];
           const currentHash = currentSlide.getAttribute('data-hash');
-          console.log(`Current hash: #${currentHash}`);
+
+          if (currentHash) {
+            console.log(`Current hash: #${currentHash}`);
+            // Update the URL hash without reloading
+            history.pushState(null, null, `#${currentHash}`);
+            console.log(`URL hash updated to: #${currentHash}`);
+          }
         });
 
         // Toggle autoplay logic
@@ -642,11 +638,10 @@ window.fsComponents.push([
         });
       } else {
         console.log('No slider with class "cx--audit_instance" found. Retrying...');
-        setTimeout(waitForSliderInstance, 100); // Retry after 100ms
+        setTimeout(waitForSliderInstance, 100);
       }
     }
 
-    // Start checking for the slider instance
     waitForSliderInstance();
   },
 ]);
