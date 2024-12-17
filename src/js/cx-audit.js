@@ -1199,5 +1199,3 @@ observeChart("sub-categories-2", () => {
 //     chartInstance.tooltip.update();
 //   }
 // });
-
-// create PR
