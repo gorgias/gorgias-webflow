@@ -14,7 +14,6 @@ Webflow.push(function () {
     newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
     // newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
-    newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/get-started'+minBase+'.js','body',1);
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/global-styles'+minBase+'.css','head');
@@ -30,6 +29,11 @@ Webflow.push(function () {
     // if (path === '/demo'){
     //     newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
     // }
+
+    // If page is not /cx-audit then load the following scripts
+    if (!path.includes('/cx-audit')) {
+      newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
+    }
 
     if ( path.includes('/comparison/')){
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);

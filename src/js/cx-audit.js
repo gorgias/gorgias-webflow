@@ -212,8 +212,8 @@ observeChart("sentiment-aggregated-breakdown", () => {
               return `${label}: ${value} (${percentage}%)`;
             },
           },
-          titleFont: { family: "Inter Tight", size: 12 },
-          bodyFont: { family: "Inter Tight", size: 12 },
+          titleFont: { family: "Inter Tight", size: 14 },
+          bodyFont: { family: "Inter Tight", size: 14 },
         },
       },
     };
@@ -326,13 +326,13 @@ observeChart("sub-categories", () => {
         legend: { display: false },
         tooltip: {
           enabled: true, // Tooltips enabled
-          titleFont: { family: "Inter Tight", size: 12 },
-          bodyFont: { family: "Inter Tight", size: 12 },
+          titleFont: { family: "Inter Tight", size: 14 },
+          bodyFont: { family: "Inter Tight", size: 14 },
         },
       },
       scales: {
-        x: { stacked: true, ticks: { font: { family: "Inter Tight", size: 12 } } },
-        y: { stacked: true, ticks: { stepSize: 10, font: { family: "Inter Tight", size: 12 } } },
+        x: { stacked: true, ticks: { font: { family: "Inter Tight", size: 14 } } },
+        y: { stacked: true, ticks: { stepsize: 12, font: { family: "Inter Tight", size: 14 } } },
       },
     };
 
@@ -479,7 +479,7 @@ $("#benchmark-text").text(finalMessage);
         plugins: {
           legend: {
             position: "bottom",
-            labels: { font: { family: "Inter Tight", size: 12 } },
+            labels: { font: { family: "Inter Tight", size: 14 } },
           },
           tooltip: {
             callbacks: {
@@ -523,7 +523,7 @@ $("#benchmark-text").text(finalMessage);
         plugins: {
           legend: {
             position: "bottom",
-            labels: { font: { family: "Inter Tight", size: 12 } },
+            labels: { font: { family: "Inter Tight", size: 14 } },
           },
           tooltip: {
             callbacks: {
@@ -539,10 +539,10 @@ $("#benchmark-text").text(finalMessage);
             suggestedMax: 5,
             ticks: {
               stepSize: 1,
-              font: { family: "Inter Tight", size: 12 },
+              font: { family: "Inter Tight", size: 14 },
               backdropColor: "transparent",
             },
-            pointLabels: { font: { family: "Inter Tight", size: 12 } },
+            pointLabels: { font: { family: "Inter Tight", size: 14 } },
           },
         },
       };
@@ -559,59 +559,100 @@ $("#benchmark-text").text(finalMessage);
  *
  ****************************/
 
-// // Autoplay toggle
-// window.fsComponents = window.fsComponents || [];
-// window.fsComponents.push([
-//   'slider',
-//   (sliderInstances) => {
-//     console.log('Slider Successfully loaded!');
 
-//     // Find the specific slider instance with class 'cx-audit_instance'
-//     const auditSlider = sliderInstances.find((sliderInstance) => 
-//       sliderInstance.el.classList.contains('cx-audit_instance')
-//     );
+// Autoplay toggle
+window.fsComponents = window.fsComponents || [];
+window.fsComponents.push([
+  'slider',
+  (sliderInstances) => {
+    console.log('Slider Successfully loaded!');
 
-//     if (auditSlider) {
-//       console.log('Found cx-audit_instance slider:', auditSlider);
+    // Helper function to find slider instance with retry
+    function waitForSliderInstance() {
+      console.log('Checking for Swiper instances...');
 
-//       // Initial autoplay state
-//       let isPlaying = false;
+      const auditSlider = sliderInstances.find((sliderInstance) => {
+        const rootElement = sliderInstance.el;
+        return (
+          rootElement.classList.contains('cx--audit_instance') ||
+          rootElement.closest('.cx--audit_instance')
+        );
+      });
 
-//       // Get the toggle button from the UI
-//       const toggleButton = document.getElementById('toggle-autoplay');
+      if (auditSlider) {
+        console.log('Found cx--audit_instance slider:', auditSlider);
 
-//       if (!toggleButton) {
-//         console.error('Toggle button with ID "toggle-autoplay" not found!');
-//         return;
-//       }
+        // Set autoplay parameters
+        auditSlider.params.autoplay = {
+          delay: 5000,                // Slide every 5 seconds
+          disableOnInteraction: true, // Stop autoplay on user interaction
+        };
+        auditSlider.params.loop = false; // No looping
+        auditSlider.autoplay.stop(); // Start with autoplay disabled
 
-//       console.log('Toggle button found:', toggleButton);
+        // Add hashNavigation parameter
+        auditSlider.params.hashNavigation = {
+          watchState: true, // Update URL hash on slide change
+        };
 
-//       // Add click event listener to toggle autoplay
-//       toggleButton.addEventListener('click', () => {
-//         console.log(`Autoplay state before toggle: ${isPlaying ? 'Playing' : 'Paused'}`);
+        // Reinitialize the Swiper instance to apply the new parameter
+        auditSlider.update();
 
-//         if (isPlaying) {
-//           console.log('Stopping autoplay...');
-//           auditSlider.autoplay.stop();
-//         } else {
-//           console.log('Starting autoplay...');
-//           auditSlider.autoplay.start();
-//         }
+        console.log('Autoplay and hashNavigation configured and autoplay disabled on load.');
 
-//         // Toggle the state
-//         isPlaying = !isPlaying;
+        // Log current hash on slide change
+        auditSlider.on('slideChange', () => {
+          const currentSlide = auditSlider.slides[auditSlider.activeIndex];
+          const currentHash = currentSlide.getAttribute('data-hash');
+          console.log(`Current hash: #${currentHash}`);
+        });
 
-//         console.log(`Autoplay state after toggle: ${isPlaying ? 'Playing' : 'Paused'}`);
-//       });
-//     } else {
-//       console.error('No cx-audit_instance slider found.');
-//     }
-//   },
-// ]);
+        // Toggle autoplay logic
+        const toggleButton = document.getElementById('toggle-autoplay');
+        if (!toggleButton) {
+          console.error('Toggle button with ID "toggle-autoplay" not found!');
+          return;
+        }
+
+        let isPlaying = false;
+        toggleButton.addEventListener('click', () => {
+          console.log(
+            `Autoplay state before toggle: ${isPlaying ? 'Playing' : 'Paused'}`
+          );
+          if (isPlaying) {
+            auditSlider.autoplay.stop();
+            console.log('Autoplay stopped.');
+          } else {
+            auditSlider.autoplay.start();
+            console.log('Autoplay started.');
+          }
+          isPlaying = !isPlaying;
+          console.log(
+            `Autoplay state after toggle: ${isPlaying ? 'Playing' : 'Paused'}`
+          );
+        });
+
+        // Stop autoplay on the last slide
+        auditSlider.on('slideChange', () => {
+          if (auditSlider.activeIndex === auditSlider.slides.length - 1) {
+            console.log('Reached the last slide. Stopping autoplay.');
+            auditSlider.autoplay.stop();
+            isPlaying = false;
+          }
+        });
+      } else {
+        console.log('No slider with class "cx--audit_instance" found. Retrying...');
+        setTimeout(waitForSliderInstance, 100); // Retry after 100ms
+      }
+    }
+
+    // Start checking for the slider instance
+    waitForSliderInstance();
+  },
+]);
+
 
 // Fake chart
-// Chart: Horizontal Grouped Bar Chart
 observeChart("sub-categories-2", () => {
   console.log("Initializing Grouped Bar Chart...");
 
@@ -637,16 +678,13 @@ observeChart("sub-categories-2", () => {
 
     parsedData.forEach((category, index) => {
       category.value.forEach((subCategory) => {
-        // Parse the sub-category object
         const parsedSubCategory = JSON.parse(subCategory);
         const [subCategoryKey, subCategoryValue] = Object.entries(parsedSubCategory)[0];
 
-        // Ensure the sub-category is tracked globally for consistent order
         if (!allSubCategories[subCategoryKey]) {
           allSubCategories[subCategoryKey] = [];
         }
 
-        // Fill missing data for other categories with 0 to ensure proper grouping
         allSubCategories[subCategoryKey][index] = subCategoryValue || 0;
       });
     });
@@ -675,19 +713,12 @@ observeChart("sub-categories-2", () => {
           labels: {
             font: {
               family: "Inter Tight",
-              size: 12,
+              size: 14,
             },
           },
         },
         tooltip: {
-          titleFont: {
-            family: "Inter Tight",
-            size: 12,
-          },
-          bodyFont: {
-            family: "Inter Tight",
-            size: 12,
-          },
+          enabled: false, // Disable tooltips completely
         },
       },
       scales: {
@@ -695,9 +726,9 @@ observeChart("sub-categories-2", () => {
           ticks: {
             font: {
               family: "Inter Tight",
-              size: 12,
+              size: 14,
             },
-            stepSize: 10, // Increment ticks by 10
+            stepsize: 12, // Increment ticks by 10
           },
           grid: {
             drawBorder: false,
@@ -707,7 +738,7 @@ observeChart("sub-categories-2", () => {
           ticks: {
             font: {
               family: "Inter Tight",
-              size: 12,
+              size: 14,
             },
           },
           grid: {
@@ -727,28 +758,17 @@ observeChart("sub-categories-2", () => {
 
     // Create the new chart
     const chartInstance = new Chart(
-
       document.getElementById("sub-categories-2").getContext("2d"),
-
       {
         type: "bar", // Bar chart
-        data: { labels: mainCategories, datasets }, // Data for grouped bars
+        data: { labels: mainCategories, datasets },
         options,
       }
     );
 
-    // Optionally display a default tooltip for the first bar
-    chartInstance.options.plugins.tooltip.enabled = true; // Ensure tooltips are enabled
-    chartInstance.update();
-
-    chartInstance.tooltip.setActiveElements(
-      [{ datasetIndex: 0, index: 0 }], // Tooltip for the first bar
-      { x: 0, y: 0 } // Tooltip position (defaults to the first bar)
-    );
-    chartInstance.tooltip.update();
+    console.log("Grouped Bar Chart initialized.");
   }
 });
-
 
 //
 
@@ -835,8 +855,8 @@ observeChart("sub-categories-2", () => {
 //           },
 //         },
 //         tooltip: {
-//           titleFont: { family: "Inter Tight", size: 12 },
-//           bodyFont: { family: "Inter Tight", size: 12 },
+//           titleFont: { family: "Inter Tight", size: 14 },
+//           bodyFont: { family: "Inter Tight", size: 14 },
 //         },
 //       },
 //       scales: {
@@ -1126,8 +1146,8 @@ observeChart("sub-categories-2", () => {
 //           display: false, // Hides the legend
 //         },
 //         tooltip: {
-//           titleFont: { family: "Inter Tight", size: 12 },
-//           bodyFont: { family: "Inter Tight", size: 12 },
+//           titleFont: { family: "Inter Tight", size: 14 },
+//           bodyFont: { family: "Inter Tight", size: 14 },
 //         },
 //         title: {
 //           display: true,
@@ -1156,7 +1176,7 @@ observeChart("sub-categories-2", () => {
 //             stepSize: 1, // Increment ticks by 1
 //             font: {
 //               family: "Inter Tight",
-//               size: 12,
+//               size: 14,
 //             },
 //           },
 //         },
@@ -1184,5 +1204,3 @@ observeChart("sub-categories-2", () => {
 //     chartInstance.tooltip.update();
 //   }
 // });
-
-// create PR
