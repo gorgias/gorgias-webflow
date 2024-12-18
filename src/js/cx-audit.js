@@ -183,8 +183,8 @@ observeChart("sentiment-aggregated-breakdown", () => {
               return `${label}: ${value} (${percentage}%)`;
             },
           },
-          titleFont: { family: "Inter Tight", size: 14 },
-          bodyFont: { family: "Inter Tight", size: 14 },
+          titleFont: { family: "Inter Tight", size: 12 },
+          bodyFont: { family: "Inter Tight", size: 12 },
         },
       },
     };
@@ -297,13 +297,13 @@ observeChart("sub-categories", () => {
         legend: { display: false },
         tooltip: {
           enabled: true, // Tooltips enabled
-          titleFont: { family: "Inter Tight", size: 14 },
-          bodyFont: { family: "Inter Tight", size: 14 },
+          titleFont: { family: "Inter Tight", size: 12 },
+          bodyFont: { family: "Inter Tight", size: 12 },
         },
       },
       scales: {
-        x: { stacked: true, ticks: { font: { family: "Inter Tight", size: 14 } } },
-        y: { stacked: true, ticks: { stepsize: 12, font: { family: "Inter Tight", size: 14 } } },
+        x: { stacked: true, ticks: { font: { family: "Inter Tight", size: 12 } } },
+        y: { stacked: true, ticks: { stepsize: 10, font: { family: "Inter Tight", size: 12 } } },
       },
     };
 
@@ -440,7 +440,7 @@ observeChart("industry-benchmark", () => {
         plugins: {
           legend: {
             position: "bottom",
-            labels: { font: { family: "Inter Tight", size: 14 } },
+            labels: { font: { family: "Inter Tight", size: 12 } },
           },
           tooltip: {
             callbacks: {
@@ -482,7 +482,7 @@ observeChart("industry-benchmark", () => {
         plugins: {
           legend: {
             position: "bottom",
-            labels: { font: { family: "Inter Tight", size: 14 } },
+            labels: { font: { family: "Inter Tight", size: 12 } },
           },
           tooltip: {
             callbacks: {
@@ -498,10 +498,10 @@ observeChart("industry-benchmark", () => {
             suggestedMax: 5,
             ticks: {
               stepSize: 1,
-              font: { family: "Inter Tight", size: 14 },
+              font: { family: "Inter Tight", size: 12 },
               backdropColor: "transparent",
             },
-            pointLabels: { font: { family: "Inter Tight", size: 14 } },
+            pointLabels: { font: { family: "Inter Tight", size: 12 } },
           },
         },
       };
@@ -666,7 +666,7 @@ observeChart("sub-categories-2", () => {
           labels: {
             font: {
               family: "Inter Tight",
-              size: 14,
+              size: 12,
             },
           },
         },
@@ -679,9 +679,9 @@ observeChart("sub-categories-2", () => {
           ticks: {
             font: {
               family: "Inter Tight",
-              size: 14,
+              size: 12,
             },
-            stepsize: 12, // Increment ticks by 10
+            stepsize: 10, // Increment ticks by 10
           },
           grid: {
             drawBorder: false,
@@ -691,7 +691,7 @@ observeChart("sub-categories-2", () => {
           ticks: {
             font: {
               family: "Inter Tight",
-              size: 14,
+              size: 12,
             },
           },
           grid: {
