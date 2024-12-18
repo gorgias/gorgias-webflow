@@ -238,15 +238,15 @@ const recommendations = {
   "Product Quality": "Use ticket trend analysis to identify recurring issues and notify your product or manufacturing teams. Reduces complaint volume by 20–30%, improving satisfaction and lowering resource strain.",
   "Customer Service": "Equip human and AI agents with customer profiles pulling data from each tool to resolve tickets faster, reducing support costs by 30–40% and improving loyalty.",
   "Delivery Shipping": "Set up real-time order tracking with proactive updates, preventing 57% of customers from abandoning the brand post-purchase.",
-  "Returns & Refunds": "Automate self-serve return processes with instant refunds or exchanges, increasing repeat purchases by 60% through a trusted process.",
-  "Pricing & Value": "Staff AI or humans on live support to personalize recommendations to improve perceived value and drive upsells, or offer price-matching via discounts.",
+  "Returns Refunds": "Automate self-serve return processes with instant refunds or exchanges, increasing repeat purchases by 60% through a trusted process.",
+  "Pricing Value": "Staff AI or humans on live support to personalize recommendations to improve perceived value and drive upsells, or offer price-matching via discounts.",
   "Website user experience": "Integrate AI-driven search and product matching, reducing customer frustration and increasing conversions by up to 42%.",
   "Order Accuracy": "Connect your support tools and AI-powered agents with your order management system to quickly correct any inaccuracies in orders.",
   "Product Variety": "Create systems to turn out-of-stock complaints and product requests into newsletter signups for back-in-stock notifications and retargeting campaigns.",
   "Company Reputation": "Integrate your support system with reviews platform to address negative feedback promptly.",
   "Communication & Information": "Build your self-service and AI support offerings to make information accessible across platforms with a 0-minute wait time.",
   "Packaging": "Use ticket trend analysis to gather feedback about packaging quality and share it with your operations team to optimize for sustainability or better product protection.",
-  "Trust & Security": "Share in-depth knowledge on your website and internally to promote certifications, safe product usage, and clean materials.",
+  "Trust Security": "Share in-depth knowledge on your website and internally to promote certifications, safe product usage, and clean materials.",
   "Payment Options": "Offer live chat on checkout pages for quick resolution of payment-related issues like failed transactions, refunds, or disputes for a seamless checkout experience.",
   "Post-Purchase Support": "Use ticket trend analysis to understand the most common questions, and include answers in packaging or automated post-purchase email flows to reduce misuse-related returns.",
   "Loyalty Program": "Integrate your support system and loyalty system to prioritize members and provide VIP treatment that boosts customer LTV.",
@@ -535,7 +535,7 @@ observeChart("industry-benchmark", () => {
  ****************************/
 
 
-// Autoplay toggle
+// Slider Configuration
 window.fsComponents = window.fsComponents || [];
 window.fsComponents.push([
   'slider',
@@ -565,10 +565,43 @@ window.fsComponents.push([
         auditSlider.autoplay.stop();
         console.log('Autoplay configured and stopped by default.');
 
-        // Log the current hash and update the URL manually
+        // Declare `isPlaying` at the top of the function
+        let isPlaying = false;
 
+        // Pagination bullet progress and visuals
+        const paginationBullets = document.querySelectorAll('.cx--audit_pagination_bullet');
+
+        // Helper to update bullet visuals
+        const updateBulletVisuals = () => {
+          paginationBullets.forEach((bullet, index) => {
+            if (index <= auditSlider.activeIndex) {
+              bullet.classList.add('filled'); // Mark as filled for past and current slides
+            } else {
+              bullet.classList.remove('filled'); // Remove fill for future slides
+            }
+
+            bullet.classList.toggle(
+              'is-bullet-active',
+              index === auditSlider.activeIndex
+            );
+
+            // Apply the `autoplay` class for the active bullet
+            if (index === auditSlider.activeIndex && isPlaying) {
+              bullet.classList.add('autoplay');
+            } else {
+              bullet.classList.remove('autoplay');
+            }
+          });
+        };
+
+        // Initial setup for bullets
+        updateBulletVisuals();
+
+        // Hash navigation and analytics tracking
         let previousHash = null; // Initialize previousHash variable
         auditSlider.on('slideChange', () => {
+          updateBulletVisuals();
+
           const currentSlide = auditSlider.slides[auditSlider.activeIndex];
           const currentHash = currentSlide.getAttribute('data-hash');
 
@@ -580,30 +613,26 @@ window.fsComponents.push([
             console.log(`Previous hash: #${previousHash || 'None'}`);
             console.log(`URL hash updated to: #${currentHash}`);
 
-            if(analytics) {
-              analytics.track('Slide changed',{
+            // Track slide change event with analytics
+            if (analytics) {
+              analytics.track('Slide changed', {
                 'slider-name': 'cx-audit',
                 'current-slide': `${currentHash}`,
-                'previous-slide':`${previousHash}`,
+                'previous-slide': `${previousHash}`,
               });
             }
 
             previousHash = currentHash;
- 
           }
         });
 
-
-
-
-        // Toggle autoplay logic
+        // Autoplay toggle logic
         const toggleButton = document.getElementById('toggle-autoplay');
         if (!toggleButton) {
           console.error('Toggle button with ID "toggle-autoplay" not found!');
           return;
         }
 
-        let isPlaying = false;
         toggleButton.addEventListener('click', () => {
           console.log(
             `Autoplay state before toggle: ${isPlaying ? 'Playing' : 'Paused'}`
@@ -615,7 +644,9 @@ window.fsComponents.push([
             auditSlider.autoplay.start();
             console.log('Autoplay started.');
           }
+
           isPlaying = !isPlaying;
+          updateBulletVisuals(); // Update bullet visuals when autoplay is toggled
           console.log(
             `Autoplay state after toggle: ${isPlaying ? 'Playing' : 'Paused'}`
           );
@@ -627,6 +658,7 @@ window.fsComponents.push([
             console.log('Reached the last slide. Stopping autoplay.');
             auditSlider.autoplay.stop();
             isPlaying = false;
+            updateBulletVisuals();
           }
         });
       } else {
@@ -638,7 +670,6 @@ window.fsComponents.push([
     waitForSliderInstance();
   },
 ]);
-
 
 // Fake chart
 observeChart("sub-categories-2", () => {
