@@ -566,6 +566,8 @@ window.fsComponents.push([
         console.log('Autoplay configured and stopped by default.');
 
         // Log the current hash and update the URL manually
+
+        let previousHash = null; // Initialize previousHash variable
         auditSlider.on('slideChange', () => {
           const currentSlide = auditSlider.slides[auditSlider.activeIndex];
           const currentHash = currentSlide.getAttribute('data-hash');
@@ -574,9 +576,25 @@ window.fsComponents.push([
             console.log(`Current hash: #${currentHash}`);
             // Update the URL hash without reloading
             history.pushState(null, null, `#${currentHash}`);
+
+            console.log(`Previous hash: #${previousHash || 'None'}`);
             console.log(`URL hash updated to: #${currentHash}`);
+
+            if(analytics) {
+              analytics.track('Slide changed',{
+                'slider-name': 'cx-audit',
+                'current-slide': `${currentHash}`,
+                'previous-slide':`${previousHash}`,
+              });
+            }
+
+            previousHash = currentHash;
+ 
           }
         });
+
+
+
 
         // Toggle autoplay logic
         const toggleButton = document.getElementById('toggle-autoplay');
