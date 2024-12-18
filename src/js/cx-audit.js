@@ -647,14 +647,23 @@ window.fsComponents.push([
           console.log(
             `Autoplay state before toggle: ${isPlaying ? 'Playing' : 'Paused'}`
           );
+        
+          const isLastSlide = auditSlider.activeIndex === auditSlider.slides.length - 1;
+        
           if (isPlaying) {
             auditSlider.autoplay.stop();
             console.log('Autoplay stopped.');
           } else {
+            if (isLastSlide) {
+              console.log(
+                'Autoplay cannot be started because the current slide is the last slide.'
+              );
+              return; // Prevent autoplay from starting
+            }
             auditSlider.autoplay.start();
             console.log('Autoplay started.');
           }
-
+        
           isPlaying = !isPlaying;
           updateBulletVisuals(); // Update bullet visuals when autoplay is toggled
           console.log(
