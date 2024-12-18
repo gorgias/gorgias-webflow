@@ -97,6 +97,7 @@ if (daysElement) {
   }
 }
 
+
 // Replace data-industry and data-score spans with their respective attribute values
 // Script to replace the text of elements with `data-industry` and `data-score` attributes
 document.querySelectorAll('[data-industry]').forEach(element => {
