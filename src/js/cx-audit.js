@@ -98,6 +98,23 @@ if (daysElement) {
 }
 
 
+// Replace data-industry and data-score spans with their respective attribute values
+// Script to replace the text of elements with `data-industry` and `data-score` attributes
+document.querySelectorAll('[data-industry]').forEach(element => {
+  const industryText = element.getAttribute('data-industry');
+  if (industryText) {
+    element.textContent = industryText;
+  }
+});
+
+document.querySelectorAll('[data-score]').forEach(element => {
+  const scoreText = element.getAttribute('data-score');
+  if (scoreText) {
+    element.textContent = scoreText;
+  }
+});
+
+
 /****************************
  *
  * Charts and dynamic text
