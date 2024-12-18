@@ -239,7 +239,7 @@ const recommendations = {
   "Customer Service": "Equip human and AI agents with customer profiles pulling data from each tool to resolve tickets faster, reducing support costs by 30–40% and improving loyalty.",
   "Delivery Shipping": "Set up real-time order tracking with proactive updates, preventing 57% of customers from abandoning the brand post-purchase.",
   "Returns Refunds": "Automate self-serve return processes with instant refunds or exchanges, increasing repeat purchases by 60% through a trusted process.",
-  "Pricing Value": "Staff AI or humans on live support to personalize recommendations to improve perceived value and drive upsells, or offer price-matching via discounts.",
+  "Pricing Value For Money": "Staff AI or humans on live support to personalize recommendations to improve perceived value and drive upsells, or offer price-matching via discounts.",
   "Website user experience": "Integrate AI-driven search and product matching, reducing customer frustration and increasing conversions by up to 42%.",
   "Order Accuracy": "Connect your support tools and AI-powered agents with your order management system to quickly correct any inaccuracies in orders.",
   "Product Variety": "Create systems to turn out-of-stock complaints and product requests into newsletter signups for back-in-stock notifications and retargeting campaigns.",
@@ -413,26 +413,36 @@ observeChart("industry-benchmark", () => {
       }
     });
 
-    // Generate the bullet-pointed lists
-    const formatAsBulletList = (categories) => {
-      return categories.length > 0
-        ? `<ul>${categories.map((category) => `<li>${category}</li>`).join("")}</ul>`
-        : "<p>No categories to display.</p>";
-    };
+// Function to format categories as bullet list or placeholder message
+const formatAsBulletList = (categories) => {
+  return categories.length > 0
+    ? `<ul>${categories.map((category) => `<li class="text-size-medium">${category}</li>`).join("")}</ul>`
+    : "<p>No categories to display.</p>";
+};
 
-    // Insert positive categories into data-el="positive-cat"
-    const positiveCatElement = document.querySelector('[data-el="positive-cat"]');
-    if (positiveCatElement) {
-      positiveCatElement.innerHTML = formatAsBulletList(betterCategories);
+// Function to hide a parent block if no categories
+const hideIfEmpty = (element, categories) => {
+  if (element && categories.length === 0) {
+    const parentBlock = element.closest('.industry-comparison-topics');
+    if (parentBlock) {
+      parentBlock.style.display = "none"; // Hide the block
     }
+  }
+};
 
-    // Insert negative categories into data-el="negative-cat"
-    const negativeCatElement = document.querySelector('[data-el="negative-cat"]');
-    if (negativeCatElement) {
-      negativeCatElement.innerHTML = formatAsBulletList(worseCategories);
-    }
+// Insert positive categories into data-el="positive-cat"
+const positiveCatElement = document.querySelector('[data-el="positive-cat"]');
+if (positiveCatElement) {
+  positiveCatElement.innerHTML = formatAsBulletList(betterCategories);
+  hideIfEmpty(positiveCatElement, betterCategories); // Hide block if empty
+}
 
-    console.log("Positive and negative categories injected into placeholders.");
+// Insert negative categories into data-el="negative-cat"
+const negativeCatElement = document.querySelector('[data-el="negative-cat"]');
+if (negativeCatElement) {
+  negativeCatElement.innerHTML = formatAsBulletList(worseCategories);
+  hideIfEmpty(negativeCatElement, worseCategories); // Hide block if empty
+}
 
     // Chart generation
     if (labels.length <= 2) {
@@ -637,14 +647,23 @@ window.fsComponents.push([
           console.log(
             `Autoplay state before toggle: ${isPlaying ? 'Playing' : 'Paused'}`
           );
+        
+          const isLastSlide = auditSlider.activeIndex === auditSlider.slides.length - 1;
+        
           if (isPlaying) {
             auditSlider.autoplay.stop();
             console.log('Autoplay stopped.');
           } else {
+            if (isLastSlide) {
+              console.log(
+                'Autoplay cannot be started because the current slide is the last slide.'
+              );
+              return; // Prevent autoplay from starting
+            }
             auditSlider.autoplay.start();
             console.log('Autoplay started.');
           }
-
+        
           isPlaying = !isPlaying;
           updateBulletVisuals(); // Update bullet visuals when autoplay is toggled
           console.log(
@@ -652,13 +671,16 @@ window.fsComponents.push([
           );
         });
 
-        // Stop autoplay on the last slide
         auditSlider.on('slideChange', () => {
-          if (auditSlider.activeIndex === auditSlider.slides.length - 1) {
+          const isLastSlide = auditSlider.activeIndex === auditSlider.slides.length - 1;
+          if (isLastSlide && isPlaying) {
             console.log('Reached the last slide. Stopping autoplay.');
             auditSlider.autoplay.stop();
             isPlaying = false;
             updateBulletVisuals();
+        
+            // Log visual confirmation for debugging
+            console.log('Autoplay stopped and visuals updated.');
           }
         });
       } else {
