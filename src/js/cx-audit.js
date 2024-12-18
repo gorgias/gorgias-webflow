@@ -607,6 +607,25 @@ window.fsComponents.push([
         // Initial setup for bullets
         updateBulletVisuals();
 
+        // Select both is-icon-autoplay elements for toggling
+        const icons = document.querySelectorAll('.is-icon-autoplay');
+
+        // Helper function to update icon visibility
+        const updateIcons = (isPlaying) => {
+          icons.forEach((icon) => {
+            if (icon.classList.contains('is-play')) {
+              // Show play icon when not playing
+              icon.classList.toggle('is-hidden', isPlaying);
+            } else {
+              // Show pause icon when playing
+              icon.classList.toggle('is-hidden', !isPlaying);
+            }
+          });
+        };
+
+        // Initial icon setup
+        updateIcons(false);
+
         // Hash navigation and analytics tracking
         let previousHash = null; // Initialize previousHash variable
         auditSlider.on('slideChange', () => {
@@ -647,9 +666,11 @@ window.fsComponents.push([
           console.log(
             `Autoplay state before toggle: ${isPlaying ? 'Playing' : 'Paused'}`
           );
-        
+
+
           const isLastSlide = auditSlider.activeIndex === auditSlider.slides.length - 1;
-        
+
+
           if (isPlaying) {
             auditSlider.autoplay.stop();
             console.log('Autoplay stopped.');
@@ -658,6 +679,9 @@ window.fsComponents.push([
               console.log(
                 'Autoplay cannot be started because the current slide is the last slide.'
               );
+
+              updateIcons(false); // Ensure play icon is visible on the last slide
+
               return; // Prevent autoplay from starting
             }
             auditSlider.autoplay.start();
@@ -666,6 +690,7 @@ window.fsComponents.push([
         
           isPlaying = !isPlaying;
           updateBulletVisuals(); // Update bullet visuals when autoplay is toggled
+          updateIcons(isPlaying); // Update the icons when autoplay state changes
           console.log(
             `Autoplay state after toggle: ${isPlaying ? 'Playing' : 'Paused'}`
           );
@@ -678,10 +703,28 @@ window.fsComponents.push([
             auditSlider.autoplay.stop();
             isPlaying = false;
             updateBulletVisuals();
-        
-            // Log visual confirmation for debugging
-            console.log('Autoplay stopped and visuals updated.');
+
+            updateIcons(false); // Ensure play icon is visible
+
           }
+        });
+
+        // Handle pagination clicks without breaking autoplay
+        paginationBullets.forEach((bullet, index) => {
+          bullet.addEventListener('click', () => {
+            console.log(
+              `Pagination bullet clicked for slide ${index}. Current slide: ${auditSlider.activeIndex}`
+            );
+
+            // Go to the clicked slide
+            auditSlider.slideTo(index);
+
+            // Ensure autoplay continues (if it was already playing)
+            if (isPlaying) {
+              auditSlider.autoplay.start();
+              console.log('Autoplay resumed after pagination click.');
+            }
+          });
         });
       } else {
         console.log('No slider with class "cx--audit_instance" found. Retrying...');
