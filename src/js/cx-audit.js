@@ -667,7 +667,9 @@ window.fsComponents.push([
             `Autoplay state before toggle: ${isPlaying ? 'Playing' : 'Paused'}`
           );
 
+
           const isLastSlide = auditSlider.activeIndex === auditSlider.slides.length - 1;
+
 
           if (isPlaying) {
             auditSlider.autoplay.stop();
@@ -677,13 +679,15 @@ window.fsComponents.push([
               console.log(
                 'Autoplay cannot be started because the current slide is the last slide.'
               );
+
               updateIcons(false); // Ensure play icon is visible on the last slide
+
               return; // Prevent autoplay from starting
             }
             auditSlider.autoplay.start();
             console.log('Autoplay started.');
           }
-
+        
           isPlaying = !isPlaying;
           updateBulletVisuals(); // Update bullet visuals when autoplay is toggled
           updateIcons(isPlaying); // Update the icons when autoplay state changes
@@ -699,7 +703,9 @@ window.fsComponents.push([
             auditSlider.autoplay.stop();
             isPlaying = false;
             updateBulletVisuals();
+
             updateIcons(false); // Ensure play icon is visible
+
           }
         });
 
