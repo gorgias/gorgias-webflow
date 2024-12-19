@@ -259,23 +259,23 @@ observeChart("sentiment-aggregated-breakdown", () => {
 
 // Recommendations Mapping
 const recommendations = {
-  "Product Quality": "Use ticket trend analysis to identify recurring issues and notify your product or manufacturing teams. Reduces complaint volume by 20–30%, improving satisfaction and lowering resource strain.",
-  "Customer Service": "Equip human and AI agents with customer profiles pulling data from each tool to resolve tickets faster, reducing support costs by 30–40% and improving loyalty.",
-  "Delivery Shipping": "Set up real-time order tracking with proactive updates, preventing 57% of customers from abandoning the brand post-purchase.",
-  "Returns Refunds": "Automate self-serve return processes with instant refunds or exchanges, increasing repeat purchases by 60% through a trusted process.",
-  "Pricing Value For Money": "Staff AI or humans on live support to personalize recommendations to improve perceived value and drive upsells, or offer price-matching via discounts.",
-  "Website user experience": "Integrate AI-driven search and product matching, reducing customer frustration and increasing conversions by up to 42%.",
-  "Order Accuracy": "Connect your support tools and AI-powered agents with your order management system to quickly correct any inaccuracies in orders.",
-  "Product Variety": "Create systems to turn out-of-stock complaints and product requests into newsletter signups for back-in-stock notifications and retargeting campaigns.",
-  "Company Reputation": "Integrate your support system with reviews platform to address negative feedback promptly.",
-  "Communication & Information": "Build your self-service and AI support offerings to make information accessible across platforms with a 0-minute wait time.",
-  "Packaging": "Use ticket trend analysis to gather feedback about packaging quality and share it with your operations team to optimize for sustainability or better product protection.",
-  "Trust Security": "Share in-depth knowledge on your website and internally to promote certifications, safe product usage, and clean materials.",
-  "Payment Options": "Offer live chat on checkout pages for quick resolution of payment-related issues like failed transactions, refunds, or disputes for a seamless checkout experience.",
-  "Post-Purchase Support": "Use ticket trend analysis to understand the most common questions, and include answers in packaging or automated post-purchase email flows to reduce misuse-related returns.",
-  "Loyalty Program": "Integrate your support system and loyalty system to prioritize members and provide VIP treatment that boosts customer LTV.",
-  "Ordering Accuracy": "Use an AI support agent that can instantly make changes to orders before they leave your shipping address, to reduce customer frustration and costly returns or re-shipping.",
-  "Warranty Support": "Offer a contact form that collects all the necessary information from requesters upfront. Use that information as variables so an AI can determine who is eligible and who is not.",
+  "product quality": "Use ticket trend analysis to identify recurring issues and notify your product or manufacturing teams. Reduces complaint volume by 20–30%, improving satisfaction and lowering resource strain.",
+  "customer service": "Equip human and AI agents with customer profiles pulling data from each tool to resolve tickets faster, reducing support costs by 30–40% and improving loyalty.",
+  "delivery shipping": "Set up real-time order tracking with proactive updates, preventing 57% of customers from abandoning the brand post-purchase.",
+  "returns refunds": "Automate self-serve return processes with instant refunds or exchanges, increasing repeat purchases by 60% through a trusted process.",
+  "pricing value for money": "Staff AI or humans on live support to personalize recommendations to improve perceived value and drive upsells, or offer price-matching via discounts.",
+  "website user experience": "Integrate AI-driven search and product matching, reducing customer frustration and increasing conversions by up to 42%.",
+  "order accuracy": "Connect your support tools and AI-powered agents with your order management system to quickly correct any inaccuracies in orders.",
+  "product variety": "Create systems to turn out-of-stock complaints and product requests into newsletter signups for back-in-stock notifications and retargeting campaigns.",
+  "company reputation": "Integrate your support system with reviews platform to address negative feedback promptly.",
+  "communication & information": "Build your self-service and AI support offerings to make information accessible across platforms with a 0-minute wait time.",
+  "packaging": "Use ticket trend analysis to gather feedback about packaging quality and share it with your operations team to optimize for sustainability or better product protection.",
+  "trust security": "Share in-depth knowledge on your website and internally to promote certifications, safe product usage, and clean materials.",
+  "payment options": "Offer live chat on checkout pages for quick resolution of payment-related issues like failed transactions, refunds, or disputes for a seamless checkout experience.",
+  "post-purchase support": "Use ticket trend analysis to understand the most common questions, and include answers in packaging or automated post-purchase email flows to reduce misuse-related returns.",
+  "loyalty program": "Integrate your support system and loyalty system to prioritize members and provide VIP treatment that boosts customer LTV.",
+  "ordering accuracy": "Use an AI support agent that can instantly make changes to orders before they leave your shipping address, to reduce customer frustration and costly returns or re-shipping.",
+  "warranty support": "Offer a contact form that collects all the necessary information from requesters upfront. Use that information as variables so an AI can determine who is eligible and who is not.",
 };
 
 observeChart("sub-categories", () => {
@@ -369,7 +369,7 @@ observeChart("sub-categories", () => {
     chartInstance.tooltip.update();
     chartInstance.draw();
 
-    // Map Recommendations
+    // Map Recommendations (case-insensitive mapping)
     const sortedCategories = categoryTotals
       .sort((a, b) => b.total - a.total)
       .slice(0, 3);
@@ -378,9 +378,13 @@ observeChart("sub-categories", () => {
       const categoryElement = document.querySelector(`[data-category="category-${index + 1}"]`);
       const recommendationElement = document.querySelector(`[data-recommendation="recommendation-${index + 1}"]`);
 
+      const categoryKeyLower = category.key.toLowerCase(); // Normalize key to lowercase
+
       if (categoryElement) categoryElement.textContent = category.key;
-      if (recommendationElement)
-        recommendationElement.textContent = recommendations[category.key] || "No recommendation available.";
+      if (recommendationElement) {
+        recommendationElement.textContent =
+          recommendations[categoryKeyLower] || "No recommendation available.";
+      }
     });
 
     // Remove Unused Items
