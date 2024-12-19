@@ -38,6 +38,7 @@ function createChart(chartType, canvasId, labels, datasets, options = {}) {
   });
 }
 
+
 /**
  * Capitalize the first letter of each label
  */
@@ -170,6 +171,29 @@ observeChart("sentiment-aggregated-breakdown", () => {
     if (negativeElement) {
       negativeElement.textContent = `${negativePercentage}`;
     }
+
+    // Hide .percentage_item if any percentage is 0
+    document.querySelectorAll('.percentage_item').forEach((item, index) => {
+      console.log(`Processing .percentage_item #${index + 1}`);
+
+      // Find the percentage element inside the current .percentage_item
+      const percentElement = item.querySelector('[data-el="percent-pos"], [data-el="percent-neu"], [data-el="percent-neg"]');
+
+      if (percentElement) {
+        const percentValue = percentElement.textContent.trim();
+        console.log(`  Found percentage value: "${percentValue}" in .percentage_item #${index + 1}`);
+
+        // Check if the percentage value is "0"
+        if (percentValue === "0") {
+          console.log(`  Hiding .percentage_item #${index + 1} because value is 0.`);
+          item.style.display = 'none';
+        } else {
+          console.log(`  .percentage_item #${index + 1} remains visible with value: "${percentValue}"`);
+        }
+      } else {
+        console.warn(`  No percentage element found in .percentage_item #${index + 1}.`);
+      }
+    });
 
     // Dataset with percentages for chart
     const datasets = [
@@ -359,7 +383,16 @@ observeChart("sub-categories", () => {
         recommendationElement.textContent = recommendations[category.key] || "No recommendation available.";
     });
 
-    console.log("Chart generated, recommendations injected, and tooltip displayed.");
+    // Remove Unused Items
+    document.querySelectorAll('[data-category]').forEach((categoryElement) => {
+      const categoryText = categoryElement.textContent.trim();
+      if (!categoryText || categoryText.toLowerCase() === "lorem ipsum dolor sit amet?") {
+        const parentItem = categoryElement.closest(".toggle-section_item.is-cx-audit");
+        if (parentItem) parentItem.remove();
+      }
+    });
+
+    console.log("Chart generated, recommendations injected, and unused elements removed.");
   }
 });
 
