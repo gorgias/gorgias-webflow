@@ -70,14 +70,14 @@ function initialize() {
     }
     function handleResponseTimeInput() {
         const output = Number((Number(elements.responseTimeInput.value) -
-            Number(elements.responseTimeInput.value) * 0.30).toFixed(1));
+            Number(elements.responseTimeInput.value) * 0.60).toFixed(1));
         elements.responseTimeOutput.textContent = elements.responseTimeInput.value
             ? output + "hrs"
             : "(x)hrs";
     }
     function handleResolutionTimeInput() {
         const output = Number((Number(elements.resolutionTimeInput.value) -
-            Number(elements.resolutionTimeInput.value) * 0.30).toFixed(1));
+            Number(elements.resolutionTimeInput.value) * 0.60).toFixed(1));
         elements.resolutionTimeOutput.textContent = elements.resolutionTimeInput
             .value
             ? output + "hrs"
@@ -249,7 +249,7 @@ function initialize() {
             const fourDigitValueArray = sliderInput?.value.padStart(4, "0").split("");
             const costWithOutAutomate = elements.numOfMonthlyTickets * (elements.agentCostPerTicket + elements.billableTicketCost);
             console.log("costWithOutAutomate", costWithOutAutomate);
-            const costWithAutomate = costWithOutAutomate - (0.3 * elements.numOfMonthlyTickets * ((elements.agentCostPerTicket + elements.billableTicketCost) - elements.costOfAutomatedInteraction)) + (elements.automateSubscriptionCost);
+            const costWithAutomate = costWithOutAutomate - (0.6 * elements.numOfMonthlyTickets * ((elements.agentCostPerTicket + elements.billableTicketCost) - elements.costOfAutomatedInteraction)) + (elements.automateSubscriptionCost);
             const amountSavedWithAutomate = costWithOutAutomate - costWithAutomate;
             const percentSaved = Math.round(((costWithOutAutomate - costWithAutomate) / costWithOutAutomate) * 100);
             if (elements.sliderProgress) {
