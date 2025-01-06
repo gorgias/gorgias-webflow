@@ -12,10 +12,10 @@ topNavLinks.forEach((link, index) => {
                     // Add staggered delay when adding the is-current class
                     setTimeout(() => {
                         subNav.classList.add('is-current');
-                    }, index * 100); // Adjust the delay (100ms here) per element index
+                    }, 50); // Adjust the delay (100ms here) per element index
                 } else {
                     // Remove is-current immediately
-                    subNav.classList.remove('is-current');
+                        subNav.classList.remove('is-current');
                 }
             }
         });
