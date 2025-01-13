@@ -1,49 +1,17 @@
 (function() {
 
-    // // Function to check the user's IP and redirect based on location
-    // function checkUserLocationAndRedirect() {
-    //     // Check if the URL has the "ecommerce_platform" parameter
-    //     let urlParams = new URLSearchParams(window.location.search);
-    //     if (urlParams.has("ecommerce_platform") && !sessionStorage.getItem('redirected')) {
-    //         // Convert URL parameters to string to append to the new URL
-    //         let queryString = urlParams.toString();
-
-    //         // Fetch the user's IP information
-    //         fetch('https://ipinfo.io/json?token=16b2fa7a6332cb')
-    //             .then(response => response.json())
-    //             .then(data => {
-    //                 let country = data.country.toLowerCase();
-    //                 if (country === 'fr') {
-    //                     sessionStorage.setItem('redirected', 'true');
-    //                     //console.log('Redirecting to /fr/demo');
-    //                     window.location.href = '/fr/demo?' + queryString;
-    //                 } else if (country === 'es') {
-    //                     sessionStorage.setItem('redirected', 'true');
-    //                     //console.log('Redirecting to /es/demo');
-    //                     window.location.href = '/es/demo?' + queryString;
-    //                 }
-    //             })
-    //             .catch(error => console.error('Error fetching IP info:', error));
-    //     } else {
-    //        // console.log('No ecommerce_platform parameter or already redirected.');
-    //     }
-    // }
-
-    // // Call the function to check the user's location and redirect if necessary
-    // checkUserLocationAndRedirect();
-
-
     const demoLeadFormId = 'ef92ccce-92bd-4010-847a-793f56b6b353';
     const demoFrLeadFormId = "af1d8fe3-2a0d-4dc8-afb4-eb08b6741f79";
     const demoCustomerFormId = 'b7cf896e-d7b3-4f50-a5c1-21459faa6322';
     const demoCustomerAutomateFormId = '2550ba15-99e2-4792-ba41-e389b8695d12';
     const demoCustomerConvertFormId = 'ecb4eba5-6a65-49a2-82d1-5418da6dc5ec';
+    const demoCustomerVoiceFormId = 'ed918c55-148c-4ae3-a285-25cc131d2975';
     const demoLeadEnterpriseCXAuditFormId = 'a031d4fd-d19c-466d-90ce-315f9713a70c';
     const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
 
     // demo functions
     window.addEventListener("message", function(event) {
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId || event.data.id === demoLeadEnterpriseCXAuditFormId)) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId || event.data.id === demoCustomerVoiceFormId || event.data.id === demoLeadEnterpriseCXAuditFormId)) {
             if($('div.hs_demo_current_helpdesk').length  && location.href.includes('reamaze') == true){
                 $('select[name=demo_current_helpdesk]').val('Reamaze').change();
                 $('div.hs_demo_current_helpdesk').addClass('hidden');
@@ -97,7 +65,7 @@
 
     // form submitted is a demo form (lead) of customer demo
     window.addEventListener("message", function(event) {
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id == demoLeadEnterpriseCXAuditFormId )) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId )) {
             var submittedValues=event.data.data.submissionValues;
             for (var key in submittedValues) {
                 if (Array.isArray(submittedValues[key])) {
@@ -112,7 +80,7 @@
             if(eventId === demoLeadFormId || eventId === demoFrLeadFormId || eventId === demoLeadEnterpriseCXAuditFormId) {
                 formName = 'demo'
                 cpRouterName = "inbound-router"; 
-            }else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId) {
+            }else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id === demoCustomerVoiceFormId) {
                 formName = 'demo_customer'
                 cpRouterName = "inbound_router_customer"; 
             }
@@ -150,3 +118,42 @@
         }
     });
 })();
+
+
+/****************************
+ * 
+ * IP based redirection
+ * 
+ ****************************/
+
+    // // Function to check the user's IP and redirect based on location
+    // function checkUserLocationAndRedirect() {
+    //     // Check if the URL has the "ecommerce_platform" parameter
+    //     let urlParams = new URLSearchParams(window.location.search);
+    //     if (urlParams.has("ecommerce_platform") && !sessionStorage.getItem('redirected')) {
+    //         // Convert URL parameters to string to append to the new URL
+    //         let queryString = urlParams.toString();
+
+    //         // Fetch the user's IP information
+    //         fetch('https://ipinfo.io/json?token=16b2fa7a6332cb')
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 let country = data.country.toLowerCase();
+    //                 if (country === 'fr') {
+    //                     sessionStorage.setItem('redirected', 'true');
+    //                     //console.log('Redirecting to /fr/demo');
+    //                     window.location.href = '/fr/demo?' + queryString;
+    //                 } else if (country === 'es') {
+    //                     sessionStorage.setItem('redirected', 'true');
+    //                     //console.log('Redirecting to /es/demo');
+    //                     window.location.href = '/es/demo?' + queryString;
+    //                 }
+    //             })
+    //             .catch(error => console.error('Error fetching IP info:', error));
+    //     } else {
+    //        // console.log('No ecommerce_platform parameter or already redirected.');
+    //     }
+    // }
+
+    // // Call the function to check the user's location and redirect if necessary
+    // checkUserLocationAndRedirect();
