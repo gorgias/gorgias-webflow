@@ -54,6 +54,25 @@ function waitForAnalytics (callback) {
   }, 1000)
 }
 
+// function used to open the chat with pre-written message when someone click on "contact us" in field error message
+function chatContactUs(field){
+    initGorgiasChatPromise.then(function() {
+    // open chat popup
+    GorgiasChat.open();
+    // retrieve the field name
+    var fieldName = field['name']; 
+    // set messaging condition based on the field name
+    if(fieldName == 'company_domain'){
+      var errorMessageChatn = "Hi! I am experiencing an issue signing up for Gorgias. The website URL field returns an error. Can I get assistance?" 
+    }
+    // default message sent throug hthe chat
+    else{
+      var errorMessageChatn = "Hi! I am experiencing an issue signing up for Gorgias. Can I get assistance?" 
+    }
+    GorgiasChat.sendMessage(errorMessageChatn)
+})
+}
+
 // insert below each field a div that will contain the error/warning messaging
 function initiateMessageContainer (){
   fields = {
@@ -111,11 +130,20 @@ function handleFieldStatus (field,status,messaging){
   // all but password: we don't empty the message container in case the messaging is the same as the initial one
   if (fieldName != password_key) {
     var initialMessage= field.next("div[id*='-message-container']").innerHTML || "";
+    
+    // Check if initialMessage contains "contact us"
+    if (messaging && messaging[0].includes('contact us') ) {
+      // Replace "contact us" with the anchor tag that, once clicked, will open the chat with pre-written answer
+      messaging = messaging[0].replace(
+          'contact us',
+          '<a class="link-underline" onclick="chatContactUs('+fieldName+');" >contact us</a>' // Change the href to your desired link
+      );
+    }
+
     if(initialMessage && initialMessage != "" && messaging != initialMessage){
       field.next("div[id*='-message-container']").empty().append(messaging);
     }
     else{
-
       field.next("div[id*='-message-container']").empty().append(messaging);
     }
   }
