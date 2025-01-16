@@ -122,7 +122,7 @@ Webflow.push(function () {
     // Check if product is automate
     if (path.includes('/products/automate')){
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head', 1);
-        newStyle(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head');
+        newStyle(scriptBase + '/src/css/tool-roi-automate'+minBase+'.css','head');
     }
     // Check if product is convert
     if (path.includes('/products/convert') || path.includes('/lp/convert')){
