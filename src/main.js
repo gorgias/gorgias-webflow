@@ -30,6 +30,11 @@ Webflow.push(function () {
     //     newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
     // }
 
+    // If page is root then load the following scripts
+    if (!path.includes('/')) {
+        newScript(scriptBase + '/src/js/scrolling.js'+minBase+'.js','body',1);
+    }
+
     // If page is not /cx-audit then load the following scripts
     if (!path.includes('/cx-audit')) {
       newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
@@ -117,7 +122,7 @@ Webflow.push(function () {
     if (path.includes('/products/automate')){
         newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head', 1);
-        newStyle(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head');
+        newStyle(scriptBase + '/src/css/tool-roi-automate'+minBase+'.css','head');
     }
 
     // Check if product is convert

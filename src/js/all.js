@@ -187,7 +187,12 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
-// Function to deactivate console logs in production
+/****************************
+ * 
+ * Function to deactivate console logs in production
+ * 
+ ****************************/
+
 (function () {
   // Parse the current URL and look for the ?debug=gorgias parameter
   const urlParams = new URLSearchParams(window.location.search);
@@ -208,3 +213,24 @@ document.addEventListener("DOMContentLoaded", function() {
   handleConsoleLogs();
 })();
 
+/****************************
+ * 
+ * Find all buttons, set first letter to 
+ * uppercase and rest to lowercase
+ * 
+ ****************************/
+
+// $(document).ready(function () {
+//   // Select all elements with "button" in their class name
+//   $('[class*="button"]').each(function () {
+//     // Find the text inside the element (assuming it's in a child div or directly within the element)
+//     const textElement = $(this).find('div').length ? $(this).find('div') : $(this);
+
+//     // Get the text content and transform it
+//     const originalText = textElement.text().trim();
+//     const formattedText = originalText.charAt(0).toUpperCase() + originalText.slice(1).toLowerCase();
+
+//     // Update the text content
+//     textElement.text(formattedText);
+//   });
+// });
