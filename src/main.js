@@ -32,7 +32,7 @@ Webflow.push(function () {
 
     // If page is root then load the following scripts
     if (!path.includes('/')) {
-        newScript(scriptBase + '/src/js/scrolling.js'+minBase+'.js','body',1);
+        newScript(scriptBase + '/src/js/scrolling'+minBase+'.js','body',1);
     }
 
     // If page is not /cx-audit then load the following scripts
