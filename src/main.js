@@ -39,12 +39,6 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);
     }
 
-    if ( path.includes('automate-q1')){
-      newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
-      newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head', 1);
-      newStyle(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head');
-    }
-
     // // pricing page
     if (path.includes('pricing')){
       newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
@@ -121,9 +115,11 @@ Webflow.push(function () {
 
     // Check if product is automate
     if (path.includes('/products/automate')){
+        newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head', 1);
         newStyle(scriptBase + '/src/js/tool-roi-automate'+minBase+'.css','head');
     }
+
     // Check if product is convert
     if (path.includes('/products/convert') || path.includes('/lp/convert')){
       newScript(scriptBase + '/src/js/tool-roi-convert'+minBase+'.js','head', 1);
