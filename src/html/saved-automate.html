@@ -1,0 +1,179 @@
+<link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet" />
+<style>
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+</style>
+
+
+<style>
+.sticky-wrapper {
+  transform-style: flat !important;
+}
+</style>
+
+<style> 
+/*
+.hbspt-form > form {
+	display: flex !important;
+  flex-direction: row !important;
+  column-gap: 1.5rem !important;
+}
+
+.hs-button.primary.large {
+    background-color: var(--black);
+    border: 1px solid #cb55ef;
+    border-radius: .3125rem;
+    width: 54px;
+    min-height: 100%;
+    color: #cb55ef;
+    font-size: 1.125rem;
+    padding-top: .625rem;
+    padding-bottom: .625rem;
+}
+.hs-button.primary.large:hover {
+    background-color: var(--black);
+    border: 1px solid #cb55ef;
+    border-radius: .3125rem;
+    min-height: 100%;
+    color: #cb55ef;
+}
+
+.hs-input {
+    vertical-align: middle;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    width: 100%;
+    font-size: .875rem;
+    display: block;
+    color: var(--black);
+    letter-spacing: .8px;
+    border-radius: .3125rem;
+    height: 3rem;
+    margin-bottom: 0;
+    padding: 1rem 1.125rem;
+    line-height: 87.5%;
+    min-width: auto !important;
+}
+
+.hs-input::placeholder {
+	color: var(--black);
+}
+
+.hs-form-field {
+    margin: 0;
+}
+*/
+
+.splide__pagination__page.ai-features.is-active {
+    transform: scale3d(1none, 1none, 1none) !important;
+}
+</style>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const splide = new Splide("#ai-features", {
+        type: "loop",
+        direction: "ttb",
+        heightRatio: 0.6, // Adjust this ratio as needed
+        autoplay: true,
+        interval: 6000, // 4 seconds per slide
+        pauseOnHover: false,
+        pagination: false, // Disable default pagination
+        arrows: false,
+      });
+    
+      splide.mount();
+    
+      const paginationItems = document.querySelectorAll(
+        ".ai-agent_features .splide__pagination__page"
+      );
+    
+      paginationItems.forEach((item, index) => {
+        item.addEventListener("click", () => {
+          splide.go(index);
+        });
+      });
+    
+      const updatePagination = () => {
+        paginationItems.forEach((item, index) => {
+          const progressBar = item.querySelector(".ai-progress-bar");
+    
+          if (splide.index === index) {
+            item.classList.add("is-active");
+            if (progressBar) {
+              progressBar.style.width = "0%";
+              // Force reflow to restart the animation
+              progressBar.offsetHeight;
+              progressBar.style.width = "100%";
+              progressBar.style.transition = "width 6s linear";
+            }
+          } else {
+            item.classList.remove("is-active");
+            if (progressBar) {
+              progressBar.style.width = "0%";
+              progressBar.style.transition = "width 0s linear";
+            }
+          }
+        });
+      };
+    
+      splide.on("move", updatePagination);
+      splide.on("mounted", updatePagination);
+      splide.on("autoplay:playing", () => {
+        const activeItem = document.querySelector(
+          ".ai-agent_features .splide__pagination__page.is-active .ai-progress-bar"
+        );
+        if (activeItem) {
+          activeItem.style.width = "0%";
+          // Force reflow to restart the animation
+          activeItem.offsetHeight;
+          activeItem.style.width = "100%";
+          activeItem.style.transition = "width 6s linear";
+        }
+      });
+    
+      updatePagination(); // Initial update
+    });
+    
+    /* PREVENT SCALE */
+    document.addEventListener("DOMContentLoaded", function () {
+      // Function to apply the transform scale
+      function applyTransformScale(elements) {
+        elements.forEach((element) => {
+          if (element.classList.contains("is-active")) {
+            element.style.transform = "scale(1)";
+          }
+        });
+      }
+    
+      // Select the elements to observe
+      const elements = document.querySelectorAll(
+        ".splide__pagination__page.ai-features"
+      );
+    
+      // Apply the transform scale initially
+      applyTransformScale(elements);
+    
+      // Create a mutation observer to watch for class attribute changes
+      const observer = new MutationObserver(function (mutationsList) {
+        for (const mutation of mutationsList) {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "class"
+          ) {
+            applyTransformScale(elements);
+          }
+        }
+      });
+    
+      // Observe each element for attribute changes
+      elements.forEach((element) => {
+        observer.observe(element, { attributes: true });
+      });
+    });
+    </script>
