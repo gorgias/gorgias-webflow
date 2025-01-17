@@ -65,7 +65,7 @@
 
     // form submitted is a demo form (lead) of customer demo
     window.addEventListener("message", function(event) {
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId )) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId )) {
             var submittedValues=event.data.data.submissionValues;
             for (var key in submittedValues) {
                 if (Array.isArray(submittedValues[key])) {
@@ -77,12 +77,16 @@
             var cpTenantDomain;
             var cpRouterName;
             cpTenantDomain = "gorgias"; 
-            if(eventId === demoLeadFormId || eventId === demoFrLeadFormId || eventId === demoLeadEnterpriseCXAuditFormId) {
+            if(eventId === demoLeadFormId || eventId === demoFrLeadFormId) {
                 formName = 'demo'
                 cpRouterName = "inbound-router"; 
-            }else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id === demoCustomerVoiceFormId) {
+            }else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id == demoCustomerVoiceFormId) {
                 formName = 'demo_customer'
                 cpRouterName = "inbound_router_customer"; 
+            } else if (eventId === demoLeadEnterpriseCXAuditFormId) {
+                formName = 'cx_audit'
+                cpRouterName = "Inbound_Router_Lead_Enterprise_CX_Audit";
+                console.log('cx_audit passed');
             }
             ChiliPiper.submit(cpTenantDomain, cpRouterName,{
                 map: true,
@@ -120,11 +124,13 @@
 })();
 
 
+
 /****************************
  * 
- * IP based redirection
+ * IP based redirections
  * 
  ****************************/
+
 
     // // Function to check the user's IP and redirect based on location
     // function checkUserLocationAndRedirect() {
