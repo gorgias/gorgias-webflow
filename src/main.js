@@ -31,7 +31,7 @@ Webflow.push(function () {
     // }
 
     // If page is root then load the following scripts
-    if (!path.includes('/')) {
+    if (path === '/') {
         newScript(scriptBase + '/src/js/scrolling'+minBase+'.js','body',1);
     }
 
