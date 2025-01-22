@@ -44,7 +44,12 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);
     }
 
-    // // pricing page
+    // log pricing
+    if (path.includes('log-slider')){
+      newScript(scriptBase + '/src/js/pricing/log-slider'+minBase+'.js','body', 1);
+    }
+
+    // pricing page
     if (path.includes('pricing')){
       newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
     }
@@ -54,7 +59,7 @@ Webflow.push(function () {
        newScript(scriptBase + '/src/js/pricing-ui'+minBase+'.js','body', 1);
      }
 
-    // // pricing page
+    // pricing page
      if ( path === '/pricing-test/pricing' || path === '/pages/template-long' 
        || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
        || path === '/pages/helpdesk' || path === '/pages/crm' || path === '/wip/pricing') {
