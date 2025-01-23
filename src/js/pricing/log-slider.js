@@ -259,7 +259,7 @@ function piecewisePosition(value) {
 }
 
 // 1E) Total steps
-const MAX_STEPS = 47;
+const MAX_STEPS = 48;
 
 // Convert slider position (0..47) => final ticket count
 function sliderPosToTickets(sliderPos) {
