@@ -183,183 +183,155 @@ const helpdeskPlans = {
     $(".support-tickets_result").css("display", "block");
   });
 
+// Steps array
+const steps = [
+    10, 20, 30, 40, 50,
+    100, 150, 200, 250, 300,
+    400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000,
+    2200, 2400, 2600, 2800, 3000, 3200, 3400, 3600, 3800, 4000, 4200, 4400, 4600, 4800, 5000,
+    6000, 7000, 8000, 9000, 10000
+  ];
+  
+  // Select all elements with the class `.is-gradution-nb`, excluding those with the combo class `.is-treshold`
+  const graduationElements = Array.from(document.querySelectorAll('.is-gradution-nb'))
+    .filter(element => !element.classList.contains('is-threshold'));
+  
+  // Iterate over both the filtered elements and the steps
+  graduationElements.forEach((element, index) => {
+    if (index < steps.length) {
+      element.textContent = steps[index]; // Update the text content
+    }
+  });
+
 /****************************
  *
- * STEP 1: Input Number of Tickets by User (Piecewise Log from 10..300..10000)
- * with steps defined as per ranges.
+ * STEP 1: Input Number of Tickets by User
  *
  ****************************/
 
-// 1A) A helper to show/hide your "more-tickets-cta" button if you want that logic
-function updateMoreTicketsCTA() {
-    console.log("updateMoreTicketsCTA called, globalTicketNumber:", globalTicketNumber);
-    if (globalTicketNumber < 1250) {
-      $(".more-tickets-cta").css("opacity", "0");
-      $(".more-tickets-cta").css("pointer-events", "none");
-    } else {
-      $(".more-tickets-cta").css("opacity", "0");
-      $(".more-tickets-cta").css("pointer-events", "none");
-    }
-  }
-  
-  // 1B) Linear interpolation between ranges
-  function linearInterp(t, lowVal, highVal) {
+// 1A) Linear interpolation for a range
+function linearInterp(t, lowVal, highVal) {
     return lowVal + t * (highVal - lowVal);
-  }
-  
-  // Converts fraction (0..1) => actual tickets based on defined ranges
-  function piecewiseValue(fraction) {
-    if (fraction <= 0.1) {
-      // 10 to 50 (steps of 10)
-      const t = fraction / 0.1; // Normalize 0..0.1 to 0..1
-      return linearInterp(t, 10, 50);
-    } else if (fraction <= 0.3) {
-      // 50 to 300 (steps of 20)
-      const t = (fraction - 0.1) / 0.2; // Normalize 0.1..0.3 to 0..1
-      return linearInterp(t, 50, 300);
-    } else if (fraction <= 0.6) {
-      // 300 to 2000 (steps of 100)
-      const t = (fraction - 0.3) / 0.3; // Normalize 0.3..0.6 to 0..1
-      return linearInterp(t, 300, 2000);
-    } else if (fraction <= 0.9) {
-      // 2000 to 5000 (steps of 500)
-      const t = (fraction - 0.6) / 0.3; // Normalize 0.6..0.9 to 0..1
-      return linearInterp(t, 2000, 5000);
+}
+
+// 1B) Map slider fraction (0..1) to ticket values with updated ranges
+function piecewiseValue(fraction) {
+    if (fraction <= 4 / 47) {
+        // 10 to 50 (5 steps of 10)
+        const t = fraction / (4 / 47);
+        return linearInterp(t, 10, 50);
+    } else if (fraction <= (4 + 5) / 47) {
+        // 50 to 300 (5 steps of 50)
+        const t = (fraction - 4 / 47) / (5 / 47);
+        return linearInterp(t, 50, 300);
+    } else if (fraction <= (4 + 5 + 17) / 47) {
+        // 300 to 2000 (17 steps of 100)
+        const t = (fraction - (4 + 5) / 47) / (17 / 47);
+        return linearInterp(t, 300, 2000);
+    } else if (fraction <= (4 + 5 + 17 + 15) / 47) {
+        // 2000 to 5000 (15 steps of 200)
+        const t = (fraction - (4 + 5 + 17) / 47) / (15 / 47);
+        return linearInterp(t, 2000, 5000);
     } else {
-      // 5000 to 10000 (steps of 1000)
-      const t = (fraction - 0.9) / 0.1; // Normalize 0.9..1 to 0..1
-      return linearInterp(t, 5000, 10000);
+        // 5000 to 10000 (5 steps of 1000)
+        const t = (fraction - (4 + 5 + 17 + 15) / 47) / (5 / 47);
+        return linearInterp(t, 5000, 10000);
     }
-  }
-  
-  // 1C) Rounding logic for each range
-  function piecewiseRound(val) {
-    const rawVal = val; // Keep raw value for logging
-  
+}
+
+// 1C) Rounding logic for each range
+function piecewiseRound(val) {
     if (val <= 50) {
-      return Math.round(val / 10) * 10; // Steps of 10
+        return Math.round(val / 10) * 10; // Steps of 10
     } else if (val <= 300) {
-      return Math.round(val / 20) * 20; // Steps of 20
+        return Math.round((val - 1) / 50) * 50; // Steps of 50
     } else if (val <= 2000) {
-      return Math.round(val / 100) * 100; // Steps of 100
+        return Math.round((val - 1) / 100) * 100; // Steps of 100
     } else if (val <= 5000) {
-      return Math.round(val / 200) * 200; // Steps of 500
+        return Math.round((val - 1) / 200) * 200; // Steps of 200
     } else {
-      return Math.round(val / 1000) * 1000; // Steps of 1000
+        return Math.round(val / 1000) * 1000; // Steps of 1000
     }
-  }
-  
-  // 1D) piecewisePosition: Convert tickets to fraction (0..1)
-  function piecewisePosition(value) {
+}
+
+// 1D) Map ticket count to slider fraction (0..1)
+function piecewisePosition(value) {
     if (value <= 50) {
-      return (value - 10) / (50 - 10) * 0.1; // Normalize to 0..0.1
+        return ((value - 10) / (50 - 10)) * (4 / 47);
     } else if (value <= 300) {
-      return 0.1 + (value - 50) / (300 - 50) * 0.2; // Normalize to 0.1..0.3
+        return (4 / 47) + ((value - 50) / (300 - 50)) * (5 / 47);
     } else if (value <= 2000) {
-      return 0.3 + (value - 300) / (2000 - 300) * 0.3; // Normalize to 0.3..0.6
+        return (4 + 5) / 47 + ((value - 300) / (2000 - 300)) * (17 / 47);
     } else if (value <= 5000) {
-      return 0.6 + (value - 2000) / (5000 - 2000) * 0.3; // Normalize to 0.6..0.9
+        return (4 + 5 + 17) / 47 + ((value - 2000) / (5000 - 2000)) * (15 / 47);
     } else {
-      return 0.9 + (value - 5000) / (10000 - 5000) * 0.1; // Normalize to 0.9..1
+        return (4 + 5 + 17 + 15) / 47 + ((value - 5000) / (10000 - 5000)) * (5 / 47);
     }
-  }
-  
-  // 1E) We define 40 steps for more granularity (0..40 positions).
-  const MAX_STEPS = 40;
-  
-  // Convert slider position (0..40) => final ticket count
-  function sliderPosToTickets(sliderPos) {
-    const fraction = sliderPos / MAX_STEPS; // 0..1
+}
+
+// 1E) Total steps
+const MAX_STEPS = 47;
+
+// Convert slider position (0..47) => final ticket count
+function sliderPosToTickets(sliderPos) {
+    const fraction = sliderPos / MAX_STEPS;
     const rawVal = piecewiseValue(fraction);
-    return piecewiseRound(rawVal);
-  }
-  
-  // Convert ticket count => slider position (0..40)
-  function ticketsToSliderPos(value) {
-    const fraction = piecewisePosition(value); // 0..1
+    const roundedVal = piecewiseRound(rawVal);
+    console.log(`Step ${sliderPos}: ${roundedVal} tickets`);
+    return roundedVal;
+}
+
+// Convert ticket count => slider position (0..47)
+function ticketsToSliderPos(value) {
+    const fraction = piecewisePosition(value);
     return Math.round(fraction * MAX_STEPS);
-  }
-  
-  // 1F) Global variable for # of tickets
-  let globalTicketNumber = 0;
-  
-  // 1G) On slider input
-  $("#ticketRange").on("input", function () {
-    const sliderPos = +$(this).val(); // 0..40
+}
+
+// 1F) Log all steps for verification
+function logAllSteps() {
+    console.log("Logging all steps:");
+    for (let i = 0; i <= MAX_STEPS; i++) {
+        console.log(`Step ${i}: ${sliderPosToTickets(i)} tickets`);
+    }
+}
+
+// 1G) Event listener for slider input
+$("#ticketRange").on("input", function () {
+    const sliderPos = +$(this).val(); // 0..47
     const val = sliderPosToTickets(sliderPos);
     $("#value").val(val.toFixed(0));
     globalTicketNumber = val;
-  
+
     console.log("Step 1: Number of tickets selected:", globalTicketNumber);
-  
+
     // Update "I have X tickets"
     $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
-  
-    // Then call your plan logic, etc.
-    updateMoreTicketsCTA();
-    determinePlan(globalTicketNumber);
-    updateActivePlanElement();
-    updateLogosAndCTAs();
-    updateSummaryDetails();
-    displayAlert();
-  
-    if (globalCurrentPlanName === "Starter") {
-      toggleMonthly();
-      $(".addons_cards").addClass("is-disabled");
-      $(".starter-plan-alert").css("display", "block");
-    } else {
-      $(".addons_cards").removeClass("is-disabled");
-      $(".starter-plan-alert").css("display", "none");
-    }
-  
-    if (selectedCardType) {
-      updatePlanSelection(selectedCardType);
-      updateSummaryDetails();
-    }
-  
-    if (globalCurrentPlanName) {
-      updatePricesOnBillingCycleChange();
-      calculateSummary();
-      updateSummaryDetails();
-    } else {
-      console.warn("No plan name yet; skipping summary calculation.");
-    }
-  });
-  
-  // 1H) On typed input
-  $("#value").on("change", function () {
+});
+
+// 1H) Event listener for typed input
+$("#value").on("change", function () {
     const typedVal = parseInt($(this).val(), 10) || 0;
     const clampedVal = Math.max(10, Math.min(typedVal, 10000));
     const pos = ticketsToSliderPos(clampedVal);
     $("#ticketRange").val(pos);
-  
+
     globalTicketNumber = clampedVal;
     console.log("Step 1: Number of tickets typed:", globalTicketNumber);
-  
+
     $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
-    updateMoreTicketsCTA();
-    determinePlan(globalTicketNumber);
-    updateActivePlanElement();
-    updateLogosAndCTAs();
-    updateSummaryDetails();
-    displayAlert();
-  });
-  
-  // 1J) On page load, set slider to 300 if you want midpoint in the range
-  $(document).ready(function () {
+});
+
+// 1I) Log all steps on initialization and set initial value
+$(document).ready(function () {
     const initialTickets = 300;
     const pos = ticketsToSliderPos(initialTickets);
     $("#ticketRange").val(pos);
     $("#value").val(initialTickets);
     $("#rangeValue").text(formatNumberWithCommas(initialTickets));
-  
+
     globalTicketNumber = initialTickets;
-    determinePlan(globalTicketNumber);
-    updateActivePlanElement();
-    updateLogosAndCTAs();
-    updateSummaryDetails();
-    updateOveragesDisplay();
-  });
+    logAllSteps(); // Log steps for debugging
+});
   
   /****************************
    *
@@ -382,7 +354,7 @@ function updateMoreTicketsCTA() {
       $(".annualPlan").prop("checked", true);
     }
     globalBillingCycle = billingCycle;
-    console.log("Switched to", billingCycle, "billing cycle");
+    //console.log("Switched to", billingCycle, "billing cycle");
     determinePlan(globalTicketNumber);
     displayAlert();
   }
@@ -391,10 +363,10 @@ function updateMoreTicketsCTA() {
   $(".billing-toggle-radio").on("click", function () {
     if ($(this).hasClass("is-yearly")) {
       switchBillingCycle("yearly");
-      console.log("Step 2: Switched to Yearly billing cycle");
+     // console.log("Step 2: Switched to Yearly billing cycle");
     } else if ($(this).hasClass("is-monthly")) {
       switchBillingCycle("monthly");
-      console.log("Step 2: Switched to Monthly billing cycle");
+     // console.log("Step 2: Switched to Monthly billing cycle");
     }
     updatePricesOnBillingCycleChange();
   });
@@ -416,15 +388,15 @@ function updateMoreTicketsCTA() {
     if (globalBillingCycle === "yearly") {
       $(".yearly-billing-alert").css("display", "flex");
       $(".radio-wrap.billing-toggle-radio.is-yearly").removeClass("is-disabled");
-      console.log("Displaying yearly billing alert");
+     // console.log("Displaying yearly billing alert");
     } else if (globalBillingCycle === "monthly" && globalCurrentPlanName === "Starter") {
       $(".starter-billing-alert").css("display", "flex");
       $(".radio-wrap.billing-toggle-radio.is-yearly").addClass("is-disabled");
-      console.log("Displaying starter monthly billing alert");
+      //console.log("Displaying starter monthly billing alert");
     } else if (globalBillingCycle === "monthly" && globalCurrentPlanName !== "Starter") {
       $(".monthly-billing-alert").css("display", "flex");
       $(".radio-wrap.billing-toggle-radio.is-yearly").removeClass("is-disabled");
-      console.log("Displaying monthly billing alert");
+      //console.log("Displaying monthly billing alert");
     }
   }
   
@@ -456,9 +428,9 @@ function updateMoreTicketsCTA() {
       const planCost = plan.monthly_cost;
       const totalPrice = planCost + overageCost;
   
-      console.log(
-        `Checking Plan: ${plan.name}, Base Price: ${planCost}, Overage Tickets: ${overageTickets}, Overage Cost: ${overageCost}, Total Price: ${totalPrice}`
-      );
+    //   console.log(
+    //     `Checking Plan: ${plan.name}, Base Price: ${planCost}, Overage Tickets: ${overageTickets}, Overage Cost: ${overageCost}, Total Price: ${totalPrice}`
+    //   );
   
       if (
         currentPlanIndex < plans.length - 1 &&
@@ -488,12 +460,12 @@ function updateMoreTicketsCTA() {
     globalCurrentPlanOverageCostPerTicket = applicablePlan.cost_per_overage_ticket;
     globalCurrentPlanTicketsPerMonth = applicablePlan.tickets_per_month;
   
-    console.log(
-      "Step 3: Selected Plan -",
-      globalCurrentPlanName,
-      "| Base Price:",
-      globalCurrentPlanPrice
-    );
+    // console.log(
+    //   "Step 3: Selected Plan -",
+    //   globalCurrentPlanName,
+    //   "| Base Price:",
+    //   globalCurrentPlanPrice
+    // );
   
     $('[data-el="planName"]').text(globalCurrentPlanName);
   
@@ -502,7 +474,7 @@ function updateMoreTicketsCTA() {
       globalCurrentPlanName !== "Starter" &&
       globalBillingCycle === "monthly"
     ) {
-      console.log("Switching from Starter monthly → forcing yearly because new plan is not Starter");
+     // console.log("Switching from Starter monthly → forcing yearly because new plan is not Starter");
       toggleYearly();
     }
   
@@ -517,10 +489,10 @@ function updateMoreTicketsCTA() {
       const overageRate = globalCurrentPlanOverageCostPerTicket.toFixed(2);
       overagesElement.css("opacity", "1");
       overagesElement.text(`$${overageRate}/overage helpdesk ticket`);
-      console.log(`Overages apply: $${overageRate} per overage ticket`);
+    //  console.log(`Overages apply: $${overageRate} per overage ticket`);
     } else {
       overagesElement.css("opacity", "0");
-      console.log("No overages apply");
+     // console.log("No overages apply");
     }
   }
   
@@ -594,7 +566,7 @@ function updateMoreTicketsCTA() {
       const automatePrice = window[`globalAutomatePrice${percentage}`];
       const optionPrice = globalCurrentPlanPrice + automatePrice;
       $('[data-el="helpdeskPrice' + percentage + '"]').text(optionPrice);
-      console.log(`Option ${percentage}%: ${optionPrice}`);
+     // console.log(`Option ${percentage}%: ${optionPrice}`);
     });
   }
   
@@ -609,7 +581,7 @@ function updateMoreTicketsCTA() {
   let isProgrammaticClick = false;
   
   function updatePlanSelection(selectedCardType) {
-    console.log("Updating plan selection for card type:", selectedCardType);
+   // console.log("Updating plan selection for card type:", selectedCardType);
   
     // Deselect all cards
     $(".pricing_card").removeClass("is-selected");
@@ -648,7 +620,7 @@ function updateMoreTicketsCTA() {
   // Event listener for pricing card clicks
   $('[data-el^="pricingCard"]').on("click", function () {
     selectedCardType = $(this).attr("data-el");
-    console.log("Selected card type:", selectedCardType);
+   // console.log("Selected card type:", selectedCardType);
   
     updatePlanSelection(selectedCardType);
   
@@ -658,9 +630,9 @@ function updateMoreTicketsCTA() {
         { scrollTop: $("#step-3").offset().top },
         400
       );
-      console.log("User clicked, scrolling to #step-3");
+    //  console.log("User clicked, scrolling to #step-3");
     } else {
-      console.log("Programmatic click, skipping scroll");
+     // console.log("Programmatic click, skipping scroll");
     }
   });
   
@@ -678,13 +650,13 @@ function updateMoreTicketsCTA() {
   
   function calculateSummary() {
     if (!chosenHelpdeskPrice || chosenHelpdeskPrice === 0) {
-      console.warn("No plan has been selected yet.");
+     // console.warn("No plan has been selected yet.");
       return;
     }
     const summaryTotal = chosenHelpdeskPrice + chosenAutomatePrice + voiceTicketPrice + smsTicketPrice;
     const formattedTotal = formatNumberWithCommas(summaryTotal.toFixed(0));
     $('[data-el="summaryTotalPrice"]').text(formattedTotal);
-    console.log("Updated DOM with summary total:", formattedTotal);
+   // console.log("Updated DOM with summary total:", formattedTotal);
   }
   
   
@@ -702,7 +674,7 @@ function updateMoreTicketsCTA() {
         globalCurrentPlanName.toLowerCase()
       ) {
         element.classList.add("is-active");
-        console.log("Highlight updated on plan:", globalCurrentPlanName);
+      //  console.log("Highlight updated on plan:", globalCurrentPlanName);
       } else {
         element.classList.remove("is-active");
       }
@@ -748,7 +720,7 @@ function updateMoreTicketsCTA() {
   
   // Recalc prices when the billing cycle changes
   function updatePricesOnBillingCycleChange() {
-    console.log("Billing cycle changed to:", globalBillingCycle);
+  //  console.log("Billing cycle changed to:", globalBillingCycle);
   
     determinePlan(globalTicketNumber);
     calculateAutomatePrices();
@@ -767,7 +739,7 @@ function updateMoreTicketsCTA() {
   
   // Update chosen prices based on selected automation
   function updateChosenPrices(automateTicketsParam, automationRateParam) {
-    console.log("Updating chosen prices for card:", selectedCardType);
+  //  console.log("Updating chosen prices for card:", selectedCardType);
   
     // Helpdesk overage
     if (globalCurrentPlanOverageTickets > 0) {
@@ -794,8 +766,8 @@ function updateMoreTicketsCTA() {
     const automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
     chosenAutomatePrice = automatePrice;
   
-    console.log("Chosen Helpdesk Price:", chosenHelpdeskPrice);
-    console.log("Chosen Automate Price:", chosenAutomatePrice);
+    // console.log("Chosen Helpdesk Price:", chosenHelpdeskPrice);
+    // console.log("Chosen Automate Price:", chosenAutomatePrice);
   
     if (automationRate === 0) {
       $('[data-summary="automate"]').css("display", "none");
@@ -881,7 +853,7 @@ function updateMoreTicketsCTA() {
     }
   
     $(`[data-el="${addonType}Price"]`).text(ticketPrice.toFixed(0));
-    console.log(`Updated UI with ${addonType} ticket price: ${ticketPrice}`);
+   // console.log(`Updated UI with ${addonType} ticket price: ${ticketPrice}`);
   
     calculateSummary();
   }
@@ -930,7 +902,7 @@ function updateMoreTicketsCTA() {
     isProgrammaticClick = true;
     const defaultPricingCard = document.querySelector('[data-el="pricingCard"]');
     if (defaultPricingCard) {
-      console.log("Simulating click on default pricing card for 0% automation");
+     // console.log("Simulating click on default pricing card for 0% automation");
       defaultPricingCard.click();
     } else {
       console.error("No pricing card found for default automation (0%)");
@@ -945,7 +917,7 @@ function updateMoreTicketsCTA() {
     const addonTicketsDropdown = document.querySelector(`#${addon}-tickets`);
     if (!addonTicketsDropdown) return;
     addonTicketsDropdown.value = "Tier 0";
-    console.log(`${addon.toUpperCase()} tickets dropdown reset to Tier 0`);
+   // console.log(`${addon.toUpperCase()} tickets dropdown reset to Tier 0`);
   
     const changeEvent = new Event("change", { bubbles: true });
     addonTicketsDropdown.dispatchEvent(changeEvent);
@@ -958,15 +930,15 @@ function updateMoreTicketsCTA() {
     } else if (addon === "sms") {
       updateSmsTicketPrice();
     }
-    console.log(`${addon.toUpperCase()} reset completed`);
+   // console.log(`${addon.toUpperCase()} reset completed`);
   }
   
   $('[data-summary="voice-remove"]').on("click", function () {
-    console.log("Voice remove button clicked");
+  //  console.log("Voice remove button clicked");
     resetAddonPrice("voice");
   });
   $('[data-summary="sms-remove"]').on("click", function () {
-    console.log("SMS remove button clicked");
+  //  console.log("SMS remove button clicked");
     resetAddonPrice("sms");
   });
   
