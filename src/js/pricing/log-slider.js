@@ -183,25 +183,14 @@ const helpdeskPlans = {
     $(".support-tickets_result").css("display", "block");
   });
 
-// Steps array
-const steps = [
-    10, 20, 30, 40, 50,
-    100, 150, 200, 250, 300,
-    400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000,
-    2200, 2400, 2600, 2800, 3000, 3200, 3400, 3600, 3800, 4000, 4200, 4400, 4600, 4800, 5000,
-    6000, 7000, 8000, 9000, 10000
-  ];
-  
-  // Select all elements with the class `.is-gradution-nb`, excluding those with the combo class `.is-treshold`
-  const graduationElements = Array.from(document.querySelectorAll('.is-gradution-nb'))
-    .filter(element => !element.classList.contains('is-threshold'));
-  
-  // Iterate over both the filtered elements and the steps
-  graduationElements.forEach((element, index) => {
-    if (index < steps.length) {
-      element.textContent = steps[index]; // Update the text content
-    }
-  });
+
+
+  // Select all elements with the combo classes .is-gradution-nb and .is-invisible
+$(".is-gradution-nb.is-invisible").each(function () {
+    // Remove the text content of each matched element
+    $(this).text("");
+});
+
 
 /****************************
  *
