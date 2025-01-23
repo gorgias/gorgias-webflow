@@ -182,16 +182,16 @@ const helpdeskPlans = {
     $(".support-tickets_result-value").text(tickets);
     $(".support-tickets_result").css("display", "block");
   });
-  
-  /****************************
-   *
-   * STEP 1: Input Number of Tickets by User (Piecewise Log from 10..3000..10000)
-   * with 30 slider steps
-   *
-   ****************************/
-  
-  // 1A) A helper to show/hide your "more-tickets-cta" button if you want that logic
-  function updateMoreTicketsCTA() {
+
+/****************************
+ *
+ * STEP 1: Input Number of Tickets by User (Piecewise Log from 10..300..10000)
+ * with steps defined as per ranges.
+ *
+ ****************************/
+
+// 1A) A helper to show/hide your "more-tickets-cta" button if you want that logic
+function updateMoreTicketsCTA() {
     console.log("updateMoreTicketsCTA called, globalTicketNumber:", globalTicketNumber);
     if (globalTicketNumber < 1250) {
       $(".more-tickets-cta").css("opacity", "0");
@@ -202,119 +202,79 @@ const helpdeskPlans = {
     }
   }
   
-  // 1B) Piecewise log interpolation: 
-  // Left half (0..0.5) => [10..3000], right half (0.5..1) => [3000..10000].
-  function logInterp(t, lowVal, highVal) {
-    const logLow = Math.log(lowVal);
-    const logHigh = Math.log(highVal);
-    const logVal = logLow + (logHigh - logLow) * t;
-    return Math.exp(logVal);
+  // 1B) Linear interpolation between ranges
+  function linearInterp(t, lowVal, highVal) {
+    return lowVal + t * (highVal - lowVal);
   }
   
-  // Converts fraction (0..1) => actual tickets (10..3000..10000)
+  // Converts fraction (0..1) => actual tickets based on defined ranges
   function piecewiseValue(fraction) {
-    if (fraction <= 0.5) {
-      const t = fraction / 0.5; // 0..1 in the left half
-      return logInterp(t, 10, 3000);
+    if (fraction <= 0.1) {
+      // 10 to 50 (steps of 10)
+      const t = fraction / 0.1; // Normalize 0..0.1 to 0..1
+      return linearInterp(t, 10, 50);
+    } else if (fraction <= 0.3) {
+      // 50 to 300 (steps of 20)
+      const t = (fraction - 0.1) / 0.2; // Normalize 0.1..0.3 to 0..1
+      return linearInterp(t, 50, 300);
+    } else if (fraction <= 0.6) {
+      // 300 to 2000 (steps of 100)
+      const t = (fraction - 0.3) / 0.3; // Normalize 0.3..0.6 to 0..1
+      return linearInterp(t, 300, 2000);
+    } else if (fraction <= 0.9) {
+      // 2000 to 5000 (steps of 500)
+      const t = (fraction - 0.6) / 0.3; // Normalize 0.6..0.9 to 0..1
+      return linearInterp(t, 2000, 5000);
     } else {
-      const t = (fraction - 0.5) / 0.5; // 0..1 in the right half
-      return logInterp(t, 3000, 10000);
+      // 5000 to 10000 (steps of 1000)
+      const t = (fraction - 0.9) / 0.1; // Normalize 0.9..1 to 0..1
+      return linearInterp(t, 5000, 10000);
     }
   }
   
-  // 1C) Same rounding logic for final increments
+  // 1C) Rounding logic for each range
   function piecewiseRound(val) {
-    // Keep the raw value for logging
-    const rawVal = val;
+    const rawVal = val; // Keep raw value for logging
   
-    // 1) Clamp between 10..10000
-    val = Math.max(10, Math.min(val, 10000));
-  
-    let finalVal;
-  
-    // --- 10..50 => step=10 rounding => e.g. 17.69 => 20, 55 => 50
-    if (val < 50) {
-      let rounded = Math.round(val / 10) * 10;
-      if (rounded < 10) rounded = 10;
-      if (rounded > 50) rounded = 50;
-      finalVal = rounded;
-  
-    // --- 50..300 => step=50 => e.g. 173 => 150, 306 => 300
-    } else if (val < 300) {
-      const rounded = Math.round(val / 50) * 50;
-      if (rounded < 50) finalVal = 50;
-      else if (rounded > 300) finalVal = 300;
-      else finalVal = rounded;
-  
-    // --- 300..700 => step=50 => e.g. 541 => 550
-    } else if (val < 700) {
-      const rounded = Math.round(val / 50) * 50;
-      if (rounded < 300) finalVal = 300;
-      else if (rounded > 700) finalVal = 700;
-      else finalVal = rounded;
-  
-    // --- 700..1000 => step=100 => e.g. 958 => 1000
-    } else if (val < 1000) {
-      const rounded = Math.round(val / 100) * 100;
-      if (rounded < 700) finalVal = 700;
-      else if (rounded > 1000) finalVal = 1000;
-      else finalVal = rounded;
-  
-    // --- 1000..2000 => forced up to 2000 => e.g. 1695 => 2000
-    } else if (val < 2000) {
-      finalVal = 2000;
-  
-    // --- 2000..5000 => step=500 => e.g. 4855 => 5000
-    } else if (val < 5000) {
-      const rounded = Math.round(val / 500) * 500;
-      if (rounded < 2000) finalVal = 2000;
-      else if (rounded > 5000) finalVal = 5000;
-      else finalVal = rounded;
-  
-    // --- 5000..10000 => step=1000, except [5400..5500) => 5500
+    if (val <= 50) {
+      return Math.round(val / 10) * 10; // Steps of 10
+    } else if (val <= 300) {
+      return Math.round(val / 20) * 20; // Steps of 20
+    } else if (val <= 2000) {
+      return Math.round(val / 100) * 100; // Steps of 100
+    } else if (val <= 5000) {
+      return Math.round(val / 200) * 200; // Steps of 500
     } else {
-      // *** TINY CHANGE: force 5400..5500 => 5500 ***
-      if (val >= 5400 && val < 5500) {
-        finalVal = 5500;
-      } else {
-        const rounded = Math.round(val / 1000) * 1000;
-        if (rounded < 5000) finalVal = 5000;
-        else if (rounded > 10000) finalVal = 10000;
-        else finalVal = rounded;
-      }
+      return Math.round(val / 1000) * 1000; // Steps of 1000
     }
-  
-    console.log(
-      `%c[piecewiseRound] raw= ${rawVal.toFixed(2)} | final= ${finalVal}`,
-      "color: #bada55;"
-    );
-    return finalVal;
   }
   
-  // 1D) piecewisePosition: tickets => fraction (0..1)
+  // 1D) piecewisePosition: Convert tickets to fraction (0..1)
   function piecewisePosition(value) {
-    if (value <= 3000) {
-      const logRange = Math.log(3000) - Math.log(10);
-      const t = (Math.log(value) - Math.log(10)) / logRange;
-      return t * 0.5;
+    if (value <= 50) {
+      return (value - 10) / (50 - 10) * 0.1; // Normalize to 0..0.1
+    } else if (value <= 300) {
+      return 0.1 + (value - 50) / (300 - 50) * 0.2; // Normalize to 0.1..0.3
+    } else if (value <= 2000) {
+      return 0.3 + (value - 300) / (2000 - 300) * 0.3; // Normalize to 0.3..0.6
+    } else if (value <= 5000) {
+      return 0.6 + (value - 2000) / (5000 - 2000) * 0.3; // Normalize to 0.6..0.9
     } else {
-      const logRange = Math.log(10000) - Math.log(3000);
-      const t = (Math.log(value) - Math.log(3000)) / logRange;
-      return 0.5 + t * 0.5;
+      return 0.9 + (value - 5000) / (10000 - 5000) * 0.1; // Normalize to 0.9..1
     }
   }
   
-  // 1E) We define 20 steps, so slider is 0..20 (21 discrete positions).
-  const MAX_STEPS = 20;
+  // 1E) We define 40 steps for more granularity (0..40 positions).
+  const MAX_STEPS = 40;
   
-  // Convert slider position (0..30) => final ticket count
+  // Convert slider position (0..40) => final ticket count
   function sliderPosToTickets(sliderPos) {
     const fraction = sliderPos / MAX_STEPS; // 0..1
     const rawVal = piecewiseValue(fraction);
     return piecewiseRound(rawVal);
   }
   
-  // Convert ticket count => slider position (0..30)
+  // Convert ticket count => slider position (0..40)
   function ticketsToSliderPos(value) {
     const fraction = piecewisePosition(value); // 0..1
     return Math.round(fraction * MAX_STEPS);
@@ -325,8 +285,8 @@ const helpdeskPlans = {
   
   // 1G) On slider input
   $("#ticketRange").on("input", function () {
-    const sliderPos = +$(this).val(); // 0..20
-    const val = sliderPosToTickets(sliderPos); 
+    const sliderPos = +$(this).val(); // 0..40
+    const val = sliderPosToTickets(sliderPos);
     $("#value").val(val.toFixed(0));
     globalTicketNumber = val;
   
@@ -343,7 +303,6 @@ const helpdeskPlans = {
     updateSummaryDetails();
     displayAlert();
   
-    // If plan is Starter => monthly, etc...
     if (globalCurrentPlanName === "Starter") {
       toggleMonthly();
       $(".addons_cards").addClass("is-disabled");
@@ -384,54 +343,10 @@ const helpdeskPlans = {
     updateLogosAndCTAs();
     updateSummaryDetails();
     displayAlert();
-  
-    if (globalCurrentPlanName === "Starter") {
-      toggleMonthly();
-      $(".addons_cards").addClass("is-disabled");
-      $(".starter-plan-alert").css("display", "block");
-    } else {
-      $(".addons_cards").removeClass("is-disabled");
-      $(".starter-plan-alert").css("display", "none");
-    }
-  
-    if (selectedCardType) {
-      updatePlanSelection(selectedCardType);
-      updateSummaryDetails();
-    }
-  
-    if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
-      updatePricesOnBillingCycleChange();
-      calculateSummary();
-      updateSummaryDetails();
-    }
   });
   
-  // 1I) If you have a .more-tickets-cta click
-  $(".more-tickets-cta").on("click", function () {
-    // Example removing the 'lower' slider
-    $(".range-slider_graduation.is-lower").css("display", "none");
-    $(".range-slider_graduation.is-higher").css("display", "none");
-    $(this).remove();
-    $(".pricing-step_range-module.is-lower").css("display", "none").remove();
-    $(".pricing-step_range-module.is-higher").css("display", "none");
-  
-    // Suppose you want to jump to 1250
-    const newVal = 1250;
-    const newPos = ticketsToSliderPos(newVal);
-    $("#ticketRange").val(newPos);
-    $("#value").val(newVal);
-    $("#rangeValue").text(formatNumberWithCommas(newVal));
-  
-    globalTicketNumber = newVal;
-    determinePlan(globalTicketNumber);
-    updateActivePlanElement();
-    updateLogosAndCTAs();
-    displayAlert();
-    console.log("Range slider updated to ~1250 tickets");
-  });
-  
-  // 1J) On page load, set slider to 3000 if you want midpoint (pos=15)
-  $(document).ready(function() {
+  // 1J) On page load, set slider to 300 if you want midpoint in the range
+  $(document).ready(function () {
     const initialTickets = 300;
     const pos = ticketsToSliderPos(initialTickets);
     $("#ticketRange").val(pos);
@@ -1099,5 +1014,3 @@ const helpdeskPlans = {
       $('[data-el="contact-sales"]').css("display", "block");
     }
   }
-  
-  
