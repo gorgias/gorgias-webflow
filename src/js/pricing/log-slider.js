@@ -184,11 +184,13 @@ const helpdeskPlans = {
   });
 
 
+
   // Select all elements with the combo classes .is-gradution-nb and .is-invisible
 $(".is-gradution-nb.is-invisible").each(function () {
     // Remove the text content of each matched element
     $(this).text("");
 });
+
 
 /****************************
  *
