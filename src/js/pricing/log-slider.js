@@ -198,128 +198,132 @@ $(".is-gradution-nb.is-invisible").each(function () {
  *
  ****************************/
 
+//****************************
+
 // 1A) Linear interpolation for a range
 function linearInterp(t, lowVal, highVal) {
-    return lowVal + t * (highVal - lowVal);
+   return lowVal + t * (highVal - lowVal);
 }
 
 // 1B) Map slider fraction (0..1) to ticket values with updated ranges
 function piecewiseValue(fraction) {
-    if (fraction <= 4 / 47) {
-        // 10 to 50 (5 steps of 10)
-        const t = fraction / (4 / 47);
-        return linearInterp(t, 10, 50);
-    } else if (fraction <= (4 + 5) / 47) {
-        // 50 to 300 (5 steps of 50)
-        const t = (fraction - 4 / 47) / (5 / 47);
-        return linearInterp(t, 50, 300);
-    } else if (fraction <= (4 + 5 + 17) / 47) {
-        // 300 to 2000 (17 steps of 100)
-        const t = (fraction - (4 + 5) / 47) / (17 / 47);
-        return linearInterp(t, 300, 2000);
-    } else if (fraction <= (4 + 5 + 17 + 15) / 47) {
-        // 2000 to 5000 (15 steps of 200)
-        const t = (fraction - (4 + 5 + 17) / 47) / (15 / 47);
-        return linearInterp(t, 2000, 5000);
-    } else {
-        // 5000 to 10000 (5 steps of 1000)
-        const t = (fraction - (4 + 5 + 17 + 15) / 47) / (5 / 47);
-        return linearInterp(t, 5000, 10000);
-    }
+   if (fraction < 4 / 48) {
+       // 10 to 50 (5 steps of 10)
+       const t = fraction / (4 / 48);
+       return linearInterp(t, 10, 50);
+   } else if (fraction < (4 + 5) / 48) {
+       // 50 to 300 (5 steps of 50)
+       const t = (fraction - 4 / 48) / (5 / 48);
+       return linearInterp(t, 50, 300);
+   } else if (fraction < (4 + 5 + 17) / 48) {
+       // 300 to 2000 (17 steps of 100)
+       const t = (fraction - (4 + 5) / 48) / (17 / 48);
+       return linearInterp(t, 300, 2000);
+   } else if (fraction < (4 + 5 + 17 + 15) / 48) {
+       // 2000 to 5000 (15 steps of 200)
+       const t = (fraction - (4 + 5 + 17) / 48) / (15 / 48);
+       return linearInterp(t, 2000, 5000);
+   } else {
+       // 5000 to 10000 (5 steps of 1000)
+       const t = (fraction - (4 + 5 + 17 + 15) / 48) / (5 / 48);
+       return linearInterp(t, 5000, 10000);
+   }
 }
 
 // 1C) Rounding logic for each range
 function piecewiseRound(val) {
-    if (val <= 50) {
-        return Math.round(val / 10) * 10; // Steps of 10
-    } else if (val <= 300) {
-        return Math.round((val - 1) / 50) * 50; // Steps of 50
-    } else if (val <= 2000) {
-        return Math.round((val - 1) / 100) * 100; // Steps of 100
-    } else if (val <= 5000) {
-        return Math.round((val - 1) / 200) * 200; // Steps of 200
-    } else {
-        return Math.round(val / 1000) * 1000; // Steps of 1000
-    }
+   if (val <= 50) {
+       return Math.round(val / 10) * 10; // Steps of 10
+   } else if (val <= 300) {
+       return Math.round(val / 50) * 50; // Steps of 50
+   } else if (val <= 2000) {
+       return Math.round(val / 100) * 100; // Steps of 100
+   } else if (val <= 5000) {
+       return Math.round(val / 200) * 200; // Steps of 200
+   } else {
+       return Math.round(val / 1000) * 1000; // Steps of 1000
+   }
 }
 
 // 1D) Map ticket count to slider fraction (0..1)
 function piecewisePosition(value) {
-    if (value <= 50) {
-        return ((value - 10) / (50 - 10)) * (4 / 47);
-    } else if (value <= 300) {
-        return (4 / 47) + ((value - 50) / (300 - 50)) * (5 / 47);
-    } else if (value <= 2000) {
-        return (4 + 5) / 47 + ((value - 300) / (2000 - 300)) * (17 / 47);
-    } else if (value <= 5000) {
-        return (4 + 5 + 17) / 47 + ((value - 2000) / (5000 - 2000)) * (15 / 47);
-    } else {
-        return (4 + 5 + 17 + 15) / 47 + ((value - 5000) / (10000 - 5000)) * (5 / 47);
-    }
+   if (value <= 50) {
+       return ((value - 10) / (50 - 10)) * (4 / 48);
+   } else if (value <= 300) {
+       return (4 / 48) + ((value - 50) / (300 - 50)) * (5 / 48);
+   } else if (value <= 2000) {
+       return (4 + 5) / 48 + ((value - 300) / (2000 - 300)) * (17 / 48);
+   } else if (value <= 5000) {
+       return (4 + 5 + 17) / 48 + ((value - 2000) / (5000 - 2000)) * (15 / 48);
+   } else {
+       return (4 + 5 + 17 + 15) / 48 + ((value - 5000) / (10000 - 5000)) * (5 / 48);
+   }
 }
 
 // 1E) Total steps
 const MAX_STEPS = 48;
 
-// Convert slider position (0..47) => final ticket count
+// Convert slider position (0..48) => final ticket count
 function sliderPosToTickets(sliderPos) {
-    const fraction = sliderPos / MAX_STEPS;
-    const rawVal = piecewiseValue(fraction);
-    const roundedVal = piecewiseRound(rawVal);
-    console.log(`Step ${sliderPos}: ${roundedVal} tickets`);
-    return roundedVal;
+   const fraction = sliderPos / MAX_STEPS;
+   const rawVal = piecewiseValue(fraction);
+   const roundedVal = piecewiseRound(rawVal);
+   // Ensure unique values at the highest range
+   if (sliderPos === MAX_STEPS - 1) return 9000; 
+   if (sliderPos === MAX_STEPS) return 10000;
+   return roundedVal;
 }
 
-// Convert ticket count => slider position (0..47)
+// Convert ticket count => slider position (0..48)
 function ticketsToSliderPos(value) {
-    const fraction = piecewisePosition(value);
-    return Math.round(fraction * MAX_STEPS);
+   const fraction = piecewisePosition(value);
+   return Math.round(fraction * MAX_STEPS);
 }
 
 // 1F) Log all steps for verification
 function logAllSteps() {
-    console.log("Logging all steps:");
-    for (let i = 0; i <= MAX_STEPS; i++) {
-        console.log(`Step ${i}: ${sliderPosToTickets(i)} tickets`);
-    }
+   console.log("Logging all steps:");
+   for (let i = 0; i <= MAX_STEPS; i++) {
+       console.log(`Step ${i}: ${sliderPosToTickets(i)} tickets`);
+   }
 }
 
 // 1G) Event listener for slider input
 $("#ticketRange").on("input", function () {
-    const sliderPos = +$(this).val(); // 0..47
-    const val = sliderPosToTickets(sliderPos);
-    $("#value").val(val.toFixed(0));
-    globalTicketNumber = val;
+   const sliderPos = +$(this).val(); // 0..48
+   const val = sliderPosToTickets(sliderPos);
+   $("#value").val(val.toFixed(0));
+   globalTicketNumber = val;
 
-    console.log("Step 1: Number of tickets selected:", globalTicketNumber);
+   console.log("Step 1: Number of tickets selected:", globalTicketNumber);
 
-    // Update "I have X tickets"
-    $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
+   // Update "I have X tickets"
+   $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
 });
 
 // 1H) Event listener for typed input
 $("#value").on("change", function () {
-    const typedVal = parseInt($(this).val(), 10) || 0;
-    const clampedVal = Math.max(10, Math.min(typedVal, 10000));
-    const pos = ticketsToSliderPos(clampedVal);
-    $("#ticketRange").val(pos);
+   const typedVal = parseInt($(this).val(), 10) || 0;
+   const clampedVal = Math.max(10, Math.min(typedVal, 10000));
+   const pos = ticketsToSliderPos(clampedVal);
+   $("#ticketRange").val(pos);
 
-    globalTicketNumber = clampedVal;
-    console.log("Step 1: Number of tickets typed:", globalTicketNumber);
+   globalTicketNumber = clampedVal;
+   console.log("Step 1: Number of tickets typed:", globalTicketNumber);
 
-    $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
+   $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
 });
 
 // 1I) Log all steps on initialization and set initial value
 $(document).ready(function () {
-    const initialTickets = 300;
-    const pos = ticketsToSliderPos(initialTickets);
-    $("#ticketRange").val(pos);
-    $("#value").val(initialTickets);
-    $("#rangeValue").text(formatNumberWithCommas(initialTickets));
+   const initialTickets = 300;
+   const pos = ticketsToSliderPos(initialTickets);
+   $("#ticketRange").val(pos);
+   $("#value").val(initialTickets);
+   $("#rangeValue").text(formatNumberWithCommas(initialTickets));
 
-    globalTicketNumber = initialTickets;
-    logAllSteps(); // Log steps for debugging
+   globalTicketNumber = initialTickets;
+   logAllSteps(); // Log steps for debugging
 });
   
   /****************************
