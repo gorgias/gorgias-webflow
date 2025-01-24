@@ -198,8 +198,6 @@ $(".is-gradution-nb.is-invisible").each(function () {
  *
  ****************************/
 
-//****************************
-
 // 1A) Linear interpolation for a range
 function linearInterp(t, lowVal, highVal) {
    return lowVal + t * (highVal - lowVal);
@@ -290,41 +288,54 @@ function logAllSteps() {
 
 // 1G) Event listener for slider input
 $("#ticketRange").on("input", function () {
-   const sliderPos = +$(this).val(); // 0..48
-   const val = sliderPosToTickets(sliderPos);
-   $("#value").val(val.toFixed(0));
-   globalTicketNumber = val;
-
-   console.log("Step 1: Number of tickets selected:", globalTicketNumber);
-
-   // Update "I have X tickets"
-   $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
-});
-
-// 1H) Event listener for typed input
-$("#value").on("change", function () {
-   const typedVal = parseInt($(this).val(), 10) || 0;
-   const clampedVal = Math.max(10, Math.min(typedVal, 10000));
-   const pos = ticketsToSliderPos(clampedVal);
-   $("#ticketRange").val(pos);
-
-   globalTicketNumber = clampedVal;
-   console.log("Step 1: Number of tickets typed:", globalTicketNumber);
-
-   $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
-});
-
-// 1I) Log all steps on initialization and set initial value
-$(document).ready(function () {
-   const initialTickets = 300;
-   const pos = ticketsToSliderPos(initialTickets);
-   $("#ticketRange").val(pos);
-   $("#value").val(initialTickets);
-   $("#rangeValue").text(formatNumberWithCommas(initialTickets));
-
-   globalTicketNumber = initialTickets;
-   logAllSteps(); // Log steps for debugging
-});
+    const sliderPos = +$(this).val(); // 0..48
+    const val = sliderPosToTickets(sliderPos);
+    $("#value").val(val.toFixed(0));
+    globalTicketNumber = val;
+ 
+    console.log("Step 1: Number of tickets selected:", globalTicketNumber);
+ 
+    // Update "I have X tickets"
+    $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
+ 
+    // Call determinePlan to update plan details
+    determinePlan(globalTicketNumber);
+    updateLogosAndCTAs();
+ });
+ 
+ // 1H) Event listener for typed input
+ $("#value").on("change", function () {
+    const typedVal = parseInt($(this).val(), 10) || 0;
+    const clampedVal = Math.max(10, Math.min(typedVal, 10000));
+    const pos = ticketsToSliderPos(clampedVal);
+    $("#ticketRange").val(pos);
+ 
+    globalTicketNumber = clampedVal;
+    console.log("Step 1: Number of tickets typed:", globalTicketNumber);
+ 
+    $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
+ 
+    // Call determinePlan to update plan details
+    determinePlan(globalTicketNumber);
+    updateLogosAndCTAs();
+ });
+ 
+ // 1I) Log all steps on initialization and set initial value
+ $(document).ready(function () {
+    const initialTickets = 300;
+    const pos = ticketsToSliderPos(initialTickets);
+    $("#ticketRange").val(pos);
+    $("#value").val(initialTickets);
+    $("#rangeValue").text(formatNumberWithCommas(initialTickets));
+ 
+    globalTicketNumber = initialTickets;
+ 
+    // Call determinePlan to update plan details
+    determinePlan(globalTicketNumber);
+    updateLogosAndCTAs();
+ 
+    logAllSteps(); // Log steps for debugging
+ });
   
   /****************************
    *
