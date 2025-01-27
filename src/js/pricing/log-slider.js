@@ -570,8 +570,9 @@ $("#ticketRange").on("input", function () {
     percentages.forEach((percentage) => {
       const automatePrice = window[`globalAutomatePrice${percentage}`];
       const optionPrice = globalCurrentPlanPrice + automatePrice;
-      $('[data-el="helpdeskPrice' + percentage + '"]').text(optionPrice);
-     // console.log(`Option ${percentage}%: ${optionPrice}`);
+      const formattedPrice = formatNumberWithCommas(optionPrice);
+      $('[data-el="helpdeskPrice' + percentage + '"]').text(formattedPrice);
+      // console.log(`Option ${percentage}%: ${formattedPrice}`);
     });
   }
   
