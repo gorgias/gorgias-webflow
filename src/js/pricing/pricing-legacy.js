@@ -164,9 +164,10 @@ let chosenHelpdeskTickets = document.querySelector(`[data-el="chosen-helpdesk-ti
 let helpdeskOverageCost = 0;
 
 
+
 /****************************
  *
- * GLOBAL FUNCTIONS
+ * Global Functions
  *
  ****************************/
 
@@ -183,166 +184,175 @@ $(".support-tickets_cta").on("click", function () {
   $(".support-tickets_result").css("display", "block");
 });
 
-
-
-// Select all elements with the combo classes .is-gradution-nb and .is-invisible
-$(".is-gradution-nb.is-invisible").each(function () {
-  // Remove the text content of each matched element
-  $(this).text("");
-});
-
-
 /****************************
-*
-* STEP 1: Input Number of Tickets by User
-*
-****************************/
+ *
+ * Step 1: Input Number of Tickets by User
+ *
+ ****************************/
 
-// 1A) Linear interpolation for a range
-function linearInterp(t, lowVal, highVal) {
- return lowVal + t * (highVal - lowVal);
+// Global variable to store the number of tickets
+let globalTicketNumber = 0;
+
+// Function to update the display of .more-tickets-cta
+function updateMoreTicketsCTA() {
+  console.log("updateMoreTicketsCTA called, globalTicketNumber:", globalTicketNumber);
+  if (globalTicketNumber < 1250) {
+    $(".more-tickets-cta").css("opacity", "1");
+    $(".more-tickets-cta").css("pointer-events", "auto");
+  } else {
+    $(".more-tickets-cta").css("opacity", "0");
+    $(".more-tickets-cta").css("pointer-events", "none");
+  }
 }
 
-// 1B) Map slider fraction (0..1) to ticket values with updated ranges
-function piecewiseValue(fraction) {
- if (fraction < 4 / 48) {
-     // 10 to 50 (5 steps of 10)
-     const t = fraction / (4 / 48);
-     return linearInterp(t, 10, 50);
- } else if (fraction < (4 + 5) / 48) {
-     // 50 to 300 (5 steps of 50)
-     const t = (fraction - 4 / 48) / (5 / 48);
-     return linearInterp(t, 50, 300);
- } else if (fraction < (4 + 5 + 17) / 48) {
-     // 300 to 2000 (17 steps of 100)
-     const t = (fraction - (4 + 5) / 48) / (17 / 48);
-     return linearInterp(t, 300, 2000);
- } else if (fraction < (4 + 5 + 17 + 15) / 48) {
-     // 2000 to 5000 (15 steps of 200)
-     const t = (fraction - (4 + 5 + 17) / 48) / (15 / 48);
-     return linearInterp(t, 2000, 5000);
- } else {
-     // 5000 to 10000 (5 steps of 1000)
-     const t = (fraction - (4 + 5 + 17 + 15) / 48) / (5 / 48);
-     return linearInterp(t, 5000, 10000);
- }
-}
+// Function to handle ticket range input and change events
+$("#ticketRange, #ticketRange-2").on("input change", function () {
+  // Parse the input value as an integer or set to 0 if invalid
+  globalTicketNumber = parseInt($(this).val(), 10) || 0;
 
-// 1C) Rounding logic for each range
-function piecewiseRound(val) {
- if (val <= 50) {
-     return Math.round(val / 10) * 10; // Steps of 10
- } else if (val <= 300) {
-     return Math.round(val / 50) * 50; // Steps of 50
- } else if (val <= 2000) {
-     return Math.round(val / 100) * 100; // Steps of 100
- } else if (val <= 5000) {
-     return Math.round(val / 200) * 200; // Steps of 200
- } else {
-     return Math.round(val / 1000) * 1000; // Steps of 1000
- }
-}
-
-// 1D) Map ticket count to slider fraction (0..1)
-function piecewisePosition(value) {
- if (value <= 50) {
-     return ((value - 10) / (50 - 10)) * (4 / 48);
- } else if (value <= 300) {
-     return (4 / 48) + ((value - 50) / (300 - 50)) * (5 / 48);
- } else if (value <= 2000) {
-     return (4 + 5) / 48 + ((value - 300) / (2000 - 300)) * (17 / 48);
- } else if (value <= 5000) {
-     return (4 + 5 + 17) / 48 + ((value - 2000) / (5000 - 2000)) * (15 / 48);
- } else {
-     return (4 + 5 + 17 + 15) / 48 + ((value - 5000) / (10000 - 5000)) * (5 / 48);
- }
-}
-
-// 1E) Total steps
-const MAX_STEPS = 48;
-
-// Convert slider position (0..48) => final ticket count
-function sliderPosToTickets(sliderPos) {
- const fraction = sliderPos / MAX_STEPS;
- const rawVal = piecewiseValue(fraction);
- const roundedVal = piecewiseRound(rawVal);
- // Ensure unique values at the highest range
- if (sliderPos === MAX_STEPS - 1) return 9000; 
- if (sliderPos === MAX_STEPS) return 10000;
- return roundedVal;
-}
-
-// Convert ticket count => slider position (0..48)
-function ticketsToSliderPos(value) {
- const fraction = piecewisePosition(value);
- return Math.round(fraction * MAX_STEPS);
-}
-
-// 1F) Log all steps for verification
-function logAllSteps() {
- console.log("Logging all steps:");
- for (let i = 0; i <= MAX_STEPS; i++) {
-     console.log(`Step ${i}: ${sliderPosToTickets(i)} tickets`);
- }
-}
-
-// 1G) Event listener for slider input
-$("#ticketRange").on("input", function () {
-  const sliderPos = +$(this).val(); // 0..48
-  const val = sliderPosToTickets(sliderPos);
-  $("#value").val(val.toFixed(0));
-  globalTicketNumber = val;
-
+  // Log the current state
   console.log("Step 1: Number of tickets selected:", globalTicketNumber);
 
-  // Update "I have X tickets"
-  $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
+  // Update the ticket number in the DOM
+  $('[data-el="ticketNumber"]').text(formatNumberWithCommas(globalTicketNumber));
 
-  // Call determinePlan to update plan details
+  // Update the display of .more-tickets-cta
+  updateMoreTicketsCTA();
+
+  // Ensure that plan selection is valid before proceeding
   determinePlan(globalTicketNumber);
-  updateActivePlanElement()
+  updateActivePlanElement();
   updateLogosAndCTAs();
+  updateSummaryDetails();
+  // Display alert
+  displayAlert();
+
+  // After ticket input changes, handle plan-specific logic
+  if (globalCurrentPlanName === "Starter") {
+    toggleMonthly();
+    $(".addons_cards").addClass("is-disabled");
+    $('.starter-plan-alert').css("display", "block");
+  } else {
+    $(".addons_cards").removeClass("is-disabled");
+    $('.starter-plan-alert').css("display", "none");
+  }
+
+  // If a card has already been selected, update the plan selection
+  if (selectedCardType) {
+    updatePlanSelection(selectedCardType);
+    updateSummaryDetails();
+  }
+
+  // Check if a valid plan has been determined
+  if (globalCurrentPlanName && chosenHelpdeskPrice > 0) {
+    // Update prices, UI elements, and calculate the summary
+    updatePricesOnBillingCycleChange();
+    calculateSummary();
+    updateSummaryDetails();
+    
+  } else {
+    console.warn("No valid plan selected, skipping summary calculation.");
+  }
+
+
 });
 
-// 1H) Event listener for typed input
-$("#value").on("change", function () {
-  const typedVal = parseInt($(this).val(), 10) || 0;
-  const clampedVal = Math.max(10, Math.min(typedVal, 10000));
-  const pos = ticketsToSliderPos(clampedVal);
-  $("#ticketRange").val(pos);
+// Handle click event on the more-tickets-cta button
+$(".more-tickets-cta").on("click", function () {
+  // Hide the lower graduation and show the higher graduation
+  $(".range-slider_graduation.is-lower").css("display", "none");
+  $(".range-slider_graduation.is-higher").css("display", "flex");
+  $(this).remove();
 
-  globalTicketNumber = clampedVal;
-  console.log("Step 1: Number of tickets typed:", globalTicketNumber);
+  $(".pricing-step_range-module.is-lower").css("display", "none").remove();
+  $(".pricing-step_range-module.is-higher").css("display", "flex");
 
-  $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
+  // Set the ticket number to 2500
+  globalTicketNumber = 1250;
 
-  // Call determinePlan to update plan details
+  // Update the ticket range input value
+  $("#ticketRange").val(globalTicketNumber);
+
+  // Update the ticket number in the DOM
+  $('[data-el="ticketNumber"]').text(formatNumberWithCommas(globalTicketNumber));
+
+  // After ticket input changes, trigger next steps
   determinePlan(globalTicketNumber);
-  updateActivePlanElement()
-  updateLogosAndCTAs();
-});
-
-// 1I) Log all steps on initialization and set initial value
-$(document).ready(function () {
-  const initialTickets = 300;
-  const pos = ticketsToSliderPos(initialTickets);
-  $("#ticketRange").val(pos);
-  $("#value").val(initialTickets);
-  $("#rangeValue").text(formatNumberWithCommas(initialTickets));
-
-  globalTicketNumber = initialTickets;
-
-  // Call determinePlan to update plan details
-  determinePlan(globalTicketNumber);
-  updateActivePlanElement()
+  updateActivePlanElement();
   updateLogosAndCTAs();
 
-  logAllSteps(); // Log steps for debugging
+  // Display alert
+  displayAlert();
+
+  // Log the change for debugging
+  console.log("Range slider updated to max 10000 and step 100");
 });
+
+let isThumbDragging = false; // Flag to track if the thumb is being dragged
+
+// Listen for mousedown on the .range-slider_thumb
+$(".range-slider_thumb").on("mousedown", function () {
+  console.log("Mouse down on range slider thumb");
+  isThumbDragging = true; // Set the flag to true when dragging starts
+});
+
+// Listen for mouseup anywhere in the document
+$(document).on("mouseup", function () {
+  if (isThumbDragging) {
+    // Check if dragging was happening
+    console.log("Mouse up detected after dragging thumb");
+    isThumbDragging = false; // Reset the flag
+    scrollToStep1();
+  }
+});
+
+// Attach mouseup event to '.range-slider_track.is-pricing'
+$(".range-slider_track.is-pricing").on("mouseup", function () {
+  scrollToStep1();
+});
+
+// Function to scroll to #step-1
+function scrollToStep1() {
+  const scrollTarget = $("#step-1");
+  if (scrollTarget.length) {
+    console.log("Scrolling to #step-1");
+    $("html, body").animate(
+      {
+        scrollTop: scrollTarget.offset().top - $(window).height() * -0.1, // Scroll with a 20% offset
+      },
+      400 // Scroll speed in milliseconds
+    );
+  } else {
+    console.log("Element #step-1 not found");
+  }
+}
+
+// Function to initialize at 1250 tickets on page load
+function initTicketNumber() {
+  // Set the ticket number to 1250
+  globalTicketNumber = 2500;
+
+  // Update the ticket range input values
+  $("#ticketRange, #ticketRange-2").val(globalTicketNumber);
+
+  // Update the ticket number in the DOM
+  $('[data-el="ticketNumber"]').text(formatNumberWithCommas(globalTicketNumber));
+
+  // Update the display of .more-tickets-cta
+  updateMoreTicketsCTA();
+
+  // After ticket input changes, trigger next steps
+  determinePlan(globalTicketNumber);
+  updateActivePlanElement();
+  updateLogosAndCTAs();
+  updateSummaryDetails();
+  updateOveragesDisplay();
+
+}
 
 /****************************
  *
- * STEP 2: Check Billing Cycle
+ * Step 2: Check Billing Cycle
  *
  ****************************/
 
@@ -361,7 +371,7 @@ function switchBillingCycle(billingCycle) {
     $(".annualPlan").prop("checked", true);
   }
   globalBillingCycle = billingCycle;
-  //console.log("Switched to", billingCycle, "billing cycle");
+  console.log("Switched to", billingCycle, "billing cycle");
   determinePlan(globalTicketNumber);
   displayAlert();
 }
@@ -370,10 +380,10 @@ function switchBillingCycle(billingCycle) {
 $(".billing-toggle-radio").on("click", function () {
   if ($(this).hasClass("is-yearly")) {
     switchBillingCycle("yearly");
-   // console.log("Step 2: Switched to Yearly billing cycle");
+    console.log("Step 2: Switched to Yearly billing cycle");
   } else if ($(this).hasClass("is-monthly")) {
     switchBillingCycle("monthly");
-   // console.log("Step 2: Switched to Monthly billing cycle");
+    console.log("Step 2: Switched to Monthly billing cycle");
   }
   updatePricesOnBillingCycleChange();
 });
@@ -390,38 +400,38 @@ function toggleYearly() {
 
 // Function to display alerts based on billing cycle and plan
 function displayAlert() {
+  // Hide all alerts initially
   $(".yearly-billing-alert, .monthly-billing-alert, .starter-billing-alert").css("display", "none");
 
+  // Check for the conditions and show the appropriate alert
   if (globalBillingCycle === "yearly") {
     $(".yearly-billing-alert").css("display", "flex");
     $(".radio-wrap.billing-toggle-radio.is-yearly").removeClass("is-disabled");
-   // console.log("Displaying yearly billing alert");
+    console.log("Displaying yearly billing alert");
   } else if (globalBillingCycle === "monthly" && globalCurrentPlanName === "Starter") {
     $(".starter-billing-alert").css("display", "flex");
     $(".radio-wrap.billing-toggle-radio.is-yearly").addClass("is-disabled");
-    //console.log("Displaying starter monthly billing alert");
+    console.log("Displaying starter monthly billing alert");
   } else if (globalBillingCycle === "monthly" && globalCurrentPlanName !== "Starter") {
     $(".monthly-billing-alert").css("display", "flex");
     $(".radio-wrap.billing-toggle-radio.is-yearly").removeClass("is-disabled");
-    //console.log("Displaying monthly billing alert");
+    console.log("Displaying monthly billing alert");
   }
 }
 
-
 /****************************
  *
- * STEP 3: Compare globalTicketNumber to Data Definitions
+ * Step 3: Compare globalTicketNumber to Data Definitions
  *
  ****************************/
 
 // Global variables for current plan
 let globalCurrentPlanName = "";
-let globalCurrentPlanPrice = 0;
+let globalCurrentPlanPrice = 0; // This will hold the base price of the selected plan
+let globalCurrentPlanOverageCost = 0;
 let globalCurrentPlanOverageTickets = 0;
-let globalCurrentPlanOverageCostPerTicket = 0;
-let globalCurrentPlanTicketsPerMonth = 0;
 
-// Function to determine the plan based on # of tickets
+// Function to determine the plan based on the number of tickets
 function determinePlan(tickets) {
   const previousPlanName = globalCurrentPlanName;
   const plans = helpdeskPlans[globalBillingCycle];
@@ -435,9 +445,9 @@ function determinePlan(tickets) {
     const planCost = plan.monthly_cost;
     const totalPrice = planCost + overageCost;
 
-  //   console.log(
-  //     `Checking Plan: ${plan.name}, Base Price: ${planCost}, Overage Tickets: ${overageTickets}, Overage Cost: ${overageCost}, Total Price: ${totalPrice}`
-  //   );
+    console.log(
+      `Checking Plan: ${plan.name}, Base Price: ${planCost}, Overage Tickets: ${overageTickets}, Overage Cost: ${overageCost}, Total Price: ${totalPrice}`
+    );
 
     if (
       currentPlanIndex < plans.length - 1 &&
@@ -448,17 +458,19 @@ function determinePlan(tickets) {
     } else {
       break;
     }
-
     if (selectedCardType) {
       // Extract automationRate from selectedCardType
       const automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
-      // Calculate automateTickets
-      const automateTickets = Math.round(tickets * (automationRate / 100));
-      // Update chosen prices & recalc summary
+    
+      // Calculate automateTickets based on globalTicketNumber and automationRate
+      const automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
+    
+      // Update chosen prices and recalculate summary
       updateChosenPrices(automateTickets, automationRate);
       calculateSummary();
       calculateROISavings();
     }
+ 
   }
 
   globalCurrentPlanName = applicablePlan.name;
@@ -467,25 +479,29 @@ function determinePlan(tickets) {
   globalCurrentPlanOverageCostPerTicket = applicablePlan.cost_per_overage_ticket;
   globalCurrentPlanTicketsPerMonth = applicablePlan.tickets_per_month;
 
-  // console.log(
-  //   "Step 3: Selected Plan -",
-  //   globalCurrentPlanName,
-  //   "| Base Price:",
-  //   globalCurrentPlanPrice
-  // );
-
+  // Update plan name in the DOM
   $('[data-el="planName"]').text(globalCurrentPlanName);
+
+  console.log(
+    "Step 3: Selected Plan -",
+    globalCurrentPlanName,
+    "| Base Price:",
+    globalCurrentPlanPrice
+  );
 
   if (
     previousPlanName === "Starter" &&
     globalCurrentPlanName !== "Starter" &&
     globalBillingCycle === "monthly"
   ) {
-   // console.log("Switching from Starter monthly → forcing yearly because new plan is not Starter");
+    console.log("Toggling to yearly due to plan change from 'Starter' and monthly billing.");
     toggleYearly();
   }
 
+  // Update overages display
   updateOveragesDisplay();
+
+  // Recalculate automate prices
   calculateAutomatePrices();
 }
 
@@ -496,21 +512,20 @@ function updateOveragesDisplay() {
     const overageRate = globalCurrentPlanOverageCostPerTicket.toFixed(2);
     overagesElement.css("opacity", "1");
     overagesElement.text(`$${overageRate}/overage helpdesk ticket`);
-  //  console.log(`Overages apply: $${overageRate} per overage ticket`);
+    console.log(`Overages apply: $${overageRate} per overage ticket`);
   } else {
     overagesElement.css("opacity", "0");
-   // console.log("No overages apply");
+    console.log("No overages apply");
   }
 }
 
-
-
 /****************************
  *
- * STEP 4: Calculate Number of Automated Tickets
+ * Step 4: Calculate Number of Automated Tickets
  *
  ****************************/
 
+// Global variables for automated ticket counts and prices
 let globalAutomateTickets0 = 0,
   globalAutomateTickets10 = 0,
   globalAutomateTickets20 = 0,
@@ -520,6 +535,7 @@ let globalAutomatePrice0 = 0,
   globalAutomatePrice20 = 0,
   globalAutomatePrice30 = 0;
 
+// Function to calculate automated ticket prices based on ticket percentages
 function calculateAutomatePrices() {
   const percentages = [0, 10, 20, 30];
   const automatePlansForCycle = automatePlans[globalBillingCycle];
@@ -528,11 +544,13 @@ function calculateAutomatePrices() {
     let automateTickets = Math.round(globalCurrentPlanTicketsPerMonth * (percentage / 100));
     let automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
 
-    // Store in dynamic variables
+    // Update global variables dynamically
     window[`globalAutomateTickets${percentage}`] = automateTickets;
     window[`globalAutomatePrice${percentage}`] = automatePrice;
 
+    // Update DOM elements for the pricing cards
     if (percentage !== 0) {
+      const totalTickets = formatNumberWithCommas(globalCurrentPlanTicketsPerMonth);
       const automateTicketsFormatted = formatNumberWithCommas(automateTickets);
       $('[data-el="ticketNumber' + percentage + '"]').text(
         `${automateTicketsFormatted} automated`
@@ -540,14 +558,14 @@ function calculateAutomatePrices() {
     }
   });
 
-  // Update the main ticket number
+  // Update main ticket number display
   const totalTicketsText = `${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} helpdesk tickets`;
   $('[data-el="ticketNumber"]').text(totalTicketsText);
 
   calculateOptionPrices();
 }
 
-// Helper function to find automate price from ticket count
+// Helper function to find automate price based on ticket count
 function findAutomatePrice(tickets, plans) {
   let selectedPlan = plans[0];
   for (let i = 0; i < plans.length; i++) {
@@ -560,65 +578,69 @@ function findAutomatePrice(tickets, plans) {
 }
 
 
+
 /****************************
  *
- * STEP 5: Calculate Plan Option Prices
+ * Step 5: Calculate Plan Option Prices
  *
  ****************************/
 
+// Function to calculate total plan prices for different automation levels
 function calculateOptionPrices() {
   const percentages = [0, 10, 20, 30];
 
   percentages.forEach((percentage) => {
     const automatePrice = window[`globalAutomatePrice${percentage}`];
     const optionPrice = globalCurrentPlanPrice + automatePrice;
-    const formattedPrice = formatNumberWithCommas(optionPrice);
-    $('[data-el="helpdeskPrice' + percentage + '"]').text(formattedPrice);
-    // console.log(`Option ${percentage}%: ${formattedPrice}`);
+    $('[data-el="helpdeskPrice' + percentage + '"]').text(optionPrice);
+
+    console.log(`Option ${percentage}%: ${optionPrice}`);
   });
 }
 
-
 /****************************
  *
- * STEP 6: Choosing a Plan
+ * Step 6: Choosing a Plan
  *
  ****************************/
 
+// Initialize selectedCardType to null to indicate no card selected initially
 let selectedCardType = null;
-let isProgrammaticClick = false;
+let isProgrammaticClick = false; // Flag to track programmatic clicks
 
+// Function to update the plan selection based on the selected card type
 function updatePlanSelection(selectedCardType) {
- // console.log("Updating plan selection for card type:", selectedCardType);
+  console.log("Updating plan selection for card type:", selectedCardType);
 
-  // Deselect all cards
+  // Deselect all cards and their automate pills
   $(".pricing_card").removeClass("is-selected");
   $(".pricing_card .pricing_automate-pill").removeClass("is-selected");
 
-  // Select this card
+  // Select the appropriate card and its automate pill
   const selectedCard = $('[data-el="' + selectedCardType + '"]');
   selectedCard.addClass("is-selected");
   selectedCard.find(".pricing_automate-pill").addClass("is-selected");
 
-  // Show plan summary, hide no-selection
+  // Display the selected plan summary and hide the no-selection message
   $(".plan_summary-layout").css("display", "flex");
   $(".plan_no-selection").css("display", "none");
 
-  // Enable code radio
+  // Enable the code radio buttons
   $(".code-radio").removeClass("is-inactive");
 
-  // Extract automation rate
+  // Find the chosen automation rate and display it
   const automationRate = selectedCardType.replace("pricingCard", "") || "0";
   $('[data-el="automationRate"]').text(automationRate);
 
-  // Calculate tickets
+  // Calculate automated and helpdesk tickets based on the user's ticket number
   const automateTickets = Math.round(globalTicketNumber * (parseInt(automationRate) / 100));
-  // const helpdeskTickets = globalTicketNumber; // or if you previously subtracted automateTickets
+  const helpdeskTickets = globalTicketNumber //- automateTickets;
 
+  // Update chosenAutomatedTickets and chosenHelpdeskTickets in the summary
   chosenAutomatedTickets.textContent = formatNumberWithCommas(automateTickets);
-  chosenHelpdeskTickets.textContent = formatNumberWithCommas(globalTicketNumber);
+  chosenHelpdeskTickets.textContent = formatNumberWithCommas(helpdeskTickets);
 
-  // Update chosen prices
+  // Update chosen prices and summary total
   updateChosenPrices(automateTickets, automationRate);
   calculateSummary();
   calculateROISavings();
@@ -627,84 +649,70 @@ function updatePlanSelection(selectedCardType) {
 
 // Event listener for pricing card clicks
 $('[data-el^="pricingCard"]').on("click", function () {
+  // Store the selected card type
   selectedCardType = $(this).attr("data-el");
- // console.log("Selected card type:", selectedCardType);
+  console.log("Selected card type:", selectedCardType);
 
+  // Call the updatePlanSelection function
   updatePlanSelection(selectedCardType);
 
-  // Example scroll only if user click
+  // Only scroll to #step-3 if this is a user click
   if (!isProgrammaticClick) {
     $("html, body").animate(
-      { scrollTop: $("#step-3").offset().top },
-      400
+      {
+        scrollTop: $("#step-3").offset().top,
+      },
+      400 // Scroll speed in milliseconds
     );
-  //  console.log("User clicked, scrolling to #step-3");
+    console.log("User clicked, scrolling to #step-3");
   } else {
-   // console.log("Programmatic click, skipping scroll");
+    console.log("Programmatic click, skipping scroll to #step-3");
   }
 });
 
-
 /****************************
  *
- * STEP 7: Calculating the Summary Total
+ * Function to handle summary UI details
  *
  ****************************/
 
-let chosenHelpdeskPrice = 0;
-let chosenAutomatePrice = 0;
-let voiceTicketPrice = 0;
-let smsTicketPrice = 0;
+function updateSummaryDetails() {
+  // Update helpdeskBase
+  helpdeskBase.textContent = `${globalCurrentPlanPrice.toFixed(0)}`;
 
-function calculateSummary() {
-  if (!chosenHelpdeskPrice || chosenHelpdeskPrice === 0) {
-   // console.warn("No plan has been selected yet.");
-    return;
+  // Update helpdeskOverages display
+  if (globalCurrentPlanOverageTickets > 0) {
+    helpdeskOverages.textContent = `${helpdeskOverageCost.toFixed(0)}`;
+    $('.summary_plan-breakdown').css('display', 'block');
+  } else {
+    helpdeskOverages.textContent = '0';
+    $('.summary_plan-breakdown').css('display', 'none');
   }
-  const summaryTotal = chosenHelpdeskPrice + chosenAutomatePrice + voiceTicketPrice + smsTicketPrice;
-  const formattedTotal = formatNumberWithCommas(summaryTotal.toFixed(0));
-  $('[data-el="summaryTotalPrice"]').text(formattedTotal);
- // console.log("Updated DOM with summary total:", formattedTotal);
 }
-
 
 /****************************
  *
- * STEP 8: Update Active Plan + Addon UI + ROI
+ * Function to Calculate ROI Savings Based on Chosen Plan
  *
  ****************************/
 
-function updateActivePlanElement() {
-  const planElements = document.querySelectorAll("[g-col-highlight]");
-  planElements.forEach((element) => {
-    if (
-      element.getAttribute("g-col-highlight").toLowerCase() ===
-      globalCurrentPlanName.toLowerCase()
-    ) {
-      element.classList.add("is-active");
-    //  console.log("Highlight updated on plan:", globalCurrentPlanName);
-    } else {
-      element.classList.remove("is-active");
-    }
-  });
-}
-
-// ROI calculation
 function calculateROISavings() {
-  const avgTimePerTicketWithoutGorgias = 8.6;
-  const avgTimePerTicketWithGorgias = 6;
-  const avgSupportSalary = 35;
+  const avgTimePerTicketWithoutGorgias = 8.6; // Average time per ticket without Gorgias, in minutes
+  const avgTimePerTicketWithGorgias = 6; // Average time per ticket with Gorgias, in minutes
+  const avgSupportSalary = 35; // Average support salary in USD/hour
 
   let agentTicketsWithAutomate = globalTicketNumber;
-  const percentage = selectedCardType ? selectedCardType.replace("pricingCard", "") : "0";
+  const percentage = selectedCardType.replace("pricingCard", "") || "0";
   const automateTickets = window[`globalAutomateTickets${percentage}`] || 0;
   agentTicketsWithAutomate = globalTicketNumber - automateTickets;
 
+  // Ensure agent tickets are a valid number
   if (isNaN(agentTicketsWithAutomate)) {
     console.error("Invalid agent ticket number");
     return;
   }
 
+  // Calculate total support time and costs
   const totalSupportTimeWithoutGorgias = (globalTicketNumber * avgTimePerTicketWithoutGorgias) / 60;
   const totalHumanCostWithoutGorgias = totalSupportTimeWithoutGorgias * avgSupportSalary;
 
@@ -716,8 +724,10 @@ function calculateROISavings() {
   const timeSaved = totalSupportTimeWithoutGorgias - totalSupportTimeWithGorgias;
   const moneySaved = totalHumanCostWithoutGorgias - (totalHumanCostWithGorgias + totalGorgiasCost);
 
+  // Format money saved with comma separators
   const formattedMoneySaved = formatNumberWithCommas(moneySaved.toFixed(0));
 
+  // Update the DOM with time and formatted money saved
   $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
   if (moneySaved > 0) {
     $('[data-target="moneySaved"]').text(formattedMoneySaved);
@@ -726,18 +736,30 @@ function calculateROISavings() {
   }
 }
 
-// Recalc prices when the billing cycle changes
-function updatePricesOnBillingCycleChange() {
-//  console.log("Billing cycle changed to:", globalBillingCycle);
+/****************************
+ *
+ * Function to Recalculate Prices When Billing Cycle Changes
+ *
+ ****************************/
 
-  determinePlan(globalTicketNumber);
-  calculateAutomatePrices();
+function updatePricesOnBillingCycleChange() {
+  console.log("Billing cycle changed to:", globalBillingCycle);
+
+  // Recalculate prices for the current billing cycle
+  determinePlan(globalTicketNumber); // This recalculates the plan based on ticket number
+  calculateAutomatePrices(); // Recalculate automate prices
   updateVoiceTicketPrice();
   updateSmsTicketPrice();
 
+  // Ensure that chosen prices are updated after recalculating plans
   if (selectedCardType) {
+    // Extract automationRate from selectedCardType
     const automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
+
+    // Calculate automateTickets based on globalTicketNumber and automationRate
     const automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
+
+    // Update chosen prices and recalculate summary
     updateChosenPrices(automateTickets, automationRate);
     calculateSummary();
     calculateROISavings();
@@ -745,22 +767,30 @@ function updatePricesOnBillingCycleChange() {
   }
 }
 
-// Update chosen prices based on selected automation
-function updateChosenPrices(automateTicketsParam, automationRateParam) {
-//  console.log("Updating chosen prices for card:", selectedCardType);
+/****************************
+ *
+ * Function to Update Chosen Prices Based on Selected Card Type
+ *
+ ****************************/
 
-  // Helpdesk overage
+function updateChosenPrices(automateTicketsParam, automationRateParam) {
+  console.log("Updating prices for selected card:", selectedCardType);
+
+  // Calculate helpdesk overage cost
   if (globalCurrentPlanOverageTickets > 0) {
     helpdeskOverageCost = globalCurrentPlanOverageTickets * globalCurrentPlanOverageCostPerTicket;
   } else {
     helpdeskOverageCost = 0;
   }
+
+  // Update chosenHelpdeskPrice to include overages
   chosenHelpdeskPrice = globalCurrentPlanPrice + helpdeskOverageCost;
 
   let automateTickets = automateTicketsParam;
   let automationRate = automationRateParam;
 
-  if (typeof automateTickets === "undefined" || typeof automationRate === "undefined") {
+  // If parameters are undefined, calculate them based on selectedCardType
+  if (typeof automateTickets === 'undefined' || typeof automationRate === 'undefined') {
     if (selectedCardType) {
       automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
       automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
@@ -770,63 +800,109 @@ function updateChosenPrices(automateTicketsParam, automationRateParam) {
     }
   }
 
+  // Recalculate automatePrice based on actual number of automated tickets
   const automatePlansForCycle = automatePlans[globalBillingCycle];
   const automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
+
   chosenAutomatePrice = automatePrice;
 
-  // console.log("Chosen Helpdesk Price:", chosenHelpdeskPrice);
-  // console.log("Chosen Automate Price:", chosenAutomatePrice);
+  console.log("Chosen Helpdesk Price (including overages):", chosenHelpdeskPrice);
+  console.log("Chosen Automate Price:", chosenAutomatePrice);
 
+  // Check if automation is 0% and hide or show the automate summary
   if (automationRate === 0) {
     $('[data-summary="automate"]').css("display", "none");
+    console.log("Automation is 0%, hiding automate summary.");
   } else {
     $('[data-summary="automate"]').css("display", "flex");
+    console.log("Automation is not 0%, displaying automate summary.");
   }
 
+  // Update the DOM with the chosen prices
   $('[data-el="chosenHelpdeskPrice"]').text(chosenHelpdeskPrice.toFixed(0));
   $('[data-el="chosenAutomatePrice"]').text(chosenAutomatePrice.toFixed(0));
 }
 
-// Summaries of base helpdesk & overages
-function updateSummaryDetails() {
-  helpdeskBase.textContent = `${globalCurrentPlanPrice.toFixed(0)}`;
-  if (globalCurrentPlanOverageTickets > 0) {
-    helpdeskOverages.textContent = `${helpdeskOverageCost.toFixed(0)}`;
-    $(".summary_plan-breakdown").css("display", "block");
-  } else {
-    helpdeskOverages.textContent = "0";
-    $(".summary_plan-breakdown").css("display", "none");
-  }
-}
-
-
 /****************************
  *
- * Voice & SMS Addons
+ * Step 7: Calculating the Summary Total
  *
  ****************************/
 
-function updateVoiceTicketPrice() {
-  const selectedTier = voiceTicketsSelect?.value;
-  if (!selectedTier) return;
-  const planType = globalBillingCycle;
-  voiceTicketPrice = calculateAddonTicketPrice(selectedTier, planType, voiceTiers);
-  updateAddonUI("voice", selectedTier, voiceTicketPrice);
+// Initialize chosen prices to default values (0) to avoid errors
+let chosenHelpdeskPrice = 0;
+let chosenAutomatePrice = 0;
+let voiceTicketPrice = 0;
+let smsTicketPrice = 0;
+
+function calculateSummary() {
+  if (!chosenHelpdeskPrice || chosenHelpdeskPrice === 0) {
+    console.warn("No plan has been selected yet.");
+    return;
+  }
+
+  const summaryTotal =
+    chosenHelpdeskPrice +
+    chosenAutomatePrice +
+    voiceTicketPrice +
+    smsTicketPrice;
+  const formattedTotal = formatNumberWithCommas(summaryTotal.toFixed(0));
+
+  $('[data-el="summaryTotalPrice"]').text(formattedTotal);
+  console.log("Updated DOM with formatted summary total:", formattedTotal);
 }
 
-function updateSmsTicketPrice() {
-  const selectedTier = smsTicketsSelect?.value;
-  if (!selectedTier) return;
-  const planType = globalBillingCycle;
-  smsTicketPrice = calculateAddonTicketPrice(selectedTier, planType, smsTiers);
-  updateAddonUI("sms", selectedTier, smsTicketPrice);
+/****************************
+ *
+ * Step 8: Update Active Plan Element
+ *
+ ****************************/
+
+function updateActivePlanElement() {
+  const planElements = document.querySelectorAll("[g-col-highlight]");
+  planElements.forEach((element) => {
+    if (element.getAttribute("g-col-highlight").toLowerCase() === globalCurrentPlanName.toLowerCase()) {
+      element.classList.add("is-active");
+      console.log("Highlight updated");
+    } else {
+      element.classList.remove("is-active");
+    }
+  });
 }
 
+/****************************
+ *
+ * Selecting and calculating voice and SMS tickets
+ *
+ ****************************/
+
+// Function to calculate the price of the voice tickets
 function calculateAddonTicketPrice(selectedTier, planType, tiers) {
   const selectedPlan = tiers[planType].find((tier) => tier.tier === selectedTier);
   return selectedPlan ? selectedPlan.price : 0;
 }
 
+// Function to update the UI with voice ticket prices
+function updateVoiceTicketPrice() {
+  const selectedTier = voiceTicketsSelect.value;
+  const planType = globalBillingCycle;
+  voiceTicketPrice = calculateAddonTicketPrice(selectedTier, planType, voiceTiers);
+
+  // Update visibility and content
+  updateAddonUI("voice", selectedTier, voiceTicketPrice);
+}
+
+// Function to update the UI with SMS ticket prices
+function updateSmsTicketPrice() {
+  const selectedTier = smsTicketsSelect.value;
+  const planType = globalBillingCycle;
+  smsTicketPrice = calculateAddonTicketPrice(selectedTier, planType, smsTiers);
+
+  // Update visibility and content
+  updateAddonUI("sms", selectedTier, smsTicketPrice);
+}
+
+// Function to update addon UI elements
 function updateAddonUI(addonType, selectedTier, ticketPrice) {
   const summaryElement = $(`[data-summary="${addonType}"]`);
   const priceElement = $(`.${addonType}-price`);
@@ -861,34 +937,20 @@ function updateAddonUI(addonType, selectedTier, ticketPrice) {
   }
 
   $(`[data-el="${addonType}Price"]`).text(ticketPrice.toFixed(0));
- // console.log(`Updated UI with ${addonType} ticket price: ${ticketPrice}`);
+  console.log(`Updated UI with ${addonType} ticket price: ${ticketPrice}`);
 
   calculateSummary();
 }
 
-// Event listeners for the dropdown selects
-voiceTicketsSelect?.addEventListener("change", function () {
+voiceTicketsSelect.addEventListener("change", function () {
   $(voiceSummary).removeClass("is-hidden");
   updateVoiceTicketPrice();
 });
 
-smsTicketsSelect?.addEventListener("change", function () {
+smsTicketsSelect.addEventListener("change", function () {
   $(smsSummary).removeClass("is-hidden");
   updateSmsTicketPrice();
 });
-
-// Hide summaries if Tier 0 is selected
-smsTicketsSelect?.addEventListener("change", function () {
-  if (smsTicketsSelect.value === "Tier 0") {
-    $(smsSummary).addClass("is-hidden");
-  }
-});
-voiceTicketsSelect?.addEventListener("change", function () {
-  if (voiceTicketsSelect.value === "Tier 0") {
-    $(voiceSummary).addClass("is-hidden");
-  }
-});
-
 
 /****************************
  *
@@ -896,21 +958,30 @@ voiceTicketsSelect?.addEventListener("change", function () {
  *
  ****************************/
 
+// Handle clicks on remove buttons
 $('[data-summary="helpdesk-remove"]').on("click", function () {
+  // Hide plan summary and show no-selection message
   $(".plan_summary-layout").css("display", "none");
   $(".plan_no-selection").css("display", "flex");
+
+  // Disable radio buttons and deselect pricing cards
   $(".code-radio").addClass("is-inactive");
   $(".pricing_card").removeClass("is-selected");
+
+  // Reset summary total price to "0,000"
   $('[data-el="summaryTotalPrice"]').text("0,000");
+
+  // Reset chosen helpdesk and automate prices
   chosenHelpdeskPrice = 0;
   chosenAutomatePrice = 0;
 });
 
 $('[data-summary="automate-remove"]').on("click", function () {
   isProgrammaticClick = true;
+   
   const defaultPricingCard = document.querySelector('[data-el="pricingCard"]');
   if (defaultPricingCard) {
-   // console.log("Simulating click on default pricing card for 0% automation");
+    console.log("Simulating click on default pricing card for 0% automation");
     defaultPricingCard.click();
   } else {
     console.error("No pricing card found for default automation (0%)");
@@ -921,41 +992,62 @@ $('[data-summary="automate-remove"]').on("click", function () {
   }, 0);
 });
 
+// Function to reset addon price
 function resetAddonPrice(addon) {
   const addonTicketsDropdown = document.querySelector(`#${addon}-tickets`);
-  if (!addonTicketsDropdown) return;
-  addonTicketsDropdown.value = "Tier 0";
- // console.log(`${addon.toUpperCase()} tickets dropdown reset to Tier 0`);
 
+  // Set the dropdown to "Tier 0"
+  addonTicketsDropdown.value = "Tier 0";
+  console.log(`${addon.toUpperCase()} tickets dropdown reset to Tier 0`);
+
+  // Programmatically trigger the change event
   const changeEvent = new Event("change", { bubbles: true });
   addonTicketsDropdown.dispatchEvent(changeEvent);
 
+  // Hide the addon summary block
   $(`[data-summary="${addon}"]`).addClass("is-hidden");
+
+  // Remove the current class from the dropdown
   $(".addons_dropdown-links.w--current").removeClass("w--current");
 
+  // Update the UI with the new price
   if (addon === "voice") {
     updateVoiceTicketPrice();
   } else if (addon === "sms") {
     updateSmsTicketPrice();
   }
- // console.log(`${addon.toUpperCase()} reset completed`);
+
+  console.log(`${addon.toUpperCase()} reset completed`);
 }
 
 $('[data-summary="voice-remove"]').on("click", function () {
-//  console.log("Voice remove button clicked");
+  console.log("Voice remove button clicked");
   resetAddonPrice("voice");
 });
+
 $('[data-summary="sms-remove"]').on("click", function () {
-//  console.log("SMS remove button clicked");
+  console.log("SMS remove button clicked");
   resetAddonPrice("sms");
 });
 
+// Hide summaries if Tier 0 is selected
+smsTicketsSelect.addEventListener("change", function () {
+  if (smsTicketsSelect.value === "Tier 0") {
+    $(smsSummary).addClass("is-hidden");
+  }
+});
+
+voiceTicketsSelect.addEventListener("change", function () {
+  if (voiceTicketsSelect.value === "Tier 0") {
+    $(voiceSummary).addClass("is-hidden");
+  }
+});
 
 /***************************
  *
  * Update UI elements
  *
- **************************/
+ *************************/
 
 function updateLogosAndCTAs() {
   let heroBtnLeft = $('[data-el="switch-btn-left"]');
@@ -994,3 +1086,61 @@ function updateLogosAndCTAs() {
     $('[data-el="contact-sales"]').css("display", "block");
   }
 }
+
+var Webflow = Webflow || [];
+Webflow.push(function () {
+  // Initialize the ticket number input
+  initTicketNumber();
+  // Initialize the active plan element
+  updateActivePlanElement();
+  // Initialize overages
+  updateOveragesDisplay();
+  overagesElement.css("opacity", "1");
+
+  setTimeout(() => {
+    // Function to generate valid HTML IDs
+    function generateValidId(text) {
+      return text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .trim();
+    }
+
+    // Function to process text and assign IDs for Voice and SMS links
+    function processText(element, voiceClass, smsClass) {
+      const text = element.textContent.trim();
+
+      if (text.includes("–")) {
+        const [part1, part2] = text.split("–").map((part) => part.trim());
+        element.innerHTML = `<span>${part1}</span> <span>${part2}</span>`;
+
+        const prefix = element.classList.contains(voiceClass)
+          ? "voice-"
+          : element.classList.contains(smsClass)
+          ? "sms-"
+          : "";
+
+        element.id = prefix + generateValidId(part1);
+      }
+    }
+
+    // Update the IDs and structure of text in the dropdown links
+    document.querySelectorAll(".addons_dropdown-links").forEach((link) => {
+      processText(link, "voice-link", "sms-link");
+    });
+
+    // Handle dropdown toggles for voice and SMS tickets
+    ["#w-dropdown-toggle-14", "#w-dropdown-toggle-15"].forEach((selector) => {
+      const dropdownToggle = document.querySelector(selector);
+      if (dropdownToggle) {
+        processText(dropdownToggle, "voice-link", "sms-link");
+        const observer = new MutationObserver(() => {
+          processText(dropdownToggle, "voice-link", "sms-link");
+        });
+        observer.observe(dropdownToggle, { childList: true, subtree: true });
+      }
+    });
+  }, 2000);
+});
