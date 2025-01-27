@@ -198,7 +198,6 @@ $(".is-gradution-nb.is-invisible").each(function () {
  *
  ****************************/
 
-
 // 1A) Linear interpolation for a range
 function linearInterp(t, lowVal, highVal) {
    return lowVal + t * (highVal - lowVal);
