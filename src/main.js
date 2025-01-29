@@ -130,6 +130,12 @@ Webflow.push(function () {
         newStyle(scriptBase + '/src/css/tool-roi-automate'+minBase+'.css','head');
     }
 
+    // Check if product is voice
+    if (path.includes('/wip/voice')){
+        newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
+    }
+
+
     // Check if product is convert
     if (path.includes('/products/convert') || path.includes('/lp/convert')){
       newScript(scriptBase + '/src/js/tool-roi-convert'+minBase+'.js','head', 1);
