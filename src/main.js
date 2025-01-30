@@ -46,7 +46,7 @@ Webflow.push(function () {
 
     // log pricing
     if (path.includes('log-slider')){
-      newScript(scriptBase + '/src/js/pricing/log-slider'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
     }
 
     // pricing page

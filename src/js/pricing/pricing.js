@@ -512,16 +512,16 @@ function updateOveragesDisplay() {
  ****************************/
 
 let globalAutomateTickets0 = 0,
-  globalAutomateTickets10 = 0,
   globalAutomateTickets20 = 0,
-  globalAutomateTickets30 = 0;
+  globalAutomateTickets30 = 0,
+  globalAutomateTickets50 = 0;
 let globalAutomatePrice0 = 0,
-  globalAutomatePrice10 = 0,
   globalAutomatePrice20 = 0,
-  globalAutomatePrice30 = 0;
+  globalAutomatePrice30 = 0,
+  globalAutomatePrice50 = 0;
 
 function calculateAutomatePrices() {
-  const percentages = [0, 10, 20, 30];
+  const percentages = [0, 20, 30, 50];
   const automatePlansForCycle = automatePlans[globalBillingCycle];
 
   percentages.forEach((percentage) => {
@@ -567,14 +567,14 @@ function findAutomatePrice(tickets, plans) {
  ****************************/
 
 function calculateOptionPrices() {
-  const percentages = [0, 10, 20, 30];
+  const percentages = [0, 20, 30, 50];
 
   percentages.forEach((percentage) => {
     const automatePrice = window[`globalAutomatePrice${percentage}`];
     const optionPrice = globalCurrentPlanPrice + automatePrice;
     const formattedPrice = formatNumberWithCommas(optionPrice);
     $('[data-el="helpdeskPrice' + percentage + '"]').text(formattedPrice);
-    // console.log(`Option ${percentage}%: ${formattedPrice}`);
+    console.log(`Option ${percentage}%: ${formattedPrice}`);
   });
 }
 
