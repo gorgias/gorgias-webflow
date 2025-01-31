@@ -10,7 +10,7 @@ Webflow.push(function () {
     var minBase = isDebug ? "" : ".min";
 
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
-    newScript(scriptBase + '/src/js/cta-url-parameters'+minBase+'.js','body',1);
+   // newScript(scriptBase + '/src/js/cta-url-parameters'+minBase+'.js','body',1);
     newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
     // newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
@@ -21,14 +21,6 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
     // demo pages
    newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
-    // if (path === '/demo-2' || path === '/wip/demo' || path === '/demo-alt') {
-    //   newScript(scriptBase + '/src/js/demo-2'+minBase+'.js','body',1);  
-    // }
-
-    // // demo page
-    // if (path === '/demo'){
-    //     newScript(scriptBase + '/src/js/demo'+minBase+'.js','head',1);
-    // }
 
     // If page is root then load the following scripts
     if (path === '/') {
@@ -65,12 +57,6 @@ Webflow.push(function () {
        || path === '/pages/helpdesk' || path === '/pages/crm' || path === '/wip/pricing') {
          // [Attributes by Finsweet] Mirrorclick
          newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
-
-         // scripts for splide js
-         newStyle('https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/css/splide-core.min.css','head');
-         newStyle(scriptBase + '/src/css/splide'+minBase+'.css','head');
-         newScript('https://cdn.jsdelivr.net/npm/@splidejs/splide@3.2.2/dist/js/splide.min.js','body',1);
-         newScript(scriptBase + '/src/js/splide'+minBase+'.js','body',1)
      }
      
     // blog pages
