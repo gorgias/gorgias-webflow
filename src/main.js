@@ -27,6 +27,7 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/scrolling'+minBase+'.js','body',1);
     }
 
+
     // If page is not /cx-audit then load the following scripts 
     if (!path.includes('/cx-audit')) {
       newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
