@@ -44,13 +44,8 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);
     }
 
-    // log pricing
-    if (path.includes('log-slider')){
-      newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
-    }
-
     // pricing page
-    if (path.includes('pricing')){
+    if (path.includes('pricing') || path.includes('log-slider')){
       newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
     }
 
