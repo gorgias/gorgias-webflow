@@ -33,6 +33,11 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/gorgiaschat'+minBase+'.js','body',1);
     }
 
+        // If page is not /cx-audit then load the following scripts 
+        if (path.includes('/ai-sales-agent')) {
+          newScript(scriptBase + '/src/js/animation/hero-animate'+minBase+'.js','body',1);
+        }
+
     if ( path.includes('/comparison/')){
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);
     }
