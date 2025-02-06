@@ -62,84 +62,61 @@ $(document).ready(function () {
       delay: 1 // Pause briefly before disappearing
     })
 
-    .set('.is-scene-1', { display: 'none' })
-
-    .set('.is-scene-2', { position: 'relative' })
+    .set('.is-scene-1', { position: 'absolute' })
 
     // Fade in .is-scene-2
-    .to(
+    .fromTo(
       ".is-scene-2",
+      { opacity: 0 },
       {
         opacity: 1,
         duration: 0.3,
         ease: "power1.inOut"
       },
-      "-=0.3" // Overlap slightly for smoother transition
     )
 
-    .fromTo(".section_hero-medias.is-ai-sales-agent", 
-        { width: "0px", height: "0%"}, 
-        {width: "30rem", height: "18rem", duration: .5, ease: "back.inOut"}
+    .fromTo(".is-into.is-bigger", {
+        fontSize: "5.63rem"
+    }, {
+        fontSize: "13.5rem", duration: .5, ease: "power1.inOut"
+    }
     )
 
-    .to(".section_hero-medias.is-ai-sales-agent", 
-        {width: "76rem", height: "44rem", duration: 1, ease: "back.inOut"}, "+=1" // Wait 1 second before starting
+    .fromTo(".is-sale.is-bigger", {
+        fontSize: "5.63rem"
+    }, {
+        fontSize: "13.5rem", duration: .5, ease: "power1.inOut"
+    }, "<" // Run simultaneously with the previous animation
+    )
+
+    .fromTo("#first-visual", 
+        { width: "0px", height: "0px"}, 
+        {width: "30rem", height: "18rem", duration: .5, ease: "back.inOut"}, "<" // Run simultaneously with the previous animation
+    )
+
+    .to("#first-visual", 
+        {width: "66rem", height: "44rem", duration: 1, ease: "back.inOut"}, "+=1" // Wait 1 second before starting
     )
 
     .to(".is-into.is-bigger", {
-        opacity: 0, fontSize: "512px", width: "63.2rem" , duration: .3, ease: "power1.inOut"
+        opacity: 0, fontSize: "32rem", width: "63.2rem" , duration: 1, ease: "power1.inOut"
     }, 
     "<" // Run simultaneously with the previous animation
     )
 
     .to(".is-sale.is-bigger", {
-        opacity: 0, fontSize: "512px", width: "63.2rem" , duration: .3, ease: "power1.inOut"
+        opacity: 0, fontSize: "32rem", width: "63.2rem" , duration: 1, ease: "power1.inOut"
     }, 
     "<" // Run simultaneously with the previous animation
     )
 
-    const transitionScene3 = gsap.timeline();
 
-    transitionScene3
-    // Fade out .is-scene-2
-    .to(".is-scene-2", {
-      opacity: 0,
-      duration: 0,
-      ease: "power1.out"
-    })
-
-    .set('.is-scene-2', { display: 'none' })
-
-    .set('.is-scene-3', { position: 'relative' })
-
-    // Fade in .is-scene-3
-    .to(
-        ".is-scene-3",
-        {
-          opacity: 1,
-          duration: 0,
-          ease: "power1.in"
-        },
-        "<" // Overlap slightly for smoother transition
+    .to('.is-alt-header', { height: "18.5rem", duration: 0.5, ease: "expo.inOut" })
+    .to("#first-visual", 
+        { yPercent: 10, duration: .3, ease: "none"}, "<"
     )
 
 
-    .to(
-        ".section_hero-medias.is-ai-sales-agent.is-final",
-        {
-            yPercent: 35, duration: 0.5, ease: "bounce.Out", delay: 1
-        },
-    )
-
-    const transitionOut = gsap.timeline();
-
-    transitionOut
-    .to("is-scene-3", {
-        opacity: 0, duration: 0.3, ease: "power1.inOut"
-    })
-
-    .set('.is-scene-3', { display: 'none' })
-    .set('.is-loading-hero', { display: 'none' })
 
     .fromTo("#hero-title",
         { yPercent: 30, opacity: 0 },
@@ -153,28 +130,71 @@ $(document).ready(function () {
     const heroFinal = gsap.timeline();
 
     heroFinal
-  // Animate the background first
-  .fromTo(".ai-sales-agent_hero-bg",
-    { opacity: 0},
-    {
-    height: "81.5%",
-    opacity: 1,
-    duration: 1,
-    ease: "power1.out",
-  })
 
-  // Stagger the fade-in of text elements
+  .to('.is-alt-header', { opacity: 1, duration: 0.3, ease: "power1.inOut" }, "<")
+  .to('.loader-gradient', { opacity: 0, duration: 0.3, ease: "power1.inOut" }, "<")
+
+
   .fromTo(
-    ["#hero-subtext", "#early-access-hero"], // Array of elements to animate
+    [ "#hero-subtext", "#early-access-hero"], // Array of elements to animate
     { opacity: 0 }, // Starting opacity
-    { opacity: 1, duration: 0.3, ease: "power1.inOut", stagger: 0.2 },  "<"
+    { opacity: 1, duration: 0.3, ease: "power1.inOut", stagger: 0.2 }
   )
 
-
+  .to('.is-loading-hero', {height: 'auto', duration: 0.01, ease: "none" })
+  .to('.no-scroll', { overflow: 'auto', maxHeight:"None" })
 
   // Add timelines to master timeline in sequence
-  masterTimeline.add(scene1Timeline).add(transitionScene2).add(transitionScene3).add(transitionOut).add(heroFinal);
+  masterTimeline.add(scene1Timeline).add(transitionScene2).add(heroFinal);
 
   // Optional: Debugging - Play master timeline
   masterTimeline.play();
+
+    // // 🎮 Attach Controls to Master Timeline
+    // document.getElementById("play").addEventListener("click", () => masterTimeline.play());
+    // document.getElementById("pause").addEventListener("click", () => masterTimeline.pause());
+    // document.getElementById("reverse").addEventListener("click", () => masterTimeline.reverse());
+    // document.getElementById("restart").addEventListener("click", () => masterTimeline.restart());
+  
+    // // 🎚 Scrubber Control (Allows manual timeline scrubbing)
+    // const scrubber = document.getElementById("scrubber");
+  
+    // scrubber.addEventListener("input", function () {
+    //   masterTimeline.progress(scrubber.value);
+    // });
+  
+    // // 🔄 Update scrubber in real-time while animation plays
+    // gsap.ticker.add(() => {
+    //   scrubber.value = masterTimeline.progress();
+    // });
+});
+
+
+
+$(document).ready(function () {
+    function updateScrollbar() {
+        const links = $(".ai-conv_tabs-link");
+        const scrollbar = $(".ai-conv_menu-scrollbar");
+
+        links.each(function (index) {
+            if ($(this).hasClass("w--current")) {
+                const topValue = index * 25 + "%";
+                scrollbar.css("top", topValue);
+            }
+        });
+    }
+
+    // Run on page load
+    updateScrollbar();
+
+    // Run whenever a tab link gets the `w--current` class
+    $(document).on("click", ".ai-conv_tabs-link", function () {
+        setTimeout(updateScrollbar, 25); // Ensure transition occurs after class change
+    });
+
+    // If using Webflow interactions, listen for class mutation
+    const observer = new MutationObserver(updateScrollbar);
+    $(".ai-conv_tabs-link").each(function () {
+        observer.observe(this, { attributes: true, attributeFilter: ["class"] });
+    });
 });
