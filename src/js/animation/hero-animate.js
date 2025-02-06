@@ -73,13 +73,13 @@ $(document).ready(function () {
         duration: 0.3,
         ease: "power1.inOut"
       },
-    )
+    )    
 
     .fromTo(".is-into.is-bigger", {
         fontSize: "5.63rem"
     }, {
         fontSize: "13.5rem", duration: .5, ease: "power1.inOut"
-    }
+    }, "<" // Run simultaneously with the previous animation
     )
 
     .fromTo(".is-sale.is-bigger", {
