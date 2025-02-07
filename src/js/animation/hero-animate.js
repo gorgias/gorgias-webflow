@@ -17,6 +17,7 @@ setTimeout(() => {
 }, 10); // Delay slightly to let scroll take effect
 
     scene1Timeline
+
       // Line 1: "Turn Every"
       .to(".is-heading-1", {
         opacity: 0.12, // Disappear
@@ -38,7 +39,7 @@ setTimeout(() => {
         opacity: 0.12, // Disappear
         y: -90, // Move up while disappearing
         duration: 0.3,
-        delay: 0.1, // Pause briefly before disappearing
+        delay: 0.3, // Pause briefly before disappearing
         ease: "power2.inOut"
       })
 
@@ -69,7 +70,7 @@ setTimeout(() => {
         opacity: 0,
         duration: 0.3,
         ease: "power1.inOut",
-        delay: 0 // Pause briefly before disappearing
+        delay: .1 // Pause briefly before disappearing
       })
       .set('.is-scene-1', { position: 'absolute' })
       // Fade in .is-scene-2
@@ -133,8 +134,9 @@ setTimeout(() => {
         { opacity: 1, duration: 0.3, ease: "power1.inOut", stagger: 0.2 }
       )
       .to('.is-loading-hero', { height: 'auto', duration: 0.01, ease: "none" })
-      .to('.no-scroll', { overflow: 'auto', maxHeight: "None" })
+      .to('.no-scroll', { overflow: 'auto', maxHeight: "none" })
       .to('.ai-sales-agent_hero-bg', { opacity: 1, height: "85%", duration: 0.5, ease: "power1.inOut" }, "<")
+      .to('.loading-bg-color', { opacity: 0, duration: 0.5, ease: "none" }, "<")
       .to('.main-nav-bg', { opacity: 1, duration: 0.5, ease: "power1.inOut" }, "<")
       .set('.section-hidden', { display: 'block' })
 
