@@ -18,6 +18,14 @@ setTimeout(() => {
 
     scene1Timeline
 
+      .fromTo(".is-heading-1", {
+        opacity: 0, // Start invisible
+      }, {
+        opacity: 1, // Appear
+        duration: 0.5,
+        ease: "power2.inOut"
+      })
+
       // Line 1: "Turn Every"
       .to(".is-heading-1", {
         opacity: 0.12, // Disappear
@@ -68,9 +76,9 @@ setTimeout(() => {
       // Fade out .is-scene-1
       .to(".is-scene-1", {
         opacity: 0,
-        duration: 0.3,
+        duration: 0,
         ease: "power1.inOut",
-        delay: .1 // Pause briefly before disappearing
+        delay: 0.5 // Pause briefly before disappearing
       })
       .set('.is-scene-1', { position: 'absolute' })
       // Fade in .is-scene-2
@@ -79,7 +87,7 @@ setTimeout(() => {
         { opacity: 0 },
         {
           opacity: 1,
-          duration: 0.3,
+          duration: 0,
           ease: "power1.inOut"
         }
       )
@@ -114,24 +122,24 @@ setTimeout(() => {
       .to("#first-visual", 
           { yPercent: 10, duration: 0.3, ease: "none"}, "<"
       )
-      .fromTo("#hero-title",
-          { yPercent: 30, opacity: 0 },
-          {
-          opacity: 1,
-          yPercent: 0,
-          duration: 0.5,
-          ease: "power1.inOut",
-        })
+      // .fromTo("#hero-title",
+      //     { yPercent: 30, opacity: 0 },
+      //     {
+      //     opacity: 1,
+      //     yPercent: 0,
+      //     duration: 0.5,
+      //     ease: "power1.inOut",
+      //   })
     
     const heroFinal = gsap.timeline();
     
     heroFinal
-      .to('.is-alt-header', { opacity: 1, duration: 0.3, ease: "power1.inOut" }, "<")
-      .to('.loader-gradient', { opacity: 0, duration: 0.3, ease: "power1.inOut" }, "<")
+      .to('.is-alt-header', { opacity: 1, duration: 0.15, ease: "power1.inOut" })
+      .to('.loader-gradient', { opacity: 0, duration: 0.15, ease: "power1.inOut" }, "<")
       .fromTo(
-        ["#hero-subtext", "#early-access-hero"],
+        ["#hero-title", "#hero-subtext", "#early-access-hero"],
         { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: "power1.inOut", stagger: 0.2 }
+        { opacity: 1, duration: 0.5, ease: "power1.inOut" }
       )
       .to('.is-loading-hero', { height: 'auto', duration: 0.01, ease: "none" })
       .to('.no-scroll', { overflow: 'auto', maxHeight: "none" })
@@ -149,29 +157,78 @@ setTimeout(() => {
 });
 
 $(document).ready(function () {
-    function updateScrollbar() {
-        const links = $(".ai-conv_tabs-link");
-        const scrollbar = $(".ai-conv_menu-scrollbar");
+  let previousIndex = -1; // Track previous tab index
 
-        links.each(function (index) {
-            if ($(this).hasClass("w--current")) {
-                const topValue = index * 25 + "%";
-                scrollbar.css("top", topValue);
-            }
-        });
-    }
+  function updateScrollbar() {
+      const links = $(".ai-conv_tabs-link");
+      const scrollbar = $(".ai-conv_menu-scrollbar");
 
-    // Run on page load
-    updateScrollbar();
+      links.each(function (index) {
+          if ($(this).hasClass("w--current")) {
+              const topValue = index * 25 + "%";
+              scrollbar.css("top", topValue);
+          }
+      });
+  }
 
-    // Run whenever a tab link gets the `w--current` class
-    $(document).on("click", ".ai-conv_tabs-link", function () {
-        setTimeout(updateScrollbar, 25); // Ensure transition occurs after class change
-    });
+  function updateTabs() {
+      const links = $(".ai-conv_tabs-link");
+      const panes = $(".ai-conv_tabs_tab-pane");
 
-    // If using Webflow interactions, listen for class mutation
-    const observer = new MutationObserver(updateScrollbar);
-    $(".ai-conv_tabs-link").each(function () {
-        observer.observe(this, { attributes: true, attributeFilter: ["class"] });
-    });
+      let activeIndex = -1;
+
+      // Find the active tab
+      links.each(function (index) {
+          if ($(this).hasClass("w--current")) {
+              activeIndex = index;
+          }
+      });
+
+      panes.each(function (index) {
+          const pane = $(this);
+
+          // If this is the active tab, set opacity to 1
+          if (index === activeIndex) {
+              pane.css("opacity", 1);
+          }  
+          // If this is `is-4`, ensure it doesn't fade out when active or when arriving from `is-3`
+          else if (pane.hasClass("is-4") && (activeIndex === 3 || previousIndex === 2)) {
+              pane.stop().fadeTo(300, 1); // Fade in when coming from `is-3`
+          }  
+          // Default: Fade out all other tabs
+          else {
+              pane.css("opacity", 0);
+          }
+      });
+
+      // If no tab is active (first load), ensure `is-1` is visible
+      if (activeIndex === -1) {
+          $(".ai-conv_tabs_tab-pane.is-1").css("opacity", 1);
+      }
+
+      // Update previousIndex after changes
+      previousIndex = activeIndex;
+  }
+
+  // Call update functions on page load
+  updateScrollbar();
+  updateTabs();
+
+  // When a tab link is clicked, update both scrollbar and tab panes
+  $(document).on("click", ".ai-conv_tabs-link", function () {
+      setTimeout(function () {
+          updateScrollbar();
+          updateTabs();
+      }, 25); // Ensure transition occurs after class change
+  });
+
+  // Also use MutationObserver to listen for class changes (e.g., via Webflow interactions)
+  const observer = new MutationObserver(function () {
+      updateScrollbar();
+      updateTabs();
+  });
+
+  $(".ai-conv_tabs-link").each(function () {
+      observer.observe(this, { attributes: true, attributeFilter: ["class"] });
+  });
 });
