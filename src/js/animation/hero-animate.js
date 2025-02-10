@@ -79,6 +79,7 @@ setTimeout(() => {
         duration: 0,
         ease: "power1.inOut",
         delay: 0.5 // Pause briefly before disappearing
+
       })
       .set('.is-scene-1', { position: 'absolute' })
       // Fade in .is-scene-2
