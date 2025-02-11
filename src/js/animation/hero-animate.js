@@ -188,14 +188,59 @@ window.Webflow.push(() => {
         onStart: () => console.log("👀 Hero Final: Hidden sections revealed"),
       });
 
-    masterTimeline
-      .add(scene1Timeline)
-      .add(transitionScene2)
-      .add(heroFinal);
+masterTimeline
+  .call(() => {
+    console.log("🔄 Scrolling to top...");
+    window.scrollTo(0, 0);
+  }) // Ensures scrolling happens first
+  .add(scene1Timeline)
+  .add(transitionScene2)
+  .add(heroFinal);
 
     console.log("🎥 Master timeline started");
     setTimeout(() => {
     masterTimeline.play();
     }, 500);
   }
+});
+
+
+$(document).ready(function () {
+  // Ensure the scrollbar exists
+  if ($('.ai-conv_menu-scrollbar').length === 0) {
+      $('.ai-conv_tabs-menu').append('<div class="ai-conv_menu-scrollbar"></div>');
+  }
+
+  function updateScrollbarPosition() {
+      const tabs = $(".ai-conv_tabs-link");
+      const activeTab = $(".ai-conv_tabs-link.w--current");
+      const scrollbar = $(".ai-conv_menu-scrollbar");
+
+      if (activeTab.length === 0 || tabs.length !== 4) {
+          console.warn("🚨 Could not find .w--current or unexpected number of tabs!");
+          return;
+      }
+
+      // Get active tab index
+      const activeIndex = tabs.index(activeTab);
+      const topPosition = `${activeIndex * 25}%`; // First tab = 0%, Second = 25%, etc.
+
+      console.log(`🟢 Active tab index: ${activeIndex}, Setting scrollbar top to: ${topPosition}`);
+
+      // Apply position
+      scrollbar.css({ top: topPosition });
+  }
+
+  // Run initially on page load
+  updateScrollbarPosition();
+
+  // Observe changes in .w--current class
+  const observer = new MutationObserver(() => {
+      console.log("🔄 Detected class change, updating scrollbar...");
+      updateScrollbarPosition();
+  });
+
+  $(".ai-conv_tabs-link").each(function () {
+      observer.observe(this, { attributes: true, attributeFilter: ["class"] });
+  });
 });
