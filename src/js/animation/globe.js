@@ -143,5 +143,3 @@
 //     renderer.render(scene, camera);
 //   }
 
-//   console.log("Script execution complete");
-// });

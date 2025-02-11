@@ -77,6 +77,7 @@ window.Webflow.push(() => {
         opacity: 0,
         duration: 0,
         ease: "power1.inOut",
+
         delay: 1,
         onStart: () => console.log("🚪 Transition: Scene 1 fades out"),
       })
@@ -86,6 +87,7 @@ window.Webflow.push(() => {
         duration: 0,
         ease: "power1.inOut",
         onStart: () => console.log("🚪 Transition: Scene 2 fades in"),
+
       })
       .fromTo(
         ".is-into.is-bigger",
