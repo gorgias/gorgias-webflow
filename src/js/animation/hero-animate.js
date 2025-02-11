@@ -79,7 +79,6 @@ setTimeout(() => {
         duration: 0,
         ease: "power1.inOut",
         delay: 0.5 // Pause briefly before disappearing
-
       })
       .set('.is-scene-1', { position: 'absolute' })
       // Fade in .is-scene-2
@@ -95,18 +94,18 @@ setTimeout(() => {
       .fromTo(".is-into.is-bigger", {
           fontSize: "5.63rem"
       }, {
-          fontSize: "13.5rem", duration: 0.5, ease: "power1.inOut"
+          fontSize: "13.5rem", duration: 0.8, ease: "power1.inOut"
       }, "<" // Run simultaneously with the previous animation
       )
       .fromTo(".is-sale.is-bigger", {
           fontSize: "5.63rem"
       }, {
-          fontSize: "13.5rem", duration: 0.5, ease: "power1.inOut"
+          fontSize: "13.5rem", duration: 0.8, ease: "power1.inOut"
       }, "<" // Run simultaneously with the previous animation
       )
       .fromTo("#first-visual", 
           { width: "0px", height: "0px"}, 
-          {width: "30rem", height: "18rem", duration: 0.5, ease: "back.inOut"}, "<" // Run simultaneously with the previous animation
+          {width: "30rem", height: "18rem", duration: 0.8, ease: "back.inOut"}, "<" // Run simultaneously with the previous animation
       )
       .to("#first-visual", 
           {width: "66rem", height: "40rem", duration: 1, ease: "back.inOut"}, "+=.5" // Wait 1 second before starting
@@ -157,79 +156,149 @@ setTimeout(() => {
   }
 });
 
-$(document).ready(function () {
-  let previousIndex = -1; // Track previous tab index
+// $(document).ready(function () {
 
-  function updateScrollbar() {
-      const links = $(".ai-conv_tabs-link");
-      const scrollbar = $(".ai-conv_menu-scrollbar");
+//   let previousIndex = -1; // Track previous tab index
 
-      links.each(function (index) {
-          if ($(this).hasClass("w--current")) {
-              const topValue = index * 25 + "%";
-              scrollbar.css("top", topValue);
-          }
-      });
-  }
+//   function updateScrollbar() {
+//       const links = $(".ai-conv_tabs-link");
+//       const scrollbar = $(".ai-conv_menu-scrollbar");
 
-  function updateTabs() {
-      const links = $(".ai-conv_tabs-link");
-      const panes = $(".ai-conv_tabs_tab-pane");
+//       links.each(function (index) {
+//           if ($(this).hasClass("w--current")) {
+//               const topValue = index * 25 + "%";
+//               scrollbar.css("top", topValue);
+//           }
+//       });
+//   }
 
-      let activeIndex = -1;
+//   function updateTabs() {
+//       const links = $(".ai-conv_tabs-link");
+//       const panes = $(".ai-conv_tabs_tab-pane");
 
-      // Find the active tab
-      links.each(function (index) {
-          if ($(this).hasClass("w--current")) {
-              activeIndex = index;
-          }
-      });
+//       let activeIndex = -1;
 
-      panes.each(function (index) {
-          const pane = $(this);
+//       // Find the active tab
+//       links.each(function (index) {
+//           if ($(this).hasClass("w--current")) {
+//               activeIndex = index;// Trigger click event to update tab pane
+//           }
+//       });
 
-          // If this is the active tab, set opacity to 1
-          if (index === activeIndex) {
-              pane.css("opacity", 1);
-          }  
-          // If this is `is-4`, ensure it doesn't fade out when active or when arriving from `is-3`
-          else if (pane.hasClass("is-4") && (activeIndex === 3 || previousIndex === 2)) {
-              pane.stop().fadeTo(300, 1); // Fade in when coming from `is-3`
-          }  
-          // Default: Fade out all other tabs
-          else {
-              pane.css("opacity", 0);
-          }
-      });
+//       panes.each(function (index) {
+//           const pane = $(this);
 
-      // If no tab is active (first load), ensure `is-1` is visible
-      if (activeIndex === -1) {
-          $(".ai-conv_tabs_tab-pane.is-1").css("opacity", 1);
-      }
+//           // If this is the active tab, set opacity to 1
+//           if (index === activeIndex) {
+//               pane.css("opacity", 1);
+//           }  
+//           // If this is `is-4`, ensure it doesn't fade out when active or when arriving from `is-3`
+//           else if (pane.hasClass("is-4") && (activeIndex === 3 || previousIndex === 2)) {
+//               pane.stop().fadeTo(300, 1); // Fade in when coming from `is-3`
+//           }  
+//           // Default: Fade out all other tabs
+//           else {
+//               pane.css("opacity", 0);
+//           }
+//       });
 
-      // Update previousIndex after changes
-      previousIndex = activeIndex;
-  }
+//       // If no tab is active (first load), ensure `is-1` is visible
+//       if (activeIndex === -1) {
+//           $(".ai-conv_tabs_tab-pane.is-1").css("opacity", 1);
+//       }
 
-  // Call update functions on page load
-  updateScrollbar();
-  updateTabs();
+//       // If no tab is active and previous active tab is "is-4", ensure `is-4` is visible
+//       if (activeIndex === -1 && previousIndex === 3) {
+//           $(".ai-conv_tabs_tab-pane.is-4").css("opacity", 1);
+//       }
 
-  // When a tab link is clicked, update both scrollbar and tab panes
-  $(document).on("click", ".ai-conv_tabs-link", function () {
-      setTimeout(function () {
+//       // Update previousIndex after changes
+//       previousIndex = activeIndex;
+//   }
+
+//   // Call update functions on page load
+//   updateScrollbar();
+//   updateTabs();
+
+//   // When a tab link is clicked, update both scrollbar and tab panes
+//   $(document).on("click", ".ai-conv_tabs-link", function () {
+//       setTimeout(function () {
+//           updateScrollbar();
+//           updateTabs();
+//       }, 15); // Ensure transition occurs after class change
+//   });
+
+//   // Also use MutationObserver to listen for class changes (e.g., via Webflow interactions)
+//   const observer = new MutationObserver(function () {
+//       updateScrollbar();
+//       updateTabs();
+//   });
+
+//   $(".ai-conv_tabs-link").each(function () {
+//       observer.observe(this, { attributes: true, attributeFilter: ["class"] });
+//   });
+// });
+
+
+  $(document).ready(function () {
+    if (!$(".ai-conv_menu-scrollbar").length) {
+      $(".ai-conv_tabs-menu").prepend('<div class="ai-conv_menu-scrollbar"></div>');
+    }
+  });
+
+
+  $(document).ready(function () {
+    // ScrollTrigger logic
+    $(".tabs_trigger").each(function (index) {
+      ScrollTrigger.create({
+        trigger: $(this),
+        start: "top center",
+        end: "+=50",
+        scrub: true,
+        markers: false,
+        onEnter: () => {
+          triggerTab(index + 1);
           updateScrollbar();
-          updateTabs();
-      }, 25); // Ensure transition occurs after class change
-  });
+        },
+        onEnterBack: () => {
+          triggerTab(index);
+          updateScrollbar();
+        },
+      });
+    });
 
-  // Also use MutationObserver to listen for class changes (e.g., via Webflow interactions)
-  const observer = new MutationObserver(function () {
+    // Click event for tabs
+    $(".ai-conv_tabs-link").on("click", function (e) {
+      e.preventDefault();
+      let index = $(this).index();
+      triggerTab(index);
       updateScrollbar();
-      updateTabs();
-  });
+    });
 
-  $(".ai-conv_tabs-link").each(function () {
-      observer.observe(this, { attributes: true, attributeFilter: ["class"] });
+    // Function to update scrollbar position
+function updateScrollbar() {
+  const scrollbar = $(".ai-conv_menu-scrollbar");
+  const activeTab = $(".ai-conv_tabs-link.w--current").attr("data-w-tab"); // Get active tab
+
+  let topValue = "0%"; // Default position for "Tab 1"
+
+  // Hardcoded positions based on data-w-tab
+  if (activeTab === "Tab 2") topValue = "25%";
+  if (activeTab === "Tab 3") topValue = "50%";
+  if (activeTab === "Tab 4") topValue = "75%";
+
+  console.log("Scrollbar moving to:", topValue); // Debugging output
+
+  scrollbar.css("top", topValue);
+}
+
+    // Function to trigger tab change with animation
+    function triggerTab(index) {
+      $(".ai-conv_tabs-link").eq(index).click();
+      gsap.fromTo(
+        $(".ai-conv_tabs_tab-pane").eq(index),
+        { opacity: 0, y: 100 },
+        { opacity: 1, y: 0, duration: 0.35, ease: "power1.inOut" }
+      );
+    }
   });
-});
