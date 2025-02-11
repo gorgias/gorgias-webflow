@@ -13,8 +13,6 @@
 //     return;
 //   }
   
-//   console.log("Globe element found", globeEl);
-  
 //   var renderer, camera, scene, controls;
 //   var Globe;
 
