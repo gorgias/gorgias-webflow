@@ -273,7 +273,9 @@ image.onload = () => {
 };
 
 // 🚨 Make sure this is set *after* `crossOrigin`
-image.src = './src/img/alpha-world.jpg';
+
+image.src = '/src/img/alpha-world.jpg';
+
 
 }
 
