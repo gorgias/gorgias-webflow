@@ -202,12 +202,9 @@ masterTimeline
     masterTimeline.play();
     }, 500);
   }
-});
 
-
-$(document).ready(function () {
-  // Ensure the scrollbar exists
-  if ($('.ai-conv_menu-scrollbar').length === 0) {
+    // Ensure the scrollbar exists
+    if ($('.ai-conv_menu-scrollbar').length === 0) {
       $('.ai-conv_tabs-menu').append('<div class="ai-conv_menu-scrollbar"></div>');
   }
 
@@ -243,101 +240,31 @@ $(document).ready(function () {
   $(".ai-conv_tabs-link").each(function () {
       observer.observe(this, { attributes: true, attributeFilter: ["class"] });
   });
-  
+
+  setTimeout(() => {
+    $(".tabs_trigger").each(function (index) {
+      console.log(`Initializing ScrollTrigger for .tabs_trigger index: ${index}`);
+    
+      ScrollTrigger.create({
+        trigger: $(this),
+        start: "top center",
+        end: "+=0",
+        markers: false, // Set to true to visualize trigger points
+        onEnter: () => {
+          console.log(`onEnter triggered for index: ${index}`);
+          console.log(`Clicking .ai-conv_tabs-link index: ${index + 1}`);
+          $(".ai-conv_tabs-link").eq(index + 1).click();
+        },
+        onEnterBack: () => {
+          console.log(`onEnterBack triggered for index: ${index}`);
+          console.log(`Clicking .ai-conv_tabs-link index: ${index}`);
+          $(".ai-conv_tabs-link").eq(index).click();
+        },
+      });
+    });
+  }, 8100);
+
 });
 
 
-// $(document).ready(function () {
-
-//   const tabs = $(".ai-conv_tabs-link");
-//   let autoplayInterval;
-//   const autoplayDelay = 5000;
-//   let userInteracted = false; // Tracks if user clicked manually
-
-//   function autoplayTabs() {
-//       if (userInteracted) return; // Do not autoplay if user interacted
-
-//       clearInterval(autoplayInterval); // Prevent multiple intervals
-//       autoplayInterval = setInterval(() => {
-//           const currentTab = $(".ai-conv_tabs-link.w--current");
-//           let nextTab = currentTab.next(".ai-conv_tabs-link");
-
-//           // If at the last tab, go back to the first one
-//           if (nextTab.length === 0) {
-//               nextTab = tabs.first();
-//           }
-
-//           console.log(`🔄 Programmatic Click: Switching to tab index ${nextTab.index()}`);
-//           nextTab.data("programmatic", true).trigger("click"); // Mark as programmatic click
-//       }, autoplayDelay);
-//   }
-
-//   // Use GSAP ScrollTrigger to detect visibility
-//   gsap.registerPlugin(ScrollTrigger);
-
-//   ScrollTrigger.create({
-//       trigger: ".ai-conv_tabs-component",
-//       start: "top 75%",
-//       end: "bottom 25%",
-//       onEnter: () => {
-//           console.log("👀 Tabs component is in view. Starting autoplay...");
-//           autoplayTabs();
-//       },
-//       onLeave: () => {
-//           console.log("🚫 Tabs component is out of view. Stopping autoplay.");
-//           clearInterval(autoplayInterval);
-//       },
-//       onEnterBack: () => {
-//           console.log("👀 Tabs component re-entered. Resuming autoplay...");
-//           autoplayTabs();
-//       },
-//       onLeaveBack: () => {
-//           console.log("🚫 Tabs component left (up). Stopping autoplay.");
-//           clearInterval(autoplayInterval);
-//       }
-//   });
-
-//   // Stop autoplay on hover
-//   $(".ai-conv_tabs-component").on("mouseenter", function () {
-//       console.log("🛑 Hover detected. Stopping autoplay.");
-//       clearInterval(autoplayInterval);
-//   }).on("mouseleave", function () {
-//       console.log("▶️ Hover ended. Resuming autoplay...");
-//       autoplayTabs();
-//   });
-
-//   // Detect user clicks & differentiate from programmatic clicks
-//   $(".ai-conv_tabs-link").on("click", function (event) {
-//       if ($(this).data("programmatic")) {
-//           console.log("🤖 Ignoring programmatic click.");
-//           $(this).removeData("programmatic"); // Reset after detecting
-//       } else {
-//           console.log("👆 User clicked a tab. Stopping autoplay.");
-//           userInteracted = true; // Prevent further autoplay
-//           clearInterval(autoplayInterval);
-//       }
-//   });
-// });
-
-$(document).ready(function () {
-  $(".tabs_trigger").each(function (index) {
-    console.log(`Initializing ScrollTrigger for .tabs_trigger index: ${index}`);
   
-    ScrollTrigger.create({
-      trigger: $(this),
-      start: "top center",
-      end: "+=0",
-      markers: false, // Set to true to visualize trigger points
-      onEnter: () => {
-        console.log(`onEnter triggered for index: ${index}`);
-        console.log(`Clicking .ai-conv_tabs-link index: ${index + 1}`);
-        $(".ai-conv_tabs-link").eq(index + 1).click();
-      },
-      onEnterBack: () => {
-        console.log(`onEnterBack triggered for index: ${index}`);
-        console.log(`Clicking .ai-conv_tabs-link index: ${index}`);
-        $(".ai-conv_tabs-link").eq(index).click();
-      },
-    });
-  });
-}); 
