@@ -327,7 +327,7 @@ $(document).ready(function () {
       trigger: $(this),
       start: "top center",
       end: "+=0",
-      markers: true, // Set to true to visualize trigger points
+      markers: false, // Set to true to visualize trigger points
       onEnter: () => {
         console.log(`onEnter triggered for index: ${index}`);
         console.log(`Clicking .ai-conv_tabs-link index: ${index + 1}`);
