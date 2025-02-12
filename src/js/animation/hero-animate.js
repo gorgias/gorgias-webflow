@@ -188,10 +188,14 @@ window.Webflow.push(() => {
         onStart: () => console.log("👀 Hero Final: Hidden sections revealed"),
       });
 
-    masterTimeline
-      .add(scene1Timeline)
-      .add(transitionScene2)
-      .add(heroFinal);
+masterTimeline
+  .call(() => {
+    console.log("🔄 Scrolling to top...");
+    window.scrollTo(0, 0);
+  }) // Ensures scrolling happens first
+  .add(scene1Timeline)
+  .add(transitionScene2)
+  .add(heroFinal);
 
     console.log("🎥 Master timeline started");
     setTimeout(() => {
