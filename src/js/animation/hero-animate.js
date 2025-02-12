@@ -243,6 +243,7 @@ $(document).ready(function () {
   $(".ai-conv_tabs-link").each(function () {
       observer.observe(this, { attributes: true, attributeFilter: ["class"] });
   });
+  
 });
 
 $(document).ready(function () {
