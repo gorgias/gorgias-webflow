@@ -35,13 +35,9 @@ Webflow.push(function () {
 
     // If page is ai sales agent
     if (path.includes('/ai-sales-agent')) {
-      newScript(scriptBase + '/src/js/animation/hero-animate'+minBase+'.js','body',1);
+      newScript(scriptBase + '/src/js/animation/ai-sales-agent-hero'+minBase+'.js','body',1);
+      newScript(scriptBase + '/src/js/ai-sales-agent'+minBase+'.js','body',1);
       newScript(scriptBase + '/src/js/scrolling'+minBase+'.js','body',1);
-    // Load globe.js as a module (IMPORTANT)
-    const moduleScript = document.createElement('script');
-    moduleScript.setAttribute('type', 'module');
-    moduleScript.setAttribute('src', scriptBase + '/src/js/animation/globe' + '.js');
-    document.body.appendChild(moduleScript);
     }
 
     if ( path.includes('/comparison/')){
