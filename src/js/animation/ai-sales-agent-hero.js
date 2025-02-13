@@ -96,7 +96,7 @@ scene2Timeline
       onStart: () => console.log("🎬 Hero Final: Title, subtext, and CTA appear"),
     }
   )
-  .to(".ai-sales-agent", {
+  .to(".ai-sales-agent-body", {
     overflow: "auto",
     maxHeight: "none",
     onStart: () => console.log("🔓 Hero Final: Scroll restored"),
