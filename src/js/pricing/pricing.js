@@ -340,6 +340,7 @@ $(document).ready(function () {
   logAllSteps(); // Log steps for debugging
 });
 
+
 /****************************
  *
  * STEP 2: Check Billing Cycle
@@ -483,6 +484,11 @@ function determinePlan(tickets) {
   ) {
    // console.log("Switching from Starter monthly → forcing yearly because new plan is not Starter");
     toggleYearly();
+  }
+
+  if (globalCurrentPlanName === "Starter" && globalBillingCycle !== "monthly") {
+    console.log("Switching to monthly because plan is Starter");
+    toggleMonthly();
   }
 
   updateOveragesDisplay();
