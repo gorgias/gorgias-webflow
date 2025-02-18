@@ -19,7 +19,7 @@ function updateHrefWithParams(element) {
     let path = window.location.pathname;
     // Target the right links by checking if href contains /demo, /signup, or /signup-2 but not /signup-2/account or /signup/account
     if (
-        (href.includes('/demo') || href.includes('/signup') || (href=='#' && ctaAttr.includes('get-started')) || href.includes('/signup-2')) &&
+        (href.includes('/demo') || href.includes('/signup') /*|| (href=='#' && ctaAttr.includes('get-started')) */ || href.includes('/signup-2')) &&
         !href.includes('/signup-2/account') &&
         !href.includes('/signup/account')
     ) {
