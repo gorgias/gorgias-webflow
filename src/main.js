@@ -124,6 +124,11 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
     }
 
+       // Check if product is voice
+       if (path.includes('/wip/helpdesk')){
+        newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
+    }
+
 
     // Check if product is convert
     if (path.includes('/products/convert') || path.includes('/lp/convert')){
