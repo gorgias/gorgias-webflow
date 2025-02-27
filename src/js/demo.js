@@ -8,11 +8,12 @@
     const demoCustomerAiSalesAgentFormId = '5e98af50-58ae-48eb-b262-777f40f90fd3';
     const demoCustomerVoiceFormId = 'ed918c55-148c-4ae3-a285-25cc131d2975';
     const demoLeadEnterpriseCXAuditFormId = 'a031d4fd-d19c-466d-90ce-315f9713a70c';
+    const demoLeadEnterpriseCXCommercialFormId = 'acb7551c-8080-467b-97cc-da9f67a7e131';
     const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
 
     // demo functions
     window.addEventListener("message", function(event) {
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id === demoCustomerVoiceFormId || event.data.id === demoLeadEnterpriseCXAuditFormId)) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id === demoCustomerVoiceFormId || event.data.id === demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId)) {
             if($('div.hs_demo_current_helpdesk').length  && location.href.includes('reamaze') == true){
                 $('select[name=demo_current_helpdesk]').val('Reamaze').change();
                 $('div.hs_demo_current_helpdesk').addClass('hidden');
@@ -66,7 +67,7 @@
 
     // form submitted is a demo form (lead) of customer demo
     window.addEventListener("message", function(event) {
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId )) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId)) {
             var submittedValues=event.data.data.submissionValues;
             for (var key in submittedValues) {
                 if (Array.isArray(submittedValues[key])) {
@@ -87,6 +88,10 @@
             } else if (eventId === demoLeadEnterpriseCXAuditFormId) {
                 formName = 'cx_audit'
                 cpRouterName = "Inbound_Router_Lead_Enterprise_CX_Audit";
+                console.log('cx_audit passed');
+            }  else if (eventId === demoLeadEnterpriseCXCommercialFormId) {
+                formName = 'cx_commercial'
+                cpRouterName = "Inbound_Router_Lead_Commercial_CX_Audit";
                 console.log('cx_audit passed');
             }
             ChiliPiper.submit(cpTenantDomain, cpRouterName,{
