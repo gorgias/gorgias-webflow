@@ -62,6 +62,7 @@ Webflow.push(function () {
          newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
      }
      
+
     // blog pages
     if (path.includes('/blog/')) {
         // [Attributes by Finsweet] Code Highlight
@@ -78,6 +79,7 @@ Webflow.push(function () {
         newStyle(scriptBase + '/src/css/blog'+minBase+'.css','body');
         newScript(scriptBase + '/src/js/blog'+minBase+'.js','body',1);
     }
+
     // product tour page
     if (path === '/product-tour'){
         newScript(scriptBase + '/src/js/producttour'+minBase+'.js','head',1)
@@ -169,6 +171,10 @@ Webflow.push(function () {
    // page is enterprise
     if(path.includes('/enterprise')){
       newScript(scriptBase + '/src/js/enterprise'+minBase+'.js','head', 1);
+    }
+
+    if (path.includes('/wip/blog')){
+      newScript(scriptBase + '/src/js/blog-search'+minBase+'.js','body', 1);
     }
 })
 
