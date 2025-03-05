@@ -7,7 +7,9 @@ $(document).ready(function () {
     const moreResultsLink = $('[data-el="more-results"]');
     const searchWrapper = $('.blog-search_collection-wrapper');
     const searchLink = $('.link-underline');
+
     const baseUrl = "/blog-search-results"; // Base URL
+
 
     let typingTimer;
     const doneTypingInterval = 500; // Delay before updating query params

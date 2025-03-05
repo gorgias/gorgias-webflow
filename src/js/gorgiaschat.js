@@ -1,21 +1,38 @@
+
+var GorgiasChatAppID ;
+var GorgiasConvertAppID ;
+
+
+// if the url contains /wip/ , then load the test chat, not the SDR one
+if (path.includes('/wip/')) {
+  GorgiasChatAppID = '01JNJQB02D23QTH0P4AVRY1A6D'
+  GorgiasConvertAppID = '921d1a43-21e9-4795-a845-6ab05e79503f';
+}
+// on any other page, load the production chat and COnvery
+else {
+  GorgiasChatAppID = '01J5V1J9ZV18ZCZZZ6ZCFDGFE5';
+  GorgiasConvertAppID = '921d1a43-21e9-4795-a845-6ab05e79503f';
+}
+
+
 /* Convert Bundle Start */ 
 var scriptBundleConvert = document.createElement('script');
 var scriptBundleConvertId = 'convert-bundle-loader';
-var scriptBundleConvertSrc = 'https://bundle.dyn-rev.app/loader.js?g_cvt_id=921d1a43-21e9-4795-a845-6ab05e79503f';
+var scriptBundleConvertSrc = 'https://bundle.dyn-rev.app/loader.js?g_cvt_id=' + GorgiasConvertAppID;
 var scriptBundleConvertType = 'text/javascript';
 scriptBundleConvert.setAttribute("src",scriptBundleConvertSrc);
 scriptBundleConvert.setAttribute("type",scriptBundleConvertType);
 scriptBundleConvert.setAttribute("id",scriptBundleConvertId);
 scriptBundleConvert.async = 1;
 $('body')[0].appendChild(scriptBundleConvert);  
-/* GorConvert Bundle End */
+/* Convert Bundle End */
 
 
 
 /* Gorgias Chat Widget Start */ 
 var scriptGorgiasChat = document.createElement('script');
 var scriptGorgiasChatId = 'gorgias-chat-widget-install-v3';
-var scriptGorgiasChatSrc = 'https://config.gorgias.chat/bundle-loader/01J5V1J9ZV18ZCZZZ6ZCFDGFE5';
+var scriptGorgiasChatSrc = 'https://config.gorgias.chat/bundle-loader/' + GorgiasChatAppID;
 var scriptGorgiasChatType = 'text/javascript';
 
 scriptGorgiasChat.setAttribute('src',scriptGorgiasChatSrc);
