@@ -173,7 +173,7 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/enterprise'+minBase+'.js','head', 1);
     }
 
-    if (path.includes('/wip/blog')){
+    if (path.includes('/blog') || path.includes("/wip/blog")){
       newScript(scriptBase + '/src/js/blog-search'+minBase+'.js','body', 1);
     }
 })
