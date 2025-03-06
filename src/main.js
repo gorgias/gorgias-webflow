@@ -77,7 +77,6 @@ Webflow.push(function () {
         newScript('https://cdn.jsdelivr.net/npm/medium-zoom@1.0.3/dist/medium-zoom.min.js','body',0);
         // custom code
         newStyle(scriptBase + '/src/css/blog'+minBase+'.css','body');
-        newScript(scriptBase + '/src/js/blog'+minBase+'.js','body',1);
     }
 
     // product tour page
@@ -119,6 +118,9 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
         newScript(scriptBase + '/src/js/tool-roi-automate'+minBase+'.js','head', 1);
         newStyle(scriptBase + '/src/css/tool-roi-automate'+minBase+'.css','head');
+        newScript(scriptBase + '/src/js/modal'+minBase+'.js','body', 1);
+        newScript(scriptBase + '/src/js/testimonial'+minBase+'.js','body', 1);
+
     }
 
     // Check if product is voice
@@ -176,6 +178,7 @@ Webflow.push(function () {
 
     if (path.includes('/blog') || path.includes("/wip/blog")){
       newScript(scriptBase + '/src/js/blog-search'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/modal'+minBase+'.js','body', 1);
     }
 })
 

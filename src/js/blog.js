@@ -1,4 +1,3 @@
-
 // add an anchor for each h2 that start at 0 and increment by 1
 /*
 $('.w-richtext').find('h2').each(function(index) {
@@ -9,19 +8,19 @@ $('.w-richtext').find('h2').each(function(index) {
 });
 */
 
-// open link in a new tab automatically */
-var links = document.querySelectorAll('.blogpost_wrapper-content a')
-links.forEach(link => link.target = "_blank")
+// // open link in a new tab automatically */
+// var links = document.querySelectorAll('.blogpost_wrapper-content a')
+// links.forEach(link => link.target = "_blank")
 
-// Zoom on images -->
-var images = Array.from(document.querySelectorAll(".blogpost_wrapper-content img:not(.hs-cta-img)"));
-if ($(window).width() >= 991) {
+// // Zoom on images -->
+// var images = Array.from(document.querySelectorAll(".blogpost_wrapper-content img:not(.hs-cta-img)"));
+// if ($(window).width() >= 991) {
 
-    images.forEach(img => {
-        mediumZoom(img, {
-            margin: 0, /* The space outside the zoomed image */
-            background: "rgba(0, 0, 0, 0.75)", /* The background of the overlay */
-            scrollOffset: 40, /* The number of pixels to scroll to close the zoom */
-        });
-    });
-}
+//     images.forEach(img => {
+//         mediumZoom(img, {
+//             margin: 0, /* The space outside the zoomed image */
+//             background: "rgba(0, 0, 0, 0.75)", /* The background of the overlay */
+//             scrollOffset: 40, /* The number of pixels to scroll to close the zoom */
+//         });
+//     });
+// }
