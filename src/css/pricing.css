@@ -1,4 +1,4 @@
-/* tabs-menu__pricing styling */
+/* tabs-menu__pricing styling
   @media screen and (min-width: 992px) {
     .tabs-menu__pricing {
       right: calc(642px/2 - 169px/2);
@@ -48,7 +48,7 @@
   /* Learn about this solution to creating custom select styles:
   @link https://moderncss.dev/custom-select-styles-with-pure-css/ */
 
-  .w-input, .w-select {
+  /* .w-input, .w-select {
     width: 100%;
     border: 1px solid var #dddddd;
     border-radius: 8px;
@@ -58,11 +58,11 @@
     background-repeat: no-repeat;
     background-position: 100% 50%;
     /* background-size: 24px; */ 
-  }
+ /* }
 
   select {
     /* A reset of styles, including removing the default dropdown arrow */
-    appearance: none;
+    /*appearance: none;
     background-color: transparent;
     border: none;
     padding: 0 1em 0 0;
@@ -75,9 +75,61 @@
     outline-style:none;
 
     /* Stack above custom arrow */
-    z-index: 1;
+   /* z-index: 1;
 }
   
 .input-newsletter-form{
 	background-image:none !important;
+} */
+
+
+.billing-toggle-wrapper.is-light {
+  background-color: var(--primary-white);
+  border-style: none;
+}
+
+.billing-toggle-wrapper {
+  border: 1px solid var(--primary-white);
+  border-radius: var(--border-radius--medium-20px);
+  height: 2.13rem;
+  display: flex;
+  overflow: hidden;
+}
+
+.radio-wrap.billing-toggle-radio.is-light.active {
+  border-style: none;
+  border-color: var(--primary-coral);
+  background-color: var(--primary-coral);
+}
+
+.radio-wrap.billing-toggle-radio.active {
+  border-style: none;
+}
+
+.radio-wrap.billing-toggle-radio.is-light {
+  background-color: var(--primary-white);
+}
+
+.billing-toggle-radio.active {
+  border: 1px solid var(--primary-white);
+  border-radius: var(--border-radius--medium-20px);
+  background-color: var(--primary-white);
+  color: var(--black);
+}
+
+.billing-toggle-radio {
+  cursor: pointer;
+  flex: none;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+  padding: .25rem 1rem;
+  transition: all .2s;
+  display: flex;
+}
+
+.code-radio.is-inactive, .code-radio-light.is-inactive {
+  opacity: .5;
+  pointer-events: none;
 }

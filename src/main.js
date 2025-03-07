@@ -47,6 +47,7 @@ Webflow.push(function () {
     // pricing page
     if (path.includes('pricing') || path.includes('log-slider')){
       newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
+      newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
     }
 
      if (path.includes('choose-your-plan')){
