@@ -106,9 +106,11 @@
                     analytics.track("cp_" + formName + "_booked");
                     if(formName == 'demo'){
                         $('.wrapper-post-demo-booked').removeClass('is-hidden');
-                        $('.wrapper-chilipiper-embed').height('250px');
+                        $('.wrapper-chilipiper-embed').height('176px');
                         $('.demo_step-wrapper').css('display','none');
                         $('.demo-new_status-bar').css('display','none');
+                        $('.privacy-policy').css('display','none');
+                        
                     }
                 }, 
                 onError: function () {
