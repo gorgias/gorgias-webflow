@@ -110,6 +110,7 @@
                         $('.demo_step-wrapper').css('display','none');
                         $('.demo-new_status-bar').css('display','none');
                         $('.privacy-policy').css('display','none');
+                        $('.post-demo-booked-heading').css('display','none');
                         
                     }
                 }, 
