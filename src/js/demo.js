@@ -10,6 +10,7 @@
     const demoLeadEnterpriseCXAuditFormId = 'a031d4fd-d19c-466d-90ce-315f9713a70c';
     const demoLeadEnterpriseCXCommercialFormId = 'acb7551c-8080-467b-97cc-da9f67a7e131';
     const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
+    const postDemoMultiStepFormId = '5f329430-c30d-4637-b5e3-828f02bedd06'; 
 
     // demo functions
     window.addEventListener("message", function(event) {
@@ -94,6 +95,11 @@
                 cpRouterName = "Inbound_Router_Lead_Commercial_CX_Audit";
                 console.log('cx_audit passed');
             }
+
+            if(formName == 'demo'){
+                $('.privacy-policy').css('display','none');
+            }
+
             ChiliPiper.submit(cpTenantDomain, cpRouterName,{
                 map: true,
                 lead: submittedValues,
@@ -109,9 +115,7 @@
                         $('.wrapper-chilipiper-embed').height('176px');
                         $('.demo_step-wrapper').css('display','none');
                         $('.demo-new_status-bar').css('display','none');
-                        $('.privacy-policy').css('display','none');
-                        $('.post-demo-booked-heading').css('display','none');
-                        
+                        $('.demo-form-hubspot-post-booking').css('margin-top','-3rem');                       
                     }
                 }, 
                 onError: function () {
@@ -122,14 +126,6 @@
         }
     });
 
-    // form submitted is a post demo form
-    window.addEventListener("message", function(event) {
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == postDemoFormId )) {
-            $('.post-demo-booked-heading').addClass('is-hidden');
-            $('.demo-form-hubspot-post-booking').addClass('is-hidden');
-            $('.post-demo-booked-confirmation').removeClass('is-hidden');
-        }
-    });
 })();
 
 
