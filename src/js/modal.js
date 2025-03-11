@@ -10,16 +10,51 @@ $(document).ready(function () {
 
         setTimeout(() => {
             modal.css("opacity", "1");
-            modal.find('[data-el="blog-search"]').focus(); // Auto-focus input
+            const blogSearchInput = modal.find('[data-el="blog-search"]');
+            if (blogSearchInput.length) {
+                blogSearchInput.focus(); // Auto-focus input if it exists
+            }
+            $('body').css('overflow', 'hidden');
         }, 100);
     }
 
-    // Function to close the modal
     function closeModal() {
+        console.log("Closing modal...");
+    
         modal.css("opacity", "0");
-
+    
         setTimeout(() => {
             modal.css("display", "none");
+            $('body').css('overflow', 'visible');
+            console.log("Modal hidden, resetting overflow.");
+    
+            // Stop all <audio> and <video> elements
+            modal.find("audio, video").each(function () {
+                console.log("Stopping media element:", this);
+                this.pause();
+                this.currentTime = 0; // Reset playback position
+            });
+    
+            // Stop YouTube videos by resetting src
+            modal.find("iframe[src*='youtube.com']").each(function () {
+                console.log("Resetting YouTube iframe:", this);
+                let originalSrc = $(this).attr("src");
+                $(this).attr("src", ""); // Clear src to stop video
+                setTimeout(() => {
+                    $(this).attr("src", originalSrc); // Restore src
+                }, 100);
+            });
+    
+            // Stop Wistia videos (via Embedly) by resetting src
+            modal.find("iframe[src*='cdn.embedly.com']").each(function () {
+                console.log("Resetting Wistia Embedly iframe:", this);
+                let originalSrc = $(this).attr("src");
+                $(this).attr("src", ""); // Clear src
+                setTimeout(() => {
+                    $(this).attr("src", originalSrc); // Restore src
+                }, 100);
+            });
+    
         }, 300);
     }
 
