@@ -72,7 +72,7 @@ scene2Timeline
   .to(".is-sale.is-bigger", { fontSize: "32rem", width:"63rem", opacity:"0", duration: 1, ease: "power1.inOut"}, "<")
 
   // Final placement of media, and hero appears
-  .to(".is-alt-header", { height: "18.5rem", duration: 0.5, ease: "expo.inOut"})
+  .to(".is-alt-header", { height: "20.5rem", duration: 0.5, ease: "expo.inOut"})
   .to("#first-visual", {
     yPercent: 10,
     duration: 0.3,
