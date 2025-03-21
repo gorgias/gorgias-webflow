@@ -126,10 +126,15 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
     }
 
-       // Check if product is voice
+       // Check if product is helpdesk
        if (path.includes('/wip/helpdesk')){
         newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
     }
+
+           // Check if product is helpdesk
+           if (path.includes('/wip/shopify')){
+            newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);
+        }
 
 
     // Check if product is convert
