@@ -1,52 +1,61 @@
 (function () {
     const MOBILE_BREAKPOINT = 990;
   
-    // For each wrapper that contains template blocks
-    document.querySelectorAll('[data-el="template-parent"]').forEach(wrapper => {
-      let currentMode = null;
-      let insertedContent = null;
+    // Holds current mode per wrapper
+    const wrapperStates = new WeakMap();
   
-      // Loads and injects the correct template based on mode
-      function loadTemplate(mode) {
-        const template = wrapper.querySelector(`[data-el="template-${mode}"]`);
-        if (!template || !template.content) return;
+    function loadTemplate(mode, wrapper) {
+      const selector = `[data-el="template-${mode}"]`;
+      const template = wrapper.querySelector(selector);
+      if (!template || !template.content) return;
   
-        const clone = template.content.cloneNode(true);
-        const templateClass = template.className;
+      const clone = template.content.cloneNode(true);
+      const templateClass = template.className;
   
-        // Remove any previously injected content
-        if (insertedContent) {
-          insertedContent.remove();
-          insertedContent = null;
-        }
+      // Remove previously injected content with same class
+      const prevInjected = wrapper.querySelector(`.${templateClass}`);
+      if (prevInjected) prevInjected.remove();
   
-        // Inject new content
-        insertedContent = document.createElement('div');
-        insertedContent.className = templateClass;
-        insertedContent.appendChild(clone);
-        wrapper.appendChild(insertedContent);
+      // Inject new content
+      const injected = document.createElement('div');
+      injected.className = templateClass;
+      injected.appendChild(clone);
+      wrapper.appendChild(injected);
   
-        currentMode = mode;
+      // Update state
+      wrapperStates.set(wrapper, mode);
+  
+      // Run appropriate JS
+      if (mode === 'mobile' && typeof window.initAccordion === 'function') {
+        window.initAccordion(wrapper);
       }
   
-      // Determine if mode needs to be switched
-      function checkAndUpdateTemplate() {
-        const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-        const newMode = isMobile ? 'mobile' : 'desktop';
-  
-        if (newMode !== currentMode) {
-          loadTemplate(newMode);
-        }
+      if (mode === 'desktop' && typeof window.initAutomate === 'function') {
+        window.initAutomate(wrapper);
       }
+    }
   
-      // Initial load
-      checkAndUpdateTemplate();
+    function updateAllTemplates() {
+      const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+      const mode = isMobile ? 'mobile' : 'desktop';
   
-      // Debounced resize listener
-      let resizeTimeout;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(checkAndUpdateTemplate, 150);
+      const wrappers = document.querySelectorAll('[data-el="template-parent"]');
+  
+      wrappers.forEach(wrapper => {
+        const currentMode = wrapperStates.get(wrapper);
+        if (currentMode !== mode) {
+          loadTemplate(mode, wrapper);
+        }
       });
+    }
+  
+    // Initial run
+    updateAllTemplates();
+  
+    // Debounced resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(updateAllTemplates, 150);
     });
   })();
