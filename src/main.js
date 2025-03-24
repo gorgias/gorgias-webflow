@@ -183,5 +183,7 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/blog-search'+minBase+'.js','body', 1);
       newScript(scriptBase + '/src/js/modal'+minBase+'.js','body', 1);
     }
+
+    newScript(scriptBase + '/src/js/reload-scripts'+minBase+'.js','body',1);
 })
 
