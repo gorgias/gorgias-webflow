@@ -31,7 +31,9 @@
       }
   
       if (mode === 'desktop' && typeof window.initAutomate === 'function') {
+
         window.initAutomate;
+
       }
     }
   
