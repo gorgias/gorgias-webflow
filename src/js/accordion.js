@@ -6,16 +6,16 @@ function injectAccordionStyles() {
     [g-accordion-element="content"] {
       overflow: hidden;
       width: 100%;
-      max-height: 0px;
+      height: 0px;
       transition-property: height, max-height;
       transition-duration: 250ms, 250ms;
       transition-timing-function: cubic-bezier(.77, 0, .175, 1), cubic-bezier(.77, 0, .175, 1);
-      will-change: max-height;
+      will-change: height, max-height;
     }
 
     [g-accordion-element="content"].is-active {
+      height: 100%;
       max-height: 150rem;
-      height: 100% !important;
     }
 
     [g-accordion-element="arrow"] {
