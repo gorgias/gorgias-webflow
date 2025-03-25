@@ -1,3 +1,4 @@
+
 // (function () {
 //     const scriptPaths = ['accordion.min.js', 'automate.min.js'];
 //     let resizeTimeout = null;
@@ -29,3 +30,4 @@
 //     // Optional: run once on load
 //     reloadScripts();
 //   })();
+
