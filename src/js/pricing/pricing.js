@@ -526,32 +526,31 @@ let globalAutomatePrice0 = 0,
   globalAutomatePrice30 = 0,
   globalAutomatePrice50 = 0;
 
-function calculateAutomatePrices() {
-  const percentages = [0, 20, 30, 50];
-  const automatePlansForCycle = automatePlans[globalBillingCycle];
-
-  percentages.forEach((percentage) => {
-    let automateTickets = Math.round(globalCurrentPlanTicketsPerMonth * (percentage / 100));
-    let automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
-
-    // Store in dynamic variables
-    window[`globalAutomateTickets${percentage}`] = automateTickets;
-    window[`globalAutomatePrice${percentage}`] = automatePrice;
-
-    if (percentage !== 0) {
-      const automateTicketsFormatted = formatNumberWithCommas(automateTickets);
-      $('[data-el="ticketNumber' + percentage + '"]').text(
-        `${automateTicketsFormatted} automated`
-      );
-    }
-  });
-
-  // Update the main ticket number
-  const totalTicketsText = `${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} helpdesk tickets`;
-  $('[data-el="ticketNumber"]').text(totalTicketsText);
-
-  calculateOptionPrices();
-}
+  function calculateAutomatePrices() {
+    const percentages = [0, 20, 30, 50];
+    const automatePlansForCycle = automatePlans[globalBillingCycle];
+  
+    percentages.forEach((percentage) => {
+      // 🔁 Use selected ticket count instead of plan ticket quota
+      let automateTickets = Math.round(globalTicketNumber * (percentage / 100));
+      let automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
+  
+      // Store in dynamic variables
+      window[`globalAutomateTickets${percentage}`] = automateTickets;
+      window[`globalAutomatePrice${percentage}`] = automatePrice;
+  
+      if (percentage !== 0) {
+        const automateTicketsFormatted = formatNumberWithCommas(automateTickets);
+        $('[data-el="ticketNumber' + percentage + '"]').text(`${automateTicketsFormatted} automated`);
+      }
+    });
+  
+    // Still show base helpdesk ticket total from the plan
+    const totalTicketsText = `${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} helpdesk tickets`;
+    $('[data-el="ticketNumber"]').text(totalTicketsText);
+  
+    calculateOptionPrices();
+  }
 
 // Helper function to find automate price from ticket count
 function findAutomatePrice(tickets, plans) {
