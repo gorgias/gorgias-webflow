@@ -787,6 +787,7 @@ function updateChosenPrices(automateTicketsParam, automationRateParam) {
     $('[data-summary="automate"]').css("display", "none");
   } else {
     $('[data-summary="automate"]').css("display", "flex");
+    $('[data-summary="automate"]').removeClass("is-hidden");
   }
 
   $('[data-el="chosenHelpdeskPrice"]').text(chosenHelpdeskPrice.toFixed(0));
@@ -928,31 +929,33 @@ $('[data-summary="automate-remove"]').on("click", function () {
 });
 
 function resetAddonPrice(addon) {
+  console.log(`Running resetAddonPrice for: ${addon}`);
   const addonTicketsDropdown = document.querySelector(`#${addon}-tickets`);
-  if (!addonTicketsDropdown) return;
+  if (!addonTicketsDropdown) {
+    console.warn(`❌ No dropdown found for #${addon}-tickets`);
+    return;
+  }
+
   addonTicketsDropdown.value = "Tier 0";
- // console.log(`${addon.toUpperCase()} tickets dropdown reset to Tier 0`);
+  addonTicketsDropdown.dispatchEvent(new Event("change", { bubbles: true }));
 
-  const changeEvent = new Event("change", { bubbles: true });
-  addonTicketsDropdown.dispatchEvent(changeEvent);
+  const $summary = $('[data-summary="' + addon + '"]');
+  console.log("Hiding summary element:", $summary.length > 0 ? $summary[0] : "not found");
+  $summary.addClass("is-hidden");
 
-  $(`[data-summary="${addon}"]`).addClass("is-hidden");
   $(".addons_dropdown-links.w--current").removeClass("w--current");
 
-  if (addon === "voice") {
-    updateVoiceTicketPrice();
-  } else if (addon === "sms") {
-    updateSmsTicketPrice();
-  }
- // console.log(`${addon.toUpperCase()} reset completed`);
+  if (addon === "voice") updateVoiceTicketPrice();
+  else if (addon === "sms") updateSmsTicketPrice();
 }
 
+// Handle click events on remove buttons
 $('[data-summary="voice-remove"]').on("click", function () {
-//  console.log("Voice remove button clicked");
+  console.log("✅ Voice remove button clicked");
   resetAddonPrice("voice");
 });
+
 $('[data-summary="sms-remove"]').on("click", function () {
-//  console.log("SMS remove button clicked");
   resetAddonPrice("sms");
 });
 
