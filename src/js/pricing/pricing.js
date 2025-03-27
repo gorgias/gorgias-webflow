@@ -546,7 +546,7 @@ let globalAutomatePrice0 = 0,
     });
   
     // Still show base helpdesk ticket total from the plan
-    const totalTicketsText = `${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} helpdesk tickets`;
+    const totalTicketsText = `Includes ${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} helpdesk tickets`;
     $('[data-el="ticketNumber"]').text(totalTicketsText);
   
     calculateOptionPrices();

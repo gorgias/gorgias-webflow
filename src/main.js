@@ -178,12 +178,16 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/enterprise'+minBase+'.js','head', 1);
     }
 
-
+    // page is blog
     if (path.includes('/blog') || path.includes("/wip/blog")){
       newScript(scriptBase + '/src/js/blog-search'+minBase+'.js','body', 1);
       newScript(scriptBase + '/src/js/modal'+minBase+'.js','body', 1);
     }
 
-    newScript(scriptBase + '/src/js/reload-scripts'+minBase+'.js','body',1);
+    // page is ai-vs-human
+    if (path.includes('/ai-agent-vs-human')){
+      newScript(scriptBase + '/src/js/campaigns/ai-vs-human'+minBase+'.js','body', 1);
+    }
+
 })
 
