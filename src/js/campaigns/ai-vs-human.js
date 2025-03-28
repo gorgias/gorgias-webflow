@@ -131,11 +131,18 @@ document.addEventListener('click', (e) => {
 
         }
   
-      // 2. Unmask the result block
-      const resultBlock = step.querySelector('.ai-vs-human_result-block');
-      if (resultBlock) {
+        // 2. Unmask the result block
+        const resultBlock = step.querySelector('.ai-vs-human_result-block');
+        if (resultBlock) {
         resultBlock.classList.remove('is-masked');
-      }
+        }
+
+        // 3. Unmask the .overlay *inside* this step only
+        const overlay = step.querySelector(':scope > .overlay');
+        if (overlay) {
+        overlay.classList.remove('is-masked');
+        console.log('✅ Overlay unmasked for step:', step.getAttribute('sf-step'));
+        }
     }
   
     // 3. Handle radios in group
@@ -183,35 +190,6 @@ document.addEventListener('click', (e) => {
         $('[data-el="progress-el-hide"]').css("display", "none");
     });
 
-
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const source = document.querySelector('[sf-react="text($v.ai)"]');
-    //     const targets = document.querySelectorAll('[data-el="copy-score"]');
-      
-    //     if (!source || targets.length === 0) {
-    //       console.warn('❌ Missing source or target elements for copy-score sync');
-    //       return;
-    //     }
-      
-    //     const updateScore = () => {
-    //       const value = source.textContent.trim();
-    //       targets.forEach(el => {
-    //         el.textContent = value;
-    //       });
-    //       console.log(`🔄 Copied score: ${value}`);
-    //     };
-      
-    //     // Initial update
-    //     updateScore();
-      
-    //     // Observe changes to the Superform span
-    //     const observer = new MutationObserver(updateScore);
-    //     observer.observe(source, {
-    //       childList: true,
-    //       characterData: true,
-    //       subtree: true,
-    //     });
-    //   });
 
 
  
