@@ -1,3 +1,80 @@
+window.fsComponents = window.fsComponents || [];
+window.fsComponents.push([
+  'slider',
+  (sliderInstances) => {
+    console.log('✅ Finsweet slider API loaded!');
+    
+    const navConfigs = [
+      { instanceName: 'slider-instance-2', navAttr: 'navigation-3', prevAttr: 'previous-3', nextAttr: 'next-3' },
+      { instanceName: 'slider-instance-3', navAttr: 'navigation-2', prevAttr: 'previous-2', nextAttr: 'next-2' },
+    ];
+
+    navConfigs.forEach(config => {
+      const { instanceName, navAttr, prevAttr, nextAttr } = config;
+
+      const nav = document.querySelector(`[fs-slider-element="${navAttr}"]`);
+      if (!nav) {
+        console.warn(`⛔ Navigation block not found for: ${navAttr}`);
+        return;
+      }
+
+      const sliderInstance = sliderInstances.find(s => {
+        const el = s.el?.closest?.('[fs-slider-instance]');
+        return el?.getAttribute('fs-slider-instance') === instanceName;
+      });
+
+      if (!sliderInstance) {
+        console.warn(`⛔ Missing slider instance for: ${instanceName}`);
+        return;
+      }
+
+      console.log(`✅ Bound nav [${navAttr}] to slider: ${instanceName}`);
+
+      const prevBtn = nav.querySelector(`[fs-slider-element="${prevAttr}"]`);
+      const nextBtn = nav.querySelector(`[fs-slider-element="${nextAttr}"]`);
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', e => {
+          e.preventDefault();
+          sliderInstance.slidePrev();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', e => {
+          e.preventDefault();
+          sliderInstance.slideNext();
+        });
+      }
+
+      const updateNavState = () => {
+        console.log(`🔁 Checking nav state for ${instanceName}`);
+        console.log(`   ⬅️ isBeginning: ${sliderInstance.isBeginning}, ➡️ isEnd: ${sliderInstance.isEnd}`);
+
+        if (sliderInstance.isBeginning) {
+          prevBtn?.classList.add('is-nav-disabled');
+          console.log(`⛔ Prev disabled (${instanceName})`);
+        } else {
+          prevBtn?.classList.remove('is-nav-disabled');
+          console.log(`✅ Prev enabled (${instanceName})`);
+        }
+
+        if (sliderInstance.isEnd) {
+          nextBtn?.classList.add('is-nav-disabled');
+          console.log(`⛔ Next disabled (${instanceName})`);
+        } else {
+          nextBtn?.classList.remove('is-nav-disabled');
+          console.log(`✅ Next enabled (${instanceName})`);
+        }
+      };
+
+      sliderInstance.on('slideChange', updateNavState);
+      updateNavState(); // Initial check
+    });
+  }
+]);
+
+
 document.addEventListener('click', function (e) {
     const trigger = e.target.closest('[data-el="trigger-next"]');
     if (!trigger) return;
@@ -107,34 +184,34 @@ document.addEventListener('click', (e) => {
     });
 
 
-  // Copy score
-  // Wait for DOM to be ready
-document.addEventListener('DOMContentLoaded', () => {
-    const observerConfig = { childList: true, characterData: true, subtree: true };
-  
-    // Find the source element (dynamic Superform output)
-    const source = document.querySelector('[sf-react="text($v.ai)"]');
-    const targets = document.querySelectorAll('[data-el="copy-score"]');
-  
-    if (!source || targets.length === 0) return;
-  
-    // Create observer
-    const observer = new MutationObserver(() => {
-      const newValue = source.textContent.trim();
-      targets.forEach(el => {
-        el.textContent = newValue;
-      });
-    });
-  
-    // Start observing
-    observer.observe(source, observerConfig);
-  
-    // Set initial value
-    const initial = source.textContent.trim();
-    targets.forEach(el => {
-      el.textContent = initial;
-    });
-  });
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     const source = document.querySelector('[sf-react="text($v.ai)"]');
+    //     const targets = document.querySelectorAll('[data-el="copy-score"]');
+      
+    //     if (!source || targets.length === 0) {
+    //       console.warn('❌ Missing source or target elements for copy-score sync');
+    //       return;
+    //     }
+      
+    //     const updateScore = () => {
+    //       const value = source.textContent.trim();
+    //       targets.forEach(el => {
+    //         el.textContent = value;
+    //       });
+    //       console.log(`🔄 Copied score: ${value}`);
+    //     };
+      
+    //     // Initial update
+    //     updateScore();
+      
+    //     // Observe changes to the Superform span
+    //     const observer = new MutationObserver(updateScore);
+    //     observer.observe(source, {
+    //       childList: true,
+    //       characterData: true,
+    //       subtree: true,
+    //     });
+    //   });
 
 
  
