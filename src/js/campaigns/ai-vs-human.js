@@ -1,3 +1,29 @@
+var Webflow = Webflow || [];
+Webflow.push(function() {
+      const params = new URLSearchParams(window.location.search);
+      const campaign = params.get('utm_campaign')?.toLowerCase() || '';
+    
+      const baseHeader = document.querySelector('[data-el="base-header"]');
+      const altHeader = document.querySelector('[data-el="alternate-header"]');
+    
+      console.log("utm_campaign param:", campaign);
+    
+      if (!baseHeader || !altHeader) {
+        console.warn("❌ Header elements not found");
+        return;
+      }
+    
+      if (campaign.includes('customer')) {
+        baseHeader.style.display = 'none';
+        altHeader.style.display = 'flex';
+        console.log("✅ Showing alternate header (customer campaign)");
+      } else {
+        baseHeader.style.display = 'flex';
+        altHeader.style.display = 'none';
+        console.log("✅ Showing base header (default)");
+      }
+
+
 window.fsComponents = window.fsComponents || [];
 window.fsComponents.push([
   'slider',
@@ -83,30 +109,14 @@ document.addEventListener('click', function (e) {
     if (sliderNext) sliderNext.click();
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    const campaign = params.get('utm_campaign')?.toLowerCase() || '';
+  document.addEventListener('click', function (e) {
+    const trigger = e.target.closest('[data-el="trigger-prev"]');
+    if (!trigger) return;
   
-    const baseHeader = document.querySelector('[data-el="base-header"]');
-    const altHeader = document.querySelector('[data-el="alternate-header"]');
-  
-    console.log("utm_campaign param:", campaign);
-  
-    if (!baseHeader || !altHeader) {
-      console.warn("❌ Header elements not found");
-      return;
-    }
-  
-    if (campaign.includes('customer')) {
-      baseHeader.style.display = 'none';
-      altHeader.style.display = 'flex';
-      console.log("✅ Showing alternate header (customer campaign)");
-    } else {
-      baseHeader.style.display = 'flex';
-      altHeader.style.display = 'none';
-      console.log("✅ Showing base header (default)");
-    }
+    const sliderNext = document.querySelector('[fs-slider-element="previous"]');
+    if (sliderNext) sliderNext.click();
   });
+
 
 // Handle the UI when an answer is chosen
 document.addEventListener('click', (e) => {
@@ -190,7 +200,4 @@ document.addEventListener('click', (e) => {
         $('[data-el="progress-el-hide"]').css("display", "none");
     });
 
-
-
- 
-
+});
