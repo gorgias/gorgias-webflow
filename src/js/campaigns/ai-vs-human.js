@@ -201,6 +201,3 @@ document.addEventListener('click', (e) => {
     });
 
 });
-
- 
-
