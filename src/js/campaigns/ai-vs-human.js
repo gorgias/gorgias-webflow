@@ -194,10 +194,53 @@ document.addEventListener('click', (e) => {
   });
 
     // Hide header for last step of quiz
-    $('[data-el="last-step-cta"]').on('click', function() {
+    $('[data-cta="last-step-cta"]').on('click', function() {
         $('.ai-vs-human_progress').css("height", "0");
         $('.ai-vs-human_progress').css("padding", "0");
         $('[data-el="progress-el-hide"]').css("display", "none");
     });
+
+    // Scroll to top and lock scroll
+    document.addEventListener('click', (e) => {
+      const label = e.target.closest('[data-el="radio-label"]');
+      if (!label || window.innerWidth > 767) return;
+    
+      const testSlide = document.querySelector('.ai-agent-vs-human_slide.is-test.is-slide-active');
+    
+      if (!testSlide) {
+        console.warn('⛔ No active test slide found');
+        return;
+      }
+    
+      // Step 1: Force scroll to top (fallback if smooth fails)
+      testSlide.scrollTop = 0;
+    
+      // Optional: Try smooth scroll via requestAnimationFrame
+      testSlide.scrollTo({ top: 0, behavior: 'smooth' });
+    
+      console.log('✅ Scroll top triggered on test slide');
+    
+      // Step 2: Wait 400ms and lock scroll
+      setTimeout(() => {
+        testSlide.style.overflow = 'hidden';
+        console.log('✅ Overflow hidden on test slide');
+      }, 400);
+    });
+
+// Re-enable scroll
+document.addEventListener('click', (e) => {
+  const trigger = e.target.closest('[data-el="enable-scroll"]');
+  if (!trigger) return;
+
+  const testSlide = document.querySelector('.ai-agent-vs-human_slide.is-test.is-slide-active');
+  if (testSlide) {
+    testSlide.style.overflow = 'scroll';
+    console.log('✅ Scroll re-enabled on test slide');
+  } else {
+    console.warn('⛔ No active test slide found');
+  }
+});
+
+// Finish
 
 });
