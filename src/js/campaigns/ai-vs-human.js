@@ -200,7 +200,7 @@ document.addEventListener('click', (e) => {
         $('[data-el="progress-el-hide"]').css("display", "none");
     });
 
-
+    // Scroll to top and lock scroll
     document.addEventListener('click', (e) => {
       const label = e.target.closest('[data-el="radio-label"]');
       if (!label || window.innerWidth > 767) return;
