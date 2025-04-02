@@ -62,6 +62,20 @@ Webflow.push(function () {
          // [Attributes by Finsweet] Mirrorclick
          newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
      }
+
+    // [Attributes by Finsweet] CMS Combine. More info: https://finsweet.com/attributes/cms-combine
+    if (
+      path === '/partner-stories'
+    ) {
+        newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmscombine@1/cmscombine.js','head',0);
+    }
+
+    // [Attributes by Finsweet] CMS Sort. More info: https://finsweet.com/attributes/cms-sort
+    if (
+      path === '/partner-stories'
+    ) {
+        newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmssort@1/cmssort.js','head',0);
+    }
      
 
     // blog pages
