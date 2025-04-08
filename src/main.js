@@ -203,5 +203,10 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/campaigns/ai-vs-human'+minBase+'.js','body', 1);
     }
 
+    // page is ebook
+    if (path.includes('/ebook/')){
+      newScript(scriptBase + '/src/js/ebook'+minBase+'.js','body', 1);
+    }
+
 })
 
