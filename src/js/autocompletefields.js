@@ -56,6 +56,7 @@ function autoCompleteInputsForms(){
         $("input[name|='phone']").val(sessionStorage.phone).change();
         $("input[type|='tel']").val(sessionStorage.phone).change();
     }
+    
 
     if (sessionStorage.number_of_agents) {
         $("input[name|='number_of_agents']").val(sessionStorage.number_of_agents).change();
