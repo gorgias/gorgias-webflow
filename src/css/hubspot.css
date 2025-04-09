@@ -7,7 +7,7 @@ body:not(.is-ebook, .is-event, .is-partner-referral, .is-partner-loyalty-program
 
 body.is-ebook div.submitted-message,
 body.is-event div.submitted-message{
-  color: var(--text-success-4);
+  color: #000;
   background-color: var(--feedback-success);
   display: inline-block;
   font-size: 1rem;
