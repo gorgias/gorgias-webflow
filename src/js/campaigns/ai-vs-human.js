@@ -5,6 +5,7 @@ Webflow.push(function() {
     
       const baseHeader = document.querySelector('[data-el="base-header"]');
       const altHeader = document.querySelector('[data-el="alternate-header"]');
+      const scaledHeader = document.querySelector('[data-el="scaled-header"]');
     
       console.log("utm_campaign param:", campaign);
     
@@ -16,10 +17,16 @@ Webflow.push(function() {
       if (campaign.includes('customer')) {
         baseHeader.style.display = 'none';
         altHeader.style.display = 'flex';
+        scaledHeader.style.display = 'none'
         console.log("✅ Showing alternate header (customer campaign)");
+      } else if (campaign.includes('scaled')) {
+        baseHeader.style.display = 'none';
+        altHeader.style.display = 'none';
+        scaledHeader.style.display = 'flex'
       } else {
         baseHeader.style.display = 'flex';
         altHeader.style.display = 'none';
+        scaledHeader.style.display = 'none'
         console.log("✅ Showing base header (default)");
       }
 
