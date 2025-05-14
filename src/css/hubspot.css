@@ -1,4 +1,5 @@
-body:not(.is-ebook, .is-event, .is-partner-referral, .is-partner-loyalty-program, .is-tool, .ai-sales-agent-body) div.submitted-message{
+
+body:not(.is-ebook, .is-event, .is-partner-referral, .is-partner-loyalty-program, .is-tool, .ai-sales-agent-body, .is-product-announcement) div.submitted-message{
   height:0 !important;
   width:0 !important;
   display:none!important;

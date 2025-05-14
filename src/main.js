@@ -208,8 +208,7 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/ebook'+minBase+'.js','body', 1);
     }
 
-    // page is wip demo
-
+    // page is variant demo
     if (path.includes('/v/demo')){
       newScript(scriptBase + '/src/js/demo/demo-worker'+minBase+'.js','body', 1);
     }
