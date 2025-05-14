@@ -9,7 +9,7 @@ if (path.includes('/wip/')) {
   GorgiasConvertAppID = '921d1a43-21e9-4795-a845-6ab05e79503f';
 }
 // if the url contains /wip/ , then load the test chat, not the SDR one
-else if (path.includes('/wip/demo')) {
+else if (path.includes('/v/demo')) {
   GorgiasChatAppID = '01J5V1J9ZV18ZCZZZ6ZCFDGFE5';
   GorgiasConvertAppID = '921d1a43-21e9-4795-a845-6ab05e79503f';
 }

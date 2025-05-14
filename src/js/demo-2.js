@@ -1,4 +1,4 @@
-if (path === '/wip/demo' || path === '/demo-2') {
+if (path === '/v/demo' || path === '/demo-2') {
   $('.demo-form-hubspot-cp').hide();
   window.addEventListener("message", function(event) {
       if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && event.data.id === "ef92ccce-92bd-4010-847a-793f56b6b353") {
