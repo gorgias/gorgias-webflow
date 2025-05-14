@@ -34,7 +34,7 @@ Webflow.push(function () {
     }
 
     // If page is ai sales agent
-    if (path.includes('/ai-sales-agent')) {
+    if (path.includes('/ai-sales-agent') || path.includes('/ai-shopping-assistant')) {
       newScript(scriptBase + '/src/js/animation/ai-sales-agent-hero'+minBase+'.js','body',1);
       newScript(scriptBase + '/src/js/ai-sales-agent'+minBase+'.js','body',1);
       newScript(scriptBase + '/src/js/scrolling'+minBase+'.js','body',1);
