@@ -1,15 +1,4 @@
-$('.edit-email').on('click', function(e) {
-    e.preventDefault(); // Prevent the link's default behavior
-    // Find the sibling input element with the "form_input" class.
-    let $input = $(this).siblings('input.form_input');
-    // Remove the "is-ghost" class and then focus the input.
-    $input.removeClass('is-ghost').focus();
-    // Hide the clicked ".edit-email" element by setting its opacity to 0 and disabling pointer events.
-    $(this).css({'opacity': '0', 'pointer-events': 'none'});
-  });
-  
-  // Mirror email input
-  $(document).ready(function () {
+$(document).ready(function () {
     const $source = $('[data-el="mirror-email"]');
     const $target = $('[data-el="mirror-email-target"]');
   
@@ -27,8 +16,7 @@ $('.edit-email').on('click', function(e) {
     $source.on('input change blur', mirrorEmail);
   });
   
-  
-  
+
   function waitForSuperformAndInit(retries = 10, delay = 300) {
     if (!window.SuperformAPI || typeof window.SuperformAPI.push !== 'function') {
       if (retries > 0) {
@@ -103,3 +91,29 @@ $('.edit-email').on('click', function(e) {
   
   // Kick things off
   waitForSuperformAndInit();
+
+// Hide elements after form submission
+$(document).ready(function () {
+  $('.hs-button.primary.large').on('click', function () {
+    setTimeout(function () {
+      $('[data-el="hide-after-form"]').css('opacity', '0');
+    setTimeout(function () {
+      $('[data-el="hide-after-form"]').css('display', 'none');
+    }, 200);
+    }, 500);
+  });
+});
+
+// Open chat widget when clicking on "Talk to sales" CTA
+function chatContactUs(field){
+    initGorgiasChatPromise.then(function() {
+    // open chat popup
+    GorgiasChat.open();
+
+    // Send a consistent welcome message
+    const message = "Hi, I’m interested in Gorgias. Can you help me understand if it’s a good fit?";
+    GorgiasChat.sendMessage(message);
+})
+}
+
+document.querySelector('[data-el="open-chat"]').addEventListener('click', chatContactUs, console.log("Chat button clicked"));
