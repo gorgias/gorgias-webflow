@@ -1,5 +1,4 @@
-// Mirror email input
-  $(document).ready(function () {
+$(document).ready(function () {
     const $source = $('[data-el="mirror-email"]');
     const $target = $('[data-el="mirror-email-target"]');
   
@@ -18,7 +17,6 @@
   });
   
 
-  
   function waitForSuperformAndInit(retries = 10, delay = 300) {
     if (!window.SuperformAPI || typeof window.SuperformAPI.push !== 'function') {
       if (retries > 0) {

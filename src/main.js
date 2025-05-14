@@ -209,7 +209,9 @@ Webflow.push(function () {
     }
 
     // page is wip demo
+
     if (path.includes('/wip/demo')){
+
       newScript(scriptBase + '/src/js/demo/demo-worker'+minBase+'.js','body', 1);
     }
 
