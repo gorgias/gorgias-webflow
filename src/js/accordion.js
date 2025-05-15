@@ -16,6 +16,7 @@ function injectAccordionStyles() {
     [g-accordion-element="content"].is-active {
       height: 100%;
       max-height: 150rem;
+      min-height: 1px !important;
     }
 
     [g-accordion-element="arrow"] {
