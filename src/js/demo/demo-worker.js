@@ -60,10 +60,10 @@ $(document).ready(function () {
   
     const fieldMapping = {
       email: 'email',
-      Website: 'company_domain',
-      'ecommerce-platform': 'demo_ecommerce_platform',
-      conversations: 'demo_tickets_volume',
-      'annual-sales-range': 'demo_annual_sales_range',
+      company_domain: 'company_domain',
+      demo_ecommerce_platform: 'demo_ecommerce_platform',
+      demo_tickets_volume: 'demo_tickets_volume',
+      demo_annual_sales_range: 'demo_annual_sales_range',
       '0-1_number_of_agents': 'number_of_agents',
       '0-1_demo_current_helpdesk': 'demo_current_helpdesk',
       '0-1_demo_utm_source': 'demo_utm_source',
@@ -74,17 +74,21 @@ $(document).ready(function () {
       '0-1_demo_lead_product_interest': 'demo_lead_product_interest'
     };
   
+    // 1. Apply Superform data via mapping
     for (const [sourceKey, targetName] of Object.entries(fieldMapping)) {
-      const value = formData[sourceKey];
+      let value = formData[sourceKey];
       if (!value) continue;
+  
+      // Normalize arrays to comma-separated strings
+      if (Array.isArray(value)) {
+        value = value.filter(Boolean).map(v => v.trim()).join(',').trim();
+      }
   
       const input = hsForm.querySelector(`[name="${targetName}"]`);
       if (input) {
         input.value = value;
         input.dispatchEvent(new Event('input', { bubbles: true }));
         input.dispatchEvent(new Event('change', { bubbles: true }));
-      } else {
-        console.log(`HubSpot field "${targetName}" not found in form.`);
       }
     }
   }
