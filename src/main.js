@@ -50,6 +50,11 @@ Webflow.push(function () {
       newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
     }
 
+    // pricing page wip
+    if (path.includes('/wip/pricing')){
+      newScript(scriptBase + '/src/js/pricing/pricing-new'+minBase+'.js','body', 1);
+    }
+
      if (path.includes('choose-your-plan')){
        newScript(scriptBase + '/src/js/pricing'+minBase+'.js','body', 1);
        newScript(scriptBase + '/src/js/pricing-ui'+minBase+'.js','body', 1);
