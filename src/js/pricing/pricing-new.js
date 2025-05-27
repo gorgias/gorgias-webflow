@@ -11,6 +11,11 @@ $(document).ready(function () {
   const $cursor = $('.is-toggle-cursor');
   const $billingInfo = $('[data-el="billing-info"]');
   const $starterTab = $('[data-w-tab="Starter"]');
+  let $starterText = $('[data-el="starter-text"]');
+  let $starterOption = $('[data-el="chosen-automation-starter"]');
+  let $basicOption = $('[data-el="chosen-automation-basic"]');
+  let $proOption = $('[data-el="chosen-automation-pro"]');
+  let $advancedOption = $('[data-el="chosen-automation-advanced"]');
 
   // Precomputed widths
   const monthlyWidth = $monthly.outerWidth();
@@ -21,20 +26,63 @@ $(document).ready(function () {
   let pro = $('[data-price="pro"]');
   let advanced = $('[data-price="advanced"]');
 
-  const cardPrices = {
-    monthly: {
-      Starter: '$10',
-      Basic: '$60',
-      Pro: '$360',
-      Advanced: '$900'
-    },
-    yearly: {
-      Starter: '$10',
-      Basic: '$50',
-      Pro: '$300',
-      Advanced: '$750'
-    }
-  };
+const cardPrices = {
+  monthly: {
+    Starter: 10,
+    Basic: 60,
+    Pro: 360,
+    Advanced: 900
+  },
+  yearly: {
+    Starter: 10,
+    Basic: 50,
+    Pro: 300,
+    Advanced: 750
+  }
+};
+// Automation rates per plan
+const starterAutomation = {
+  0: '0',
+  10: '5',
+  20: '10',
+  30: '15',
+  40: '20',
+  50: '25',
+};
+
+const basicAutomation = {
+  0: '0',
+  10: '30',
+  20: '60',
+  30: '90',
+  40: '120',
+  50: '150',
+}
+
+const proAutomation = {
+  0: '0',
+  10: '200',
+  20: '400',
+  30: '600',
+  40: '800',
+  50: '1000',
+};
+
+const advancedAutomation = {
+  0: '0',
+  10: '500',
+  20: '1000',
+  30: '1500',
+  40: '2000',
+  50: '2500',
+};
+
+let automationPrices = {
+  starter: 0,
+  basic: 0,
+  pro: 0,
+  advanced: 0
+};
 
 // Addons prices
 let voicePrice = $('[data-price="voice-price"]');
@@ -121,6 +169,15 @@ const smsTiers = {
     console.log(`Billing info updated: "${text}"`);
   }
 
+  function updateStarterText(cycle) {
+  const text = cycle === 'monthly'
+    ? '50 tickets/mo'
+    : 'Only available for monthly subscription';
+
+  $starterText.text(text);
+  console.log(`Starter text updated: "${text}"`);
+}
+
   /**
    * Toggle visibility of the Starter tab based on billing cycle.
    */
@@ -172,8 +229,13 @@ function handleBillingChange(cycle) {
   }
 
   updateBillingInfoText(cycle);
+  updateStarterText(cycle)
   toggleStarterTab(cycle);
-  updateCardPrices(cycle);
+  // Update base + automation prices together
+  updatePlanTotal('starter');
+  updatePlanTotal('basic');
+  updatePlanTotal('pro');
+  updatePlanTotal('advanced');
 
   // Refresh voice tier price if a tier is already selected
   const voiceId = $('#voice-addons .addons_dropdown-links.selected')?.attr('id'); // optional class 'selected' can help here
@@ -272,6 +334,67 @@ function initAddonDropdowns() {
   });
 }
 
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function updatePlanTotal(plan) {
+  const basePrice = cardPrices[billingCycle][capitalize(plan)];
+  const automationPrice = automationPrices[plan] || 0;
+  const total = basePrice + automationPrice;
+
+  $(`[data-price="${plan}"]`).text(`$${total}`);
+  console.log(`Updated ${plan} price: base $${basePrice} + automation $${automationPrice} = $${total}`);
+}
+
+function initAutomationDropdowns() {
+  $('[data-el^="starter-"], [data-el^="basic-"], [data-el^="pro-"], [data-el^="advanced-"]').on('click', function (e) {
+    e.preventDefault();
+
+    const dataEl = $(this).attr('data-el'); // e.g., "basic-10"
+    const [plan, percentStr] = dataEl.split('-');
+    const percent = parseInt(percentStr, 10);
+
+    let automationTable;
+    switch (plan) {
+      case 'starter': automationTable = starterAutomation; break;
+      case 'basic': automationTable = basicAutomation; break;
+      case 'pro': automationTable = proAutomation; break;
+      case 'advanced': automationTable = advancedAutomation; break;
+      default: console.warn(`Unknown plan: ${plan}`); return;
+    }
+
+    const ticketCount = parseInt(automationTable[percent], 10);
+    const automationPrice = ticketCount * 0.9;
+
+    automationPrices[plan] = automationPrice;
+    updatePlanTotal(plan);
+    switch (plan) {
+  case 'starter':
+    $starterOption.text($(this).text());
+    break;
+  case 'basic':
+    $basicOption.text($(this).text());
+    break;
+  case 'pro':
+    $proOption.text($(this).text());
+    break;
+  case 'advanced':
+    $advancedOption.text($(this).text());
+    break;
+}
+
+const $dropdownToggle = $(this).closest('.w-dropdown').find('.w-dropdown-toggle');
+if ($dropdownToggle.hasClass('w--open')) {
+  $dropdownToggle.trigger('click'); // Let Webflow handle proper close
+}
+
+  console.log(`Closed dropdown for ${plan} after selecting ${percent}% automation`);
+
+  console.log(`[${plan.toUpperCase()}] ${percent}% automation = ${ticketCount} tickets → $${automationPrice.toFixed(2)}`);
+  });
+}
+
   /**
    * Initialize component: set default UI and bind events.
    */
@@ -283,7 +406,8 @@ function initAddonDropdowns() {
     updateBillingInfoText('yearly');
     toggleStarterTab('yearly');
     enterpriseCTA();
-    initAddonDropdowns()
+    initAddonDropdowns();
+    initAutomationDropdowns();
 
     // Bind events
     $monthly.on('click', () => handleBillingChange('monthly'));
