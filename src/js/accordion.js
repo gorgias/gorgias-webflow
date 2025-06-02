@@ -41,11 +41,18 @@ function injectAccordionStyles() {
   document.head.appendChild(style);
 }
 
-var Webflow = Webflow || [];
 Webflow.push(function () {
   injectAccordionStyles();
 
   const triggers = document.querySelectorAll('[g-accordion-element="trigger"]');
+
+  // ✅ Add g-accordion-element="item" to each trigger's parent
+  triggers.forEach(trigger => {
+    const parent = trigger.parentElement;
+    if (parent && !parent.hasAttribute('g-accordion-element')) {
+      parent.setAttribute('g-accordion-element', 'item');
+    }
+  });
 
   triggers.forEach(trigger => {
     const content = trigger.nextElementSibling;
@@ -61,6 +68,26 @@ Webflow.push(function () {
     }
 
     trigger.addEventListener("click", function () {
+      const wrapper = trigger.closest('[g-accordion-element="item"]');
+      const parent = wrapper?.parentElement;
+
+      // ✅ Close other items if accordion group has g-accordion-function="one-by"
+      if (parent?.getAttribute('g-accordion-function') === 'one-by') {
+        const allItems = parent.querySelectorAll('[g-accordion-element="item"]');
+        allItems.forEach(item => {
+          if (item === wrapper) return;
+
+          const otherTrigger = item.querySelector('[g-accordion-element="trigger"]');
+          const otherContent = item.querySelector('[g-accordion-element="content"]');
+          const otherArrow = item.querySelector('[g-accordion-element="arrow"]');
+
+          otherTrigger?.classList.remove('is-active');
+          otherContent?.classList.remove('is-active');
+          if (otherContent) otherContent.style.maxHeight = '0px';
+          otherArrow?.classList.remove('is-active');
+        });
+      }
+
       this.classList.toggle("is-active");
       if (arrow) arrow.classList.toggle("is-active");
 
@@ -73,7 +100,6 @@ Webflow.push(function () {
         return;
       }
 
-      // Wait for images to load before setting height
       const images = content.querySelectorAll("img");
       const promises = Array.from(images).map(img => {
         if (img.complete) return Promise.resolve();
@@ -81,7 +107,6 @@ Webflow.push(function () {
       });
 
       Promise.all(promises).then(() => {
-        // Use 2x requestAnimationFrame for fully flushed layout
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             content.style.maxHeight = content.scrollHeight + "px";

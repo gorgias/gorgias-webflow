@@ -4,8 +4,9 @@ $(document).ready(function () {
   // =========================
 
   let billingCycle = 'yearly'; // default state
+  let currentPlan = 'pro'; // default initial plan
 
-  // Cache DOM elements
+  // DOM elements
   const $monthly = $('[data-el="monthly"]');
   const $yearly = $('[data-el="yearly"].pricing-toggle_option');
   const $cursor = $('.is-toggle-cursor');
@@ -16,6 +17,8 @@ $(document).ready(function () {
   let $basicOption = $('[data-el="chosen-automation-basic"]');
   let $proOption = $('[data-el="chosen-automation-pro"]');
   let $advancedOption = $('[data-el="chosen-automation-advanced"]');
+  const $toggleButton = $('[data-el="toggle-button"]');
+  const $toggleSwitch = $('[data-el="toggle-switch"]');
 
   // Precomputed widths
   const monthlyWidth = $monthly.outerWidth();
@@ -25,6 +28,16 @@ $(document).ready(function () {
   let basic = $('[data-price="basic"]');
   let pro = $('[data-price="pro"]');
   let advanced = $('[data-price="advanced"]');
+
+  // Switch state
+  let toggleState = "off";
+
+const baseTicketVolumes = {
+  starter: "50",
+  basic: "300",
+  pro: "2,000",
+  advanced: "5,000"
+};
 
 const cardPrices = {
   monthly: {
@@ -90,6 +103,8 @@ let smsPrice = $('[data-price="sms-price"]');
 // Addons selected elements
 let voiceSelected = $('[data-el="voice-selected"]');
 let smsSelected = $('[data-el="sms-selected"]');
+// FAQ selected elements
+let faqSelected = $('[data-el="faq-selected"]');
 
 // Define the voice tiers
 const voiceTiers = {
@@ -343,8 +358,15 @@ function updatePlanTotal(plan) {
   const automationPrice = automationPrices[plan] || 0;
   const total = basePrice + automationPrice;
 
+  // Update the visible card price
   $(`[data-price="${plan}"]`).text(`$${total}`);
   console.log(`Updated ${plan} price: base $${basePrice} + automation $${automationPrice} = $${total}`);
+
+  // Update tooltip values for the selected plan
+  const $tab = $(`.pricing_tab-links[data-w-tab="${capitalize(plan)}"]`);
+
+  $tab.find('[data-el="selected-helpdesk-amount"]').text(`${baseTicketVolumes[plan]}`);
+  $tab.find('[data-el="selected-helpdesk-price"]').text(`${basePrice}`);
 }
 
 function initAutomationDropdowns() {
@@ -369,31 +391,136 @@ function initAutomationDropdowns() {
 
     automationPrices[plan] = automationPrice;
     updatePlanTotal(plan);
+
+    // Update tooltip values in the selected pricing tab
+    const $tab = $(`.pricing_tab-links[data-w-tab="${capitalize(plan)}"]`);
+    $tab.find('[data-el="automate-item"]').removeClass('is-inactive');
+    $tab.find('[data-el="selected-automate-amount"]').text(`${ticketCount}`);
+    $tab.find('[data-el="selected-automate-price"]').text(`${automationPrice}`);
+
+    // Update visible label inside dropdown toggle
     switch (plan) {
-  case 'starter':
-    $starterOption.text($(this).text());
-    break;
-  case 'basic':
-    $basicOption.text($(this).text());
-    break;
-  case 'pro':
-    $proOption.text($(this).text());
-    break;
-  case 'advanced':
-    $advancedOption.text($(this).text());
-    break;
-}
+      case 'starter': $starterOption.text($(this).text()); break;
+      case 'basic': $basicOption.text($(this).text()); break;
+      case 'pro': $proOption.text($(this).text()); break;
+      case 'advanced': $advancedOption.text($(this).text()); break;
+    }
 
-const $dropdownToggle = $(this).closest('.w-dropdown').find('.w-dropdown-toggle');
-if ($dropdownToggle.hasClass('w--open')) {
-  $dropdownToggle.trigger('click'); // Let Webflow handle proper close
-}
-
-  console.log(`Closed dropdown for ${plan} after selecting ${percent}% automation`);
-
-  console.log(`[${plan.toUpperCase()}] ${percent}% automation = ${ticketCount} tickets → $${automationPrice.toFixed(2)}`);
+    // Close the dropdown safely via toggle
+    const $toggle = $(this).closest('.w-dropdown').find('.w-dropdown-toggle');
+    if ($toggle.hasClass('w--open')) {
+      $toggle.trigger('click');
+    }
   });
 }
+
+function updateActivePlanElement() {
+  const planElements = document.querySelectorAll("[g-col-highlight]");
+
+  planElements.forEach((element) => {
+    const highlightTarget = element.getAttribute("g-col-highlight").toLowerCase();
+    const isMatch = highlightTarget === currentPlan.toLowerCase();
+
+    element.classList.toggle("is-active", isMatch);
+  });
+
+  console.log(`Active plan highlighting updated: ${currentPlan}`);
+}
+
+$('.pricing_tab-links').on('click', function () {
+  const $this = $(this);
+  const $tooltip = $this.find('.tooltip-pricing');
+
+  // Remove is-active from tooltips in tabs that are not current
+  $('.pricing_tab-links').not('.w--current').find('.tooltip-pricing').removeClass('is-active');
+
+  // Toggle the tooltip for the clicked tab link
+  $tooltip.toggleClass('is-active');
+
+  // Get the plan from data-w-tab and lowercase it for lookup
+  const planKey = $this.attr('data-w-tab')?.toLowerCase();
+  if (planKey && baseTicketVolumes[planKey] && cardPrices[billingCycle][capitalize(planKey)]) {
+    const ticketCount = baseTicketVolumes[planKey];
+    const price = cardPrices[billingCycle][capitalize(planKey)];
+
+    $this.find('[data-el="selected-helpdesk-amount"]').text(`${ticketCount}`);
+    $this.find('[data-el="selected-helpdesk-price"]').text(`${price}`);
+  } else {
+    console.warn(`Tab click failed to match plan key: ${planKey}`);
+  }
+
+  // Check automate state and toggle is-inactive
+  const $automateItem = $this.find('[data-el="automate-item"]');
+  const automateAmount = parseInt($this.find('[data-el="selected-automate-amount"]').text().replace(/\D/g, ''), 10);
+
+  if (isNaN(automateAmount) || automateAmount === 0) {
+    $automateItem.addClass('is-inactive');
+  } else {
+    $automateItem.removeClass('is-inactive');
+  }
+
+  // Update active plan highlighting
+  if (planKey) {
+    currentPlan = planKey;
+    updateActivePlanElement();
+  }
+
+  console.log(`Tooltip toggled for tab: ${$this.attr('data-w-tab')}`);
+});
+
+// Handle toggle button click to exclude or include features based on toggle state
+$toggleButton.on('click', function () {
+  const $this = $(this);
+  $this.toggleClass('is-active');
+  $toggleSwitch.toggleClass('is-active');
+
+  toggleState = $this.hasClass('is-active') ? "on" : "off";
+  console.log(`Toggle button clicked, state is now: ${toggleState}`);
+
+  if (toggleState === "on") {
+    $('[data-el="excluded"]').addClass('is-hidden');
+  } else {
+    $('[data-el="excluded"]').removeClass('is-hidden');
+  }
+});
+
+// Mirror click from dropdown to tab link
+$('.addons_dropdown-links[faq-q]').on('click', function (e) {
+  const faqKey = $(this).attr('faq-q');
+  const label = $(this).text().trim();
+
+  if (faqKey) {
+    // Mirror the tab click
+    const $targetTab = $(`.component_tabs-link[faq-q="${faqKey}"]`);
+    if ($targetTab.length) {
+      $targetTab.trigger('click');
+      console.log(`Mirrored click to .component_tabs-link[faq-q="${faqKey}"]`);
+    } else {
+      console.warn(`No .component_tabs-link found with faq-q="${faqKey}"`);
+    }
+
+    // Update displayed selected label
+    if (faqSelected.length) {
+      faqSelected.text(label);
+      console.log(`Updated [data-el="faq-selected"] to: ${label}`);
+    }
+  }
+});
+
+// Mirror click from plan accordion to plan tab link
+$('.pricing_toggle-trigger[tab-link]').on('click', function () {
+  const tabKey = $(this).attr('tab-link');
+
+  if (tabKey) {
+    const $targetTab = $(`.pricing_tab-links[tab-link="${tabKey}"]`);
+    if ($targetTab.length) {
+      $targetTab.trigger('click');
+      console.log(`Mirrored click to .pricing_tab-links[tab-link="${tabKey}"]`);
+    } else {
+      console.warn(`No .pricing_tab-links found with tab-link="${tabKey}"`);
+    }
+  }
+});
 
   /**
    * Initialize component: set default UI and bind events.
