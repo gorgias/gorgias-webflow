@@ -11,7 +11,7 @@ $(document).ready(function () {
   const $yearly = $('[data-el="yearly"].pricing-toggle_option');
   const $cursor = $('.is-toggle-cursor');
   const $billingInfo = $('[data-el="billing-info"]');
-  const $starterTab = $('[data-w-tab="Starter"]');
+  const $starterTab = $('[tab-link="starter"]');
   let $starterText = $('[data-el="starter-text"]');
   let $starterOption = $('[data-el="chosen-automation-starter"]');
   let $basicOption = $('[data-el="chosen-automation-basic"]');
@@ -197,7 +197,9 @@ const smsTiers = {
    * Toggle visibility of the Starter tab based on billing cycle.
    */
 function toggleStarterTab(cycle) {
-  const isStarterCurrent = $starterTab.hasClass('w--current');
+  const isDesktopActive = $starterTab.hasClass('w--current');
+  const isMobileActive = $starterTab.find('[g-accordion-element="trigger"]').hasClass('is-active');
+  const isStarterCurrent = isDesktopActive || isMobileActive;
 
   if (cycle === 'monthly') {
     $starterTab.removeClass('is-inactive');
@@ -206,13 +208,12 @@ function toggleStarterTab(cycle) {
     $starterTab.addClass('is-inactive');
     console.log('Starter tab deactivated (yearly)');
 
-    // If Starter is the current tab, switch to the next one
+    // If Starter is currently selected, switch to Basic tab (works for mobile + desktop)
     if (isStarterCurrent) {
-      const $nextTab = $('[data-w-tab="Basic"]');
-
+      const $nextTab = $('[tab-link="basic"]');
       if ($nextTab.length) {
         console.log('Switching to Basic tab (Starter is active & yearly selected)');
-        $nextTab.click(); // triggers tab change via Webflow
+        $nextTab.trigger('click');
       }
     }
   }
@@ -429,6 +430,15 @@ function updateActivePlanElement() {
 
 $('.pricing_tab-links').on('click', function () {
   const $this = $(this);
+
+
+  // If the clicked tab is already current, don't toggle the tooltip
+  if ($this.hasClass('w--current')) {
+    console.log('Tab is already active; tooltip will not toggle.');
+    return;
+  }
+
+
   const $tooltip = $this.find('.tooltip-pricing');
 
   // Remove is-active from tooltips in tabs that are not current
