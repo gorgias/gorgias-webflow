@@ -431,11 +431,13 @@ function updateActivePlanElement() {
 $('.pricing_tab-links').on('click', function () {
   const $this = $(this);
 
+
   // If the clicked tab is already current, don't toggle the tooltip
   if ($this.hasClass('w--current')) {
     console.log('Tab is already active; tooltip will not toggle.');
     return;
   }
+
 
   const $tooltip = $this.find('.tooltip-pricing');
 
