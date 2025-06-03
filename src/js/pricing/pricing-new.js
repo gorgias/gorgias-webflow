@@ -428,26 +428,31 @@ function updateActivePlanElement() {
   console.log(`Active plan highlighting updated: ${currentPlan}`);
 }
 
+// Tooltip sync with tab clicks
+function syncTooltipWithActiveTab() {
+  const observer = new MutationObserver(() => {
+    $('.tooltip-pricing').removeClass('is-active');
+    $('.pricing_tab-links.w--current .tooltip-pricing').addClass('is-active');
+  });
+
+  // Observe all pricing tab links for class changes
+  $('.pricing_tab-links').each(function () {
+    observer.observe(this, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  });
+
+  // Run once on load to ensure correct tooltip is active
+  $('.tooltip-pricing').removeClass('is-active');
+  $('.pricing_tab-links.w--current .tooltip-pricing').addClass('is-active');
+}
+
+
+// Update tooltip content logic
 $('.pricing_tab-links').on('click', function () {
   const $this = $(this);
 
-
-  // If the clicked tab is already current, don't toggle the tooltip
-  if ($this.hasClass('w--current')) {
-    console.log('Tab is already active; tooltip will not toggle.');
-    return;
-  }
-
-
-  const $tooltip = $this.find('.tooltip-pricing');
-
-  // Remove is-active from tooltips in tabs that are not current
-  $('.pricing_tab-links').not('.w--current').find('.tooltip-pricing').removeClass('is-active');
-
-  // Toggle the tooltip for the clicked tab link
-  $tooltip.toggleClass('is-active');
-
-  // Get the plan from data-w-tab and lowercase it for lookup
   const planKey = $this.attr('data-w-tab')?.toLowerCase();
   if (planKey && baseTicketVolumes[planKey] && cardPrices[billingCycle][capitalize(planKey)]) {
     const ticketCount = baseTicketVolumes[planKey];
@@ -475,7 +480,7 @@ $('.pricing_tab-links').on('click', function () {
     updateActivePlanElement();
   }
 
-  console.log(`Tooltip toggled for tab: ${$this.attr('data-w-tab')}`);
+  console.log(`Tab clicked: ${$this.attr('data-w-tab')}`);
 });
 
 // Handle toggle button click to exclude or include features based on toggle state
@@ -545,6 +550,7 @@ $('.pricing_toggle-trigger[tab-link]').on('click', function () {
     enterpriseCTA();
     initAddonDropdowns();
     initAutomationDropdowns();
+    syncTooltipWithActiveTab();
 
     // Bind events
     $monthly.on('click', () => handleBillingChange('monthly'));
