@@ -551,6 +551,7 @@ $('[g-dropdown-item="link"]').on('click', function (e) {
   // Step 2: Trigger mouseup to sync Webflow's internal state
   // Webflow uses mouseup on body to reset dropdown state
   $(document).trigger('mouseup');
+  $(document).trigger('touchend');
 
   console.log('Dropdown closed and Webflow state reset');
 });
