@@ -538,6 +538,7 @@ $('.pricing_toggle-trigger[tab-link]').on('click', function () {
   }
 });
 
+
   /**
    * Initialize component: set default UI and bind events.
    */
