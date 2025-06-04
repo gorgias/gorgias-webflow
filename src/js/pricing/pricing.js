@@ -278,9 +278,9 @@ function ticketsToSliderPos(value) {
 
 // 1F) Log all steps for verification
 function logAllSteps() {
- console.log("Logging all steps:");
+//  console.log("Logging all steps:");
  for (let i = 0; i <= MAX_STEPS; i++) {
-     console.log(`Step ${i}: ${sliderPosToTickets(i)} tickets`);
+    //  console.log(`Step ${i}: ${sliderPosToTickets(i)} tickets`);
  }
 }
 
