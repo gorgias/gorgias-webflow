@@ -1,4 +1,5 @@
-$(document).ready(function () {
+var Webflow = Webflow || [];
+Webflow.push(function () {
   // =========================
   // Variables
   // =========================
@@ -578,6 +579,7 @@ $('.pricing_toggle-trigger[tab-link]').on('click', function () {
     initAutomationDropdowns();
     syncTooltipWithActiveTab();
     appendQueryParamsToCtaLinks();
+
 
     // Bind events
     $monthly.on('click', () => handleBillingChange('monthly'));
