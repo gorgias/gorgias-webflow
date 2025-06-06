@@ -3,40 +3,43 @@ $(document).ready(function () {
   // Variables
   // =========================
 
-  let billingCycle = 'yearly'; // default state
-  let currentPlan = 'pro'; // default initial plan
+let billingCycle = 'yearly'; // default state
+let currentPlan = 'pro'; // default initial plan
 
-  // DOM elements
-  const $monthly = $('[data-el="monthly"]');
-  const $yearly = $('[data-el="yearly"].pricing-toggle_option');
-  const $cursor = $('.is-toggle-cursor');
-  const $billingInfo = $('[data-el="billing-info"]');
-  const $starterTab = $('[tab-link="starter"]');
-  let $starterText = $('[data-el="starter-text"]');
-  let $starterOption = $('[data-el="chosen-automation-starter"]');
-  let $basicOption = $('[data-el="chosen-automation-basic"]');
-  let $proOption = $('[data-el="chosen-automation-pro"]');
-  let $advancedOption = $('[data-el="chosen-automation-advanced"]');
-  const $toggleButton = $('[data-el="toggle-button"]');
-  const $toggleSwitch = $('[data-el="toggle-switch"]');
+// DOM elements
+const $monthly = $('[data-el="monthly"]');
+const $yearly = $('[data-el="yearly"].pricing-toggle_option');
+const $cursor = $('.is-toggle-cursor');
+const $billingInfo = $('[data-el="billing-info"]');
+const $starterTab = $('[tab-link="starter"]');
+let $starterText = $('[data-el="starter-text"]');
+let $starterOption = $('[data-el="chosen-automation-starter"]');
+let $basicOption = $('[data-el="chosen-automation-basic"]');
+let $proOption = $('[data-el="chosen-automation-pro"]');
+let $advancedOption = $('[data-el="chosen-automation-advanced"]');
+const $toggleButton = $('[data-el="toggle-button"]');
+const $toggleSwitch = $('[data-el="toggle-switch"]');
 
-  // Precomputed widths
-  const monthlyWidth = $monthly.outerWidth();
-  const yearlyWidth = $yearly.outerWidth();
+// Precomputed widths
+const monthlyWidth = $monthly.outerWidth();
+const yearlyWidth = $yearly.outerWidth();
 
-  // Card prices for yearly and monthly values
-  let basic = $('[data-price="basic"]');
-  let pro = $('[data-price="pro"]');
-  let advanced = $('[data-price="advanced"]');
 
-  // Switch state
-  let toggleState = "off";
+// Switch state
+let toggleState = "off";
 
 const baseTicketVolumes = {
   starter: "50",
   basic: "300",
   pro: "2,000",
   advanced: "5,000"
+};
+
+let selectedAutomationTier = {
+  starter: 0,
+  basic: 0,
+  pro: 0,
+  advanced: 0
 };
 
 const cardPrices = {
@@ -156,6 +159,33 @@ const smsTiers = {
   // =========================
   // Functions
   // =========================
+  /**
+   * Helper functions
+   */
+  // Format figures with comma separator
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  //Function to update query parameters in the URL
+  function updateUrlParam(key, value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set(key, value);
+    window.history.replaceState({}, '', url.toString());
+  }
+
+  // Pass parameters to CTAs
+  function appendQueryParamsToCtaLinks() {
+  const currentParams = new URLSearchParams(window.location.search).toString();
+  if (!currentParams) return;
+
+  // Append params to /signup and /demo links
+  $('[href*="/signup"], [href*="/demo"]').each(function () {
+    const $link = $(this);
+    const baseHref = $link.attr('href').split('?')[0]; // strip existing params
+    $link.attr('href', `${baseHref}?${currentParams}`);
+  });
+}
 
   /**
    * Move the toggle cursor to the specified X position
@@ -219,89 +249,78 @@ function toggleStarterTab(cycle) {
   }
 }
 
-/**
- * Update price values based on the selected billing cycle.
- */
-function updateCardPrices(cycle) {
-  console.log(`Updating card prices for: ${cycle}`);
-
-  basic.text(cardPrices[cycle].Basic);
-  pro.text(cardPrices[cycle].Pro);
-  advanced.text(cardPrices[cycle].Advanced);
-}
-
   /**
    * Master controller: apply all changes based on billing cycle.
    */
 function handleBillingChange(cycle) {
   billingCycle = cycle;
   console.log(`Billing cycle set to: ${billingCycle}`);
+  sessionStorage.setItem('billingCycle', cycle);
+  updateUrlParam('billingCycle', cycle);
 
-  // Move cursor UI
+  // Move toggle cursor
   if (cycle === 'monthly') {
     moveCursor('0%', monthlyWidth);
   } else {
     moveCursor('119%', yearlyWidth);
   }
 
-  updateBillingInfoText(cycle);
-  updateStarterText(cycle)
-  toggleStarterTab(cycle);
-  // Update base + automation prices together
-  updatePlanTotal('starter');
-  updatePlanTotal('basic');
-  updatePlanTotal('pro');
-  updatePlanTotal('advanced');
+  // Update text in ai info data-el="ai-res" from 0.90 to 1
+  $('[data-el="ai-res"]').text(cycle === 'monthly' ? '1.00' : '0.90');
 
-  // Refresh voice tier price if a tier is already selected
-  const voiceId = $('#voice-addons .addons_dropdown-links.selected')?.attr('id'); // optional class 'selected' can help here
+  updateBillingInfoText(cycle);
+  updateStarterText(cycle);
+  toggleStarterTab(cycle);
+
+  // Recalculate automation prices based on selected percent for current billing cycle
+  ['starter', 'basic', 'pro', 'advanced'].forEach(plan => {
+    const percent = selectedAutomationTier[plan];
+    const automationTable = {
+      starter: starterAutomation,
+      basic: basicAutomation,
+      pro: proAutomation,
+      advanced: advancedAutomation
+    }[plan];
+
+    const ticketCount = parseInt(automationTable[percent], 10);
+    const automationPrice = ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
+
+    automationPrices[plan] = automationPrice;
+    updatePlanTotal(plan);
+  });
+
+  // Refresh selected voice tier price
+  const voiceId = $('#voice-addons .addons_dropdown-links.selected')?.attr('id');
   if (voiceId && voiceId.startsWith('voice-tier-')) {
     const index = parseInt(voiceId.replace('voice-tier-', ''), 10);
     const tier = voiceTiers[billingCycle][index];
     if (tier) {
-      voicePrice.text(`${tier.price}`);
+      voicePrice.text(`${formatNumberWithCommas(tier.price)}`);
       console.log(`Voice price updated: ${tier.range} - $${tier.price}`);
+      const addonValue = `voice-${tierIndex}`;
+      sessionStorage.setItem('addonSelected', addonValue);
+      updateUrlParam('addonSelected', addonValue);
     }
   }
 
-  // Refresh sms tier price if a tier is already selected
+  // Refresh selected SMS tier price
   const smsId = $('#sms-addons .addons_dropdown-links.selected')?.attr('id');
   if (smsId && smsId.startsWith('sms-tier-')) {
     const index = parseInt(smsId.replace('sms-tier-', ''), 10);
     const tier = smsTiers[billingCycle][index];
     if (tier) {
-      smsPrice.text(`${tier.price}`);
+      smsPrice.text(`${formatNumberWithCommas(tier.price)}`);
       console.log(`SMS price updated: ${tier.range} - $${tier.price}`);
+      const addonValue = `sms-${tierIndex}`;
+      sessionStorage.setItem('addonSelected', addonValue);
+      updateUrlParam('addonSelected', addonValue);
     }
   }
-}
-
-function enterpriseRedirect() {
-  const $cta = $('[data-el="enterprise-cta"]');
-
-  if ($cta.length) {
-    // Ensure it's always a clean setup
-    $cta.attr('href', '/demo');
-    $cta.removeAttr('tabindex aria-controls aria-selected');
-    $cta.off('click.enterprise');
-
-    $cta.on('click.enterprise', function (e) {
-      e.preventDefault();
-      console.log('Enterprise tab clicked — redirecting to /demo');
-      window.location.href = '/demo';
-    });
-  }
-}
-
-function enterpriseCTA() {
-  enterpriseRedirect();
-  console.log('Enterprise CTA initialized');
 }
 
 /**
 * Addon dropdowns
 */
-
 function initAddonDropdowns() {
   // Voice Tier selection
   $('#voice-addons .addons_dropdown-links').on('click', function (e) {
@@ -314,7 +333,7 @@ function initAddonDropdowns() {
 
       if (selectedTier) {
         // Update price and selected label
-        voicePrice.text(`${selectedTier.price}`);
+        voicePrice.text(`${formatNumberWithCommas(selectedTier.price)}`);
         voiceSelected.text($(this).text());
 
         // Update selected state
@@ -337,7 +356,7 @@ function initAddonDropdowns() {
 
       if (selectedTier) {
         // Update price and selected label
-        smsPrice.text(`${selectedTier.price}`);
+        smsPrice.text(`${formatNumberWithCommas(selectedTier.price)}`);
         smsSelected.text($(this).text());
 
         // Update selected state
@@ -360,14 +379,14 @@ function updatePlanTotal(plan) {
   const total = basePrice + automationPrice;
 
   // Update the visible card price
-  $(`[data-price="${plan}"]`).text(`$${total}`);
+  $(`[data-price="${plan}"]`).text(`$${formatNumberWithCommas(total)}`);
   console.log(`Updated ${plan} price: base $${basePrice} + automation $${automationPrice} = $${total}`);
 
   // Update tooltip values for the selected plan
   const $tab = $(`.pricing_tab-links[data-w-tab="${capitalize(plan)}"]`);
 
   $tab.find('[data-el="selected-helpdesk-amount"]').text(`${baseTicketVolumes[plan]}`);
-  $tab.find('[data-el="selected-helpdesk-price"]').text(`${basePrice}`);
+  $tab.find('[data-el="selected-helpdesk-price"]').text(`${formatNumberWithCommas(basePrice)}`);
 }
 
 function initAutomationDropdowns() {
@@ -388,18 +407,22 @@ function initAutomationDropdowns() {
     }
 
     const ticketCount = parseInt(automationTable[percent], 10);
-    const automationPrice = ticketCount * 0.9;
+    const automationPrice = ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
 
+    // Store selected percent so we can recalculate later
+    selectedAutomationTier[plan] = percent;
     automationPrices[plan] = automationPrice;
+    sessionStorage.setItem('automationRate', percent);
+    updateUrlParam('automationRate', percent);
     updatePlanTotal(plan);
 
-    // Update tooltip values in the selected pricing tab
+    // Update tooltip values
     const $tab = $(`.pricing_tab-links[data-w-tab="${capitalize(plan)}"]`);
     $tab.find('[data-el="automate-item"]').removeClass('is-inactive');
-    $tab.find('[data-el="selected-automate-amount"]').text(`${ticketCount}`);
-    $tab.find('[data-el="selected-automate-price"]').text(`${automationPrice}`);
+    $tab.find('[data-el="selected-automate-amount"]').text(`${formatNumberWithCommas(ticketCount)}`);
+    $tab.find('[data-el="selected-automate-price"]').text(`${formatNumberWithCommas(automationPrice)}`);
 
-    // Update visible label inside dropdown toggle
+    // Update dropdown toggle label
     switch (plan) {
       case 'starter': $starterOption.text($(this).text()); break;
       case 'basic': $basicOption.text($(this).text()); break;
@@ -407,7 +430,7 @@ function initAutomationDropdowns() {
       case 'advanced': $advancedOption.text($(this).text()); break;
     }
 
-    // Close the dropdown safely via toggle
+    // Close dropdown safely
     const $toggle = $(this).closest('.w-dropdown').find('.w-dropdown-toggle');
     if ($toggle.hasClass('w--open')) {
       $toggle.trigger('click');
@@ -458,8 +481,8 @@ $('.pricing_tab-links').on('click', function () {
     const ticketCount = baseTicketVolumes[planKey];
     const price = cardPrices[billingCycle][capitalize(planKey)];
 
-    $this.find('[data-el="selected-helpdesk-amount"]').text(`${ticketCount}`);
-    $this.find('[data-el="selected-helpdesk-price"]').text(`${price}`);
+    $this.find('[data-el="selected-helpdesk-amount"]').text(`${formatNumberWithCommas(ticketCount)}`);
+    $this.find('[data-el="selected-helpdesk-price"]').text(`${formatNumberWithCommas(price)}`);
   } else {
     console.warn(`Tab click failed to match plan key: ${planKey}`);
   }
@@ -478,6 +501,9 @@ $('.pricing_tab-links').on('click', function () {
   if (planKey) {
     currentPlan = planKey;
     updateActivePlanElement();
+    // Save to sessionStorage and URL
+    sessionStorage.setItem('planSelected', planKey);
+    updateUrlParam('planSelected', planKey);
   }
 
   console.log(`Tab clicked: ${$this.attr('data-w-tab')}`);
@@ -548,18 +574,14 @@ $('.pricing_toggle-trigger[tab-link]').on('click', function () {
     moveCursor('119%', yearlyWidth);
     updateBillingInfoText('yearly');
     toggleStarterTab('yearly');
-    enterpriseCTA();
     initAddonDropdowns();
     initAutomationDropdowns();
     syncTooltipWithActiveTab();
+    appendQueryParamsToCtaLinks();
 
     // Bind events
     $monthly.on('click', () => handleBillingChange('monthly'));
     $yearly.on('click', () => handleBillingChange('yearly'));
-
-    $('[data-w-tab]').on('click', () => {
-      enterpriseRedirect(); 
-    });
   }
 
   // =========================

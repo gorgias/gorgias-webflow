@@ -218,5 +218,10 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/demo/demo-worker'+minBase+'.js','body', 1);
     }
 
+    // page is nav update
+    if (path.includes('/wip/nav-update')){
+      newScript(scriptBase + '/src/js/navbar'+minBase+'.js','body', 1);
+    }
+
 })
 
