@@ -298,7 +298,7 @@ function handleBillingChange(cycle) {
     if (tier) {
       voicePrice.text(`${formatNumberWithCommas(tier.price)}`);
       console.log(`Voice price updated: ${tier.range} - $${tier.price}`);
-      const addonValue = `voice-${tierIndex}`;
+      const addonValue = `voice-${tier.range}`;
       sessionStorage.setItem('addonSelected', addonValue);
       updateUrlParam('addonSelected', addonValue);
     }
@@ -312,7 +312,7 @@ function handleBillingChange(cycle) {
     if (tier) {
       smsPrice.text(`${formatNumberWithCommas(tier.price)}`);
       console.log(`SMS price updated: ${tier.range} - $${tier.price}`);
-      const addonValue = `sms-${tierIndex}`;
+      const addonValue = `sms-${tier.range}`;
       sessionStorage.setItem('addonSelected', addonValue);
       updateUrlParam('addonSelected', addonValue);
     }
