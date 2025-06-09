@@ -45,14 +45,9 @@ Webflow.push(function () {
     }
 
     // pricing page
-    if (path.includes('pricing') || path.includes('log-slider')){
+    if (path === '/pricing') {
       newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
       newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
-    }
-
-    // pricing page wip
-    if (path.includes('/wip/pricing')){
-      newScript(scriptBase + '/src/js/pricing/pricing-new'+minBase+'.js','body', 1);
     }
 
      if (path.includes('choose-your-plan')){
@@ -221,6 +216,11 @@ Webflow.push(function () {
     // page is nav update
     if (path.includes('/wip/nav-update')){
       newScript(scriptBase + '/src/js/navbar'+minBase+'.js','body', 1);
+    }
+
+    // pricing page update
+    if (path.includes('/v/pricing')){
+      newScript(scriptBase + '/src/js/pricing/pricing-new'+minBase+'.js','body', 1);
     }
 
 })
