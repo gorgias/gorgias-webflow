@@ -113,7 +113,7 @@
                     analytics.track("cp_" + formName + "_booked");
                     if(formName == 'demo'){
                         $('.wrapper-post-demo-booked').removeClass('is-hidden');
-                        $('.wrapper-chilipiper-embed').height('176px');
+                        $('.wrapper-chilipiper-embed').height('350px');
                         $('.demo_step-wrapper').css('display','none');
                         $('.demo-new_status-bar').css('display','none');
                         $('.demo-form-hubspot-post-booking').css('margin-top','-3rem');                       
