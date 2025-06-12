@@ -591,8 +591,12 @@ $('[data-el="monthly"], [data-el="yearly"]').on('click', function () {
   // Handle yearly savings display
   if (target === 'monthly') {
     $('[data-el="yearly-saving"]').css('opacity', 0);
+    setTimeout(() => {
+      $('[data-el="yearly-saving"]').css('display', 'none');
+    }, 150);
   } else {
     $('[data-el="yearly-saving"]').css('opacity', 1);
+    $('[data-el="yearly-saving"]').css('display', 'block');
   }
 });
 
