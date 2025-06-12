@@ -271,7 +271,7 @@ function handleBillingChange(cycle) {
 
   updateBillingInfoText(cycle);
   updateStarterText(cycle);
-  toggleStarterTab(cycle);
+  // toggleStarterTab(cycle);
 
   // Recalculate automation prices based on selected percent for current billing cycle
   ['starter', 'basic', 'pro', 'advanced'].forEach(plan => {
@@ -564,6 +564,38 @@ $('.pricing_toggle-trigger[tab-link]').on('click', function () {
   }
 });
 
+/**
+ * For variant
+ */
+// Sync all billing toggles across instances
+// Sync all billing toggles across sections + control yearly-saving visibility
+$('[data-el="monthly"], [data-el="yearly"]').on('click', function () {
+  const $clicked = $(this);
+  const target = $clicked.data('el'); // 'monthly' or 'yearly'
+
+  // Avoid redundant re-triggering
+  if ($clicked.hasClass('is-active')) return;
+
+  console.log(`Billing toggle selected: ${target}`);
+
+  // Deactivate all toggles
+  $('[data-el="monthly"], [data-el="yearly"]').removeClass('is-active');
+
+  // Activate all of the selected type and trigger logic
+  $(`[data-el="${target}"]`).addClass('is-active').each(function () {
+    if (this !== $clicked[0]) {
+      $(this).trigger('click');
+    }
+  });
+
+  // Handle yearly savings display
+  if (target === 'monthly') {
+    $('[data-el="yearly-saving"]').css('opacity', 0);
+  } else {
+    $('[data-el="yearly-saving"]').css('opacity', 1);
+  }
+});
+
 
   /**
    * Initialize component: set default UI and bind events.
@@ -574,7 +606,7 @@ $('.pricing_toggle-trigger[tab-link]').on('click', function () {
     // Set initial UI for default billing cycle
     moveCursor('119%', yearlyWidth);
     updateBillingInfoText('yearly');
-    toggleStarterTab('yearly');
+    // toggleStarterTab('yearly');
     initAddonDropdowns();
     initAutomationDropdowns();
     syncTooltipWithActiveTab();
