@@ -379,22 +379,20 @@ function updatePlanTotal(plan) {
   const automationPrice = automationPrices[plan] || 0;
   const total = basePrice + automationPrice;
 
-  // Update the visible card price
   $(`[data-price="${plan}"]`).text(`$${formatNumberWithCommas(total)}`);
   console.log(`Updated ${plan} price: base $${basePrice} + automation $${automationPrice} = $${total}`);
 
-  // Update tooltip values for the selected plan
-  const $tab = $(`.pricing_tab-links[data-w-tab="${capitalize(plan)}"]`);
-
-  $tab.find('[data-el="selected-helpdesk-amount"]').text(`${baseTicketVolumes[plan]}`);
-  $tab.find('[data-el="selected-helpdesk-price"]').text(`${formatNumberWithCommas(basePrice)}`);
+  // Update helpdesk tooltip values in the active tab pane
+  const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
+  $pane.find('[data-el="selected-helpdesk-amount"]').text(`${formatNumberWithCommas(baseTicketVolumes[plan])}`);
+  $pane.find('[data-el="selected-helpdesk-price"]').text(`${formatNumberWithCommas(basePrice)}`);
 }
 
 function initAutomationDropdowns() {
   $('[data-el^="starter-"], [data-el^="basic-"], [data-el^="pro-"], [data-el^="advanced-"]').on('click', function (e) {
     e.preventDefault();
 
-    const dataEl = $(this).attr('data-el'); // e.g., "basic-10"
+    const dataEl = $(this).attr('data-el'); // e.g., "pro-30"
     const [plan, percentStr] = dataEl.split('-');
     const percent = parseInt(percentStr, 10);
 
@@ -417,19 +415,14 @@ function initAutomationDropdowns() {
     updateUrlParam('automationRate', percent);
     updatePlanTotal(plan);
 
-    // Update tooltip values
-    const $tab = $(`.pricing_tab-links[data-w-tab="${capitalize(plan)}"]`);
-    $tab.find('[data-el="automate-item"]').removeClass('is-inactive');
-    $tab.find('[data-el="selected-automate-amount"]').text(`${formatNumberWithCommas(ticketCount)}`);
-    $tab.find('[data-el="selected-automate-price"]').text(`${formatNumberWithCommas(automationPrice)}`);
+    // Update tooltip content in the active tab pane
+    const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
+    $pane.find('[data-el="automate-item"]').removeClass('is-inactive');
+    $pane.find('[data-el="selected-automate-amount"]').text(`${formatNumberWithCommas(ticketCount)}`);
+    $pane.find('[data-el="selected-automate-price"]').text(`${formatNumberWithCommas(automationPrice)}`);
 
     // Update dropdown toggle label
-    switch (plan) {
-      case 'starter': $starterOption.text($(this).text()); break;
-      case 'basic': $basicOption.text($(this).text()); break;
-      case 'pro': $proOption.text($(this).text()); break;
-      case 'advanced': $advancedOption.text($(this).text()); break;
-    }
+    $(`[data-el="chosen-automation-${plan}"]`).text($(this).text());
 
     // Close dropdown safely
     const $toggle = $(this).closest('.w-dropdown').find('.w-dropdown-toggle');
@@ -456,20 +449,23 @@ function updateActivePlanElement() {
 function syncTooltipWithActiveTab() {
   const observer = new MutationObserver(() => {
     $('.tooltip-pricing').removeClass('is-active');
-    $('.pricing_tab-links.w--current .tooltip-pricing').addClass('is-active');
+
+    // Only add is-active to the tooltip in the currently active tab pane
+    $('.pricing_tab-panes.w--tab-active .tooltip-pricing').addClass('is-active');
   });
 
-  // Observe all pricing tab links for class changes
-  $('.pricing_tab-links').each(function () {
+  // Watch for tab content (not tab links)
+  $('.pricing_tab-panes').each(function () {
     observer.observe(this, {
       attributes: true,
       attributeFilter: ['class']
     });
   });
 
-  // Run once on load to ensure correct tooltip is active
+  // Initial sync on load
   $('.tooltip-pricing').removeClass('is-active');
-  $('.pricing_tab-links.w--current .tooltip-pricing').addClass('is-active');
+  $('.pricing_tab-panes.w--tab-active .tooltip-pricing').addClass('is-active');
+  console.log('Tooltip sync initialized with active tab');
 }
 
 
