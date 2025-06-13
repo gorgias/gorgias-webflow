@@ -606,11 +606,24 @@ $('[data-el="monthly"], [data-el="yearly"]').on('click', function () {
     // Set initial UI for default billing cycle
     moveCursor('119%', yearlyWidth);
     updateBillingInfoText('yearly');
+    
     // toggleStarterTab('yearly');
     initAddonDropdowns();
     initAutomationDropdowns();
     syncTooltipWithActiveTab();
     appendQueryParamsToCtaLinks();
+
+    // Set default automation levels
+    setTimeout(() => {
+      console.log('Triggering default automation: Basic 20%');
+      $('[data-el="basic-20"]').trigger('click');
+
+      console.log('Triggering default automation: Pro 30%');
+      $('[data-el="pro-30"]').trigger('click');
+
+      console.log('Triggering default automation: Advanced 50%');
+      $('[data-el="advanced-50"]').trigger('click');
+    }, 50);
 
 
     // Bind events
