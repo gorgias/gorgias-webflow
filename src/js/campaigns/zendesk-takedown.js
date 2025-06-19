@@ -41,7 +41,7 @@ const useCaseContent = {
     useCase2Paragraph: "AI Agent learns your tone and policies, so answers about size, fit, or restock dates feel personal, not robotic. Automate tickets while staying on-brand and responsive across chat, social, and email, 24/7.",
     useCase2image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853c99b87969cdd0342fbf5_Scalability.avif",
     useCase3Title: "Turn sizing questions into sales",
-    useCase3Paragraph: "Which size should I order?” is a conversion opportunity. Gorgias Shopping Assistant guides fit, recommends products, and creates orders while giving credit to your CX team.",
+    useCase3Paragraph: "”Which size should I order?” is a conversion opportunity. Gorgias Shopping Assistant guides fit, recommends products, and creates orders while giving credit to your CX team.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853c99ba4b5ba857d2ead51_Shopping%20assistant.avif"
   },
  "Computers": {
@@ -85,7 +85,7 @@ const useCaseContent = {
     useCase2Paragraph: "AI Agent understands your brand voice and policies, delivering quick, accurate answers about ingredients, allergens, and shipping. Automate routine questions while staying fast, friendly, and always on-brand across chat, email, and social.",
     useCase2image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853c9fb35d4704e8e4be321_Scalability.avif",
     useCase3Title: "Turn ingredient questions into confident purchases",
-    useCase3Paragraph: "Is this safe for me?” is a chance to build trust. Shopping Assistant helps answer dietary questions, recommend products, and guide reorders while keeping your CX team in the loop.",
+    useCase3Paragraph: "”Is this safe for me?” is a chance to build trust. Shopping Assistant helps answer dietary questions, recommend products, and guide reorders while keeping your CX team in the loop.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853c9fcca5c367fced6a1b8_Shopping%20assistant.avif"
   },
   "Gifts & Special Events": {
@@ -118,7 +118,7 @@ const useCaseContent = {
     useCase2Paragraph: "AI Agent speaks in your tone and knows your policies, providing helpful answers about delivery timelines, product materials, and return options. Automate routine tickets while maintaining a polished, personal experience across chat, email, and social—day and night.",
     useCase2image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853ca6ae269c38c10eb23d3_Scalability.avif",
     useCase3Title: "Turn product questions into confident purchases",
-    useCase3Paragraph: "Will this fit my space?” is a chance to drive conversion. Shopping Assistant helps guide size, material, and style choices while crediting your CX team for the assist.",
+    useCase3Paragraph: "”Will this fit my space?” is a chance to drive conversion. Shopping Assistant helps guide size, material, and style choices while crediting your CX team for the assist.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853ca6a01bf2b9c50219423_Shopping%20assistant.avif"
   },
     "Jobs & Education": {
@@ -129,7 +129,7 @@ const useCaseContent = {
     useCase2Paragraph: "AI Agent uses your brand tone and policies to answer questions about course access, application status, and refunds—instantly. Automate routine tickets while delivering clear, supportive service across chat, email, and social, 24/7.",
     useCase2image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cc078d4d4e54b796cfbe_Scalability.avif",
     useCase3Title: "Turn questions into enrollment and impact",
-    useCase3Paragraph: "Is this product right for me?” is a moment to engage. Shopping Assistant helps guide learners to the right programs, clarify access or requirements, and ensures your CX team gets the credit for every successful start.",
+    useCase3Paragraph: "”Is this product right for me?” is a moment to engage. Shopping Assistant helps guide learners to the right programs, clarify access or requirements, and ensures your CX team gets the credit for every successful start.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cc0817518f3907d32c43_Shopping%20assistant.avif"
   },
   "Jewelry": {
@@ -154,17 +154,6 @@ const useCaseContent = {
     useCase3Paragraph: "Support has evolved, Zendesk hasn’t. With Gorgias Shopping Assistant, “Is this in stock?” becomes a chance to guide, recommend, and convert. Our context-aware AI delivers real-time answers on availability, shipping, and product details, helping customers navigate large catalogs and complete purchases with confidence.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cfcc1ca787244b031096_Shopping%20assistant.avif"
   },
-   "Mass Merchants & Department Stores": {
-    useCase1Title: "Manage peak season demand with ease this BFCM",
-    useCase1Paragraph: "When questions, shipping updates, and returns flood in, Zendesk slows teams down. Gorgias streamlines support across every category so your agents resolve more tickets faster, without adding headcount or missing sales.",
-    useCase1image: "https://www.gorgias.com/images/campaigns/zendesk-takedown/arts-entertainment.png",
-    useCase2Title: "On-brand support at scale",
-    useCase2Paragraph: "On Zendesk, peak traffic means overwhelmed teams, slower replies, and missed conversions. Gorgias AI Agent resolves up to 60% of support tickets instantly, helping your team focus on high-impact moments like product discovery, shipping updates, and returns across every category.",
-    useCase2image: "https://www.gorgias.com/images/campaigns/zendesk-takedown/arts-entertainment.png",
-    useCase3Title: "Turn high-volume questions into streamlined sales",
-    useCase3Paragraph: "Support has evolved, Zendesk hasn’t. With Gorgias Shopping Assistant, “Is this in stock?” becomes a chance to guide, recommend, and convert. Our context-aware AI delivers real-time answers on availability, shipping, and product details, helping customers navigate large catalogs and complete purchases with confidence.",
-    useCase3image: "https://www.gorgias.com/images/campaigns/zendesk-takedown/arts-entertainment.png"
-  },
     "Pets & Animals": {
     useCase1Title: "Keep pet parents calm when orders go wrong",
     useCase1Paragraph: "When food, meds, or gifts are late, Zendesk can’t keep up. Gorgias automates over 60% of tickets like WISMO, returns, and flavor swaps—so your team stays fast, empathetic, and trusted.",
@@ -173,7 +162,7 @@ const useCaseContent = {
     useCase2Paragraph: "AI Agent uses your tone and brand rules to answer questions about ingredients, deliveries, and product fit—instantly. Automate everyday tickets while providing warm, reliable service across chat, email, and social around the clock.",
     useCase2image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cb32a1393040b0b4d4ea_Scalability.avif",
     useCase3Title: "Turn pet care questions into loyal customers",
-    useCase3Paragraph: "Is this safe for my dog?” is your chance to build trust. Shopping Assistant guides product selection based on pet size, breed, and needs while giving your CX team the credit for every smart recommendation.",
+    useCase3Paragraph: "”Is this safe for my dog?” is your chance to build trust. Shopping Assistant guides product selection based on pet size, breed, and needs while giving your CX team the credit for every smart recommendation.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cb336cc8e3255f0f038d_Shopping%20assistant.avif"
   },
   "Smoking & Vaping": {
@@ -195,7 +184,7 @@ const useCaseContent = {
     useCase2Paragraph: "AI Agent adapts to your brand voice and policies to handle questions about gear fit, shipping, and returns. Automate routine tickets while delivering fast, accurate service across chat, email, and social—whenever it’s game time.",
     useCase2image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cb60600c8cbff26f28e3_Scalability.avif",
     useCase3Title: "Turn gear questions into game-time conversions",
-    useCase3Paragraph: "Will this fit my workout?” is a sales opportunity. Shopping Assistant helps recommend the right gear, size, or supplement while giving your CX team credit for every assist.",
+    useCase3Paragraph: "”Will this fit my workout?” is a sales opportunity. Shopping Assistant helps recommend the right gear, size, or supplement while giving your CX team credit for every assist.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cb61ca5c367fced7bbca_Shopping%20assistant.avif"
   },
     "Toys & Hobbies": {
@@ -206,7 +195,7 @@ const useCaseContent = {
     useCase2Paragraph: "AI Agent matches your tone and policies to quickly answer questions about product details, shipping, and returns. Automate routine tickets while delivering cheerful, reliable service across chat, email, and social—especially when it counts.",
     useCase2image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cbd4037ba7a7819938d5_Scalability.avif",
     useCase3Title: "Turn curiosity into conversions",
-    useCase3Paragraph: "Is this right for their age?” is more than a question, it’s a chance to sell. Shopping Assistant helps guide product picks, answer safety or compatibility questions, and gives your CX team credit for every joyful match.",
+    useCase3Paragraph: "”Is this right for their age?” is more than a question, it’s a chance to sell. Shopping Assistant helps guide product picks, answer safety or compatibility questions, and gives your CX team credit for every joyful match.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853cbd4a1393040b0b55870_Shopping%20assistant.avif"
   },
     "Travel": {
