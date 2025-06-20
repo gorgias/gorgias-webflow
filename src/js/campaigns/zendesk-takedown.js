@@ -276,3 +276,23 @@ imageMappings.forEach(([attr, src]) => {
   }
 });
 }
+
+// Form submission handle UI
+window.addEventListener("message", function (event) {
+  if (
+    event.data.type === "hsFormCallback" &&
+    event.data.eventName === "onFormSubmitted"
+  ) {
+    console.log("[Form] HS form submitted with ID:", event.data.id);
+
+
+      const $firstHide = $(this).closest('[data-el="hide"]');
+      $firstHide.hide();
+
+      const $secondHide = $firstHide.nextAll('[data-el="hide"]').first();
+      $secondHide.hide();
+
+      $(this).closest('[data-el="show"]').removeClass('is-june-campain');
+
+  }
+});
