@@ -1,7 +1,7 @@
 (function() {
 
     const demoLeadFormId = 'ef92ccce-92bd-4010-847a-793f56b6b353';
-    const demoLeadVariantFormId = 'c0b510e0-b9e8-49bf-a54c-872a45c50040';
+    const demoLeadMultiStepFunnelFormId = 'c0b510e0-b9e8-49bf-a54c-872a45c50040';
     const demoFrLeadFormId = "af1d8fe3-2a0d-4dc8-afb4-eb08b6741f79";
     const demoCustomerFormId = 'b7cf896e-d7b3-4f50-a5c1-21459faa6322';
     const demoCustomerAutomateFormId = '2550ba15-99e2-4792-ba41-e389b8695d12';
@@ -12,13 +12,13 @@
     const demoLeadEnterpriseCXCommercialFormId = 'acb7551c-8080-467b-97cc-da9f67a7e131';
     const postDemoFormId = 'b6a985d7-fc5d-4512-8a3d-4e6de8120cf4';
     const postDemoMultiStepFormId = '5f329430-c30d-4637-b5e3-828f02bedd06'; 
-    const demonJuneCampaignGift = 'a2c891e7-7fc1-4886-9d0a-fa2483f2b7e6';
-    const demonJuneCampaignNoGift = '3d823e95-9cee-4865-8075-a95f8b6f8887';
+    const demoLeadBfcmLp2025GiftFormId  = 'a2c891e7-7fc1-4886-9d0a-fa2483f2b7e6';
+    const demoLeadBfcmLp2025NoGiftFormId = '3d823e95-9cee-4865-8075-a95f8b6f8887';
 
 
     // demo functions
     window.addEventListener("message", function(event) {
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId || event.data.id === demoLeadVariantFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id === demoCustomerVoiceFormId || event.data.id === demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId)) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId || event.data.id === demoLeadMultiStepFunnelFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id === demoCustomerVoiceFormId || event.data.id === demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId)) {
             if($('div.hs_demo_current_helpdesk').length  && location.href.includes('reamaze') == true){
                 $('select[name=demo_current_helpdesk]').val('Reamaze').change();
                 $('div.hs_demo_current_helpdesk').addClass('hidden');
@@ -73,7 +73,7 @@
     // form submitted is a demo form (lead) of customer demo
     window.addEventListener("message", function(event) {
 
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoLeadVariantFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift)) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoLeadMultiStepFunnelFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId || event.data.id === demoLeadBfcmLp2025GiftFormId || event.data.id === demoLeadBfcmLp2025NoGiftFormId)) {
 
             var submittedValues=event.data.data.submissionValues;
             for (var key in submittedValues) {
@@ -86,7 +86,7 @@
             var cpTenantDomain;
             var cpRouterName;
             cpTenantDomain = "gorgias"; 
-            if(eventId === demoLeadFormId || eventId === demoLeadVariantFormId || eventId === demoFrLeadFormId  || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift ) {
+            if(eventId === demoLeadFormId || eventId === demoLeadMultiStepFunnelFormId || eventId === demoFrLeadFormId  || event.data.id === demoLeadBfcmLp2025GiftFormId || event.data.id === demoLeadBfcmLp2025NoGiftFormId ) {
                 formName = 'demo'
                 cpRouterName = "inbound-router"; 
 
