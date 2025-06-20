@@ -127,7 +127,7 @@
                     }
                 }, 
                 onError: function () {
-                    analytics.track("cp_" + formName + "_demo_request_failed");
+                    analytics.track("cp_" + formName + "_request_failed");
                 }, 
                 injectRootCss: true
             })  
