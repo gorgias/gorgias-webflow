@@ -86,7 +86,7 @@
             var cpTenantDomain;
             var cpRouterName;
             cpTenantDomain = "gorgias"; 
-            if(eventId === demoLeadFormId || eventId === demoLeadVariantFormId || eventId === demoFrLeadFormId  || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift) {
+            if(eventId === demoLeadFormId || eventId === demoLeadVariantFormId || eventId === demoFrLeadFormId  || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift ) {
                 formName = 'demo'
                 cpRouterName = "inbound-router"; 
 
