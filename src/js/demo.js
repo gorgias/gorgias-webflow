@@ -15,6 +15,7 @@
     const demonJuneCampaignGift = 'a2c891e7-7fc1-4886-9d0a-fa2483f2b7e6';
     const demonJuneCampaignNoGift = '3d823e95-9cee-4865-8075-a95f8b6f8887';
 
+
     // demo functions
     window.addEventListener("message", function(event) {
         if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady' && (event.data.id === demoLeadFormId || event.data.id === demoLeadVariantFormId ||  event.data.id === demoFrLeadFormId || event.data.id === demoCustomerAutomateFormId || event.data.id === demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id === demoCustomerVoiceFormId || event.data.id === demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId)) {
@@ -71,7 +72,9 @@
 
     // form submitted is a demo form (lead) of customer demo
     window.addEventListener("message", function(event) {
+
         if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoLeadVariantFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift)) {
+
             var submittedValues=event.data.data.submissionValues;
             for (var key in submittedValues) {
                 if (Array.isArray(submittedValues[key])) {
@@ -86,7 +89,9 @@
             if(eventId === demoLeadFormId || eventId === demoLeadVariantFormId || eventId === demoFrLeadFormId) {
                 formName = 'demo'
                 cpRouterName = "inbound-router"; 
-            }else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoCustomerAiSalesAgentFormId || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift) {
+
+            } else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoCustomerAiSalesAgentFormId || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift) {
+
                 formName = 'demo_customer'
                 cpRouterName = "inbound_router_customer"; 
             } else if (eventId === demoLeadEnterpriseCXAuditFormId) {
