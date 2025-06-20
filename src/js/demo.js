@@ -86,11 +86,11 @@
             var cpTenantDomain;
             var cpRouterName;
             cpTenantDomain = "gorgias"; 
-            if(eventId === demoLeadFormId || eventId === demoLeadVariantFormId || eventId === demoFrLeadFormId) {
+            if(eventId === demoLeadFormId || eventId === demoLeadVariantFormId || eventId === demoFrLeadFormId  || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift) {
                 formName = 'demo'
                 cpRouterName = "inbound-router"; 
 
-            } else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoCustomerAiSalesAgentFormId || event.data.id === demonJuneCampaignGift || event.data.id === demonJuneCampaignNoGift) {
+            } else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoCustomerAiSalesAgentFormId) {
 
                 formName = 'demo_customer'
                 cpRouterName = "inbound_router_customer"; 
