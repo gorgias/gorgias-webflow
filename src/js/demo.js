@@ -85,10 +85,23 @@
             var formName;
             var cpTenantDomain;
             var cpRouterName;
+            
+            // selector (id, class, etc.) or a direct reference to the dom node in which the ChiliPiper widget will be embedded on the page.
+            // Default is #wrapper-chilipiper-embed, but need to be updated in case there are multiple forms on the page calling ChiliPiper.submit
+            var domElement = "#wrapper-chilipiper-embed";
+            
             cpTenantDomain = "gorgias"; 
             if(eventId === demoLeadFormId || eventId === demoLeadMultiStepFunnelFormId || eventId === demoFrLeadFormId  || event.data.id === demoLeadBfcmLp2025GiftFormId || event.data.id === demoLeadBfcmLp2025NoGiftFormId ) {
                 formName = 'demo'
                 cpRouterName = "inbound-router"; 
+
+                if(eventId == demoLeadBfcmLp2025GiftFormId) {
+                    domElement = ".june-campaign_modal-wrapper.is-gift .wrapper-chilipiper-embed"; 
+
+                }else if(eventId == demoLeadBfcmLp2025NoGiftFormId) {
+                    domElement = ".june-campaign_modal-wrapper.is-demo .wrapper-chilipiper-embed"; 
+                    // domElement = ".is-hero";
+                }
 
             } else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoCustomerAiSalesAgentFormId) {
 
@@ -107,18 +120,19 @@
             if(formName == 'demo'){
                 $('.privacy-policy').css('display','none');
             }
-
+            console.log(domElement)
             ChiliPiper.submit(cpTenantDomain, cpRouterName,{
                 map: true,
                 lead: submittedValues,
                 formId:'hsForm_' + eventId,
-                domElement: "#wrapper-chilipiper-embed",
+                domElement: domElement,
                 onRouted: function () {
                     analytics.track("cp_"+ formName +"_request_routed");
                 },
                 onSuccess: function (data) { 
                     analytics.track("cp_" + formName + "_booked");
                     if(formName == 'demo'){
+                        console.log('in success > demo')
                         $('.wrapper-post-demo-booked').removeClass('is-hidden');
                         $('.wrapper-chilipiper-embed').height('350px');
                         $('.demo_step-wrapper').css('display','none');
