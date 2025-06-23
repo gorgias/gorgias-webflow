@@ -88,19 +88,20 @@
             
             // selector (id, class, etc.) or a direct reference to the dom node in which the ChiliPiper widget will be embedded on the page.
             // Default is #wrapper-chilipiper-embed, but need to be updated in case there are multiple forms on the page calling ChiliPiper.submit
-            var domElement = "#wrapper-chilipiper-embed";
+            var chilipiperDomWrapper = "#wrapper-chilipiper-embed";
             
             cpTenantDomain = "gorgias"; 
+            
+            
+            // customize CP routing based on the form submitted
             if(eventId === demoLeadFormId || eventId === demoLeadMultiStepFunnelFormId || eventId === demoFrLeadFormId  || event.data.id === demoLeadBfcmLp2025GiftFormId || event.data.id === demoLeadBfcmLp2025NoGiftFormId ) {
                 formName = 'demo'
                 cpRouterName = "inbound-router"; 
 
                 if(eventId == demoLeadBfcmLp2025GiftFormId) {
-                    domElement = ".june-campaign_modal-wrapper.is-gift .wrapper-chilipiper-embed"; 
-
+                    chilipiperDomWrapper = ".june-campaign_modal-wrapper.is-gift .wrapper-chilipiper-embed"; 
                 }else if(eventId == demoLeadBfcmLp2025NoGiftFormId) {
-                    domElement = ".june-campaign_modal-wrapper.is-demo .wrapper-chilipiper-embed"; 
-                    // domElement = ".is-hero";
+                    chilipiperDomWrapper = ".june-campaign_modal-wrapper.is-demo .wrapper-chilipiper-embed"; 
                 }
 
             } else if (eventId === demoCustomerFormId ||  eventId === demoCustomerAutomateFormId || eventId === demoCustomerConvertFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoCustomerAiSalesAgentFormId) {
@@ -120,28 +121,49 @@
             if(formName == 'demo'){
                 $('.privacy-policy').css('display','none');
             }
-            console.log(domElement)
             ChiliPiper.submit(cpTenantDomain, cpRouterName,{
                 map: true,
                 lead: submittedValues,
                 formId:'hsForm_' + eventId,
-                domElement: domElement,
+                domElement: chilipiperDomWrapper,
+                onRouting: function () {
+                    analytics.track("cp_"+ formName +"_request_routing");
+                },
+
                 onRouted: function () {
                     analytics.track("cp_"+ formName +"_request_routed");
+                    // customize Frontend element based on the CP routing success
+                    
+                    if(eventId == demoLeadBfcmLp2025GiftFormId) {
+                        // hide the modal header above the form gift request when it has been submitted
+                        $(".june-campaign_modal-wrapper.is-gift .demo-form_modal_content>.signup-form_header.is-gift").addClass('is-hidden');
+                        // display the modal header above the CP calendar after form gift request has been submitted
+                        $(".june-campaign_modal-wrapper.is-gift .demo-form_modal_content>.signup-form_header.is-demo").removeClass('is-hidden');
+                    }
                 },
                 onSuccess: function (data) { 
                     analytics.track("cp_" + formName + "_booked");
                     if(formName == 'demo'){
                         console.log('in success > demo')
                         $('.wrapper-post-demo-booked').removeClass('is-hidden');
-                        $('.wrapper-chilipiper-embed').height('350px');
+                        $(chilipiperDomWrapper).height('350px');
                         $('.demo_step-wrapper').css('display','none');
                         $('.demo-new_status-bar').css('display','none');
                         $('.demo-form-hubspot-post-booking').css('margin-top','-3rem');                       
                     }
                 }, 
                 onError: function () {
+                    // track ChiliPiper error through segment
                     analytics.track("cp_" + formName + "_request_failed");
+
+                    // customize de frontend if CP request failed
+                    if(eventId == demoLeadBfcmLp2025GiftFormId) {
+                        // display the modal header above the form gift request when it has been submitted
+                        $(".june-campaign_modal-wrapper.is-gift .demo-form_modal_content>.signup-form_header.is-gift").removelass('is-hidden');
+                        // display the modal header above the CP calendar after form gift request has been submitted
+                        $(".june-campaign_modal-wrapper.is-gift .demo-form_modal_content>.signup-form_header.is-demo").addClass('is-hidden');
+                    }
+
                 }, 
                 injectRootCss: true
             })  
