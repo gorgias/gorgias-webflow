@@ -15,6 +15,7 @@ function cookieSessionFromUtmParameter() {
               number_of_agents: 'number_of_agents',
               name: 'name',
               domain: 'domain',
+              company_domain: 'company_domain',
               gorgias_subdomain: 'gorgias_subdomain',
               phone: 'phone',
               about_us: 'about_us',
