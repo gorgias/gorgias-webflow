@@ -651,6 +651,7 @@ function updateMonthlyPriceSpans() {
       $('[data-el="pro-30"]').trigger('click');
 
       updateMonthlyPriceSpans();
+
     }, 50);
 
 

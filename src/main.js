@@ -223,5 +223,9 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/pricing/pricing-new'+minBase+'.js','body', 1);
     }
 
+    // bfcm 2025 ABM pages
+    if (path.includes('/bfcm-2025/')){
+      newScript(scriptBase + '/src/js/campaigns/zendesk-takedown'+minBase+'.js','body', 1);
+    }
 })
 
