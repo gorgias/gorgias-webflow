@@ -290,6 +290,8 @@ function handleBillingChange(cycle) {
     updatePlanTotal(plan);
   });
 
+  updateMonthlyPriceSpans();
+
   // Refresh selected voice tier price
   const voiceId = $('#voice-addons .addons_dropdown-links.selected')?.attr('id');
   if (voiceId && voiceId.startsWith('voice-tier-')) {
@@ -414,6 +416,7 @@ function initAutomationDropdowns() {
     sessionStorage.setItem('automationRate', percent);
     updateUrlParam('automationRate', percent);
     updatePlanTotal(plan);
+    updateMonthlyPriceSpans();
 
     // Update tooltip content in the active tab pane
     const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
@@ -596,6 +599,29 @@ $('[data-el="monthly"], [data-el="yearly"]').on('click', function () {
   }
 });
 
+function updateMonthlyPriceSpans() {
+  // Loop through each plan except 'starter'
+  ['basic', 'pro', 'advanced'].forEach(plan => {
+    // Always use the monthly base price, regardless of current billingCycle
+    const basePrice = cardPrices['monthly'][capitalize(plan)];
+    const percent = selectedAutomationTier[plan];
+    let automationTable;
+
+    switch (plan) {
+      case 'basic': automationTable = basicAutomation; break;
+      case 'pro': automationTable = proAutomation; break;
+      case 'advanced': automationTable = advancedAutomation; break;
+      default: return;
+    }
+    const ticketCount = parseInt(automationTable[percent], 10);
+    const automationPrice = ticketCount * 1; // Always 1x for monthly
+
+    const total = basePrice + automationPrice;
+
+    $(`[data-el="monthly-price-${plan}"]`).text(`${formatNumberWithCommas(total)}`);
+  });
+}
+
 
   /**
    * Initialize component: set default UI and bind events.
@@ -618,11 +644,13 @@ $('[data-el="monthly"], [data-el="yearly"]').on('click', function () {
       console.log('Triggering default automation: Basic 20%');
       $('[data-el="basic-20"]').trigger('click');
 
+      console.log('Triggering default automation: Advanced 50%');
+      $('[data-el="advanced-50"]').trigger('click');
+
       console.log('Triggering default automation: Pro 30%');
       $('[data-el="pro-30"]').trigger('click');
 
-      console.log('Triggering default automation: Advanced 50%');
-      $('[data-el="advanced-50"]').trigger('click');
+      updateMonthlyPriceSpans();
     }, 50);
 
 
