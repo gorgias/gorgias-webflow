@@ -523,7 +523,23 @@ $toggleButton.on('click', function () {
   } else {
     $('[data-el="excluded"]').removeClass('is-hidden');
   }
+
+    recalculateOpenAccordions();
 });
+
+function recalculateOpenAccordions() {
+  // For each open accordion content
+  $('[g-accordion-element="content"].is-active').each(function () {
+    const $content = $(this);
+    // Remove maxHeight to let browser calculate scrollHeight
+    $content[0].style.maxHeight = null;
+
+    // Wait for reflow after DOM changes (important!)
+    setTimeout(() => {
+      $content[0].style.maxHeight = $content[0].scrollHeight + "px";
+    }, 10);
+  });
+}
 
 // Mirror click from dropdown to tab link
 $('.addons_dropdown-links[faq-q]').on('click', function (e) {
