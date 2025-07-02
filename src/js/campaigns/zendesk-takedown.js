@@ -102,8 +102,8 @@ const useCaseContent = {
     useCase3Title: "Turn ingredient questions into confident purchases",
     useCase3Paragraph: "”Support has evolved, Zendesk hasn't. With Gorgias Shopping Assistant “is this safe for me?” becomes a chance to educate, recommend, and convert. Our context-aware AI delivers real-time guidance on ingredients, allergens, and subscriptions, turning questions into confident checkouts.",
     useCase3image: "https://cdn.prod.website-files.com/5e4ff204e7b6f80e402d407a/6853c9fcca5c367fced6a1b8_Shopping%20assistant.avif",
-    useCase4Title: "",
-    useCase4Paragraph: ""
+    useCase4Title: "Built for your tech stack",
+    useCase4Paragraph: "More conversions, fewer churned subscriptions. Gorgias helps food and beverage brands automate flavor swaps, delivery questions, and loyalty flows, integrating with 100+ ecommerce tools to boost efficiency by up to 40% when freshness and timing matter most."
   },
   "Gifts & Special Events": {
     useCase1Title: "Deliver joyful support at scale this BFCM",
