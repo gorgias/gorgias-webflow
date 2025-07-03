@@ -2,7 +2,7 @@ var Webflow = Webflow || [];
 Webflow.push(function () {
   // Function to update the width of elements with data-value
   function updateElementWidths() {
-    $('[data-value]').each(function() {
+    $('[data-value]').each(function () {
       let value = $(this).data('value');
       if (value < 5) {
         value = value * 20;
@@ -12,19 +12,42 @@ Webflow.push(function () {
       $(this).css('width', value + '%');
     });
   }
-  
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        updateElementWidths();
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.7
+
+  const observer = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          console.log('IntersectionObserver triggered:', entry.target);
+          updateElementWidths();
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.7,
+      rootMargin: '0px 0px -20% 0px' // helps trigger earlier on mobile
+    }
+  );
+
+  const triggerElement = document.querySelector('#num-values');
+  if (triggerElement) {
+    observer.observe(triggerElement);
+  } else {
+    console.warn('#num-values not found in DOM');
+  }
+
+  // Fallback for touch devices: ensure animation happens after load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      console.log('Fallback updateElementWidths triggered');
+      updateElementWidths();
+    }, 1200); // allow time for layout / scroll to settle
   });
 
-  observer.observe(document.querySelector('#num-values'));
+  // Optional scroll fallback (once only)
+  window.addEventListener('scroll', () => {
+    updateElementWidths();
+  }, { once: true });
 
 
 window.fsComponents = window.fsComponents || [];
