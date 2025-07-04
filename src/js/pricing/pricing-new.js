@@ -165,8 +165,15 @@ const smsTiers = {
    */
   // Format figures with comma separator
   function formatNumberWithCommas(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return Number(number).toLocaleString('en-US');
   }
+
+  function formatPrice(number) {
+  const n = Number(number);
+  return n % 1 === 0
+    ? n.toLocaleString('en-US')
+    : n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
   //Function to update query parameters in the URL
   function updateUrlParam(key, value) {
@@ -336,7 +343,7 @@ function initAddonDropdowns() {
 
       if (selectedTier) {
         // Update price and selected label
-        voicePrice.text(`${formatNumberWithCommas(selectedTier.price)}`);
+        voicePrice.text(formatPrice(selectedTier.price));
         voiceSelected.text($(this).text());
 
         // Update selected state
@@ -359,7 +366,7 @@ function initAddonDropdowns() {
 
       if (selectedTier) {
         // Update price and selected label
-        smsPrice.text(`${formatNumberWithCommas(selectedTier.price)}`);
+        smsPrice.text(formatPrice(selectedTier.price));
         smsSelected.text($(this).text());
 
         // Update selected state
@@ -381,13 +388,13 @@ function updatePlanTotal(plan) {
   const automationPrice = automationPrices[plan] || 0;
   const total = basePrice + automationPrice;
 
-  $(`[data-price="${plan}"]`).text(`$${formatNumberWithCommas(total)}`);
+  $(`[data-price="${plan}"]`).text(`$${formatPrice(total)}`);
   console.log(`Updated ${plan} price: base $${basePrice} + automation $${automationPrice} = $${total}`);
 
   // Update helpdesk tooltip values in the active tab pane
   const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
   $pane.find('[data-el="selected-helpdesk-amount"]').text(`${formatNumberWithCommas(baseTicketVolumes[plan])}`);
-  $pane.find('[data-el="selected-helpdesk-price"]').text(`${formatNumberWithCommas(basePrice)}`);
+  $pane.find('[data-el="selected-helpdesk-price"]').text(formatPrice(basePrice));
 }
 
 function initAutomationDropdowns() {
@@ -422,7 +429,7 @@ function initAutomationDropdowns() {
     const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
     $pane.find('[data-el="automate-item"]').removeClass('is-inactive');
     $pane.find('[data-el="selected-automate-amount"]').text(`${formatNumberWithCommas(ticketCount)}`);
-    $pane.find('[data-el="selected-automate-price"]').text(`${formatNumberWithCommas(automationPrice)}`);
+    $pane.find('[data-el="selected-automate-price"]').text(formatPrice(automationPrice)); 
 
     // Update dropdown toggle label
     $(`[data-el="chosen-automation-${plan}"]`).text($(this).text());
@@ -634,7 +641,7 @@ function updateMonthlyPriceSpans() {
 
     const total = basePrice + automationPrice;
 
-    $(`[data-el="monthly-price-${plan}"]`).text(`${formatNumberWithCommas(total)}`);
+   $(`[data-el="monthly-price-${plan}"]`).text(`${formatPrice(total)}`);
   });
 }
 
