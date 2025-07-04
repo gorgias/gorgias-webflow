@@ -227,5 +227,10 @@ Webflow.push(function () {
     if (path.includes('/bfcm-2025/')){
       newScript(scriptBase + '/src/js/campaigns/zendesk-takedown'+minBase+'.js','body', 1);
     }
+
+    // AI Agent pages
+    if (path.includes('/wip/shopping-assistant') || path.includes('/wip/support-agent')){
+      newScript(scriptBase + '/src/js//ai-agent'+minBase+'.js','body', 1);
+    }
 })
 

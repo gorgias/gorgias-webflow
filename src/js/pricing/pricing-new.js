@@ -641,7 +641,9 @@ function updateMonthlyPriceSpans() {
 
     const total = basePrice + automationPrice;
 
+
    $(`[data-el="monthly-price-${plan}"]`).text(`${formatPrice(total)}`);
+
   });
 }
 
