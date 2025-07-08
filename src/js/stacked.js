@@ -4,7 +4,9 @@ const layers = gsap.utils.toArray(".stack-layer");
 const navItems = gsap.utils.toArray(".stack-wrapper_navigation-item");
 const descItems = gsap.utils.toArray(".stack-wrapper_desc-item");
 
+
 let stackTl = gsap.timeline({
+
   scrollTrigger: {
     trigger: ".is-stacked-section",
     start: "top top",
@@ -26,6 +28,7 @@ const layerHeight = 32;
 
   // Fade in early
   stackTl.to(
+
     layer,
     {
       opacity: 1,
@@ -35,7 +38,9 @@ const layerHeight = 32;
   );
 
   // Drop in
+
   stackTl.to(
+
     layer,
     {
       y: -(i * layerHeight),
@@ -52,6 +57,7 @@ const layerHeight = 32;
   navItems.forEach((el) => {
     const index = el.dataset.index;
     stackTl.call(
+
       () => {
         if (index === String(textIndex)) {
           el.classList.add("is-active");
@@ -68,7 +74,9 @@ const layerHeight = 32;
   // Description items: fade only matching one
   descItems.forEach((el) => {
     const index = el.dataset.index;
+
     stackTl.to(
+
       el,
       {
         opacity: index === String(textIndex) ? 1 : 0,
