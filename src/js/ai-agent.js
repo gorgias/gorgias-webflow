@@ -88,3 +88,4 @@ ScrollTrigger.create({
       .classList.remove("is-animated");
   },
 });
+
