@@ -14,12 +14,9 @@ const $cursor = $('.is-toggle-cursor');
 const $billingInfo = $('[data-el="billing-info"]');
 const $starterTab = $('[tab-link="starter"]');
 let $starterText = $('[data-el="starter-text"]');
-let $starterOption = $('[data-el="chosen-automation-starter"]');
-let $basicOption = $('[data-el="chosen-automation-basic"]');
-let $proOption = $('[data-el="chosen-automation-pro"]');
-let $advancedOption = $('[data-el="chosen-automation-advanced"]');
 const $toggleButton = $('[data-el="toggle-button"]');
 const $toggleSwitch = $('[data-el="toggle-switch"]');
+let $pricingTxt = $('[data-el="total-price-txt"]');
 
 // Precomputed widths
 const monthlyWidth = $monthly.outerWidth();
@@ -214,13 +211,20 @@ const smsTiers = {
   /**
    * Update billing info label text based on current billing cycle.
    */
-  function updateBillingInfoText(cycle) {
-    const text = cycle === 'monthly'
-      ? 'Switch to yearly and get 2 months free'
-      : 'Includes 2 months free on all plans';
-    $billingInfo.text(text);
-    console.log(`Billing info updated: "${text}"`);
-  }
+function updateBillingInfoText(cycle) {
+  const text = cycle === 'monthly'
+    ? 'Switch to yearly and get 2 months free'
+    : 'Includes 2 months free on all plans';
+  $billingInfo.text(text);
+
+  // Use cached $pricingTxt variable
+  pricingTxt = cycle === 'monthly'
+    ? 'Total billed monthly'
+    : 'Total billed yearly';
+  $pricingTxt.text(pricingTxt);
+
+  console.log(`Billing info updated: "${text}", pricingTxt: "${pricingTxt}"`);
+}
 
   function updateStarterText(cycle) {
   const text = cycle === 'monthly'
