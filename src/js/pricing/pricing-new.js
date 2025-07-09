@@ -14,6 +14,10 @@ const $cursor = $('.is-toggle-cursor');
 const $billingInfo = $('[data-el="billing-info"]');
 const $starterTab = $('[tab-link="starter"]');
 let $starterText = $('[data-el="starter-text"]');
+let $starterOption = $('[data-el="chosen-automation-starter"]');
+let $basicOption = $('[data-el="chosen-automation-basic"]');
+let $proOption = $('[data-el="chosen-automation-pro"]');
+let $advancedOption = $('[data-el="chosen-automation-advanced"]');
 const $toggleButton = $('[data-el="toggle-button"]');
 const $toggleSwitch = $('[data-el="toggle-switch"]');
 let $pricingTxt = $('[data-el="total-price-txt"]');
@@ -27,10 +31,10 @@ const yearlyWidth = $yearly.outerWidth();
 let toggleState = "off";
 
 const baseTicketVolumes = {
-  starter: "50",
-  basic: "300",
-  pro: "2,000",
-  advanced: "5,000"
+  starter: 50,
+  basic: 300,
+  pro: 2000,
+  advanced: 5000
 };
 
 let selectedAutomationTier = {
@@ -397,7 +401,7 @@ function updatePlanTotal(plan) {
 
   // Update helpdesk tooltip values in the active tab pane
   const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
-  $pane.find('[data-el="selected-helpdesk-amount"]').text(`${formatNumberWithCommas(baseTicketVolumes[plan])}`);
+$pane.find('[data-el="selected-helpdesk-amount"]').text(formatNumberWithCommas(baseTicketVolumes[plan]));
   $pane.find('[data-el="selected-helpdesk-price"]').text(formatPrice(basePrice));
 }
 
