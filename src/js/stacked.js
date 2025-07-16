@@ -2,7 +2,7 @@ if (window.innerWidth > 991) {
   gsap.registerPlugin(ScrollTrigger);
 
   // --- EASY TWEAKS ---
-  const PER_LAYER_SCROLL = 400; // px of scroll per layer (adjust this for speed/feel)
+  const PER_LAYER_SCROLL = 500; // px of scroll per layer (adjust this for speed/feel)
   const LAYER_ANIMATION_DURATION = 2; // seconds for each y movement
   const layerHeight = 32; // px vertical offset per layer
 
@@ -15,7 +15,7 @@ if (window.innerWidth > 991) {
     scrollTrigger: {
       trigger: ".is-stacked-section",
       start: "top top",
-      end: "+=350vh",
+      end: "+=500vh",
       scrub: true,
       pin: true,
       //markers: true,
