@@ -1,3 +1,4 @@
+
 if (window.innerWidth >= 991) {
   gsap.registerPlugin(ScrollTrigger);
 
