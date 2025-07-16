@@ -229,7 +229,8 @@ Webflow.push(function () {
     }
 
     // AI Agent pages
-    if (path.includes('/ai-agent/shopping-assistant') || path.includes('/ai-agent/support-agent')){
+
+    if (path.includes('/ai-agent/shopping-assistant') || path.includes('/ai-agent/support-skills')){
       newScript(scriptBase + '/src/js//ai-agent'+minBase+'.js','body', 1);
     }
 
