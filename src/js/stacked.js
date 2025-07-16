@@ -17,7 +17,7 @@ let stackTl = gsap.timeline({
     end: "+=350vh",
     scrub: true,
     pin: true,
-    markers: true,
+    //markers: true,
   },
 });
 
