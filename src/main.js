@@ -229,12 +229,12 @@ Webflow.push(function () {
     }
 
     // AI Agent pages
-    if (path.includes('/wip/shopping-assistant') || path.includes('/wip/support-agent') || path.includes('/wip/ai-agent-parent')){
+    if (path.includes('/ai-agent/shopping-assistant') || path.includes('/ai-agent/support-agent')){
       newScript(scriptBase + '/src/js//ai-agent'+minBase+'.js','body', 1);
     }
 
     // AI Agent parent page
-    if (path.includes('/wip/ai-agent-parent')){
+    if (path.includes('/ai-agent')){
       newScript(scriptBase + '/src/js//stacked'+minBase+'.js','body', 1);
     }
 })
