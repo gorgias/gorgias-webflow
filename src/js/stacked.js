@@ -19,7 +19,7 @@ if (window.innerWidth > 991) {
       end: "+=1000vh",
       scrub: true,
       pin: true,
-      markers: true,
+     // markers: true,
     },
   });
 

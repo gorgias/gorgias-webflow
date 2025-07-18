@@ -62,6 +62,11 @@ const starterAutomation = {
   30: '15',
   40: '20',
   50: '25',
+  60: '30',
+  70: '35',
+  80: '40',
+  90: '45',
+  100: '50',
 };
 
 const basicAutomation = {
@@ -295,7 +300,10 @@ function handleBillingChange(cycle) {
     }[plan];
 
     const ticketCount = parseInt(automationTable[percent], 10);
-    const automationPrice = ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
+    const automationPrice =
+    plan === 'starter'
+    ? ticketCount * 1
+    : ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
 
     automationPrices[plan] = automationPrice;
     updatePlanTotal(plan);
@@ -421,7 +429,10 @@ function initAutomationDropdowns() {
     }
 
     const ticketCount = parseInt(automationTable[percent], 10);
-    const automationPrice = ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
+    const automationPrice =
+    plan === 'starter'
+    ? ticketCount * 1 // Always $1 for Starter
+    : ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
 
     // Store selected percent so we can recalculate later
     selectedAutomationTier[plan] = percent;
