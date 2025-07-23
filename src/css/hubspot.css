@@ -1,8 +1,7 @@
-
-body:not(.is-ebook, .is-event, .is-partner-referral, .is-partner-loyalty-program, .is-tool, .ai-sales-agent-body, .is-product-announcement) div.submitted-message{
+body:not(.is-ebook):not(.is-event):not(.is-partner-referral):not(.is-partner-loyalty-program):not(.is-tool):not(.ai-sales-agent-body):not(.is-product-announcement) div.submitted-message {
   height:0 !important;
   width:0 !important;
-  display:none!important;
+  display:none !important;
   visibility:hidden !important;
 }
 
