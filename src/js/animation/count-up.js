@@ -1,12 +1,16 @@
 /**
  * Count up functionality using GSAP + GSAP scroll trigger.
- * Make sure GSAP script and scroll trigger plugin are loaded to the page.
- * Use the data-el="count-up" attribute on the number you want to animate.
+ * If a span has a data-stat attribute, replace its content with the data-stat value before animating.
  */
 
 const items = document.querySelectorAll('[data-el="count-up"]');
 
 items.forEach((item) => {
+  // If the item has a data-stat attribute, update the text content with its value
+  if (item.hasAttribute('data-stat')) {
+    item.textContent = item.getAttribute('data-stat');
+  }
+
   const number = parseFloat(item.textContent.replace(/,/g, ""));
   if (isNaN(number)) return;
 
