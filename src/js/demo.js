@@ -119,7 +119,7 @@
                 console.log('cx_audit passed');
             } else if (eventId === demoCustomerRenewalFormId) {
                 formName = 'customer_renewal'
-                cpRouterName = "Inbound_Router_Renewal ";
+                cpRouterName = "Inbound_Router_Renewal";
                 console.log('renewel passed');
             }
 
