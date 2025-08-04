@@ -14,6 +14,7 @@
     const postDemoMultiStepFormId = '5f329430-c30d-4637-b5e3-828f02bedd06'; 
     const demoLeadBfcmLp2025GiftFormId  = 'a2c891e7-7fc1-4886-9d0a-fa2483f2b7e6';
     const demoLeadBfcmLp2025NoGiftFormId = '3d823e95-9cee-4865-8075-a95f8b6f8887';
+    const demoCustomerRenewalFormId = 'ac5cd2e0-942d-4505-92c2-7e96e6ef6350';
 
 
     // demo functions
@@ -73,7 +74,7 @@
     // form submitted is a demo form (lead) of customer demo
     window.addEventListener("message", function(event) {
 
-        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoLeadMultiStepFunnelFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId || event.data.id === demoLeadBfcmLp2025GiftFormId || event.data.id === demoLeadBfcmLp2025NoGiftFormId)) {
+        if(event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmitted' && ( event.data.id == demoLeadFormId || event.data.id == demoLeadMultiStepFunnelFormId || event.data.id == demoFrLeadFormId || event.data.id == demoCustomerFormId || event.data.id == demoCustomerAutomateFormId || event.data.id == demoCustomerConvertFormId || event.data.id === demoCustomerAiSalesAgentFormId || event.data.id == demoCustomerVoiceFormId || event.data.id == demoLeadEnterpriseCXAuditFormId || event.data.id === demoLeadEnterpriseCXCommercialFormId || event.data.id === demoLeadBfcmLp2025GiftFormId || event.data.id === demoLeadBfcmLp2025NoGiftFormId || event.data.id === demoCustomerRenewalFormId)) {
 
             var submittedValues=event.data.data.submissionValues;
             for (var key in submittedValues) {
@@ -116,6 +117,10 @@
                 formName = 'cx_commercial'
                 cpRouterName = "Inbound_Router_Lead_Commercial_CX_Audit";
                 console.log('cx_audit passed');
+            } else if (eventId === demoCustomerRenewalFormId) {
+                formName = 'customer_renewal'
+                cpRouterName = "Inbound_Router_Renewal";
+                console.log('renewel passed');
             }
 
             if(formName == 'demo'){
