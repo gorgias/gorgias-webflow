@@ -538,8 +538,8 @@
         const accountDomainText = $("#account-domain-text");
         const accountDomainSubdomainString = $("#account-subdomain-string");
         const accountDomainTextInfoWrapper = $("#account-domain-info-wrapper");
-        const companyDomainField = $('#signup-account-form input[name="' + company_domain_key + '"]');
-        const accountDomainField = $('#signup-account-form input[name="' + account_domain_key + '"]');
+        const companyDomainField = $('#signup-user-form input[name="' + company_domain_key + '"]');
+        const accountDomainField = $('#signup-user-form input[name="' + account_domain_key + '"]');
         const signupButton = $('input[id="signup-button"]');
         const signupButtonLoading = $("#signup-button-loading");
         const ssoGoogleButton = $('a[id="sso-button-google"]');
@@ -857,9 +857,10 @@
             emailField.on("blur", function () { 
                 emailVerify("warning");
             });
-            companyDomainField.on("change", function () { companyDomainReformat(); });
+            companyDomainField.on("change", function () { alert("test"); companyDomainReformat(); });
             companyDomainField.on("blur", function () { companyDomainVerify("warning"); });
             companyDomainField.keyup(function () {
+                alert('test')
                 clearTimeout(delayTimer);
                 delayTimer = window.setTimeout(function () { companyDomainVerify("warning"); }, 1e3);
             });
