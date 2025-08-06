@@ -841,6 +841,7 @@
             mirrorEmailToFullname(fullnameField.val(), emailField.val());
             // Autofill password field on load
             generatePassword();
+            companyDomainVerify();
             accountDomainEditButton.on("click", function () {
                 accountDomainEditWrapper.show();
                 accountDomainWrapper.hide();
@@ -857,10 +858,9 @@
             emailField.on("blur", function () { 
                 emailVerify("warning");
             });
-            companyDomainField.on("change", function () { alert("test"); companyDomainReformat(); });
+            companyDomainField.on("change", function () { companyDomainReformat(); });
             companyDomainField.on("blur", function () { companyDomainVerify("warning"); });
             companyDomainField.keyup(function () {
-                alert('test')
                 clearTimeout(delayTimer);
                 delayTimer = window.setTimeout(function () { companyDomainVerify("warning"); }, 1e3);
             });
