@@ -60,7 +60,10 @@
 
     var ERROR_COLOR = "#F54D63";
     var WARNING_COLOR = "#FF9B53";
-    var API_BASE_URL = new URL(document.currentScript.src).origin + "/signup";
+    const scriptOrigin = new URL(document.currentScript.src).origin;
+    const API_BASE_URL = scriptOrigin === "http://127.0.0.1:5500"
+        ? "https://accounts.gorgias.com/signup"
+        : scriptOrigin + "/signup";
     var SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
     function post(endpoint, data, success, error2, complete) {
