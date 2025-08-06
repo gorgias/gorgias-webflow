@@ -549,6 +549,15 @@
         const accountFormLoadingWrapper = $("div#signup-account-form-loading-wrapper");
         let delayTimer = 0;
 
+        /**
+         * Mirrors the email input value to the fullname input.
+         */
+        function mirrorEmailToFullname(fullname, email) {
+            if (emailField.val()) {
+            fullnameField.val(emailField.val());
+        }
+        }
+
         function initiateMessageContainer() {
             const fields = {
                 "email": emailField,
@@ -797,6 +806,7 @@
         function onLoad() {
             resetLocalStorageFields();
             enableFields();
+            mirrorEmailToFullname(fullnameField.val(), emailField.val());
             accountDomainEditButton.on("click", function () {
                 accountDomainEditWrapper.show();
                 accountDomainWrapper.hide();
@@ -810,7 +820,9 @@
                     }
                 });
             });
-            emailField.on("blur", function () { emailVerify("warning"); });
+            emailField.on("blur", function () { 
+                emailVerify("warning");
+            });
             companyDomainField.on("change", function () { companyDomainReformat(); });
             companyDomainField.on("blur", function () { companyDomainVerify("warning"); });
             companyDomainField.keyup(function () {
@@ -825,6 +837,7 @@
             fullnameField.on("blur", function () { fullnameVerify("warning"); });
             passwordField.on("blur", function () { passwordVerify("warning"); });
             emailField.keyup(function () {
+                mirrorEmailToFullname(fullnameField.val(), emailField.val());
                 clearTimeout(delayTimer);
                 delayTimer = window.setTimeout(function () { emailVerify("warning"); }, 1e3);
             });
