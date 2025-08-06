@@ -788,7 +788,7 @@
         }
 
         function onSubmitUserSignupForm2(response) {
-            const formData = {
+            const formDataUser = {
                 "email": $.trim(emailField.val() || ""),
                 "name": $.trim(fullnameField.val() || ""),
                 "password": passwordField.val(),
@@ -796,8 +796,22 @@
             };
             const API_USER_SUBMIT_ENDPOINT2 = "/user/submit";
             onSubmitStart2(userForm, signupButton);
-            post(API_USER_SUBMIT_ENDPOINT2, formData, function () {
-                window.location.href = getSignupAccountFormPage() + window.location.search;
+            post(API_USER_SUBMIT_ENDPOINT2, formDataUser, function () {
+                //window.location.href = getSignupAccountFormPage() + window.location.search;
+
+                
+                    const formDataAccount = {
+                        company_domain: (companyDomainField.val() || "").trim().toLowerCase(),
+                        account_domain: (accountDomainField.val() || "").trim().toLowerCase()
+                    };
+                    if (window.localStorage.getItem(plan_name_key) && window.localStorage.getItem(plan_name_key) == "starter" &&
+                        window.localStorage.getItem(plan_period_key) && window.localStorage.getItem(plan_period_key) == "monthly") {
+                        formData["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
+                    }
+                    onSubmitStart2(userForm, signupButton);
+                    onSubmitAccountSignupForm(formDataAccount);
+                    return void 0;
+                
             }, function (response2) {
                 onSubmitEnd2(userForm, signupButton);
                 handleErrors2(response2);
@@ -826,12 +840,13 @@
                 window.location.href = data.redirect_url;
             }, function (response) {
                 handleErrors2(response);
-                onSubmitEnd2(accountForm, signupButton);
+                onSubmitEnd2(userForm, signupButton);
                 accountDomainText.remove(classValidText);
                 accountDomainWrapper.hide();
                 accountDomainEditWrapper.show();
                 accountFormLoadingWrapper.hide();
                 accountFormWrapper.show();
+                grecaptcha.reset();
             });
         }
 
@@ -900,12 +915,16 @@
                 const fullnameStatus = getFieldStatus(fullname_key);
                 const emailStatus = getFieldStatus(email_key);
                 const passwordStatus = getFieldStatus(password_key);
+                const accountDomainStatus = getFieldStatus(account_domain_key);
+                const companyDomainStatus = getFieldStatus(company_domain_key);
                 let status = "error";
                 const messaging = "Please check fields with error, then submit";
-                if (fullnameStatus !== "valid" || emailStatus !== "valid" || passwordStatus !== "valid") {
+                if (fullnameStatus !== "valid" || emailStatus !== "valid" || passwordStatus !== "valid" || accountDomainStatus !== "valid" || companyDomainStatus !== "valid") {
                     emailVerify(status);
                     fullnameVerify(status);
                     passwordVerify(status);
+                    companyDomainVerify(status);
+                    accountDomainVerify(status, accountDomainField.val() || "", false); 
                     handleFormStatus(form, status, messaging);
                     return false;
                 } else {
