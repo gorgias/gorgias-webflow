@@ -42,7 +42,10 @@ alert("this is signup-3.js");
   const WAIT_FOR_ANALYTICS_MAX_TRIES = 3;
   const ERROR_COLOR = "#F54D63";
   const WARNING_COLOR = "#FF9B53";
-  const API_BASE_URL = new URL(document.currentScript.src).origin + "/signup";
+  const scriptOrigin = new URL(document.currentScript.src).origin;
+  const API_BASE_URL = scriptOrigin === "http://127.0.0.1:5500"
+    ? "https://accounts.gorgias.com/signup"
+    : scriptOrigin + "/signup";
   const SESSION_TOKEN_KEY = "x-account-manager-session-token";
   const SIGNUP_ACCOUNT_FORM_PAGE = "/signup/account";
   const API_USER_SUBMIT_ENDPOINT = "/user/submit";
