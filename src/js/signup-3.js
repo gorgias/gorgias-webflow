@@ -217,6 +217,15 @@ alert("this is signup-3.js");
     $("input").removeClass("error-outline");
   }
 
+  /**
+   * Mirrors the email input value to the fullname input.
+   */
+    function mirrorEmailToFullname(fullname, email) {
+      if (email.val()) {
+        fullname.val(email.val());
+      }
+    }
+ 
   // --- Form Initialization and Handlers ---
 
   /**
@@ -232,6 +241,12 @@ alert("this is signup-3.js");
     const emailInput = $("input[name=email]");
     if (emailValue && emailInput.length) {
       emailInput.val(emailValue);
+    }
+
+    // Mirror email to fullname if present
+    const fullnameInput = $("input[name=fullname]");
+    if (emailInput.length && fullnameInput.length) {
+      mirrorEmailToFullname(fullnameInput, emailInput);
     }
 
     // Wait for analytics to be ready before setting up form handlers
@@ -261,7 +276,7 @@ alert("this is signup-3.js");
     const API_INIT_ENDPOINT = "/user/init";
     const API_VALIDATION_ENDPOINT = "/user/validation";
     const EMAIL_INPUT_SELECTOR = "input[name=email]";
-    const NAME_INPUT_SELECTOR = "input[name=name]";
+    const NAME_INPUT_SELECTOR = "input[name=fullname]";
     const PASSWORD_INPUT_SELECTOR = "input[name=password]";
     const initParams = { "anonymous_id": getOrSetAnonymousId() };
 
@@ -292,9 +307,15 @@ alert("this is signup-3.js");
       console.error("API init call failed", response);
     });
 
-    // Validate email on change
+    //  on change change
     $(EMAIL_INPUT_SELECTOR).delayedChange(function () {
       const self = $(this);
+      const fullnameInput = $(NAME_INPUT_SELECTOR);
+
+      mirrorEmailToFullname(fullnameInput, self);
+
+
+      // Validate email
       clearAlert();
       if (self.is(":valid")) {
         const validationData = {
