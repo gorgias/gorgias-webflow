@@ -1,3 +1,5 @@
+alert("this is signup-3.js");
+
 "use strict";
 
 /**
