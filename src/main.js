@@ -125,6 +125,11 @@ Webflow.push(function () {
       newScript(scriptBase + "/src/js/signup-2" + minBase + ".js", "head", 1);
     } 
 
+    if (path.includes('/get-started-trial') ){
+      newScript(scriptBase + '/src/js/signup-3'+minBase+'.js','body', 1);
+    }
+
+
     // Check if product is automate
     if (path.includes('/products/automate')){
         newScript(scriptBase + '/src/js/automate'+minBase+'.js','body', 1);

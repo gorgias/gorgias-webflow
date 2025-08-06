@@ -627,7 +627,7 @@
   /**
    * Initializes the correct signup version based on body attribute.
    */
-  function init3() {
+  function initRouter() {
     if ($("body").attr("data-signup") === "v1") {
       init();
     } else {
@@ -637,6 +637,6 @@
   }
 
   // Run initialization on document ready
-  $(document).ready(init3);
+  $(document).ready(initRouter);
 
 })();
