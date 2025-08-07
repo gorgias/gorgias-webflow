@@ -546,7 +546,10 @@
         const userForm = $("form#signup-user-form");
         const accountForm = $("form#signup-account-form");
         const accountFormWrapper = $("#signup-account-form-wrapper");
-        const accountFormLoadingWrapper = $("div#signup-account-form-loading-wrapper");
+        const userFormWrapper = $("#signup-user-form-wrapper");
+        // const accountFormLoadingWrapper = $("div#signup-account-form-loading-wrapper");
+        const userFormLoadingWrapper = $("div#signup-user-form-loading-wrapper");
+
         let delayTimer = 0;
 
         /**
@@ -788,6 +791,8 @@
         }
 
         function onSubmitUserSignupForm2(response) {
+            userFormWrapper.hide();
+            userFormLoadingWrapper.show();
             const formDataUser = {
                 "email": $.trim(emailField.val() || ""),
                 "name": $.trim(fullnameField.val() || ""),
@@ -815,6 +820,8 @@
             }, function (response2) {
                 onSubmitEnd2(userForm, signupButton);
                 handleErrors2(response2);
+                userFormWrapper.show();
+                userFormLoadingWrapper.hide();
                 grecaptcha.reset();
             });
         }
@@ -833,7 +840,7 @@
 
         function onSubmitAccountSignupForm(formData) {
             const API_VALIDATION_ENDPOINT = "/account/submit";
-            accountFormLoadingWrapper.show();
+            //accountFormLoadingWrapper.show();
             accountFormWrapper.hide();
             post(API_VALIDATION_ENDPOINT, formData, function (data) {
                 localStorage.removeItem("account-subdomains-approved");
@@ -842,10 +849,10 @@
                 handleErrors2(response);
                 onSubmitEnd2(userForm, signupButton);
                 accountDomainText.remove(classValidText);
-                accountDomainWrapper.hide();
-                accountDomainEditWrapper.show();
-                accountFormLoadingWrapper.hide();
-                accountFormWrapper.show();
+                // accountDomainWrapper.hide();
+                // accountDomainEditWrapper.show();
+                userFormLoadingWrapper.hide();
+                userFormWrapper.show();
                 grecaptcha.reset();
             });
         }
@@ -910,6 +917,8 @@
             userForm.submit(function (event) {
                 event.preventDefault();
                 event.stopPropagation();
+
+
                 signupButton.next("div[id*='-message-container']").empty();
                 const form = $(this);
                 const fullnameStatus = getFieldStatus(fullname_key);
