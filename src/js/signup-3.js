@@ -966,9 +966,31 @@
                     status = "valid";
                     window.localStorage.removeItem(account_domain_key + "-status");
                     window.localStorage.removeItem(company_domain_key + "-status");
+                    // Ensure account_domain is not empty before proceeding
+                    let accountDomainValue = (accountDomainField.val() || "").trim().toLowerCase();
+                    if (!accountDomainValue) {
+                        // Wait until account_domain is not empty
+                        const waitForAccountDomain = setInterval(() => {
+                            accountDomainValue = (accountDomainField.val() || "").trim().toLowerCase();
+                            if (accountDomainValue) {
+                                clearInterval(waitForAccountDomain);
+                                const formData = {
+                                    company_domain: (companyDomainField.val() || "").trim().toLowerCase(),
+                                    account_domain: accountDomainValue
+                                };
+                                if (window.localStorage.getItem(plan_name_key) && window.localStorage.getItem(plan_name_key) == "starter" &&
+                                    window.localStorage.getItem(plan_period_key) && window.localStorage.getItem(plan_period_key) == "monthly") {
+                                    formData["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
+                                }
+                                onSubmitStart2(accountForm, signupButton);
+                                onSubmitAccountSignupForm(formData);
+                            }
+                        }, 100);
+                        return void 0;
+                    }
                     const formData = {
                         company_domain: (companyDomainField.val() || "").trim().toLowerCase(),
-                        account_domain: (accountDomainField.val() || "").trim().toLowerCase()
+                        account_domain: accountDomainValue
                     };
                     if (window.localStorage.getItem(plan_name_key) && window.localStorage.getItem(plan_name_key) == "starter" &&
                         window.localStorage.getItem(plan_period_key) && window.localStorage.getItem(plan_period_key) == "monthly") {
