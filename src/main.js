@@ -124,6 +124,9 @@ Webflow.push(function () {
       // Load the default version of the script if not the French version
       newScript(scriptBase + "/src/js/signup-2" + minBase + ".js", "head", 1);
     } 
+    else if (path.includes("/get-started-trial")) {
+        newScript(scriptBase + '/src/js/signup-3'+minBase+'.js','body', 1);
+    }
 
     // Check if product is automate
     if (path.includes('/products/automate')){
