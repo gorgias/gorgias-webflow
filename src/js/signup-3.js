@@ -548,7 +548,7 @@
         const accountFormWrapper = $("#signup-account-form-wrapper");
         const userFormWrapper = $("#signup-user-form-wrapper");
         // const accountFormLoadingWrapper = $("div#signup-account-form-loading-wrapper");
-        const userFormLoadingWrapper = $("div#signup-user-form-loading-wrapper");
+        const userFormLoadingWrapper = $("#signup-user-form-loading-wrapper");
 
         let delayTimer = 0;
 
@@ -692,10 +692,10 @@
             const result = error2 ? status : "valid";
             handleFieldStatus(companyDomainField, result, error2);
             if (result === "valid") {
-                accountDomainTextInfoWrapper.removeClass("hidden");
-                if (accountDomainEditWrapper.hasClass("hidden")) {
-                    accountDomainWrapper.removeClass("hidden");
-                }
+                // accountDomainTextInfoWrapper.removeClass("hidden");
+                // if (accountDomainEditWrapper.hasClass("hidden")) {
+                   // accountDomainWrapper.removeClass("hidden");
+                //}
                 const extractedDomain = extractDomain(companyDomainField.val() || "");
                 accountDomainVerify(status, extractedDomain, true);
             }
