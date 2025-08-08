@@ -1,3 +1,4 @@
+console.log("signup-3.js loaded");
 "use strict";
 (() => {
     // jQuery plugin: delayedChange - triggers onChange after a delay when input changes
@@ -516,21 +517,6 @@
             );
         }
 
-        function signupAccountFormHandler2() {
-            const API_INIT_ENDPOINT = "/account/init";
-            post(API_INIT_ENDPOINT, null, function (data) {
-                if (data.redirect_url) { window.location.href = getSignupFormPage() + window.location.search; }
-                if (data.shopify) {
-                    if (!accountDomainField.val() && data.shopify.name) { companyDomainVerify("warning"); accountDomainField.val(data.shopify.name); }
-                }
-                if (data.sso) {
-                    if (!companyDomainField.val() && data.sso.company_domain) { companyDomainField.val(data.sso.company_domain); companyDomainVerify("warning"); }
-                    if (!accountDomainField.val() && data.sso.account_domain) { accountDomainField.val(data.sso.account_domain); }
-                }
-                if (typeof window.GORGIAS_INIT_CALLBACK === "function") { window.GORGIAS_INIT_CALLBACK(data); }
-            });
-        }
-
         function signupAccountFormHandler3() {
 
             let API_INIT_ENDPOINT = "/account/init";
@@ -605,8 +591,6 @@
                         formDataAccount["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
                     }
                     signupAccountFormHandler3();
-                    //onSubmitStart2(userForm, signupButton);
-                    //onSubmitAccountSignupForm(formDataAccount);
                     return void 0;
                 }
                 // ERROR
@@ -724,9 +708,11 @@
             window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm2;
 
         }
+        
         window.Webflow = window.Webflow || [];
-        window.Webflow.push(onLoad);
+        window.Webflow.push(function () {
+            onLoad();
+        });
     }
-
     $(document).ready(init2);
 })();
