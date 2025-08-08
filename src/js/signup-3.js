@@ -1,3 +1,4 @@
+console.log("signup-3.js loaded");
 "use strict";
 (() => {
     // jQuery plugin: delayedChange - triggers onChange after a delay when input changes
@@ -58,9 +59,6 @@
         return void 0;
     }
 
-    var ERROR_COLOR = "#F54D63";
-    var WARNING_COLOR = "#FF9B53";
-    const scriptOrigin = new URL(document.currentScript.src).origin;
     const API_BASE_URL = "https://accounts.gorgias.com/signup";
     var SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
@@ -113,232 +111,6 @@
         });
     }
 
-    function onSubmitStart(form, button) {
-        clearAlert();
-        form.find("input").prop("disabled", true);
-        const buttonValue = button.val();
-        button.val(button.data("wait"));
-        button.data("wait", buttonValue);
-    }
-
-    function onSubmitEnd(form, button) {
-        form.find("input").prop("disabled", false);
-        const buttonValue = button.val();
-        button.val(button.data("wait"));
-        button.data("wait", buttonValue);
-    }
-
-    function handleErrors(input, response) {
-        if (response) {
-            if (response.responseJSON) {
-                const data = response.responseJSON;
-                for (const fieldName of Object.keys(data)) {
-                    const errors = data[fieldName];
-                    const inputField = $("input[name=" + fieldName + "]");
-                    if (inputField.length) {
-                        inputField.addClass("error-outline");
-                    }
-                    for (const errorMsg of errors) {
-                        error(input, errorMsg);
-                    }
-                }
-            } else {
-                error(input, "An unexpected error occurred. Please try again.");
-            }
-        }
-    }
-
-    function error(input, errorMsg) {
-        input.before(`<div class="input-alert" style="color: ${ERROR_COLOR}">${errorMsg}</div>`);
-    }
-
-    function warning(input, errorMsg) {
-        input.before(`<div class="input-alert" style="color: ${WARNING_COLOR}">${errorMsg}</div>`);
-    }
-
-    function clearAlert() {
-        const alerts = $(".input-alert");
-        if (alerts) { alerts.remove(); }
-        $("input").removeClass("error-outline");
-    }
-
-    var SIGNUP_ACCOUNT_FORM_PAGE = "/signup/account";
-    var API_USER_SUBMIT_ENDPOINT = "/user/submit";
-
-    function init() {
-        $("input").prop("disabled", false);
-        const searchParams = processURLSearchParams();
-        updateLinksForSession();
-        const emailValue = searchParams.get("email");
-        const emailInput = $("input[name=email]");
-        if (emailValue && emailInput.length) { emailInput.val(emailValue); }
-        waitForAnalytics(function () {
-            console.log("Forms submission handlers setup is started.");
-            const userForm = $("#signup-user-form");
-            const accountForm = $("#signup-account-form");
-            if (userForm.length) {
-                console.info("Subscribing the user form submission handler.");
-                signupUserFormHandler(userForm);
-                console.info("User form submission handler successfully subscribed.");
-            } else if (accountForm.length) {
-                console.info("Subscribing the account form submission handler.");
-                signupAccountFormHandler(accountForm);
-                console.info("Account form submission handler successfully subscribed.");
-            }
-        });
-        window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm;
-    }
-
-    function signupUserFormHandler(form) {
-        const API_INIT_ENDPOINT = "/user/init";
-        const API_VALIDATION_ENDPOINT = "/user/validation";
-        const EMAIL_INPUT_SELECTOR = "input[name=email]";
-        const NAME_INPUT_SELECTOR = "input[name=name]";
-        const PASSWORD_INPUT_SELECTOR = "input[name=password]";
-        const initParams = { "anonymous_id": getOrSetAnonymousId() };
-        post(API_INIT_ENDPOINT, initParams, function (data) {
-            getOrSetAnonymousId(data.anonymous_id);
-            if (data.errors) { handleErrors(form, { responseJSON: data.errors }); }
-            if (data.shopify) {
-                const emailInput = $(EMAIL_INPUT_SELECTOR);
-                const nameInput = $(NAME_INPUT_SELECTOR);
-                const passwordInput = $(PASSWORD_INPUT_SELECTOR);
-                if (!emailInput.val() && data.shopify.email) { emailInput.val(data.shopify.email); }
-                if (!nameInput.val() && data.shopify.shop_owner) { nameInput.val(data.shopify.shop_owner); }
-                if (emailInput.val() && nameInput.val() && !passwordInput.val()) { passwordInput.focus(); }
-            }
-            if (typeof window.GORGIAS_INIT_CALLBACK === "function") { window.GORGIAS_INIT_CALLBACK(data); }
-        }, function (response) {
-            console.error("API init call failed", response);
-        });
-        $(EMAIL_INPUT_SELECTOR).delayedChange(function () {
-            const self = $(this);
-            clearAlert();
-            if (self.is(":valid")) {
-                const validationData = {
-                    name: $(NAME_INPUT_SELECTOR).val(),
-                    email: $.trim(self.val()),
-                    password: $(PASSWORD_INPUT_SELECTOR).val()
-                };
-                post(API_VALIDATION_ENDPOINT, validationData, function (data) {
-                    if (data && data["signup-email-validation"]) {
-                        const validationResult = data["signup-email-validation"];
-                        if (validationResult.risk === "high") {
-                            if (validationResult.reason === "mailbox_is_disposable_address") {
-                                error(self, "Please do not use disposable email addresses.");
-                            }
-                            if (validationResult.reason === "mailbox_does_not_exist") {
-                                warning(self, "Are you sure this email address exists?");
-                            }
-                        }
-                        if (validationResult.risk === "medium") {
-                            if (validationResult.reason === "mailbox_is_role_address") {
-                                warning(self, "Please use your personal work email address if possible.");
-                            }
-                        }
-                    }
-                }, function (response) {
-                    handleErrors(self, response);
-                });
-            }
-        });
-        form.submit(function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const DATADOG_BOT_USER_AGENT = "Datadog/Synthetics";
-            if (navigator.userAgent === DATADOG_BOT_USER_AGENT) {
-                onSubmitUserSignupForm();
-            } else {
-                void grecaptcha.execute();
-            }
-        });
-    }
-
-    function onSubmitUserSignupForm(response) {
-        console.info("Submission of user form started.");
-        const userForm = $("#signup-user-form");
-        const submitButton = $("#signup-button");
-        const formData = {
-            "email": $.trim($("input[name=email]").val()),
-            "name": $.trim($("input[name=name]").val()),
-            "password": $("input[name=password]").val(),
-            "recaptcha_response": response
-        };
-        onSubmitStart(userForm, submitButton);
-        post(API_USER_SUBMIT_ENDPOINT, formData, function () {
-            console.info(`
-                                Request for submitting user data is completed successfully.
-                                Redirecting to account page.
-                                `);
-            window.location.href = SIGNUP_ACCOUNT_FORM_PAGE + window.location.search;
-        }, function (response2) {
-            console.error("Request for submitting user data is failed.");
-            onSubmitEnd(userForm, submitButton);
-            handleErrors(userForm, response2);
-            grecaptcha.reset();
-        });
-    }
-
-    function signupAccountFormHandler(form) {
-        const API_INIT_ENDPOINT = "/account/init";
-        const API_ACCOUNT_ACTION_ENDPOINT = "/account/submit";
-        const COMPANY_DOMAIN_INPUT_SELECTOR = "input[name=company_domain]";
-        const ACCOUNT_DOMAIN_INPUT_SELECTOR = "input[name=account_domain]";
-        const urlParams = new URLSearchParams(window.location.search);
-        post(API_INIT_ENDPOINT, null, function (data) {
-            if (data.redirect_url) { window.location.href = data.redirect_url; }
-            if (data.shopify) {
-                const companyDomainInput = $(COMPANY_DOMAIN_INPUT_SELECTOR);
-                const accountDomainInput = $(ACCOUNT_DOMAIN_INPUT_SELECTOR);
-                if (!companyDomainInput.val() && data.shopify.domain) { companyDomainInput.val(data.shopify.domain); }
-                if (!accountDomainInput.val() && data.shopify.name) { accountDomainInput.val(data.shopify.name); }
-            }
-            if (data.sso) {
-                const companyDomainInput = $(COMPANY_DOMAIN_INPUT_SELECTOR);
-                if (!companyDomainInput.val() && data.sso.company_domain) { companyDomainInput.val(data.sso.company_domain); }
-                const accountDomainInput = $(ACCOUNT_DOMAIN_INPUT_SELECTOR);
-                if (!accountDomainInput.val() && data.sso.account_domain) { accountDomainInput.val(data.sso.account_domain); }
-            }
-            if (typeof window.GORGIAS_INIT_CALLBACK === "function") { window.GORGIAS_INIT_CALLBACK(data); }
-        });
-        $(COMPANY_DOMAIN_INPUT_SELECTOR + ", " + ACCOUNT_DOMAIN_INPUT_SELECTOR).delayedChange(function () {
-            const self = $(this);
-            clearAlert();
-            if (self.is(":valid")) {
-                const validationData = {
-                    company_domain: $.trim($(COMPANY_DOMAIN_INPUT_SELECTOR).val()),
-                    account_domain: $.trim($(ACCOUNT_DOMAIN_INPUT_SELECTOR).val())
-                };
-                if (urlParams.get("plan_name") === "starter" && urlParams.get("period") === "monthly") {
-                    validationData["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
-                }
-            }
-        });
-        form.submit(function (e) {
-            console.info("Submission of account form is started.");
-            e.preventDefault();
-            e.stopPropagation();
-            const formData = {
-                company_domain: $.trim($(COMPANY_DOMAIN_INPUT_SELECTOR).val()),
-                account_domain: $.trim($(ACCOUNT_DOMAIN_INPUT_SELECTOR).val())
-            };
-            if (urlParams.get("plan_name") === "starter" && urlParams.get("period") === "monthly") {
-                formData["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
-            }
-            const submitButton = $("#signup-button");
-            onSubmitStart(form, submitButton);
-            post(API_ACCOUNT_ACTION_ENDPOINT, formData, function (data) {
-                console.info("Request for submitting account data is completed successfully. Redirect to Gorgias.");
-                window.location.href = data.redirect_url;
-            }, function (response) {
-                console.error("Request for submitting account data is failed.");
-                onSubmitEnd(form, submitButton);
-                handleErrors(form, response);
-                $(".pop-up-waiting").removeClass("visible");
-            });
-        });
-    }
-
     var API_USER_VALIDATION_ENDPOINT = "/user/validation";
 
     function validateEmail(email) {
@@ -388,6 +160,15 @@
     var FIELD_MESSAGE_SHAKE_DURATION_MS = 300;
     var inputStatusClasses = { error: "field-error", warning: "field-warning", valid: "field-valid" };
     var messageStatusClasses = { error: "message-error", warning: "message-warning", valid: "message-valid" };
+    var API_DOMAIN_VALIDATION_URL = "https://us-central1-gorgias-growth-production.cloudfunctions.net/check_helpdesk_domain";
+    var email_key = "email";
+    var fullname_key = "fullname";
+    var plan_name_key = "plan_name";
+    var plan_period_key = "period";
+    var password_key = "password";
+    var company_domain_key = "company_domain";
+    var account_domain_key = "account_domain";
+    var classValidText = "text-valid";
 
     function setFieldStatus(field, status, message) {
         const fieldName = field[0].name;
@@ -422,7 +203,6 @@
         if (status) { container.addClass(messageStatusClasses[status]); }
     }
 
-    var API_DOMAIN_VALIDATION_URL = "https://us-central1-gorgias-growth-production.cloudfunctions.net/check_helpdesk_domain";
 
     function extractDomain(url) {
         if (typeof url !== "string") { url = String(url); }
@@ -506,19 +286,6 @@
         });
     }
 
-    var email_key = "email";
-    var fullname_key = "fullname";
-    var plan_name_key = "plan_name";
-    var plan_period_key = "period";
-    var password_key = "password";
-    var company_domain_key = "company_domain";
-    var account_domain_key = "account_domain";
-    var classValidText = "text-valid";
-
-    function getSignupAccountFormPage() {
-        return window.location?.pathname?.includes("staging") ? "/staging-signup/account" : "/signup/account";
-    }
-
     function getSignupFormPage() {
         return window.location?.pathname?.includes("staging") ? "/staging-signup" : "/signup";
     }
@@ -527,69 +294,55 @@
         const emailField = $('#signup-user-form input[name="' + email_key + '"]');
         const fullnameField = $('#signup-user-form input[name="' + fullname_key + '"]');
         const passwordField = $('#signup-user-form input[name="' + password_key + '"]');
-        const accountDomainEditButton = $("a#account-domain-edit-button");
         const accountDomainEditWrapper = $("#account-domain-edit-wrapper");
         const accountDomainWrapper = $("#account-domain-wrapper");
         const accountDomainLoaderWrapper = $("#account-domain-loader-wrapper");
         const accountDomainEditLoaderWrapper = $("#account-domain-edit-loader-wrapper");
-        const accountDomainSaveButton = $("a#account-domain-save-button");
         const accountDomainText = $("#account-domain-text");
         const accountDomainSubdomainString = $("#account-subdomain-string");
-        const accountDomainTextInfoWrapper = $("#account-domain-info-wrapper");
         const companyDomainField = $('#signup-user-form input[name="' + company_domain_key + '"]');
         const accountDomainField = $('#signup-user-form input[name="' + account_domain_key + '"]');
         const signupButton = $('input[id="signup-button"]');
         const signupButtonLoading = $("#signup-button-loading");
         const ssoGoogleButton = $('a[id="sso-button-google"]');
         const userForm = $("form#signup-user-form");
-        const accountForm = $("form#signup-account-form");
-        const accountFormWrapper = $("#signup-account-form-wrapper");
         const userFormWrapper = $("#signup-user-form-wrapper");
-        // const accountFormLoadingWrapper = $("div#signup-account-form-loading-wrapper");
         const userFormLoadingWrapper = $("#signup-user-form-loading-wrapper");
 
         let delayTimer = 0;
 
-        /**
-         * Mirrors the email input value to the fullname input.
-         */
+        /* Mirrors the email input value to the fullname input */
         function mirrorEmailToFullname(fullname, email) {
             if (emailField.val()) {
-            fullnameField.val(emailField.val());
-        }
+                fullnameField.val(emailField.val());
+            }
         }
 
-        /**
-         * 
-         * auto populate a randomly generated password that meets the specified criteria.
-         */
+        /* auto populate a randomly generated password that meets the specified criteria. */
         function generatePassword() {
-        const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-        const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const numbers = '0123456789';
-        const allChars = lowercase + uppercase + numbers;
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const allChars = lowercase + uppercase + numbers;
 
-        const minLength = 14;
-        const maxLength = 24;
-        const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+            const minLength = 14;
+            const maxLength = 24;
+            const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
 
-        // Ensure 1 lowercase, 1 uppercase, 1 number
-        let password = '';
-        password += lowercase[Math.floor(Math.random() * lowercase.length)];
-        password += uppercase[Math.floor(Math.random() * uppercase.length)];
-        password += numbers[Math.floor(Math.random() * numbers.length)];
+            // Ensure 1 lowercase, 1 uppercase, 1 number
+            let password = '';
+            password += lowercase[Math.floor(Math.random() * lowercase.length)];
+            password += uppercase[Math.floor(Math.random() * uppercase.length)];
+            password += numbers[Math.floor(Math.random() * numbers.length)];
 
-        // Fill the rest randomly
-        for (let i = 3; i < length; i++) {
-        password += allChars[Math.floor(Math.random() * allChars.length)];
+            // Fill the rest randomly
+            for (let i = 3; i < length; i++) {
+                password += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+
+            // Shuffle the password so required characters aren’t always at the beginning
+            passwordField.val(password.split('').sort(() => 0.5 - Math.random()).join(''));
         }
-
-        // Shuffle the password so required characters aren’t always at the beginning
-        passwordField.val(password.split('').sort(() => 0.5 - Math.random()).join(''));
-        }
-
-  
-
 
         function initiateMessageContainer() {
             const fields = {
@@ -690,10 +443,6 @@
             const result = error2 ? status : "valid";
             handleFieldStatus(companyDomainField, result, error2);
             if (result === "valid") {
-                // accountDomainTextInfoWrapper.removeClass("hidden");
-                // if (accountDomainEditWrapper.hasClass("hidden")) {
-                   // accountDomainWrapper.removeClass("hidden");
-                //}
                 const extractedDomain = extractDomain(companyDomainField.val() || "");
                 accountDomainVerify(status, extractedDomain, true);
             }
@@ -750,31 +499,61 @@
         function signupUserFormHandler2() {
             const API_INIT_ENDPOINT = "/user/init";
             const initParams = { "anonymous_id": getOrSetAnonymousId() };
-            post(API_INIT_ENDPOINT, initParams, function (data) {
-                getOrSetAnonymousId(data.anonymous_id);
-                if (data.errors) { handleErrors2({ responseJSON: data.errors }); }
-                if (data.shopify) {
-                    if (!emailField.val() && data.shopify.email) { emailField.val(data.shopify.email); emailVerify("warning"); }
-                    if (!fullnameField.val() && data.shopify.shop_owner) { fullnameField.val(data.shopify.shop_owner); fullnameVerify("warning"); }
+            post(
+                API_INIT_ENDPOINT
+                , initParams
+                // SUCCESS
+                , function (data) {
+                    getOrSetAnonymousId(data.anonymous_id);
+                    if (data.errors) { handleErrors2({ responseJSON: data.errors }); }
+                    if (data.shopify) {
+                        if (!emailField.val() && data.shopify.email) { emailField.val(data.shopify.email); emailVerify("warning"); }
+                        if (!fullnameField.val() && data.shopify.shop_owner) { fullnameField.val(data.shopify.shop_owner); fullnameVerify("warning"); }
+                    }
+                    if (typeof window.GORGIAS_INIT_CALLBACK === "function") {
+                        window.GORGIAS_INIT_CALLBACK(data);
+                    }
                 }
-                if (typeof window.GORGIAS_INIT_CALLBACK === "function") { window.GORGIAS_INIT_CALLBACK(data); }
-            });
+            );
         }
 
-        function signupAccountFormHandler2() {
-            const API_INIT_ENDPOINT = "/account/init";
-            post(API_INIT_ENDPOINT, null, function (data) {
-                if (data.redirect_url) { window.location.href = getSignupFormPage() + window.location.search; }
-                if (data.shopify) {
-                    if (!accountDomainField.val() && data.shopify.name) { companyDomainVerify("warning"); accountDomainField.val(data.shopify.name); }
+        function signupAccountFormHandler3() {
+
+            let API_INIT_ENDPOINT = "/account/init";
+
+            post(API_INIT_ENDPOINT, null,
+                // SUCCESS
+                function (response) {
+                    /*             
+                    if (data.redirect_url) {
+                        window.location.href = getSignupFormPage() + window.location.search;
+                    }
+                    if (data.shopify) {
+                        if (!accountDomainField.val() && data.shopify.name) { companyDomainVerify("warning"); accountDomainField.val(data.shopify.name); }
+                    }
+                    if (data.sso) {
+                        if (!companyDomainField.val() && data.sso.company_domain) { companyDomainField.val(data.sso.company_domain); companyDomainVerify("warning"); }
+                        if (!accountDomainField.val() && data.sso.account_domain) { accountDomainField.val(data.sso.account_domain); }
+                    }
+                    if (typeof window.GORGIAS_INIT_CALLBACK === "function") {
+                        window.GORGIAS_INIT_CALLBACK(data);
+                    }
+                    */
+                    if (typeof window.GORGIAS_INIT_CALLBACK === "function") { window.GORGIAS_INIT_CALLBACK(response); }
+                    
+                    const formDataAccount = {
+                        company_domain: (companyDomainField.val() || "").trim().toLowerCase(),
+                        account_domain: (accountDomainField.val() || "").trim().toLowerCase()
+                    };
+                    if (window.localStorage.getItem(plan_name_key) && window.localStorage.getItem(plan_name_key) == "starter" &&
+                        window.localStorage.getItem(plan_period_key) && window.localStorage.getItem(plan_period_key) == "monthly") {
+                        formDataAccount["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
+                    }
+                    onSubmitAccountSignupForm(formDataAccount);
                 }
-                if (data.sso) {
-                    if (!companyDomainField.val() && data.sso.company_domain) { companyDomainField.val(data.sso.company_domain); companyDomainVerify("warning"); }
-                    if (!accountDomainField.val() && data.sso.account_domain) { accountDomainField.val(data.sso.account_domain); }
-                }
-                if (typeof window.GORGIAS_INIT_CALLBACK === "function") { window.GORGIAS_INIT_CALLBACK(data); }
-            });
+            );
         }
+
 
         function onSubmitStart2(form, button) {
             form.find("input").prop("disabled", true);
@@ -797,31 +576,33 @@
                 "password": passwordField.val(),
                 "recaptcha_response": response
             };
+
             const API_USER_SUBMIT_ENDPOINT2 = "/user/submit";
             onSubmitStart2(userForm, signupButton);
-            post(API_USER_SUBMIT_ENDPOINT2, formDataUser, function () {
-                //window.location.href = getSignupAccountFormPage() + window.location.search;
-
-                
+            post(API_USER_SUBMIT_ENDPOINT2, formDataUser,
+                // SUCCESS
+                function (data) {
                     const formDataAccount = {
                         company_domain: (companyDomainField.val() || "").trim().toLowerCase(),
                         account_domain: (accountDomainField.val() || "").trim().toLowerCase()
                     };
                     if (window.localStorage.getItem(plan_name_key) && window.localStorage.getItem(plan_name_key) == "starter" &&
                         window.localStorage.getItem(plan_period_key) && window.localStorage.getItem(plan_period_key) == "monthly") {
-                        formData["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
+                        formDataAccount["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
                     }
-                    onSubmitStart2(userForm, signupButton);
-                    onSubmitAccountSignupForm(formDataAccount);
+                    signupAccountFormHandler3();
                     return void 0;
-                
-            }, function (response2) {
-                onSubmitEnd2(userForm, signupButton);
-                handleErrors2(response2);
-                userFormWrapper.show();
-                userFormLoadingWrapper.hide();
-                grecaptcha.reset();
-            });
+                }
+                // ERROR
+                , function (response2) {
+                    console.error("API USER SUBMIT call failed", response2);
+                    onSubmitEnd2(userForm, signupButton);
+                    handleErrors2(response2);
+                    userFormWrapper.show();
+                    userFormLoadingWrapper.hide();
+                    grecaptcha.reset();
+                }
+            );
         }
 
         function enableFields() {
@@ -838,44 +619,34 @@
 
         function onSubmitAccountSignupForm(formData) {
             const API_VALIDATION_ENDPOINT = "/account/submit";
-            //accountFormLoadingWrapper.show();
-            accountFormWrapper.hide();
-            post(API_VALIDATION_ENDPOINT, formData, function (data) {
-                localStorage.removeItem("account-subdomains-approved");
-                window.location.href = data.redirect_url;
-            }, function (response) {
-                handleErrors2(response);
-                onSubmitEnd2(userForm, signupButton);
-                accountDomainText.remove(classValidText);
-                // accountDomainWrapper.hide();
-                // accountDomainEditWrapper.show();
-                userFormLoadingWrapper.hide();
-                userFormWrapper.show();
-                grecaptcha.reset();
-            });
+            post(API_VALIDATION_ENDPOINT, formData,
+
+                // SUCCESS
+                function (data) {
+                    localStorage.removeItem("account-subdomains-approved");
+                    window.location.href = data.redirect_url;
+                },
+
+                // ERROR
+                function (response) {
+                    console.error("API ACCOUNT submitt call failed", response);
+                    handleErrors2(response);
+                    onSubmitEnd2(userForm, signupButton);
+                    accountDomainText.remove(classValidText);
+                    userFormLoadingWrapper.hide();
+                    userFormWrapper.show();
+                    grecaptcha.reset();
+                }
+            );
         }
 
         function onLoad() {
             resetLocalStorageFields();
             enableFields();
             mirrorEmailToFullname(fullnameField.val(), emailField.val());
-            // Autofill password field on load
             generatePassword();
             companyDomainVerify();
-            accountDomainEditButton.on("click", function () {
-                accountDomainEditWrapper.show();
-                accountDomainWrapper.hide();
-            });
-            accountDomainSaveButton.on("click", function () {
-                accountDomainVerify("warning", accountDomainField.val() || "", false, (accountDomainSatus) => {
-                    if (accountDomainSatus == "valid") {
-                        accountDomainEditWrapper.hide();
-                        accountDomainWrapper.show();
-                        accountDomainSubdomainString.empty().text(accountDomainField.val() || "");
-                    }
-                });
-            });
-            emailField.on("blur", function () { 
+            emailField.on("blur", function () {
                 emailVerify("warning");
             });
             companyDomainField.on("change", function () { companyDomainReformat(); });
@@ -884,54 +655,42 @@
                 clearTimeout(delayTimer);
                 delayTimer = window.setTimeout(function () { companyDomainVerify("warning"); }, 1e3);
             });
-            accountDomainField.keyup(function () {
-                clearTimeout(delayTimer);
-                delayTimer = window.setTimeout(function () { accountDomainVerify("warning", accountDomainField.val() || "", false); }, 1e3);
-            });
+
             accountDomainField.on("blur", function () { accountDomainVerify("warning", $(this).val() || "", false); });
-            fullnameField.on("blur", function () { fullnameVerify("warning"); });
-            passwordField.on("blur", function () { passwordVerify("warning"); });
+
             emailField.keyup(function () {
                 mirrorEmailToFullname(fullnameField.val(), emailField.val());
                 clearTimeout(delayTimer);
                 delayTimer = window.setTimeout(function () { emailVerify("warning"); }, 1e3);
             });
-            fullnameField.keyup(function () {
-                clearTimeout(delayTimer);
-                delayTimer = window.setTimeout(function () { fullnameVerify("warning"); }, 1e3);
-            });
-            passwordField.on("input", function () { passwordVerify("warning"); });
-            $("#transformButton").on("click", function () {
-                const currentType = passwordField.attr("type");
-                if (currentType === "password") { passwordField.attr("type", "text"); }
-                else { passwordField.attr("type", "password"); }
-            });
+
             processSearchParams();
             initiateMessageContainer();
+
             waitForAnalytics(function () {
-                if (userForm.length) { signupUserFormHandler2(); }
-                else if (accountForm.length) { signupAccountFormHandler2(); }
+                signupUserFormHandler2();
             });
+
             userForm.submit(function (event) {
                 event.preventDefault();
                 event.stopPropagation();
-
-
                 signupButton.next("div[id*='-message-container']").empty();
+
                 const form = $(this);
                 const fullnameStatus = getFieldStatus(fullname_key);
                 const emailStatus = getFieldStatus(email_key);
                 const passwordStatus = getFieldStatus(password_key);
                 const accountDomainStatus = getFieldStatus(account_domain_key);
                 const companyDomainStatus = getFieldStatus(company_domain_key);
-                let status = "error";
                 const messaging = "Please check fields with error, then submit";
+                let status = "error";
+
                 if (fullnameStatus !== "valid" || emailStatus !== "valid" || passwordStatus !== "valid" || accountDomainStatus !== "valid" || companyDomainStatus !== "valid") {
                     emailVerify(status);
                     fullnameVerify(status);
                     passwordVerify(status);
                     companyDomainVerify(status);
-                    accountDomainVerify(status, accountDomainField.val() || "", false); 
+                    accountDomainVerify(status, accountDomainField.val() || "", false);
                     handleFormStatus(form, status, messaging);
                     return false;
                 } else {
@@ -947,67 +706,13 @@
                 }
             });
             window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm2;
-            accountForm.submit(function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                const form = $(this);
-                const accountDomainStatus = getFieldStatus(account_domain_key);
-                const companyDomainStatus = getFieldStatus(company_domain_key);
-                let status = "error";
-                const messaging = "Please check fields with error, then submit";
-                if (accountDomainStatus !== "valid" || companyDomainStatus !== "valid") {
-                    companyDomainVerify(status);
-                    accountDomainVerify(status, accountDomainField.val() || "", false);
-                    handleFormStatus(form, status, messaging);
-                    return false;
-                } else {
-                    status = "valid";
-                    window.localStorage.removeItem(account_domain_key + "-status");
-                    window.localStorage.removeItem(company_domain_key + "-status");
-                    // Ensure account_domain is not empty before proceeding
-                    let accountDomainValue = (accountDomainField.val() || "").trim().toLowerCase();
-                    if (!accountDomainValue) {
-                        // Wait until account_domain is not empty
-                        const waitForAccountDomain = setInterval(() => {
-                            accountDomainValue = (accountDomainField.val() || "").trim().toLowerCase();
-                            if (accountDomainValue) {
-                                clearInterval(waitForAccountDomain);
-                                const formData = {
-                                    company_domain: (companyDomainField.val() || "").trim().toLowerCase(),
-                                    account_domain: accountDomainValue
-                                };
-                                if (window.localStorage.getItem(plan_name_key) && window.localStorage.getItem(plan_name_key) == "starter" &&
-                                    window.localStorage.getItem(plan_period_key) && window.localStorage.getItem(plan_period_key) == "monthly") {
-                                    formData["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
-                                }
-                                onSubmitStart2(accountForm, signupButton);
-                                onSubmitAccountSignupForm(formData);
-                            }
-                        }, 100);
-                        return void 0;
-                    }
-                    const formData = {
-                        company_domain: (companyDomainField.val() || "").trim().toLowerCase(),
-                        account_domain: accountDomainValue
-                    };
-                    if (window.localStorage.getItem(plan_name_key) && window.localStorage.getItem(plan_name_key) == "starter" &&
-                        window.localStorage.getItem(plan_period_key) && window.localStorage.getItem(plan_period_key) == "monthly") {
-                        formData["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
-                    }
-                    onSubmitStart2(accountForm, signupButton);
-                    onSubmitAccountSignupForm(formData);
-                    return void 0;
-                }
-            });
+
         }
+        
         window.Webflow = window.Webflow || [];
-        window.Webflow.push(onLoad);
+        window.Webflow.push(function () {
+            onLoad();
+        });
     }
-
-    function init3() {
-        if ($("body").attr("data-signup") === "v1") { init(); }
-        else { init2(); }
-    }
-
-    $(document).ready(init3);
+    $(document).ready(init2);
 })();
