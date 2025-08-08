@@ -643,9 +643,16 @@ console.log("signup-3.js loaded");
         function onLoad() {
             resetLocalStorageFields();
             enableFields();
+            
             mirrorEmailToFullname(fullnameField.val(), emailField.val());
             generatePassword();
+
+            emailVerify();
             companyDomainVerify();
+            accountDomainVerify(null, accountDomainField.val() || "", false);
+            fullnameVerify();
+            passwordVerify(); 
+
             emailField.on("blur", function () {
                 emailVerify("warning");
             });
@@ -676,6 +683,14 @@ console.log("signup-3.js loaded");
                 event.stopPropagation();
                 signupButton.next("div[id*='-message-container']").empty();
 
+                // frontend validation for every fields, including empty ones
+                let status = "error";
+                emailVerify(status);
+                companyDomainVerify(status);
+                accountDomainVerify(status, accountDomainField.val() || "", false);
+                fullnameVerify(status);
+                passwordVerify(status); 
+
                 const form = $(this);
                 const fullnameStatus = getFieldStatus(fullname_key);
                 const emailStatus = getFieldStatus(email_key);
@@ -683,14 +698,8 @@ console.log("signup-3.js loaded");
                 const accountDomainStatus = getFieldStatus(account_domain_key);
                 const companyDomainStatus = getFieldStatus(company_domain_key);
                 const messaging = "Please check fields with error, then submit";
-                let status = "error";
 
                 if (fullnameStatus !== "valid" || emailStatus !== "valid" || passwordStatus !== "valid" || accountDomainStatus !== "valid" || companyDomainStatus !== "valid") {
-                    emailVerify(status);
-                    fullnameVerify(status);
-                    passwordVerify(status);
-                    companyDomainVerify(status);
-                    accountDomainVerify(status, accountDomainField.val() || "", false);
                     handleFormStatus(form, status, messaging);
                     return false;
                 } else {
@@ -708,7 +717,6 @@ console.log("signup-3.js loaded");
             window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm2;
 
         }
-        
         window.Webflow = window.Webflow || [];
         window.Webflow.push(function () {
             onLoad();
