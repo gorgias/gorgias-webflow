@@ -189,11 +189,11 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/cx-audit'+minBase+'.js','head', 1);
   }
 
+  // page is strictly gorgias.com/enterprise
+  if (path === '/enterprise') {
+    newScript(scriptBase + '/src/js/enterprise' + minBase + '.js', 'head', 1);
+  }
 
-   // page is enterprise
-    if(path.includes('/enterprise')){
-      newScript(scriptBase + '/src/js/enterprise'+minBase+'.js','head', 1);
-    }
 
     // page is blog
     if (path.includes('/blog') || path.includes("/wip/blog")){
