@@ -127,6 +127,9 @@ Webflow.push(function () {
     else if (path.includes("/get-started-trial")) {
         newScript(scriptBase + '/src/js/signup-3'+minBase+'.js','body', 1);
     }
+    else if (path.includes("/signup/shopify")) {
+        newScript(scriptBase + '/src/js/signup-shopify'+minBase+'.js','body', 1, "module");
+    }
 
     // Check if product is automate
     if (path.includes('/products/automate')){
