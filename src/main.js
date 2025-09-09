@@ -128,7 +128,7 @@ Webflow.push(function () {
         newScript(scriptBase + '/src/js/signup-3'+minBase+'.js','body', 1);
     }
     else if (path.includes("/signup/shopify")) {
-        newScript(scriptBase + '/src/js/signup-shopify'+minBase+'.js','body', 1, "module");
+        newScript(scriptBase + '/src/js/signup-shopify'+minBase+'.js','head', 1, "module");
     }
 
     // Check if product is automate

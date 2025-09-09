@@ -23,6 +23,5 @@ export function generatePassword() {
     }
     password += password.split('').sort(() => 0.5 - Math.random()).join('');
     
-    alert("Generated Password: " + password);
     return password;
 }

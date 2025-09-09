@@ -5,6 +5,7 @@ function newScript(filePath, position, syncStatus, type){
     // fillePath should start by https:// if it's a 3rd party script
     // position should be always 'head' OR 'body'.
     // syncStatus should be set to 1 if defer
+    // type is optional, if not set, it will be "text/javascript"
 
     var script = document.createElement('script');
     script.setAttribute('src',filePath);
