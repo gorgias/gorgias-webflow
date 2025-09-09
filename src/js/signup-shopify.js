@@ -1,3 +1,6 @@
 import { generatePassword } from './utils.js';
 
-generatePassword();
+let password = generatePassword();
+let passwordField = $('[data-name="password"]');
+
+passwordField.val(password);
