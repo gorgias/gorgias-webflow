@@ -1,0 +1,1 @@
+console.log('signup-shopify.js loaded');
