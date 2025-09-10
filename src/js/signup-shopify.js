@@ -7,11 +7,6 @@ const shopifySignupFormWrapper = $('[data-name="shopify-signup-form-wrapper"]');
 const shopifySignupLoaderWrapper = $('[data-name="shopify-signup-loader-wrapper"]');
 
 
-// once confident, set this stage automatically on the page through the hidden classes
-shopifySignupFormWrapper.hide();
-shopifySignupLoaderWrapper.removeClass('hidden')
-
-
 window.GORGIAS_INIT_CALLBACK = function (data) {
 
   console.log("Gorgias init data:", data);
