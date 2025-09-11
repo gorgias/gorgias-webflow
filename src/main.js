@@ -197,6 +197,12 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/enterprise' + minBase + '.js', 'head', 1);
   }
 
+  // page is strictly gorgias.com/wip/careers
+  if (path === '/wip/careers') {
+    newScript(scriptBase + '/src/js/careers' + minBase + '.js', 'body', 1);
+  }
+
+
 
     // page is blog
     if (path.includes('/blog') || path.includes("/wip/blog")){
