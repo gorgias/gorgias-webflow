@@ -126,7 +126,7 @@ async function renderCityList() {
 
       if (linkEl) {
         const targetSlug = slugify(rawCity || cityKey); // ensures lowercase
-        const targetUrl = `/career/location/${targetSlug}`;
+        const targetUrl = `/careers/${targetSlug}`;
         linkEl.href = targetUrl;
         console.log(`[Careers] Link set for "${label}" → ${targetUrl}`);
       } else {
