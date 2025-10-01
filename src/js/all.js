@@ -1,14 +1,20 @@
 // this script is loaded sync on every page of the website, in the head tag, before any other script
 
 // function to import a js file hosted on the CDN
-function newScript(filePath, position, syncStatus){
+function newScript(filePath, position, syncStatus, type){
     // fillePath should start by https:// if it's a 3rd party script
     // position should be always 'head' OR 'body'.
     // syncStatus should be set to 1 if defer
+    // type is optional, if not set, it will be "text/javascript"
 
     var script = document.createElement('script');
     script.setAttribute('src',filePath);
-    script.setAttribute("type","text/javascript");
+    if(type) {
+        script.setAttribute("type",type);
+    }
+    else {
+        script.setAttribute("type","text/javascript");
+    }
     
     if(syncStatus != 1){syncStatus = 0; }
     script.defer = syncStatus;

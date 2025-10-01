@@ -123,6 +123,29 @@
                 console.log('customer_renewal passed');
             }
 
+            function forceChiliHeight(target){
+                try {
+                    var $el = $(target);
+                    if ($el && $el.length) {
+                        $el.css({'display':'block', 'overflow':'hidden'});
+                        // ensure inline override over CP injected styles
+                        $el.get(0).style.setProperty('height', '700px', 'important');
+                        $el.get(0).style.setProperty('max-height', '700px', 'important');
+                        console.log('forceChiliHeight applied' + $el.get(0).style.height);
+                    }
+                } catch(e){}
+            }
+
+            function safeTrack(name){
+                try{
+                    if (window.analytics && typeof window.analytics.track === 'function') {
+                        window.analytics.track(name);
+                    } else {
+                        console.warn('analytics.track unavailable:', name);
+                    }
+                }catch(e){}
+            }
+
             if(formName == 'demo'){
                 $('.privacy-policy').css('display','none');
             }
@@ -132,11 +155,13 @@
                 formId:'hsForm_' + eventId,
                 domElement: chilipiperDomWrapper,
                 onRouting: function () {
-                    analytics.track("cp_"+ formName +"_request_routing");
+                    forceChiliHeight(chilipiperDomWrapper);
+                    safeTrack("cp_"+ formName +"_request_routing");
                 },
 
                 onRouted: function () {
-                    analytics.track("cp_"+ formName +"_request_routed");
+                    forceChiliHeight(chilipiperDomWrapper);
+                    safeTrack("cp_"+ formName +"_request_routed");
                     // customize Frontend element based on the CP routing success
                     
                     if(eventId == demoLeadBfcmLp2025GiftFormId) {
@@ -147,11 +172,11 @@
                     }
                 },
                 onSuccess: function (data) { 
-                    analytics.track("cp_" + formName + "_booked");
+                    safeTrack("cp_" + formName + "_booked");
                     if(formName == 'demo'){
                         console.log('in success > demo')
                         $('.wrapper-post-demo-booked').removeClass('is-hidden');
-                        $(chilipiperDomWrapper).height('350px');
+                        forceChiliHeight(chilipiperDomWrapper);
                         $('.demo_step-wrapper').css('display','none');
                         $('.demo-new_status-bar').css('display','none');
                         $('.demo-form-hubspot-post-booking').css('margin-top','-3rem');                       
@@ -159,7 +184,7 @@
                 }, 
                 onError: function () {
                     // track ChiliPiper error through segment
-                    analytics.track("cp_" + formName + "_request_failed");
+                    safeTrack("cp_" + formName + "_request_failed");
 
                     // customize de frontend if CP request failed
                     if(eventId == demoLeadBfcmLp2025GiftFormId) {

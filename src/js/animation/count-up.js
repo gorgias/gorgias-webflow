@@ -5,6 +5,8 @@
  * Optional: data-decimals="N" to force a specific number of decimals.
  */
 
+gsap.registerPlugin(ScrollTrigger);
+
 const items = document.querySelectorAll('[data-el="count-up"]');
 
 items.forEach((item) => {
@@ -38,50 +40,36 @@ items.forEach((item) => {
     item
   });
 
-  gsap.fromTo(
+  // Build the tween paused; ScrollTrigger will control when to play
+  const tween = gsap.fromTo(
     item,
     { textContent: 0 },
     {
+      immediateRender: false,
       textContent: number,
       duration: 1.5,
       ease: "power1.out",
       // Snap to 0.01 if decimals exist to avoid ugly jitter; otherwise to 1
       snap: { textContent: hasDecimals ? 1 / Math.pow(10, Math.min(decimals, 4)) : 1 },
-      scrollTrigger: {
-        trigger: item,
-        start: "top 85%",
-        once: true,
-        onEnter: () => console.log("[CountUp] ScrollTrigger onEnter:", number, item),
-      },
+      paused: true,
       onStart: () => console.log("[CountUp] Animation started for:", number),
       onUpdate: function () {
         const current = parseFloat(item.textContent);
         if (isNaN(current)) return;
 
-        // Format without changing the magnitude:
-        // - If allowRounding=false: keep exact decimal precision (no Math.round, no toFixed that changes decimals count)
-        // - If allowRounding=true: round to 1 decimal when original had decimals, else integer
         let out;
-
         if (!allowRounding) {
           if (hasDecimals) {
-            // Keep original number of decimals, prevent rounding up by fixing to that precision
-            // Note: toFixed does rounding; but since GSAP target is the same `number`,
-            // the final frame will equal exactly `number`. During animation, this keeps consistent precision.
             out = current.toFixed(decimals);
           } else {
-            out = String(Math.trunc(current)); // no decimals originally, no rounding up
+            out = String(Math.trunc(current));
           }
         } else {
           out = hasDecimals ? current.toFixed(1) : String(Math.round(current));
         }
-
         item.textContent = out;
-        // Debug each frame sparingly; comment next line if too verbose:
-        // console.log("[CountUp] onUpdate ->", { current, out, allowRounding, decimals });
       },
       onComplete: function () {
-        // Ensure final formatting is exactly the intended one
         let finalOut;
         if (!allowRounding) {
           finalOut = hasDecimals ? number.toFixed(decimals) : String(Math.trunc(number));
@@ -93,4 +81,32 @@ items.forEach((item) => {
       },
     }
   );
+
+  // Helper: get current scroll position of the page or custom scroller
+  const getScrollY = () => {
+    const st = ScrollTrigger.getById && ScrollTrigger.getById("_tmp_");
+    // default window scroller
+    return window.pageYOffset || document.documentElement.scrollTop || 0;
+  };
+
+  // Create ScrollTrigger separately so it doesn't auto-play the tween at init
+  ScrollTrigger.create({
+    trigger: item,
+    start: "top 85%",
+    once: true,
+    onEnter: (self) => {
+      // If page is at top (no user scroll yet), wait for the first scroll before playing
+      const atTop = (getScrollY() === 0);
+      console.log("[CountUp] ScrollTrigger onEnter:", number, item, { atTop });
+      if (atTop) {
+        const playAfterScroll = () => {
+          tween.play(0);
+          window.removeEventListener("scroll", playAfterScroll);
+        };
+        window.addEventListener("scroll", playAfterScroll, { once: true, passive: true });
+      } else {
+        tween.play(0);
+      }
+    },
+  });
 });
