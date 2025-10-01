@@ -4,6 +4,7 @@
 
 const IN_DELAY_MS = 400; // wait before showing
 const OUT_MS = 100;      // hide speed on hover out
+const DESKTOP_MQ = window.matchMedia('(min-width: 992px)');
 
 function setupCityItem(item) {
   const descWrap = item.querySelector('.cities_desc');
@@ -63,29 +64,64 @@ function setupCityItem(item) {
 }
 
 function initCitiesAnimations() {
-  const cleanups = [];
-  document.querySelectorAll('.cities_item').forEach((item) => {
-    const cleanup = setupCityItem(item);
-    if (cleanup) cleanups.push(cleanup);
-  });
+  let cleanups = [];
+  let isSetup = false;
 
-  // Optional rebuild block (commented out)
-  
+  const teardownAll = () => {
+    cleanups.forEach(fn => fn && fn());
+    cleanups = [];
+    isSetup = false;
+  };
+
+  const setupAll = () => {
+    if (isSetup) return;
+    document.querySelectorAll('.cities_item').forEach((item) => {
+      const cleanup = setupCityItem(item);
+      if (cleanup) cleanups.push(cleanup);
+    });
+    isSetup = true;
+  };
+
   let rAF;
   const rebuild = () => {
     cancelAnimationFrame(rAF);
     rAF = requestAnimationFrame(() => {
-      cleanups.forEach(fn => fn());
-      cleanups.length = 0;
-      document.querySelectorAll('.cities_item').forEach((item) => {
-        const cleanup = setupCityItem(item);
-        if (cleanup) cleanups.push(cleanup);
-      });
+      teardownAll();
+      setupAll();
     });
   };
-  window.addEventListener('resize', rebuild);
-  window.addEventListener('orientationchange', rebuild);
-  
+
+  // Gate setup by breakpoint
+  const enable = () => {
+    if (!isSetup) {
+      setupAll();
+      window.addEventListener('resize', rebuild);
+      window.addEventListener('orientationchange', rebuild);
+    }
+  };
+
+  const disable = () => {
+    window.removeEventListener('resize', rebuild);
+    window.removeEventListener('orientationchange', rebuild);
+    teardownAll();
+  };
+
+  const onChange = (e) => {
+    if (e.matches) enable(); else disable();
+  };
+
+  if (DESKTOP_MQ.matches) {
+    enable();
+  } else {
+    disable();
+  }
+
+  // Support older browsers where addEventListener on MediaQueryList isn't available
+  if (typeof DESKTOP_MQ.addEventListener === 'function') {
+    DESKTOP_MQ.addEventListener('change', onChange);
+  } else if (typeof DESKTOP_MQ.addListener === 'function') {
+    DESKTOP_MQ.addListener(onChange);
+  }
 }
 
 // Run after fonts so measurements are stable (not strictly required here)
