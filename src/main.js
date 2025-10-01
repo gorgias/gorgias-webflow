@@ -11,7 +11,8 @@ Webflow.push(function () {
 
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/cta-url-parameters'+minBase+'.js','body',1);
-    newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
+    // newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
+    newScript( 'https://gorgias.chilipiper.com/concierge-js/cjs/concierge.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
     // newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/get-started'+minBase+'.js','body',1);
@@ -126,6 +127,9 @@ Webflow.push(function () {
     } 
     else if (path.includes("/get-started-trial")) {
         newScript(scriptBase + '/src/js/signup-3'+minBase+'.js','body', 1);
+    }
+    else if (path.includes("/signup/shopify")) {
+        newScript(scriptBase + '/src/js/signup-shopify'+minBase+'.js','head', 1, "module");
     }
 
     // Check if product is automate
