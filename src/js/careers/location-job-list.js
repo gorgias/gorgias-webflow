@@ -342,6 +342,54 @@ function fuzzyMatch(hayText, hayWords, query) {
   return false;
 }
 
+// ---- Animated show/hide for filter (300ms ease) ----
+const FILTER_DUR = 300; // ms
+function setTransition(el) {
+  el.style.transition = `opacity ${FILTER_DUR}ms ease`;
+}
+
+function animateHide(el) {
+  const cs = getComputedStyle(el);
+  if (cs.display === 'none' || el.dataset.animating === 'hide') return;
+  el.dataset.animating = 'hide';
+  setTransition(el);
+  // ensure starting state
+  el.style.opacity = '1';
+  // reflow
+  void el.offsetHeight;
+  // target: fade out only
+  el.style.opacity = '0';
+  const end = () => {
+    el.removeEventListener('transitionend', end);
+    el.style.display = 'none';
+    el.style.opacity = '';
+    el.style.transition = '';
+    el.dataset.animating = '';
+  };
+  el.addEventListener('transitionend', end, { once: true });
+}
+
+function animateShow(el, displayValue) {
+  const cs = getComputedStyle(el);
+  if (cs.display !== 'none' && el.dataset.animating !== 'hide') return; // already visible or showing
+  el.dataset.animating = 'show';
+  const disp = displayValue || el.dataset.displayOriginal || 'flex';
+  el.style.display = disp;
+  setTransition(el);
+  // start transparent
+  el.style.opacity = '0';
+  // reflow then fade in
+  void el.offsetHeight;
+  el.style.opacity = '1';
+  const end = () => {
+    el.removeEventListener('transitionend', end);
+    el.style.opacity = '';
+    el.style.transition = '';
+    el.dataset.animating = '';
+  };
+  el.addEventListener('transitionend', end, { once: true });
+}
+
 function indexJobsForNativeSearch() {
   const items = getJobItems();
   items.forEach((el) => {
@@ -368,8 +416,12 @@ function applyNativeFilter(q) {
     const hay = el.dataset.search || '';
     const hayWords = (el.dataset.searchWords || '').split(' ').filter(Boolean);
     const show = fuzzyMatch(hay, hayWords, query);
-    el.style.display = show ? (el.dataset.displayOriginal || 'flex') : 'none';
-    if (show) visible++;
+    if (show) {
+      animateShow(el, el.dataset.displayOriginal);
+      visible++;
+    } else {
+      animateHide(el);
+    }
   }
   const emptyEl = document.querySelector('.empty-state');
   if (emptyEl) emptyEl.style.display = visible ? 'none' : '';
@@ -380,9 +432,15 @@ function initNativeSearch() {
   indexJobsForNativeSearch();
   if (SEARCH_INPUT) {
     const onType = (() => {
-      let t; return () => { clearTimeout(t); t = setTimeout(() => applyNativeFilter(SEARCH_INPUT.value), 120); };
+      let t; return () => { clearTimeout(t); t = setTimeout(() => applyNativeFilter(SEARCH_INPUT.value), 500); };
     })();
     SEARCH_INPUT.addEventListener('input', onType);
+    SEARCH_INPUT.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        return false;
+      }
+    });
     if (SEARCH_INPUT.value) applyNativeFilter(SEARCH_INPUT.value);
   }
   log('[CityJobs] Native search enabled');
