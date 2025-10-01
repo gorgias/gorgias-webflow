@@ -447,14 +447,35 @@ function initNativeSearch() {
 }
 
 
+function applyDataAttributesText() {
+  const cityEls = document.querySelectorAll('[data-city]');
+  cityEls.forEach((el) => {
+    const v = (el.getAttribute('data-city') || '').trim();
+    if (v) el.textContent = v;
+  });
+
+  const stateEls = document.querySelectorAll('[data-state]');
+  stateEls.forEach((el) => {
+    const v = (el.getAttribute('data-state') || '').trim();
+    if (v) el.textContent = v;
+  });
+}
+
 function getCurrentCity() {
-  const fromDom = (
-    document.getElementById("current-city")?.textContent || ""
-  ).trim();
+  // 1) Prefer explicit #current-city text if present
+  const domEl = document.getElementById('current-city');
+  const fromDom = (domEl?.textContent || '').trim();
   if (fromDom) return fromDom;
-  const parts = location.pathname.split("/").filter(Boolean);
-  const slug = parts[parts.length - 1] || "";
-  return slug.replace(/-/g, " ");
+
+  // 2) Fallback to the first [data-city] attribute value
+  const dataCityEl = document.querySelector('[data-city]');
+  const fromAttr = (dataCityEl?.getAttribute('data-city') || '').trim();
+  if (fromAttr) return fromAttr;
+
+  // 3) Finally, infer from URL slug
+  const parts = location.pathname.split('/').filter(Boolean);
+  const slug = parts[parts.length - 1] || '';
+  return slug.replace(/-/g, ' ');
 }
 
 async function initCityPage() {
@@ -469,6 +490,8 @@ async function initCityPage() {
   }
 
   WRAP.style.display = WRAP_DISPLAY;
+  // Sync any [data-city] and [data-state] spans to their attribute value before reading current city
+  applyDataAttributesText();
 
   const currentCity = getCurrentCity();
   const currentCitySlug = slugify(currentCity);

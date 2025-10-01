@@ -205,7 +205,7 @@ Webflow.push(function () {
   }
 
     // page is strictly gorgias.com/wip/careers
-  if (path.includes('/career/location/')) {
+  if (path.includes('/careers/')) {
     newScript(scriptBase + '/src/js/careers/animate-trigger' + minBase + '.js', 'body', 1);
     newScript(scriptBase + '/src/js/careers/location-job-list' + minBase + '.js', 'body', 1);
   }
