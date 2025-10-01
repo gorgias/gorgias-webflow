@@ -1,3 +1,4 @@
+alert('careers.js loaded');
 // Careers: city hover reveal with GSAP (no SplitText)
 // - Hover in: 600ms delay, slide-up + fade (city first, desc 100ms later)
 // - Hover out: reverse quickly (~100ms) and reset
