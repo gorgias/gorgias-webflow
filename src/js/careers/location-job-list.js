@@ -214,7 +214,7 @@ function renderJob(job, currentCitySlug) {
       chip.style.pointerEvents = "none";
       chip.style.cursor = "default";
     } else {
-      chip.href = `/career/location/${loc.slug}`;
+      chip.href = `/careers/${loc.slug}`;
     }
 
     locWrap.appendChild(chip);
