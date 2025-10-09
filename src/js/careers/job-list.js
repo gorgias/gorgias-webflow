@@ -3,10 +3,22 @@ const JOB_BOARD_NAME = "Gorgias";
 const API_URL = `https://api.ashbyhq.com/posting-api/job-board/${encodeURIComponent(
   JOB_BOARD_NAME
 )}?includeCompensation=false`;
-const MIN_JOBS_PER_CITY = 2; // hide cities with fewer than this many jobs
+const MIN_JOBS_PER_CITY = 0; // show cities with at least this many jobs (1 = include singletons)
 
 const LIST = document.getElementById("city-list");
 const TEMPLATE = document.getElementById("city-row-template");
+
+// Company hubs: if a job is remote but in one of these cities, show the city instead of Remote
+const HUB_CITIES = [
+  "Paris",
+  "Belgrade",
+  "Lisbon",
+  "Buenos Aires",
+  "San Francisco",
+  "New York City",
+  "Toronto",
+];
+const HUB_CITY_SLUGS = new Set(HUB_CITIES.map((c) => slugify(c)));
 /** ===================== **/
 
 /* Helpers */
@@ -28,30 +40,52 @@ function isUSA(country) {
   const c = String(country).toLowerCase();
   return ["usa", "us", "united states", "united states of america"].includes(c);
 }
+function isHubCity(name) {
+  if (!name) return false;
+  return HUB_CITY_SLUGS.has(slugify(String(name)));
+}
 function getCityData(job) {
-  if (
-    job.isRemote ||
-    (typeof job.location === "string" &&
-      job.location.toLowerCase() === "remote")
-  ) {
-    return { cityKey: "remote", label: "Remote", rawCity: "remote" };
-  }
   const p = getPostal(job);
-  const city = p.addressLocality || (job.location || "").trim();
+  const locStr = typeof job.location === "string" ? job.location.trim() : "";
+  const postalCity = p.addressLocality || "";
+
+  // Prefer explicit city from postal address; fall back to location string when not literally "remote"
+  const cityCandidate = postalCity || (locStr && locStr.toLowerCase() !== "remote" ? locStr : "");
+
   const country = p.addressCountry || "";
   const region = p.addressRegion || "";
 
-  if (!city) return { cityKey: "", label: "", rawCity: "" };
+  // If we have a city candidate
+  if (cityCandidate) {
+    const hub = isHubCity(cityCandidate);
 
-  const label = isUSA(country)
-    ? region
-      ? `${city}, ${region}`
-      : city
-    : country
-    ? `${city}, ${country}`
-    : city;
+    // If job is marked remote but it's in a hub, show the hub city
+    if (job.isRemote === true && hub) {
+      const label = isUSA(country)
+        ? (region ? `${cityCandidate}, ${region}` : cityCandidate)
+        : (country ? `${cityCandidate}, ${country}` : cityCandidate);
+      return { cityKey: slugify(cityCandidate), label, rawCity: cityCandidate };
+    }
 
-  return { cityKey: slugify(city), label, rawCity: city };
+    // If job is marked remote and not a hub, list under Remote
+    if (job.isRemote === true && !hub) {
+      return { cityKey: "remote", label: "Remote", rawCity: "remote" };
+    }
+
+    // Not remote: show the city as usual
+    const label = isUSA(country)
+      ? (region ? `${cityCandidate}, ${region}` : cityCandidate)
+      : (country ? `${cityCandidate}, ${country}` : cityCandidate);
+    return { cityKey: slugify(cityCandidate), label, rawCity: cityCandidate };
+  }
+
+  // No city available: if explicitly remote, bucket as Remote
+  if (job.isRemote === true || locStr.toLowerCase() === "remote") {
+    return { cityKey: "remote", label: "Remote", rawCity: "remote" };
+  }
+
+  // Otherwise, we have no city info and it's not explicitly remote → skip
+  return { cityKey: "", label: "", rawCity: "" };
 }
 
 /* If the template root is the <a data-ashby="link">, return node itself */
@@ -71,6 +105,14 @@ async function renderCityList() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const jobs = (data.jobs || []).filter((j) => j.isListed !== false);
+
+    console.log("[Careers] Raw jobs dump:", jobs.map(j => ({
+      id: j.id,
+      title: j.title,
+      location: j.location,
+      isRemote: j.isRemote,
+      address: j.address,
+    })));
 
     // Count jobs per city
     const buckets = new Map();
