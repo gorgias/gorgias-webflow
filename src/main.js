@@ -45,24 +45,24 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);
     }
 
-    // pricing page
-    if (path === '/pricing') {
-      newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
-      newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
-    }
+    // // pricing page
+    // if (path === '/pricing') {
+    //   newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
+    //   newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
+    // }
 
      if (path.includes('choose-your-plan')){
        newScript(scriptBase + '/src/js/pricing'+minBase+'.js','body', 1);
        newScript(scriptBase + '/src/js/pricing-ui'+minBase+'.js','body', 1);
      }
 
-    // pricing page
-     if ( path === '/pricing-test/pricing' || path === '/pages/template-long' 
-       || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
-       || path === '/pages/helpdesk' || path === '/pages/crm' || path === '/wip/pricing') {
-         // [Attributes by Finsweet] Mirrorclick
-         newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
-     }
+    // // pricing page
+    //  if ( path === '/pricing-test/pricing' || path === '/pages/template-long' 
+    //    || path === '/pages/customer-service' || path === '/pages/ticketing-system' || path === '/pages/live-chat'
+    //    || path === '/pages/helpdesk' || path === '/pages/crm' || path === '/wip/pricing') {
+    //      // [Attributes by Finsweet] Mirrorclick
+    //      newScript('https://cdn.jsdelivr.net/npm/@finsweet/attributes-mirrorclick@1/mirrorclick.js','body',1);
+    //  }
 
     // [Attributes by Finsweet] CMS Combine. More info: https://finsweet.com/attributes/cms-combine
     if (
@@ -239,7 +239,7 @@ Webflow.push(function () {
     }
 
     // pricing page update
-    if (path.includes('/v/pricing')){
+    if (path.includes('/pricing')){
       newScript(scriptBase + '/src/js/pricing/pricing-new'+minBase+'.js','body', 1);
     }
 
