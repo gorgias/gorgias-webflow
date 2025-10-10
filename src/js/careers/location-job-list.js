@@ -164,7 +164,11 @@ function renderJob(job, currentCitySlug) {
     );
   node
     .querySelector('[data-ashby="employmentType"]')
-    ?.replaceChildren(document.createTextNode(job.employmentType || ""));
+    ?.replaceChildren(
+      document.createTextNode(
+        (job.employmentType || "").replace(/([a-z])([A-Z])/g, "$1 $2")
+      )
+    );
 
   // Apply URL
   const applyEl = node.querySelector('[data-ashby="applyUrl"]');
