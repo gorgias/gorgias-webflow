@@ -1,13 +1,33 @@
-alert('careers.js loaded');
-// Careers: city hover reveal with GSAP (no SplitText)
-// - Hover in: 600ms delay, slide-up + fade (city first, desc 100ms later)
-// - Hover out: reverse quickly (~100ms) and reset
+// Careers: city hover reveal with GSAP — gated via gsap.matchMedia at >= 992px
+// - Hover in: 400ms delay, slide-up + fade (city first, desc 200ms later)
+// - Hover out: fast reverse (~100ms) and reset
 
 const IN_DELAY_MS = 400; // wait before showing
 const OUT_MS = 100;      // hide speed on hover out
-const DESKTOP_MQ = window.matchMedia('(min-width: 992px)');
-const HOVER_MQ = window.matchMedia('(hover: hover) and (pointer: fine)');
-const isDesktopHover = () => DESKTOP_MQ.matches && HOVER_MQ.matches && (navigator.maxTouchPoints === 0);
+
+function forceVisible(el) {
+  try {
+    const cs = window.getComputedStyle(el);
+    const isFlex = cs.display === 'flex' || cs.display === 'inline-flex';
+    gsap.set(el, {
+      opacity: 1,
+      display: isFlex ? 'flex' : 'block',
+      clearProps: 'x,y,scale,autoAlpha,yPercent,xPercent,visibility'
+    });
+  } catch (_) {
+    // no-op
+  }
+}
+
+function makeEverythingVisible() {
+  const selectors = [
+    '.cities_desc',
+    '[data-city-desc="city"]',
+    '[data-city-desc="desc"]'
+  ];
+  document.querySelectorAll(selectors.join(','))
+    .forEach(forceVisible);
+}
 
 function setupCityItem(item) {
   const descWrap = item.querySelector('.cities_desc');
@@ -15,9 +35,6 @@ function setupCityItem(item) {
   const descEl   = item.querySelector('[data-city-desc="desc"]');
 
   if (!descWrap || !cityEl || !descEl) return;
-
-  // Desktop-only safeguard: never initialize on mobile/tablet or non-hover devices
-  if (!isDesktopHover()) return;
 
   // ensure clean mask for slide-up
   gsap.set([descWrap, cityEl, descEl], { overflow: 'hidden' });
@@ -36,7 +53,7 @@ function setupCityItem(item) {
   let hoverTimer;
 
   item.addEventListener('pointerenter', (e) => {
-    if (e.pointerType !== 'mouse' || !isDesktopHover()) return;
+    if (e.pointerType !== 'mouse') return; // only react to mouse hovers
     clearTimeout(hoverTimer);
     hoverTimer = setTimeout(() => {
       clearTimeout(hoverTimer);
@@ -45,13 +62,12 @@ function setupCityItem(item) {
   });
 
   item.addEventListener('pointerleave', (e) => {
-    if (e.pointerType !== 'mouse' || !isDesktopHover()) return;
+    if (e.pointerType !== 'mouse') return;
     clearTimeout(hoverTimer);
 
     const speed = tl.duration() ? tl.duration() / (OUT_MS / 1000) : 1;
 
     tl.eventCallback('onReverseComplete', null);
-
     tl.timeScale(speed).reverse();
 
     tl.eventCallback('onReverseComplete', () => {
@@ -61,10 +77,9 @@ function setupCityItem(item) {
     });
   });
 
-  // cleanup
+  // cleanup for a single item
   return () => {
     tl.kill();
-    // Reset any inline styles so mobile/tablet shows content normally
     gsap.set(descWrap, { clearProps: 'all' });
     gsap.set([cityEl, descEl], { clearProps: 'all' });
   };
@@ -72,75 +87,52 @@ function setupCityItem(item) {
 
 function initCitiesAnimations() {
   let cleanups = [];
-  let isSetup = false;
 
-  const teardownAll = () => {
-    cleanups.forEach(fn => fn && fn());
+  document.querySelectorAll('.cities_item').forEach((item) => {
+    const cleanup = setupCityItem(item);
+    if (cleanup) cleanups.push(cleanup);
+  });
+
+  // teardown for all items
+  return () => {
+    cleanups.forEach((fn) => fn && fn());
     cleanups = [];
-    isSetup = false;
-  };
-
-  const setupAll = () => {
-    if (isSetup) return;
-    document.querySelectorAll('.cities_item').forEach((item) => {
-      const cleanup = setupCityItem(item);
-      if (cleanup) cleanups.push(cleanup);
-    });
-    isSetup = true;
-  };
-
-  let rAF;
-  const rebuild = () => {
-    cancelAnimationFrame(rAF);
-    rAF = requestAnimationFrame(() => {
-      teardownAll();
-      setupAll();
-    });
-  };
-
-  // Gate setup by breakpoint and hover capability
-  const enable = () => {
-    if (!isSetup) {
-      setupAll();
-      window.addEventListener('resize', rebuild);
-      window.addEventListener('orientationchange', rebuild);
-    }
-  };
-
-  const disable = () => {
-    window.removeEventListener('resize', rebuild);
-    window.removeEventListener('orientationchange', rebuild);
-    teardownAll();
-    // Global reset to ensure nothing remains hidden on mobile/tablet or non-hover devices
+    // Ensure nothing remains hidden when disabled
+    makeEverythingVisible();
     document.querySelectorAll('.cities_desc, [data-city-desc="city"], [data-city-desc="desc"]').forEach((el) => {
       gsap.set(el, { clearProps: 'all' });
     });
   };
+}
 
-  const onChange = () => {
-    if (isDesktopHover()) enable(); else disable();
-  };
+function bootCities() {
+  const mm = gsap.matchMedia();
 
-  if (isDesktopHover()) {
-    enable();
-  } else {
-    disable();
-  }
+  // Enable only on desktop widths
+  mm.add('(min-width: 992px)', () => {
+    const cleanup = initCitiesAnimations();
 
-  if (typeof DESKTOP_MQ.addEventListener === 'function') {
-    DESKTOP_MQ.addEventListener('change', onChange);
-    HOVER_MQ.addEventListener('change', onChange);
-  } else if (typeof DESKTOP_MQ.addListener === 'function') {
-    DESKTOP_MQ.addListener(onChange);
-    HOVER_MQ.addListener(onChange);
-  }
+    // When leaving this MQ (< 992px), cleanup and force visibility
+    return () => {
+      if (cleanup) cleanup();
+      console.info('[Careers] Viewport < 992px — city hover animations deactivated.');
+      makeEverythingVisible();
+    };
+  });
+
+  // Also handle initial load under 992px
+  mm.add('(max-width: 991.98px)', () => {
+    console.info('[Careers] Viewport < 992px — city hover animations deactivated.');
+    makeEverythingVisible();
+    return () => {};
+  });
 }
 
 // Run after fonts so measurements are stable (not strictly required here)
 if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(initCitiesAnimations);
+  document.fonts.ready.then(bootCities);
 } else {
-  window.addEventListener('load', initCitiesAnimations);
+  window.addEventListener('load', bootCities);
 }
 
 /**
