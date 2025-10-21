@@ -6,6 +6,8 @@ alert('careers.js loaded');
 const IN_DELAY_MS = 400; // wait before showing
 const OUT_MS = 100;      // hide speed on hover out
 const DESKTOP_MQ = window.matchMedia('(min-width: 992px)');
+const HOVER_MQ = window.matchMedia('(hover: hover) and (pointer: fine)');
+const isDesktopHover = () => DESKTOP_MQ.matches && HOVER_MQ.matches && (navigator.maxTouchPoints === 0);
 
 function setupCityItem(item) {
   const descWrap = item.querySelector('.cities_desc');
@@ -13,6 +15,9 @@ function setupCityItem(item) {
   const descEl   = item.querySelector('[data-city-desc="desc"]');
 
   if (!descWrap || !cityEl || !descEl) return;
+
+  // Desktop-only safeguard: never initialize on mobile/tablet or non-hover devices
+  if (!isDesktopHover()) return;
 
   // ensure clean mask for slide-up
   gsap.set([descWrap, cityEl, descEl], { overflow: 'hidden' });
@@ -30,28 +35,26 @@ function setupCityItem(item) {
 
   let hoverTimer;
 
-  item.addEventListener('mouseenter', () => {
+  item.addEventListener('pointerenter', (e) => {
+    if (e.pointerType !== 'mouse' || !isDesktopHover()) return;
     clearTimeout(hoverTimer);
     hoverTimer = setTimeout(() => {
-      // extra safety: ensure this timeout can't double-fire
       clearTimeout(hoverTimer);
-      // restart from the beginning every time for a clean run
       tl.timeScale(1).restart(true);
     }, IN_DELAY_MS);
   });
 
-  item.addEventListener('mouseleave', () => {
+  item.addEventListener('pointerleave', (e) => {
+    if (e.pointerType !== 'mouse' || !isDesktopHover()) return;
     clearTimeout(hoverTimer);
 
     const speed = tl.duration() ? tl.duration() / (OUT_MS / 1000) : 1;
 
-    // clear any prior reverse-complete callback to avoid stacking
     tl.eventCallback('onReverseComplete', null);
 
     tl.timeScale(speed).reverse();
 
     tl.eventCallback('onReverseComplete', () => {
-      // hide & reset
       gsap.set(descWrap, { autoAlpha: 0 });
       gsap.set([cityEl, descEl], { yPercent: 20, autoAlpha: 0 });
       tl.pause(0).timeScale(1);
@@ -61,6 +64,9 @@ function setupCityItem(item) {
   // cleanup
   return () => {
     tl.kill();
+    // Reset any inline styles so mobile/tablet shows content normally
+    gsap.set(descWrap, { clearProps: 'all' });
+    gsap.set([cityEl, descEl], { clearProps: 'all' });
   };
 }
 
@@ -92,7 +98,7 @@ function initCitiesAnimations() {
     });
   };
 
-  // Gate setup by breakpoint
+  // Gate setup by breakpoint and hover capability
   const enable = () => {
     if (!isSetup) {
       setupAll();
@@ -105,23 +111,28 @@ function initCitiesAnimations() {
     window.removeEventListener('resize', rebuild);
     window.removeEventListener('orientationchange', rebuild);
     teardownAll();
+    // Global reset to ensure nothing remains hidden on mobile/tablet or non-hover devices
+    document.querySelectorAll('.cities_desc, [data-city-desc="city"], [data-city-desc="desc"]').forEach((el) => {
+      gsap.set(el, { clearProps: 'all' });
+    });
   };
 
-  const onChange = (e) => {
-    if (e.matches) enable(); else disable();
+  const onChange = () => {
+    if (isDesktopHover()) enable(); else disable();
   };
 
-  if (DESKTOP_MQ.matches) {
+  if (isDesktopHover()) {
     enable();
   } else {
     disable();
   }
 
-  // Support older browsers where addEventListener on MediaQueryList isn't available
   if (typeof DESKTOP_MQ.addEventListener === 'function') {
     DESKTOP_MQ.addEventListener('change', onChange);
+    HOVER_MQ.addEventListener('change', onChange);
   } else if (typeof DESKTOP_MQ.addListener === 'function') {
     DESKTOP_MQ.addListener(onChange);
+    HOVER_MQ.addListener(onChange);
   }
 }
 

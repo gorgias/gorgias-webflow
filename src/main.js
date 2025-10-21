@@ -200,7 +200,7 @@ Webflow.push(function () {
 
   // page is strictly gorgias.com/wip/careers
   if (path === '/wip/careers') {
-    newScript(scriptBase + '/src/js/careers' + minBase + '.js', 'body', 1);
+    newScript(scriptBase + '/src/js/careers/careers' + minBase + '.js', 'body', 1);
     newScript(scriptBase + '/src/js/careers/job-list' + minBase + '.js', 'body', 1);
   }
 
