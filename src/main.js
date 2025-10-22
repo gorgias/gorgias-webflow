@@ -248,6 +248,11 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/campaigns/zendesk-takedown'+minBase+'.js','body', 1);
     }
 
+    // Shopping Assistant ROI calculator page
+    if (path.includes('/shopping-assistant-roi-calculator')){
+      newScript(scriptBase + '/src/js/tools/shopping-assistant-roi'+minBase+'.js','head', 1);
+}
+
     // AI Agent pages
 
     if (path.includes('/ai-agent/shopping-assistant') || path.includes('/ai-agent/support-skills')){
