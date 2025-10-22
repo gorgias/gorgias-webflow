@@ -137,25 +137,26 @@ if (document.fonts && document.fonts.ready) {
 
 /**
  * Stacked team cards animation
- * - On scroll into view, animate cards up and fade in, staggered
+ * - Only executes if the section with ID #stacked-cards is visible in the viewport
  */
-
-let tl = gsap.timeline({
-  scrollTrigger: {
-    trigger: '.our-team_section',
-    end: 'bottom bottom',
-    scrub: true,
-    toggleActions: 'restart none reverse',
-    pin: '.our-team_wrapper',
-  },
-})
-const teamItems = gsap.utils.toArray('.our-team_cards_item');
-
-tl.from(teamItems, {
-  opacity: 0,
-  yPercent: 50, // always from bottom
-  xPercent: (i) => (i % 2 ? -35 : 35),   // alternate left/right
-  scale: 1.25,
-  duration: 1,
-  stagger: { each: 1, from: 'end' },
-})
+const stackedSection = document.getElementById('stacked-cards');
+if (stackedSection && stackedSection.offsetParent !== null) {
+  let tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.our-team_section',
+      end: 'bottom bottom',
+      scrub: true,
+      toggleActions: 'restart none reverse',
+      pin: '.our-team_wrapper',
+    },
+  });
+  const teamItems = gsap.utils.toArray('.our-team_cards_item');
+  tl.from(teamItems, {
+    opacity: 0,
+    yPercent: 50, // always from bottom
+    xPercent: (i) => (i % 2 ? -35 : 35), // alternate left/right
+    scale: 1.25,
+    duration: 1,
+    stagger: { each: 1, from: 'end' },
+  });
+}
