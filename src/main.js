@@ -211,7 +211,6 @@ Webflow.push(function () {
 //     newScript(scriptBase + '/src/js/careers/location-job-list' + minBase + '.js', 'body', 1);
 //   }
 
-
     // page is blog
     if (path.includes('/blog') || path.includes("/wip/blog")){
       newScript(scriptBase + '/src/js/blog-search'+minBase+'.js','body', 1);
