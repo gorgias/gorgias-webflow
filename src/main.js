@@ -198,13 +198,13 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/enterprise' + minBase + '.js', 'head', 1);
   }
 
-  // page is strictly gorgias.com/careers
+
   if (path === '/careers') {
     newScript(scriptBase + '/src/js/careers/careers' + minBase + '.js', 'body', 1);
     newScript(scriptBase + '/src/js/careers/job-list' + minBase + '.js', 'body', 1);
   }
 
-    // page is strictly gorgias.com/wip/careers
+
   if (path.includes('/careers/')) {
     newScript(scriptBase + '/src/js/careers/animate-trigger' + minBase + '.js', 'body', 1);
     newScript(scriptBase + '/src/js/careers/location-job-list' + minBase + '.js', 'body', 1);
@@ -247,6 +247,11 @@ Webflow.push(function () {
     if (path.includes('/bfcm-2025/')){
       newScript(scriptBase + '/src/js/campaigns/zendesk-takedown'+minBase+'.js','body', 1);
     }
+
+    // Shopping Assistant ROI calculator page
+    if (path.includes('/shopping-assistant-roi-calculator')){
+      newScript(scriptBase + '/src/js/tools/shopping-assistant-roi'+minBase+'.js','head', 1);
+}
 
     // AI Agent pages
 
