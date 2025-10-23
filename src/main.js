@@ -212,7 +212,6 @@ Webflow.push(function () {
   }
 
 
-
     // page is blog
     if (path.includes('/blog') || path.includes("/wip/blog")){
       newScript(scriptBase + '/src/js/blog-search'+minBase+'.js','body', 1);
