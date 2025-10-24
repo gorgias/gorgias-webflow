@@ -114,7 +114,10 @@ function recalculateFromInputs() {
   const ordersWith = sessions * chatRateWith * preSales * cvrWith;
   const revenueWith = ordersWith * aovWith;
   const incrementalRevenue = revenueWith - revenueWithout;
-  const roi = (incrementalRevenue - 7360) / 7360;
+  // Dynamic Cost of SA matches spreadsheet: costSA = sessions * chatRateWith * preSales * 0.8 * 1.15
+  const costSA = sessions * chatRateWith * preSales * 0.8 * 1.15;
+  const roi = costSA > 0 ? (incrementalRevenue - costSA) / costSA : 0;
+  console.log(`[ROI] Cost of SA calculated dynamically (recalc): ${costSA.toFixed(2)}`);
   const revenueIncreasePct = revenueWithout > 0 ? (incrementalRevenue / revenueWithout) * 100 : 0;
 
   console.log(`[ROI][Recalc] Without - orders: ${ordersWithout.toFixed(2)}, revenue: ${revenueWithout.toFixed(2)}`);
@@ -353,7 +356,10 @@ function populateFormFields(data) {
   const ordersWith = sessions * chatRateWith * preSales * cvrWith;
   const revenueWith = ordersWith * aovWith;
   const incrementalRevenue = revenueWith - revenueWithout;
-  const roi = (incrementalRevenue - 7360) / 7360;
+  // Dynamic Cost of SA matches spreadsheet: costSA = sessions * chatRateWith * preSales * 0.8 * 1.15
+  const costSA = sessions * chatRateWith * preSales * 0.8 * 1.15;
+  const roi = costSA > 0 ? (incrementalRevenue - costSA) / costSA : 0;
+  console.log(`[ROI] Cost of SA calculated dynamically: ${costSA.toFixed(2)}`);
   // Revenue increase percent (safe division)
   const revenueIncreasePct = revenueWithout > 0 ? (incrementalRevenue / revenueWithout) * 100 : 0;
 
