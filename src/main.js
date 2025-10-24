@@ -198,19 +198,18 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/enterprise' + minBase + '.js', 'head', 1);
   }
 
-  // page is strictly gorgias.com/wip/careers
-  if (path === '/wip/careers') {
-    newScript(scriptBase + '/src/js/careers' + minBase + '.js', 'body', 1);
-    newScript(scriptBase + '/src/js/careers/job-list' + minBase + '.js', 'body', 1);
-  }
+// // page is strictly gorgias.com/careers
+//   if (path === '/careers') {
+//     newScript(scriptBase + '/src/js/careers/careers' + minBase + '.js', 'body', 1);
+//     newScript(scriptBase + '/src/js/careers/job-list' + minBase + '.js', 'body', 1);
+//   }
 
-    // page is strictly gorgias.com/wip/careers
-  if (path.includes('/careers/')) {
-    newScript(scriptBase + '/src/js/careers/animate-trigger' + minBase + '.js', 'body', 1);
-    newScript(scriptBase + '/src/js/careers/location-job-list' + minBase + '.js', 'body', 1);
-  }
-
-
+//   // page is careers subpage: /careers/{location-slug} (exactly one segment after /careers)
+//   const careers_location_re = /^\/careers\/[^\/]+\/?$/;
+//   if (careers_location_re.test(path)) {
+//     newScript(scriptBase + '/src/js/careers/animate-trigger' + minBase + '.js', 'body', 1);
+//     newScript(scriptBase + '/src/js/careers/location-job-list' + minBase + '.js', 'body', 1);
+//   }
 
     // page is blog
     if (path.includes('/blog') || path.includes("/wip/blog")){
