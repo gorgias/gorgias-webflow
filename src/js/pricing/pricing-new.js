@@ -73,15 +73,15 @@ const basicAutomation = {
   0: '0',
   10: '30',
   20: '60',
-  30: '90',
+  30: '100',
   40: '120',
   50: '150',
 }
 
 const proAutomation = {
   0: '0',
-  10: '200',
-  20: '400',
+  10: '190',
+  20: '410',
   30: '600',
   40: '800',
   50: '1000',
@@ -89,7 +89,7 @@ const proAutomation = {
 
 const advancedAutomation = {
   0: '0',
-  10: '500',
+  10: '530',
   20: '1000',
   30: '1500',
   40: '2000',
@@ -301,9 +301,11 @@ function handleBillingChange(cycle) {
 
     const ticketCount = parseInt(automationTable[percent], 10);
     const automationPrice =
-    plan === 'starter'
-    ? ticketCount * 1
-    : ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
+      plan === 'starter'
+        ? ticketCount * 1
+        : ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
+
+    // Ensure dropdown label syncs with automation interactions count
 
     automationPrices[plan] = automationPrice;
     updatePlanTotal(plan);
@@ -448,7 +450,7 @@ function initAutomationDropdowns() {
     $pane.find('[data-el="selected-automate-amount"]').text(`${formatNumberWithCommas(ticketCount)}`);
     $pane.find('[data-el="selected-automate-price"]').text(formatPrice(automationPrice)); 
 
-    // Update dropdown toggle label
+    // Update dropdown toggle label to show the clicked option text again
     $(`[data-el="chosen-automation-${plan}"]`).text($(this).text());
 
     // Close dropdown safely
@@ -691,6 +693,14 @@ function updateMonthlyPriceSpans() {
 
       console.log('Triggering default automation: Pro 30%');
       $('[data-el="pro-30"]').trigger('click');
+
+      // Update chosen automation labels for each plan based on ticket counts
+      ['starter', 'basic', 'pro', 'advanced'].forEach(plan => {
+        const percent = selectedAutomationTier[plan];
+        const automationTable = { starter: starterAutomation, basic: basicAutomation, pro: proAutomation, advanced: advancedAutomation }[plan];
+        const ticketCount = parseInt(automationTable[percent], 10);
+        $(`[data-el="chosen-automation-${plan}"]`).text(`${formatNumberWithCommas(ticketCount)} interactions`);
+      });
 
       updateMonthlyPriceSpans();
 
