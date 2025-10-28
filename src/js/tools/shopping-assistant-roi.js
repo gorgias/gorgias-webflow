@@ -381,8 +381,11 @@ function populateFormFields(data) {
     console.log(`[ROI] Updated ${monthlyEls.length} additional-revenue-monthly elements.`);
   }
   if (additionalRevAnnual) {
-    additionalRevAnnual.textContent = formatUS(incrementalRevenue * 12, 0);
-    console.log(`[ROI] Updated additional-revenue-annual: ${additionalRevAnnual.textContent}`);
+    const annualEls = document.querySelectorAll('[data-el="additional-revenue-annual"]');
+    annualEls.forEach((el) => {
+      el.textContent = formatUS(incrementalRevenue * 12, 0);
+    });
+    console.log(`[ROI] Updated ${annualEls.length} additional-revenue-annual elements.`);
   }
   if (revenueIncreasePercent) {
     revenueIncreasePercent.textContent = formatUS(revenueIncreasePct, 0);
