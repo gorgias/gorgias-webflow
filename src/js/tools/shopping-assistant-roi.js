@@ -12,7 +12,8 @@ let avgOrderValue = document.querySelector('[data-el="average-order-value"]');
 
 // Get output spans from the DOM by data-attribute
 let additionalRevMonthly = document.querySelector('[data-el="additional-revenue-monthly"]');
-let additionalRevAnnual = document.querySelector('[data-el="additional-revenue-yearly"]');
+// Support multiple yearly outputs
+let additionalRevAnnualEls = document.querySelectorAll('[data-el="additional-revenue-yearly"]');
 let revenueIncreasePercent = document.querySelector('[data-el="revenue-increase"]');
 let returnMultiple = document.querySelector('[data-el="return-multiple"]');
 
@@ -133,7 +134,14 @@ function recalculateFromInputs() {
   const decimals = 0;
   const monthlyEls = document.querySelectorAll('[data-el="additional-revenue-monthly"]');
   monthlyEls.forEach((el) => (el.textContent = formatUS(incrementalRevenue, decimals)));
-  if (additionalRevAnnual) additionalRevAnnual.textContent = formatUS(incrementalRevenue * 12, decimals);
+  if (additionalRevAnnualEls && additionalRevAnnualEls.length) {
+    additionalRevAnnualEls.forEach((el) => {
+      el.textContent = formatUS(incrementalRevenue * 12, decimals);
+    });
+    console.log(`[ROI] Updated ${additionalRevAnnualEls.length} additional-revenue-yearly elements (recalc).`);
+  } else {
+    console.warn('[ROI] No nodes found for data-el="additional-revenue-yearly" (recalc).');
+  }
   if (revenueIncreasePercent) revenueIncreasePercent.textContent = formatUS(revenueIncreasePct, decimals);
   if (returnMultiple) returnMultiple.textContent = formatUS(roi, decimals);
 }
@@ -380,12 +388,13 @@ function populateFormFields(data) {
     });
     console.log(`[ROI] Updated ${monthlyEls.length} additional-revenue-monthly elements.`);
   }
-  if (additionalRevAnnual) {
-    const annualEls = document.querySelectorAll('[data-el="additional-revenue-annual"]');
-    annualEls.forEach((el) => {
+  if (additionalRevAnnualEls && additionalRevAnnualEls.length) {
+    additionalRevAnnualEls.forEach((el) => {
       el.textContent = formatUS(incrementalRevenue * 12, 0);
     });
-    console.log(`[ROI] Updated ${annualEls.length} additional-revenue-annual elements.`);
+    console.log(`[ROI] Updated ${additionalRevAnnualEls.length} additional-revenue-yearly elements.`);
+  } else {
+    console.warn('[ROI] No nodes found for data-el="additional-revenue-yearly".');
   }
   if (revenueIncreasePercent) {
     revenueIncreasePercent.textContent = formatUS(revenueIncreasePct, 0);
