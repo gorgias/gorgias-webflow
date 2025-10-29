@@ -40,10 +40,16 @@ window.addEventListener('message', function (event) {
 // -------- Prefill Logic After HubSpot Submission --------
 
 // Industry benchmark constants
-const INDUSTRY_BENCHMARKS = {
+const industryBenchmarks = {
   chatRate: 2.0, // %
   preSales: 40.0, // %
   baselineCVR: 3.0 // %
+};
+
+// --- Dummy data for local prefill (runs on page load only) ---
+const dummyData = {
+  lastMonthVisits: 28000,
+  estimatedSales: 13728000 // $137,280 * 100 (script expects cents)
 };
 
 // --- Number formatting helpers (US style) ---
@@ -298,43 +304,49 @@ function populateFormFields(data) {
 
   // 2. Populate benchmark-driven defaults
   if (avgChatContactRate) {
-    avgChatContactRate.value = INDUSTRY_BENCHMARKS.chatRate;
-    console.log('[ROI] avgChatContactRate benchmark set to:', INDUSTRY_BENCHMARKS.chatRate);
+    avgChatContactRate.value = industryBenchmarks.chatRate;
+    console.log('[ROI] avgChatContactRate benchmark set to:', industryBenchmarks.chatRate);
   }
   if (preSalesInquiries) {
-    preSalesInquiries.value = INDUSTRY_BENCHMARKS.preSales;
-    console.log('[ROI] preSalesInquiries benchmark set to:', INDUSTRY_BENCHMARKS.preSales);
+    preSalesInquiries.value = industryBenchmarks.preSales;
+    console.log('[ROI] preSalesInquiries benchmark set to:', industryBenchmarks.preSales);
   }
   if (baselineConversionRate) {
-    baselineConversionRate.value = INDUSTRY_BENCHMARKS.baselineCVR;
-    console.log('[ROI] baselineConversionRate benchmark set to:', INDUSTRY_BENCHMARKS.baselineCVR);
+    baselineConversionRate.value = industryBenchmarks.baselineCVR;
+    console.log('[ROI] baselineConversionRate benchmark set to:', industryBenchmarks.baselineCVR);
   }
   // Benchmarks are raw percentage numbers (no symbols) to keep inputs editable
 
   // --- Recalculate AOV from revenue and orders ---
   // Orders = Sessions × ChatRate × PreSalesRate × CVR
   // AOV = Revenue / Orders
-  (function computeAOVFromInputs() {
-    try {
-      const sessionsForAOV = data && data.lastMonthVisits != null
-        ? Number(data.lastMonthVisits)
-        : (monthlyTraffic ? toNumberUS(monthlyTraffic.value) : 0);
-      const chatPct = avgChatContactRate ? toNumberUS(avgChatContactRate.value) / 100 : 0;
-      const prePct  = preSalesInquiries ? toNumberUS(preSalesInquiries.value) / 100 : 0;
-      const cvrPct  = baselineConversionRate ? toNumberUS(baselineConversionRate.value) / 100 : 0;
-      const ordersForAOV = sessionsForAOV * chatPct * prePct * cvrPct;
-      const revenueForAOV = (data && data.estimatedSales != null)
-        ? (Number(data.estimatedSales) / 100)   // cents → dollars
-        : (Number(data && data.defaultRevenue) || 0); // dollars fallback
-      const aovCalc = ordersForAOV > 0 ? (revenueForAOV / ordersForAOV) : 0;
-      if (avgOrderValue) {
-        setUSValue(avgOrderValue, aovCalc, 2);
-        console.log(`[ROI] AOV recalculated as Revenue/Orders = ${aovCalc.toFixed(2)} (revenue: ${revenueForAOV.toFixed(2)}, orders: ${ordersForAOV.toFixed(2)})`);
-      }
-    } catch (e) {
-      console.warn('[ROI] Failed to compute AOV from inputs:', e);
+(function computeAOVFromInputs() {
+  try {
+    // Skip recalculating AOV when using dummy data
+    if (data === dummyData) {
+      console.log('[ROI] Skipping AOV recalculation — using static dummy value.');
+      return;
     }
-  })();
+
+    const sessionsForAOV = data && data.lastMonthVisits != null
+      ? Number(data.lastMonthVisits)
+      : (monthlyTraffic ? toNumberUS(monthlyTraffic.value) : 0);
+    const chatPct = avgChatContactRate ? toNumberUS(avgChatContactRate.value) / 100 : 0;
+    const prePct  = preSalesInquiries ? toNumberUS(preSalesInquiries.value) / 100 : 0;
+    const cvrPct  = baselineConversionRate ? toNumberUS(baselineConversionRate.value) / 100 : 0;
+    const ordersForAOV = sessionsForAOV * chatPct * prePct * cvrPct;
+    const revenueForAOV = (data && data.estimatedSales != null)
+      ? (Number(data.estimatedSales) / 100)
+      : (Number(data && data.defaultRevenue) || 0);
+    const aovCalc = ordersForAOV > 0 ? (revenueForAOV / ordersForAOV) : 0;
+    if (avgOrderValue) {
+      setUSValue(avgOrderValue, aovCalc, 2);
+      console.log(`[ROI] AOV recalculated as Revenue/Orders = ${aovCalc.toFixed(2)} (revenue: ${revenueForAOV.toFixed(2)}, orders: ${ordersForAOV.toFixed(2)})`);
+    }
+  } catch (e) {
+    console.warn('[ROI] Failed to compute AOV from inputs:', e);
+  }
+})();
 
   // --- New ROI Calculation Logic ---
 
@@ -407,6 +419,48 @@ function populateFormFields(data) {
 
   console.log('[ROI] Field population complete.');
 }
+
+// --- Prefill with dummy data after ROI inputs exist ---
+(function initROIPrefill() {
+  console.log('[ROI] Waiting for form fields to be injected...');
+
+  const waitForInputs = setInterval(() => {
+    const formReady =
+      document.querySelector('[data-el="monthly-traffic"]') &&
+      document.querySelector('[data-el="avg-chat-contact-rate"]') &&
+      document.querySelector('[data-el="pre-sales-inquiries"]') &&
+      document.querySelector('[data-el="baseline-conversion-rate"]') &&
+      document.querySelector('[data-el="average-order-value"]');
+
+    if (formReady) {
+      clearInterval(waitForInputs);
+      console.log('[ROI] Inputs found — running dummy data prefill.');
+
+      // Prefill values
+      if (monthlyTraffic) setUSValue(monthlyTraffic, dummyData.lastMonthVisits, 0);
+      if (avgChatContactRate) setUSValue(avgChatContactRate, industryBenchmarks.chatRate, 0);
+      if (preSalesInquiries) setUSValue(preSalesInquiries, industryBenchmarks.preSales, 0);
+      if (baselineConversionRate) setUSValue(baselineConversionRate, industryBenchmarks.baselineCVR, 0);
+
+      // Use static AOV value for dummy data
+      const aov = 246;
+      if (avgOrderValue) setUSValue(avgOrderValue, aov, 0);
+      console.log('[ROI] AOV set to static dummy value:', aov);
+
+      // Launch calculation
+      populateFormFields(dummyData);
+      console.log('[ROI] Dummy data prefill complete and calculation launched.');
+
+      // Add event listeners for recalculation
+      [monthlyTraffic, avgChatContactRate, preSalesInquiries, baselineConversionRate, avgOrderValue]
+        .filter(Boolean)
+        .forEach((el) => {
+          el.addEventListener('input', debouncedRecalc);
+          el.addEventListener('change', debouncedRecalc);
+        });
+    }
+  }, 300); // Check every 300ms
+})();
 
 // Listen for HubSpot form submission (email capture)
 window.addEventListener('message', function (event) {
