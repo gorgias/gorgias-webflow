@@ -171,62 +171,120 @@ function loadChartJs() {
 
 // -------- Chart.js: Sales Growth Comparison --------
 let roiRevenueChart = null;
+let roiChartResizeAttached = false;
+let roiChartLastValues = { current: 0, projected: 0 };
 function renderRevenueChart(currentRevenue, projectedRevenue) {
   const canvas = document.getElementById('additional-revenue-monthly');
   if (!canvas || !canvas.getContext) return;
+
+  // Detect compact layout from container width (more reliable than viewport on some devices)
+  const width = canvas.getBoundingClientRect().width || canvas.clientWidth || 0;
+  const isCompact = width && width < 520; // treat narrow containers as mobile/compact
+
+  // Size canvas
+  canvas.style.width = '100%';
+  canvas.style.height = isCompact ? '260px' : '360px';
+
+  // Lightweight value label plugin (no external deps)
+  const valueLabelPlugin = {
+    id: 'valueLabel',
+    afterDatasetsDraw(chart) {
+      const { ctx } = chart;
+      const ds = chart.data.datasets[0];
+      if (!ds) return;
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = (isCompact ? 11 : 12) + 'px Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial';
+      chart.getDatasetMeta(0).data.forEach((bar, i) => {
+        const v = Number(ds.data[i] || 0);
+        const label = '$' + formatUS(v, 0);
+        const x = bar.x;
+        // Place label inside the bar, a bit below the rounded top
+        const y = Math.min(bar.y + (isCompact ? 12 : 14), chart.chartArea.bottom - 10);
+        // Add subtle shadow for contrast on both bar colors
+        ctx.fillStyle = '#111';
+        ctx.globalAlpha = 0.9;
+        ctx.fillText(label, x, y);
+        ctx.globalAlpha = 1;
+      });
+      ctx.restore();
+    }
+  };
+
   const ctx = canvas.getContext('2d');
   if (roiRevenueChart) {
     try { roiRevenueChart.destroy(); } catch (e) {}
     roiRevenueChart = null;
   }
+
+  const labels = isCompact ? ['Current sales through chat', 'Projected with Gorgias'] : ['Current sales through chat', 'Projected with Gorgias'];
+
   roiRevenueChart = new window.Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Current sales through chat', 'Projected with Gorgias'],
-      datasets: [
-        {
-          data: [currentRevenue, projectedRevenue],
-          backgroundColor: ['#E8E3E1', '#FF9780'],
-          hoverBackgroundColor: ['rgba(232, 227, 225, 0.8)', 'rgba(255, 151, 128, 0.8)'],
-          borderColor: '#00000010',
-          borderWidth: 1,
-          borderRadius: { topLeft: 12, topRight: 12, bottomLeft: 0, bottomRight: 0 },
-          borderSkipped: false
-        }
-      ]
+      labels,
+      datasets: [{
+        data: [currentRevenue, projectedRevenue],
+        backgroundColor: ['#E8E3E1', '#FF9780'],
+        hoverBackgroundColor: ['rgba(232,227,225,0.8)', 'rgba(255,151,128,0.8)'],
+        borderColor: '#00000010',
+        borderWidth: 1,
+        borderRadius: { topLeft: 12, topRight: 12, bottomLeft: 0, bottomRight: 0 },
+        borderSkipped: false,
+        categoryPercentage: isCompact ? 0.9 : 0.7,
+        barPercentage: isCompact ? 0.95 : 0.8,
+      }]
     },
+    plugins: [valueLabelPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: { duration: 600 },
+      animation: { duration: 450 },
+      layout: { padding: isCompact ? { top: 6, right: 8, bottom: 6, left: 8 } : { top: 18, right: 16, bottom: 16, left: 16 } },
       plugins: {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: (ctx) => {
-              const val = ctx.parsed.y || 0;
-              return `$${formatUS(val, 2)}`;
-            }
+            label: (ctx) => `$${formatUS(ctx.parsed.y || 0, 0)}`,
           }
         }
       },
       scales: {
         x: {
           grid: { display: false },
-          ticks: { font: { size: 14 } }
+          ticks: {
+            display: true,
+            font: { size: isCompact ? 10 : 14 },
+            maxRotation: 0,
+            minRotation: 0,
+          }
         },
         y: {
           beginAtZero: true,
-          grid: { color: '#00000014' },
+          display: true,
+          grid: { display: true, color: '#00000012', lineWidth: 1 },
           ticks: {
-            callback: (value) => `$${formatUS(value, 0)}`,
-            font: { size: 12 },
-            maxTicksLimit: 6
+            display: true,
+            callback: (v) => `$${formatUS(v, 0)}`,
+            font: { size: isCompact ? 10 : 12 },
+            maxTicksLimit: isCompact ? 4 : 6,
           }
         }
       }
     }
   });
+
+  // Save last values and attach a debounced resize handler once
+  roiChartLastValues.current = currentRevenue;
+  roiChartLastValues.projected = projectedRevenue;
+  if (!roiChartResizeAttached) {
+    roiChartResizeAttached = true;
+    const rerender = debounce(() => {
+      renderRevenueChart(roiChartLastValues.current, roiChartLastValues.projected);
+    }, 200);
+    window.addEventListener('resize', rerender);
+  }
 }
 
 // Helper: ping API and fetch data for a specific domain
