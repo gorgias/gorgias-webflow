@@ -3,39 +3,24 @@
  * This tool helps in calculating the Return on Investment (ROI) for shopping campaigns.
  */
 
-// Get the input fields from the DOM by data-attribute
-let monthlyTraffic = document.querySelector('[data-el="monthly-traffic"]');
-let avgChatContactRate = document.querySelector('[data-el="avg-chat-contact-rate"]');
-let preSalesInquiries = document.querySelector('[data-el="pre-sales-inquiries"]');
-let baselineConversionRate = document.querySelector('[data-el="baseline-conversion-rate"]');
-let avgOrderValue = document.querySelector('[data-el="average-order-value"]');
-
-// Get output spans from the DOM by data-attribute
-let additionalRevMonthly = document.querySelector('[data-el="additional-revenue-monthly"]');
-// Support multiple yearly outputs
-let additionalRevAnnualEls = document.querySelectorAll('[data-el="additional-revenue-yearly"]');
-let revenueIncreasePercent = document.querySelector('[data-el="revenue-increase"]');
-let returnMultiple = document.querySelector('[data-el="return-multiple"]');
-
-// Handle HubSpot form submit button to scroll to ROI section
-const hsSubmitButton = document.querySelector('.hs-button.primary.large');
-
-// Use HubSpot postMessage callback pattern (onFormReady) to wire the submit behavior
-window.addEventListener('message', function (event) {
-  if (
-    event &&
-    event.data &&
-    event.data.type === 'hsFormCallback' &&
-    event.data.eventName === 'onFormReady'
-  ) {
-    console.log('HubSpot form is ready.');
-
-    // Bind click on HS submit button (jQuery available on Webflow)
-    $('.hs-button').on('click', function () {
-      console.log('Submit button clicked');
-    });
-  }
-});
+// Centralized input/output accessors
+function getInputs() {
+  return {
+    monthlyTraffic: document.querySelector('[data-el="monthly-traffic"]'),
+    avgChatContactRate: document.querySelector('[data-el="avg-chat-contact-rate"]'),
+    preSalesInquiries: document.querySelector('[data-el="pre-sales-inquiries"]'),
+    baselineConversionRate: document.querySelector('[data-el="baseline-conversion-rate"]'),
+    avgOrderValue: document.querySelector('[data-el="average-order-value"]'),
+  };
+}
+function getOutputs() {
+  return {
+    additionalRevMonthlyEls: document.querySelectorAll('[data-el="additional-revenue-monthly"]'),
+    additionalRevAnnualEls: document.querySelectorAll('[data-el="additional-revenue-yearly"]'),
+    revenueIncreasePercent: document.querySelector('[data-el="revenue-increase"]'),
+    returnMultiple: document.querySelector('[data-el="return-multiple"]'),
+  };
+}
 
 // -------- Prefill Logic After HubSpot Submission --------
 
@@ -49,12 +34,12 @@ const industryBenchmarks = {
 // --- Dummy data for local prefill (runs on page load only) ---
 const dummyData = {
   lastMonthVisits: 28000,
-  estimatedSales: 13728000 // $137,280 * 100 (script expects cents)
+  // estimatedSales: 13728000 // $137,280 * 100 (script expects cents)
 };
 
 // --- Number formatting helpers (US style) ---
 // Use global formatNumberWithCommas if available (from all.js); otherwise fallback.
-const _fmtWithCommas = (n) => {
+const fmtWithCommas = (n) => {
   const s = String(n);
   if (typeof window !== 'undefined' && typeof window.formatNumberWithCommas === 'function') {
     return window.formatNumberWithCommas(s);
@@ -68,7 +53,7 @@ function toNumberUS(value) {
 function formatUS(num, decimals = 0) {
   const fixed = Number(num || 0).toFixed(decimals);
   const [intPart, decPart] = fixed.split('.');
-  const intFmt = _fmtWithCommas(intPart);
+  const intFmt = fmtWithCommas(intPart);
   return decPart != null ? `${intFmt}.${decPart}` : intFmt;
 }
 
@@ -94,26 +79,26 @@ function debounce(fn, delay = 300) {
   };
 }
 
-// Recalculate from current input values (no prefills)
-function recalculateFromInputs() {
-  // Sanitize percent fields for commas before parsing
-  if (avgChatContactRate && /,/.test(avgChatContactRate.value)) avgChatContactRate.value = avgChatContactRate.value.replace(/,/g, '');
-  if (preSalesInquiries && /,/.test(preSalesInquiries.value)) preSalesInquiries.value = preSalesInquiries.value.replace(/,/g, '');
-  if (baselineConversionRate && /,/.test(baselineConversionRate.value)) baselineConversionRate.value = baselineConversionRate.value.replace(/,/g, '');
+// Helper: sanitize percent fields for commas before parsing
+function sanitizePercentInputs(inputs) {
+  ['avgChatContactRate', 'preSalesInquiries', 'baselineConversionRate'].forEach((key) => {
+    if (inputs[key] && /,/.test(inputs[key].value)) {
+      inputs[key].value = inputs[key].value.replace(/,/g, '');
+    }
+  });
+}
 
-  // Parse input values and convert percentages to decimals
-  const sessions = monthlyTraffic ? toNumberUS(monthlyTraffic.value) : 0;
-  const chatRate = avgChatContactRate ? toNumberUS(avgChatContactRate.value) / 100 : 0;
-  const preSales = preSalesInquiries ? toNumberUS(preSalesInquiries.value) / 100 : 0;
-  const cvr = baselineConversionRate ? toNumberUS(baselineConversionRate.value) / 100 : 0;
-  const aov = avgOrderValue ? toNumberUS(avgOrderValue.value) : 0;
-
-  console.log(`[ROI][Recalc] Inputs - sessions: ${sessions}, chatRate: ${chatRate}, preSales: ${preSales}, cvr: ${cvr}, aov: ${aov}`);
+function computeMetrics(inputs) {
+  sanitizePercentInputs(inputs);
+  const sessions = inputs.monthlyTraffic ? toNumberUS(inputs.monthlyTraffic.value) : 0;
+  const chatRate = inputs.avgChatContactRate ? toNumberUS(inputs.avgChatContactRate.value) / 100 : 0;
+  const preSales = inputs.preSalesInquiries ? toNumberUS(inputs.preSalesInquiries.value) / 100 : 0;
+  const cvr = inputs.baselineConversionRate ? toNumberUS(inputs.baselineConversionRate.value) / 100 : 0;
+  const aov = inputs.avgOrderValue ? toNumberUS(inputs.avgOrderValue.value) : 0;
 
   // Without Gorgias
   const ordersWithout = sessions * chatRate * preSales * cvr;
   const revenueWithout = ordersWithout * aov;
-
   // With Gorgias (uplifts)
   const chatRateWith = chatRate * 1.2;
   const cvrWith = cvr * 1.52;
@@ -121,39 +106,46 @@ function recalculateFromInputs() {
   const ordersWith = sessions * chatRateWith * preSales * cvrWith;
   const revenueWith = ordersWith * aovWith;
   const incrementalRevenue = revenueWith - revenueWithout;
-  // Dynamic Cost of SA matches spreadsheet: costSA = sessions * chatRateWith * preSales * 0.8 * 1.15
   const costSA = sessions * chatRateWith * preSales * 0.8 * 1.15;
   const roi = costSA > 0 ? (incrementalRevenue - costSA) / costSA : 0;
-  console.log(`[ROI] Cost of SA calculated dynamically (recalc): ${costSA.toFixed(2)}`);
   const revenueIncreasePct = revenueWithout > 0 ? (incrementalRevenue / revenueWithout) * 100 : 0;
-
-  console.log(`[ROI][Recalc] Without - orders: ${ordersWithout.toFixed(2)}, revenue: ${revenueWithout.toFixed(2)}`);
-  console.log(`[ROI][Recalc] With    - orders: ${ordersWith.toFixed(2)}, revenue: ${revenueWith.toFixed(2)}`);
-  console.log(`[ROI][Recalc] Incremental: ${incrementalRevenue.toFixed(2)}, ROI: ${roi.toFixed(2)}, %Inc: ${revenueIncreasePct.toFixed(2)}`);
-
-  // Render chart
-  loadChartJs()
-    .then(() => renderRevenueChart(revenueWithout, revenueWith))
-    .catch(() => console.warn('[ROI][Chart] Skipping chart render due to load error.'));
-
-  // Outputs: numbers only, **rounded** (no decimals)
-  const decimals = 0;
-  const monthlyEls = document.querySelectorAll('[data-el="additional-revenue-monthly"]');
-  monthlyEls.forEach((el) => (el.textContent = formatUS(incrementalRevenue, decimals)));
-  if (additionalRevAnnualEls && additionalRevAnnualEls.length) {
-    additionalRevAnnualEls.forEach((el) => {
-      el.textContent = formatUS(incrementalRevenue * 12, decimals);
-    });
-    console.log(`[ROI] Updated ${additionalRevAnnualEls.length} additional-revenue-yearly elements (recalc).`);
-  } else {
-    console.warn('[ROI] No nodes found for data-el="additional-revenue-yearly" (recalc).');
-  }
-  if (revenueIncreasePercent) revenueIncreasePercent.textContent = formatUS(revenueIncreasePct, decimals);
-  if (returnMultiple) returnMultiple.textContent = formatUS(roi, decimals);
+  return {
+    sessions, chatRate, preSales, cvr, aov,
+    ordersWithout, revenueWithout, ordersWith, revenueWith,
+    incrementalRevenue, costSA, roi, revenueIncreasePct
+  };
 }
 
-// Debounced version for inputs
-const debouncedRecalc = debounce(recalculateFromInputs, 400);
+function updateOutputs(metrics, outputs) {
+  const decimals = 0;
+  if (outputs.additionalRevMonthlyEls) {
+    outputs.additionalRevMonthlyEls.forEach((el) => (el.textContent = formatUS(metrics.incrementalRevenue, decimals)));
+  }
+  if (outputs.additionalRevAnnualEls && outputs.additionalRevAnnualEls.length) {
+    outputs.additionalRevAnnualEls.forEach((el) => {
+      el.textContent = formatUS(metrics.incrementalRevenue * 12, decimals);
+    });
+  }
+  if (outputs.revenueIncreasePercent) outputs.revenueIncreasePercent.textContent = formatUS(metrics.revenueIncreasePct, decimals);
+  if (outputs.returnMultiple) outputs.returnMultiple.textContent = formatUS(metrics.roi, decimals);
+}
+
+function calculateAndRender() {
+  const inputs = getInputs();
+  const outputs = getOutputs();
+  const metrics = computeMetrics(inputs);
+  // Chart rendering
+  loadChartJs()
+    .then(() => {
+      renderRevenueChart(metrics.revenueWithout, metrics.revenueWith);
+      console.log('[ROI] Chart updated');
+    })
+    .catch(() => {/* skip chart error logs for performance */});
+  updateOutputs(metrics, outputs);
+  console.log('[ROI] Calculation complete');
+}
+
+const debouncedRecalc = debounce(calculateAndRender, 400);
 
 // Helper: safely extract domain from an email address
 function extractDomain(email) {
@@ -163,23 +155,16 @@ function extractDomain(email) {
   return domain;
 }
 
-// Lazy-load Chart.js if it's not already present (avoids ordering issues)
+// Lazy-load Chart.js if not present (UMD build, minimal logs)
 function loadChartJs() {
   if (typeof window !== 'undefined' && window.Chart) {
     return Promise.resolve();
   }
   return new Promise((resolve, reject) => {
-    console.log('[ROI][Chart] Loading Chart.js dynamically...');
     const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.min.js';
-    script.onload = () => {
-      console.log('[ROI][Chart] Chart.js loaded.');
-      resolve();
-    };
-    script.onerror = (e) => {
-      console.warn('[ROI][Chart] Failed to load Chart.js', e);
-      reject(e);
-    };
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js';
+    script.onload = resolve;
+    script.onerror = reject;
     document.head.appendChild(script);
   });
 }
@@ -187,28 +172,13 @@ function loadChartJs() {
 // -------- Chart.js: Sales Growth Comparison --------
 let roiRevenueChart = null;
 function renderRevenueChart(currentRevenue, projectedRevenue) {
-  console.log('[ROI][Chart] Rendering chart with values:', { currentRevenue, projectedRevenue });
   const canvas = document.getElementById('additional-revenue-monthly');
-  if (!canvas || !canvas.getContext) {
-    console.warn('[ROI][Chart] Canvas #additional-revenue-monthly not found or unsupported.');
-    return;
-  }
-  // Chart.js presence is ensured by loadChartJs() before calling this function
-
+  if (!canvas || !canvas.getContext) return;
   const ctx = canvas.getContext('2d');
-
-  // Destroy previous chart instance if it exists (to avoid duplicates)
   if (roiRevenueChart) {
-    try { roiRevenueChart.destroy(); } catch (e) { /* no-op */ }
+    try { roiRevenueChart.destroy(); } catch (e) {}
     roiRevenueChart = null;
   }
-
-  // Colors per spec
-  const colorCurrent = '#E8E3E1';
-  const colorProjected = '#FF9780';
-  const colorCurrentHover = 'rgba(232, 227, 225, 0.8)'; // 80% opacity
-  const colorProjectedHover = 'rgba(255, 151, 128, 0.8)'; // 80% opacity
-
   roiRevenueChart = new window.Chart(ctx, {
     type: 'bar',
     data: {
@@ -216,14 +186,11 @@ function renderRevenueChart(currentRevenue, projectedRevenue) {
       datasets: [
         {
           data: [currentRevenue, projectedRevenue],
-          backgroundColor: [colorCurrent, colorProjected],
-          hoverBackgroundColor: [colorCurrentHover, colorProjectedHover],
+          backgroundColor: ['#E8E3E1', '#FF9780'],
+          hoverBackgroundColor: ['rgba(232, 227, 225, 0.8)', 'rgba(255, 151, 128, 0.8)'],
           borderColor: '#00000010',
           borderWidth: 1,
-          // Rounded top corners only; flat bottom corners
-          borderRadius: {
-            topLeft: 12, topRight: 12, bottomLeft: 0, bottomRight: 0
-          },
+          borderRadius: { topLeft: 12, topRight: 12, bottomLeft: 0, bottomRight: 0 },
           borderSkipped: false
         }
       ]
@@ -231,16 +198,13 @@ function renderRevenueChart(currentRevenue, projectedRevenue) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: {
-        duration: 600
-      },
+      animation: { duration: 600 },
       plugins: {
         legend: { display: false },
         tooltip: {
           callbacks: {
             label: (ctx) => {
               const val = ctx.parsed.y || 0;
-              // Show $ and comma formatting in the tooltip for readability
               return `$${formatUS(val, 2)}`;
             }
           }
@@ -249,17 +213,12 @@ function renderRevenueChart(currentRevenue, projectedRevenue) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: {
-            font: { size: 14 }
-          }
+          ticks: { font: { size: 14 } }
         },
         y: {
           beginAtZero: true,
-          grid: {
-            color: '#00000014'
-          },
+          grid: { color: '#00000014' },
           ticks: {
-            // Currency-style ticks to match the mock
             callback: (value) => `$${formatUS(value, 0)}`,
             font: { size: 12 },
             maxTicksLimit: 6
@@ -268,8 +227,6 @@ function renderRevenueChart(currentRevenue, projectedRevenue) {
       }
     }
   });
-
-  console.log('[ROI][Chart] Chart rendered.');
 }
 
 // Helper: ping API and fetch data for a specific domain
@@ -289,180 +246,72 @@ async function fetchROIdata(domain) {
   }
 }
 
-// Helper: populate form fields with fetched or fallback values
 function populateFormFields(data) {
-  console.log('[ROI] Populating fields...');
-
+  const { monthlyTraffic, avgChatContactRate, preSalesInquiries, baselineConversionRate, avgOrderValue } = getInputs();
   // 1. Populate API-driven values (if available)
-  if (data) {
-    // NOTE: number-type inputs can't contain commas; set plain numeric for them, formatted for text inputs
-    if (monthlyTraffic && data.lastMonthVisits) {
-      setUSValue(monthlyTraffic, Math.round(Number(data.lastMonthVisits)), 0);
-      console.log('[ROI] monthlyTraffic set to:', monthlyTraffic.value);
-    }
+  if (data && monthlyTraffic && data.lastMonthVisits) {
+    setUSValue(monthlyTraffic, Math.round(Number(data.lastMonthVisits)), 0);
   }
-
   // 2. Populate benchmark-driven defaults
-  if (avgChatContactRate) {
-    avgChatContactRate.value = industryBenchmarks.chatRate;
-    console.log('[ROI] avgChatContactRate benchmark set to:', industryBenchmarks.chatRate);
-  }
-  if (preSalesInquiries) {
-    preSalesInquiries.value = industryBenchmarks.preSales;
-    console.log('[ROI] preSalesInquiries benchmark set to:', industryBenchmarks.preSales);
-  }
-  if (baselineConversionRate) {
-    baselineConversionRate.value = industryBenchmarks.baselineCVR;
-    console.log('[ROI] baselineConversionRate benchmark set to:', industryBenchmarks.baselineCVR);
-  }
-  // Benchmarks are raw percentage numbers (no symbols) to keep inputs editable
+  if (avgChatContactRate) avgChatContactRate.value = industryBenchmarks.chatRate;
+  if (preSalesInquiries) preSalesInquiries.value = industryBenchmarks.preSales;
+  if (baselineConversionRate) baselineConversionRate.value = industryBenchmarks.baselineCVR;
 
   // --- Recalculate AOV from revenue and orders ---
-  // Orders = Sessions × ChatRate × PreSalesRate × CVR
-  // AOV = Revenue / Orders
-(function computeAOVFromInputs() {
-  try {
-    // Skip recalculating AOV when using dummy data
-    if (data === dummyData) {
-      console.log('[ROI] Skipping AOV recalculation — using static dummy value.');
-      return;
-    }
-
-    const sessionsForAOV = data && data.lastMonthVisits != null
-      ? Number(data.lastMonthVisits)
-      : (monthlyTraffic ? toNumberUS(monthlyTraffic.value) : 0);
-    const chatPct = avgChatContactRate ? toNumberUS(avgChatContactRate.value) / 100 : 0;
-    const prePct  = preSalesInquiries ? toNumberUS(preSalesInquiries.value) / 100 : 0;
-    const cvrPct  = baselineConversionRate ? toNumberUS(baselineConversionRate.value) / 100 : 0;
-    const ordersForAOV = sessionsForAOV * chatPct * prePct * cvrPct;
-    const revenueForAOV = (data && data.estimatedSales != null)
-      ? (Number(data.estimatedSales) / 100)
-      : (Number(data && data.defaultRevenue) || 0);
-    const aovCalc = ordersForAOV > 0 ? (revenueForAOV / ordersForAOV) : 0;
-    if (avgOrderValue) {
-      setUSValue(avgOrderValue, aovCalc, 2);
-      console.log(`[ROI] AOV recalculated as Revenue/Orders = ${aovCalc.toFixed(2)} (revenue: ${revenueForAOV.toFixed(2)}, orders: ${ordersForAOV.toFixed(2)})`);
-    }
-  } catch (e) {
-    console.warn('[ROI] Failed to compute AOV from inputs:', e);
-  }
-})();
-
-  // --- New ROI Calculation Logic ---
-
-  // Sanitize percent fields for commas before parsing
-  if (avgChatContactRate && /,/.test(avgChatContactRate.value)) avgChatContactRate.value = avgChatContactRate.value.replace(/,/g, '');
-  if (preSalesInquiries && /,/.test(preSalesInquiries.value)) preSalesInquiries.value = preSalesInquiries.value.replace(/,/g, '');
-  if (baselineConversionRate && /,/.test(baselineConversionRate.value)) baselineConversionRate.value = baselineConversionRate.value.replace(/,/g, '');
-
-  // Parse input values and convert percentages to decimals
-  const sessions = monthlyTraffic ? toNumberUS(monthlyTraffic.value) : 0;
-  const chatRate = avgChatContactRate ? toNumberUS(avgChatContactRate.value) / 100 : 0;
-  const preSales = preSalesInquiries ? toNumberUS(preSalesInquiries.value) / 100 : 0;
-  const cvr = baselineConversionRate ? toNumberUS(baselineConversionRate.value) / 100 : 0;
-  const aov = avgOrderValue ? toNumberUS(avgOrderValue.value) : 0;
-
-  console.log(`[ROI] Inputs - sessions: ${sessions}, chatRate: ${chatRate}, preSales: ${preSales}, cvr: ${cvr}, aov: ${aov}`);
-
-  // Without Gorgias
-  const ordersWithout = sessions * chatRate * preSales * cvr;
-  const revenueWithout = ordersWithout * aov;
-  console.log(`[ROI] Without Gorgias - orders: ${ordersWithout.toFixed(2)}, revenue: ${revenueWithout.toFixed(2)}`);
-
-  // With Gorgias
-  const chatRateWith = chatRate * 1.2;
-  const cvrWith = cvr * 1.52;
-  const aovWith = aov * 1.2;
-  const ordersWith = sessions * chatRateWith * preSales * cvrWith;
-  const revenueWith = ordersWith * aovWith;
-  const incrementalRevenue = revenueWith - revenueWithout;
-  // Dynamic Cost of SA matches spreadsheet: costSA = sessions * chatRateWith * preSales * 0.8 * 1.15
-  const costSA = sessions * chatRateWith * preSales * 0.8 * 1.15;
-  const roi = costSA > 0 ? (incrementalRevenue - costSA) / costSA : 0;
-  console.log(`[ROI] Cost of SA calculated dynamically: ${costSA.toFixed(2)}`);
-  // Revenue increase percent (safe division)
-  const revenueIncreasePct = revenueWithout > 0 ? (incrementalRevenue / revenueWithout) * 100 : 0;
-
-  console.log(`[ROI] With Gorgias - orders: ${ordersWith.toFixed(2)}, revenue: ${revenueWith.toFixed(2)}`);
-  console.log(`[ROI] Incremental Revenue: ${incrementalRevenue.toFixed(2)}, ROI: ${roi.toFixed(2)}`);
-
-  // Render Sales Growth Comparison chart (ensure Chart.js is loaded)
-  loadChartJs()
-    .then(() => renderRevenueChart(revenueWithout, revenueWith))
-    .catch(() => console.warn('[ROI][Chart] Skipping chart render due to load error.'));
-
-  // Outputs: numbers only, formatted US style (no currency symbol / no suffix)
-  if (additionalRevMonthly) {
-    // Support multiple elements with data-el="additional-revenue-monthly"
-    const monthlyEls = document.querySelectorAll('[data-el="additional-revenue-monthly"]');
-    monthlyEls.forEach((el) => {
-      el.textContent = formatUS(incrementalRevenue, 0);
-    });
-    console.log(`[ROI] Updated ${monthlyEls.length} additional-revenue-monthly elements.`);
-  }
-  if (additionalRevAnnualEls && additionalRevAnnualEls.length) {
-    additionalRevAnnualEls.forEach((el) => {
-      el.textContent = formatUS(incrementalRevenue * 12, 0);
-    });
-    console.log(`[ROI] Updated ${additionalRevAnnualEls.length} additional-revenue-yearly elements.`);
-  } else {
-    console.warn('[ROI] No nodes found for data-el="additional-revenue-yearly".');
-  }
-  if (revenueIncreasePercent) {
-    revenueIncreasePercent.textContent = formatUS(revenueIncreasePct, 0);
-    console.log(`[ROI] Updated revenue-increase: ${revenueIncreasePercent.textContent}`);
-  }
-  if (returnMultiple) {
-    returnMultiple.textContent = formatUS(roi, 0);
-    console.log(`[ROI] Updated return-multiple: ${returnMultiple.textContent}`);
-  }
-
-  console.log('[ROI] Field population complete.');
+  (function computeAOVFromInputs() {
+    try {
+      if (data === dummyData) return;
+      const sessionsForAOV = data && data.lastMonthVisits != null
+        ? Number(data.lastMonthVisits)
+        : (monthlyTraffic ? toNumberUS(monthlyTraffic.value) : 0);
+      const chatPct = avgChatContactRate ? toNumberUS(avgChatContactRate.value) / 100 : 0;
+      const prePct  = preSalesInquiries ? toNumberUS(preSalesInquiries.value) / 100 : 0;
+      const cvrPct  = baselineConversionRate ? toNumberUS(baselineConversionRate.value) / 100 : 0;
+      const ordersForAOV = sessionsForAOV * chatPct * prePct * cvrPct;
+      const revenueForAOV = (data && data.estimatedSales != null)
+        ? (Number(data.estimatedSales) / 100)
+        : (Number(data && data.defaultRevenue) || 0);
+      const aovCalc = ordersForAOV > 0 ? (revenueForAOV / ordersForAOV) : 0;
+      if (avgOrderValue) setUSValue(avgOrderValue, aovCalc, 2);
+    } catch (e) {}
+  })();
+  calculateAndRender();
+  console.log('[ROI] HubSpot data populated');
 }
 
-// --- Prefill with dummy data after ROI inputs exist ---
+// --- Prefill and listeners (single pipeline, DRY, minimal logs) ---
+let listenersAttached = false;
+function attachListenersOnce() {
+  if (listenersAttached) return;
+  const { monthlyTraffic, avgChatContactRate, preSalesInquiries, baselineConversionRate, avgOrderValue } = getInputs();
+  [monthlyTraffic, avgChatContactRate, preSalesInquiries, baselineConversionRate, avgOrderValue]
+    .filter(Boolean)
+    .forEach((el) => {
+      el.addEventListener('input', debouncedRecalc);
+      el.addEventListener('change', debouncedRecalc);
+    });
+  listenersAttached = true;
+}
+
+// Prefill dummy data and attach listeners after DOM ready
 (function initROIPrefill() {
-  console.log('[ROI] Waiting for form fields to be injected...');
-
   const waitForInputs = setInterval(() => {
-    const formReady =
-      document.querySelector('[data-el="monthly-traffic"]') &&
-      document.querySelector('[data-el="avg-chat-contact-rate"]') &&
-      document.querySelector('[data-el="pre-sales-inquiries"]') &&
-      document.querySelector('[data-el="baseline-conversion-rate"]') &&
-      document.querySelector('[data-el="average-order-value"]');
-
-    if (formReady) {
+    const { monthlyTraffic, avgChatContactRate, preSalesInquiries, baselineConversionRate, avgOrderValue } = getInputs();
+    if (monthlyTraffic && avgChatContactRate && preSalesInquiries && baselineConversionRate && avgOrderValue) {
       clearInterval(waitForInputs);
-      console.log('[ROI] Inputs found — running dummy data prefill.');
-
-      // Prefill values
-      if (monthlyTraffic) setUSValue(monthlyTraffic, dummyData.lastMonthVisits, 0);
-      if (avgChatContactRate) setUSValue(avgChatContactRate, industryBenchmarks.chatRate, 0);
-      if (preSalesInquiries) setUSValue(preSalesInquiries, industryBenchmarks.preSales, 0);
-      if (baselineConversionRate) setUSValue(baselineConversionRate, industryBenchmarks.baselineCVR, 0);
-
-      // Use static AOV value for dummy data
-      const aov = 246;
-      if (avgOrderValue) setUSValue(avgOrderValue, aov, 0);
-      console.log('[ROI] AOV set to static dummy value:', aov);
-
-      // Launch calculation
+      setUSValue(monthlyTraffic, dummyData.lastMonthVisits, 0);
+      setUSValue(avgChatContactRate, industryBenchmarks.chatRate, 0);
+      setUSValue(preSalesInquiries, industryBenchmarks.preSales, 0);
+      setUSValue(baselineConversionRate, industryBenchmarks.baselineCVR, 0);
+      setUSValue(avgOrderValue, 246, 0);
       populateFormFields(dummyData);
-      console.log('[ROI] Dummy data prefill complete and calculation launched.');
-
-      // Add event listeners for recalculation
-      [monthlyTraffic, avgChatContactRate, preSalesInquiries, baselineConversionRate, avgOrderValue]
-        .filter(Boolean)
-        .forEach((el) => {
-          el.addEventListener('input', debouncedRecalc);
-          el.addEventListener('change', debouncedRecalc);
-        });
+      attachListenersOnce();
+      console.log('[ROI] Prefill ready');
     }
-  }, 300); // Check every 300ms
+  }, 300);
 })();
 
-// Listen for HubSpot form submission (email capture)
+// HubSpot listener (single pipeline)
 window.addEventListener('message', function (event) {
   if (
     event &&
@@ -470,47 +319,22 @@ window.addEventListener('message', function (event) {
     event.data.type === 'hsFormCallback' &&
     event.data.eventName === 'onFormReady'
   ) {
-    console.log('[ROI] HubSpot form ready. Listening for submission...');
-
-    $('.hs-button').on('click', async function () {
-      console.log('[ROI] Submit button clicked, capturing email...');
+    $('.hs-button').off('click.roi').on('click.roi', async function () {
       const emailInput = document.querySelector('input[type="email"]');
       const emailValue = emailInput ? emailInput.value.trim() : '';
-
-      if (!emailValue) {
-        console.warn('[ROI] No email entered. Cannot extract domain.');
-        return;
-      }
-
+      if (!emailValue) return;
       const domain = extractDomain(emailValue);
-      if (!domain) {
-        console.warn('[ROI] Invalid email format. Domain not found.');
-        return;
-      }
-
-      // Fetch data from API and populate fields
+      if (!domain) return;
       const data = await fetchROIdata(domain);
       populateFormFields(data);
-
-      // Wait briefly to ensure DOM updates before revealing section
-      console.log('[ROI] Field population complete, preparing to display ROI section...');
       setTimeout(() => {
         const roiSection = document.getElementById('roi-calculator');
         if (roiSection) {
           roiSection.style.display = 'block';
           roiSection.style.opacity = '1';
           roiSection.scrollIntoView({ behavior: 'smooth' });
-          console.log('[ROI] ROI Calculator displayed and scrolled into view after population.');
         }
-
-        // Attach debounced recalculation on user edits
-        [monthlyTraffic, avgChatContactRate, preSalesInquiries, baselineConversionRate, avgOrderValue]
-          .filter(Boolean)
-          .forEach((el) => {
-            el.addEventListener('input', debouncedRecalc);
-            el.addEventListener('change', debouncedRecalc);
-          });
-        console.log('[ROI] Debounced recalculation listeners attached to inputs.');
+        attachListenersOnce();
       }, 10);
     });
   }
