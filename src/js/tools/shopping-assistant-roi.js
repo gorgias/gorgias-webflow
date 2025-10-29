@@ -182,7 +182,7 @@ function renderRevenueChart(currentRevenue, projectedRevenue) {
   roiRevenueChart = new window.Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Current Sales', 'Projected with Gorgias'],
+      labels: ['Current sales through chat', 'Projected with Gorgias'],
       datasets: [
         {
           data: [currentRevenue, projectedRevenue],
