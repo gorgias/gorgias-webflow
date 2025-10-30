@@ -22,6 +22,8 @@ function getOutputs() {
   };
 }
 
+const blurOverlay = document.querySelector('[data-el="blur"]');
+
 // -------- Prefill Logic After HubSpot Submission --------
 
 // Industry benchmark constants
@@ -31,10 +33,9 @@ const industryBenchmarks = {
   baselineCVR: 3.0 // %
 };
 
-// --- Dummy data for local prefill (runs on page load only) ---
+// ~5M USD projected annual revenue increase target with current benchmarks & AOV=246
 const dummyData = {
-  lastMonthVisits: 28000,
-  // estimatedSales: 13728000 // $137,280 * 100 (script expects cents)
+  lastMonthVisits: 5936543
 };
 
 // --- Number formatting helpers (US style) ---
@@ -391,6 +392,9 @@ window.addEventListener('message', function (event) {
           roiSection.style.display = 'block';
           roiSection.style.opacity = '1';
           roiSection.scrollIntoView({ behavior: 'smooth' });
+          if (blurOverlay) {
+            blurOverlay.style.display = 'none';
+          }
         }
         attachListenersOnce();
       }, 10);
