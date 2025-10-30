@@ -170,10 +170,12 @@ function renderJob(job, currentCitySlug) {
       )
     );
 
-  // Apply URL
+  // Job overview URL (prefer jobUrl, fallback to applyUrl but strip "/application")
   const applyEl = node.querySelector('[data-ashby="applyUrl"]');
   if (applyEl) {
-    const href = job.applyUrl || job.jobUrl || "#";
+    let href = job.jobUrl || job.applyUrl || "#";
+    // If we fell back to an application URL, normalize to the job overview page
+    href = href.replace(/\/application(?:\?.*)?$/, "");
     applyEl.href = href;
     applyEl.target = "_blank";
     applyEl.rel = "noopener noreferrer";
