@@ -2,23 +2,30 @@
 
 // function to import a js file hosted on the CDN
 function newScript(filePath, position, syncStatus, type){
-    // fillePath should start by https:// if it's a 3rd party script
-    // position should be always 'head' OR 'body'.
-    // syncStatus should be set to 1 if defer
-    // type is optional, if not set, it will be "text/javascript"
+  // filePath should start by https:// if it's a 3rd party script
+  // position should be 'head' OR 'body' (or a selector / DOM element)
+  // syncStatus should be set to 1 if defer
+  // type is optional, defaults to "text/javascript"
 
-    var script = document.createElement('script');
-    script.setAttribute('src',filePath);
-    if(type) {
-        script.setAttribute("type",type);
-    }
-    else {
-        script.setAttribute("type","text/javascript");
-    }
-    
-    if(syncStatus != 1){syncStatus = 0; }
-    script.defer = syncStatus;
-    $(position)[0].appendChild(script);    
+  var script = document.createElement('script');
+  script.src = filePath;
+  script.type = type || 'text/javascript';
+  script.defer = (syncStatus == 1);
+
+  var parent;
+  if (position === 'head') {
+    parent = document.head;
+  } else if (position === 'body') {
+    parent = document.body;
+  } else if (typeof position === 'string') {
+    parent = document.querySelector(position) || document.head;
+  } else if (position instanceof Element) {
+    parent = position;
+  } else {
+    parent = document.head;
+  }
+
+  parent.appendChild(script);
 }
 
 // Function to append a styleSheet hosted on the CDN
@@ -29,8 +36,22 @@ function newStyle(filePath, position){
     link.rel = 'stylesheet';
     link.type = 'text/css';
     link.href = filePath;
-    $(position)[0].appendChild(link);
-}
+
+    var parent;
+    if (position === 'head') {
+      parent = document.head;
+    } else if (position === 'body') {
+      parent = document.body;
+    } else if (typeof position === 'string') {
+      parent = document.querySelector(position) || document.head;
+    } else if (position instanceof Element) {
+      parent = position;
+    } else {
+      parent = document.head;
+    }
+
+    parent.appendChild(link);
+  }
 
 /* BEGINING OF cookies functions */
 // function to create a cookie
@@ -145,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // Step 4: pass info to demo url
-  $(document).ready(function() {
+document.addEventListener('DOMContentLoaded', () => {
     // Function to get URL parameters (reused)
     const getUrlParameter = (name) => {
       name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -155,13 +176,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   
 
-    $("#incentive-demo").click(function() {  
-      // Create the URL with the parameters
-      const demoUrl = `/stimulus/fr/100amazon?utm_source=google&utm_medium=cpc&utm_campaign=incentive_website_banner`;
-  
-      // Redirect to the demo URL
-      window.location.href = demoUrl;
-    });
+    const incentiveDemoBtn = document.getElementById("incentive-demo");
+    if (incentiveDemoBtn) {
+      incentiveDemoBtn.addEventListener("click", function() {
+        // Create the URL with the parameters
+        const demoUrl = `/stimulus/fr/100amazon?utm_source=google&utm_medium=cpc&utm_campaign=incentive_website_banner`;
+    
+        // Redirect to the demo URL
+        window.location.href = demoUrl;
+      });
+    }
+    
   });
 
 
