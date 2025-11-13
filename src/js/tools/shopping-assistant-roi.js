@@ -399,5 +399,52 @@ window.addEventListener('message', function (event) {
         attachListenersOnce();
       }, 10);
     });
+
+    // --- Auto-prefill & auto-submit from URL email param (runs once) ---
+    (function autoSubmitFromQuery() {
+      try {
+        if (sessionStorage.getItem('roiAutoSubmitted') === '1') return;
+
+        const params = new URLSearchParams(window.location.search || '');
+        const emailParam =
+          params.get('email') ||
+          params.get('e') ||
+          params.get('work_email') ||
+          '';
+
+        if (!emailParam) return;
+
+        const email = String(emailParam).trim();
+        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        if (!validEmail) return;
+
+        // Find HubSpot email input
+        const emailInput =
+          document.querySelector('.hbspt-form form input[type="email"]') ||
+          document.querySelector('.hbspt-form form input[name="email"]') ||
+          document.querySelector('input[type="email"]');
+
+        if (!emailInput) return;
+
+        // Prefill & notify HubSpot
+        emailInput.value = email;
+        emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+        emailInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+        // Submit via the HS button to keep handlers intact
+        const formEl = emailInput.closest('form');
+        const submitBtn = formEl ? formEl.querySelector('.hs-button') : null;
+        if (submitBtn) {
+          submitBtn.click();
+        } else if (formEl) {
+          formEl.requestSubmit ? formEl.requestSubmit() : formEl.submit();
+        }
+
+        sessionStorage.setItem('roiAutoSubmitted', '1');
+        console.log('[ROI] Auto-submitted HubSpot form from URL email param:', email);
+      } catch (e) {
+        console.warn('[ROI] Auto-submit from URL failed:', e);
+      }
+    })();
   }
 });
