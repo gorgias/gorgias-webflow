@@ -89,6 +89,34 @@ function sanitizePercentInputs(inputs) {
   });
 }
 
+// --- Email validation + inline error helpers ---
+function showEmailError(msg) {
+  const emailInput =
+    document.querySelector('.hbspt-form form input[type="email"]') ||
+    document.querySelector('input[type="email"]');
+  if (!emailInput) return;
+  const container = emailInput.closest('.hs_email') || emailInput.parentElement || emailInput;
+  let hint = container.querySelector('.roi-email-error');
+  if (!hint) {
+    hint = document.createElement('div');
+    hint.className = 'roi-email-error';
+    hint.style.color = '#ff0f0f';
+    hint.style.fontSize = '12px';
+    hint.style.lineHeight = '1.2';
+    hint.style.marginTop = '4px';
+    container.appendChild(hint);
+  }
+  hint.textContent = msg;
+}
+function clearEmailError() {
+  document.querySelectorAll('.roi-email-error').forEach((n) => n.remove());
+}
+function apiHasUsableData(data) {
+  if (!data || typeof data !== 'object') return false;
+  // treat any of these as a “usable” hit; expand as your endpoint evolves
+  return !!(data.lastMonthVisits || data.estimatedSales || data.avgPrice);
+}
+
 function computeMetrics(inputs) {
   sanitizePercentInputs(inputs);
   const sessions = inputs.monthlyTraffic ? toNumberUS(inputs.monthlyTraffic.value) : 0;
@@ -378,26 +406,102 @@ window.addEventListener('message', function (event) {
     event.data.type === 'hsFormCallback' &&
     event.data.eventName === 'onFormReady'
   ) {
-    $('.hs-button').off('click.roi').on('click.roi', async function () {
-      const emailInput = document.querySelector('input[type="email"]');
-      const emailValue = emailInput ? emailInput.value.trim() : '';
-      if (!emailValue) return;
-      const domain = extractDomain(emailValue);
-      if (!domain) return;
-      const data = await fetchROIdata(domain);
-      populateFormFields(data);
-      setTimeout(() => {
-        const roiSection = document.getElementById('roi-calculator');
-        if (roiSection) {
-          roiSection.style.display = 'block';
-          roiSection.style.opacity = '1';
-          roiSection.scrollIntoView({ behavior: 'smooth' });
-          if (blurOverlay) {
-            blurOverlay.style.display = 'none';
-          }
-        }
-        attachListenersOnce();
-      }, 10);
-    });
+    $('.hs-button').off('click.roi').on('click.roi', async function (e) {
+  clearEmailError();
+
+  const emailInput = document.querySelector('input[type="email"]');
+  const emailValue = emailInput ? emailInput.value.trim() : '';
+  if (!emailValue) return; // let HS required validation handle empty
+
+  const domain = extractDomain(emailValue);
+  if (!domain) {
+    e.preventDefault();
+    showEmailError('Please enter a valid work email (company domain).');
+    return;
+  }
+
+  // Pre-submit validation against API
+  const data = await fetchROIdata(domain);
+  if (!apiHasUsableData(data)) {
+    e.preventDefault();
+    showEmailError("We couldn’t recognize this domain. Please use your company email.");
+    return;
+  }
+
+  // Valid → proceed; also populate UI pre-emptively
+  populateFormFields(data);
+  setTimeout(() => {
+    const roiSection = document.getElementById('roi-calculator');
+    if (roiSection) {
+      roiSection.style.display = 'block';
+      roiSection.style.opacity = '1';
+      roiSection.scrollIntoView({ behavior: 'smooth' });
+      if (blurOverlay) blurOverlay.style.display = 'none';
+    }
+    attachListenersOnce();
+  }, 10);
+});
+
+    // --- Auto-prefill & auto-submit from URL email param (runs once) ---
+(async function autoSubmitFromQuery() {
+  try {
+    if (sessionStorage.getItem('roiAutoSubmitted') === '1') return;
+
+    const params = new URLSearchParams(window.location.search || '');
+    const emailParam =
+      params.get('email') ||
+      params.get('e') ||
+      params.get('work_email') ||
+      '';
+
+    if (!emailParam) return;
+
+    const email = String(emailParam).trim();
+    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!validEmail) return;
+
+    // Find HubSpot email input
+    const emailInput =
+      document.querySelector('.hbspt-form form input[type="email"]') ||
+      document.querySelector('.hbspt-form form input[name="email"]') ||
+      document.querySelector('input[type="email"]');
+
+    if (!emailInput) return;
+
+    // Prefill & notify HubSpot
+    emailInput.value = email;
+    emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+    emailInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+    // Validate before submitting
+    const domain = extractDomain(email);
+    if (!domain) {
+      showEmailError('Please enter a valid work email (company domain).');
+      return;
+    }
+    const apiData = await fetchROIdata(domain);
+    if (!apiHasUsableData(apiData)) {
+      showEmailError("We couldn’t recognize this domain. Please use your company email.");
+      return; // do not submit
+    }
+
+    // Populate now so UI stays consistent after HS submit
+    populateFormFields(apiData);
+
+    // Submit via HS button so handlers/validation run
+    const formEl = emailInput.closest('form');
+    const submitBtn = formEl ? formEl.querySelector('.hs-button') : null;
+    if (submitBtn) {
+      submitBtn.click();
+    } else if (formEl) {
+      formEl.requestSubmit ? formEl.requestSubmit() : formEl.submit();
+    }
+
+    sessionStorage.setItem('roiAutoSubmitted', '1');
+    console.log('[ROI] Auto-submitted HubSpot form from URL email param:', email);
+  } catch (e) {
+    console.warn('[ROI] Auto-submit from URL failed:', e);
+  }
+})();
   }
 });
