@@ -406,30 +406,45 @@ window.addEventListener('message', function (event) {
     event.data.type === 'hsFormCallback' &&
     event.data.eventName === 'onFormReady'
   ) {
-    $('.hs-button').off('click.roi').on('click.roi', async function (e) {
+    
+$('.hs-button').off('click.roi').on('click.roi', async function (e) {
+  e.preventDefault(); // <-- block HubSpot's default submission right away
   clearEmailError();
 
   const emailInput = document.querySelector('input[type="email"]');
   const emailValue = emailInput ? emailInput.value.trim() : '';
-  if (!emailValue) return; // let HS required validation handle empty
+  if (!emailValue) return; // let HubSpot handle empty field validation
 
   const domain = extractDomain(emailValue);
   if (!domain) {
-    e.preventDefault();
     showEmailError('Please enter a valid work email (company domain).');
     return;
   }
 
-  // Pre-submit validation against API
-  const data = await fetchROIdata(domain);
+  let data = null;
+  try {
+    data = await fetchROIdata(domain);
+  } catch (fetchErr) {
+    showEmailError("We couldn’t reach the ROI service. Please try again later.");
+    console.warn('[ROI] fetch error:', fetchErr);
+    return;
+  }
+
   if (!apiHasUsableData(data)) {
-    e.preventDefault();
     showEmailError("We couldn’t recognize this domain. Please use your company email.");
     return;
   }
 
-  // Valid → proceed; also populate UI pre-emptively
+  // ✅ Only reach here if everything succeeded
   populateFormFields(data);
+
+  // Now that the data is good, manually submit the form
+  const formEl = emailInput.closest('form');
+  if (formEl) {
+    formEl.requestSubmit ? formEl.requestSubmit() : formEl.submit();
+  }
+
+  // Reveal ROI section
   setTimeout(() => {
     const roiSection = document.getElementById('roi-calculator');
     if (roiSection) {
