@@ -112,9 +112,7 @@ function clearEmailError() {
   document.querySelectorAll('.roi-email-error').forEach((n) => n.remove());
 }
 function apiHasUsableData(data) {
-  if (!data || typeof data !== 'object') return false;
-  // treat any of these as a “usable” hit; expand as your endpoint evolves
-  return !!(data.lastMonthVisits || data.estimatedSales || data.avgPrice);
+  return !!data?.domain_found;
 }
 
 function computeMetrics(inputs) {
@@ -318,7 +316,7 @@ function renderRevenueChart(currentRevenue, projectedRevenue) {
 
 // Helper: ping API and fetch data for a specific domain
 async function fetchROIdata(domain) {
-  const endpoint = `https://marketing-ops-functions.up.railway.app/roi-calculator/${domain}`;
+  const endpoint = `https://gorgias.app.n8n.cloud/webhook/056ee505-9420-49f6-a4fc-981579fe63b2?domain=${domain}`;
   console.log('[ROI] Fetching data from:', endpoint);
 
   try {
@@ -333,11 +331,12 @@ async function fetchROIdata(domain) {
   }
 }
 
+
 function populateFormFields(data) {
   const { monthlyTraffic, avgChatContactRate, preSalesInquiries, baselineConversionRate, avgOrderValue } = getInputs();
   // 1. Populate API-driven values (if available)
-  if (data && monthlyTraffic && data.lastMonthVisits) {
-    setUSValue(monthlyTraffic, Math.round(Number(data.lastMonthVisits)), 0);
+  if (data?.results && monthlyTraffic && data.results.lastMonthVisits) {
+    setUSValue(monthlyTraffic, Math.round(Number(data.results.lastMonthVisits)), 0);
   }
   // 2. Populate benchmark-driven defaults
   if (avgChatContactRate) avgChatContactRate.value = industryBenchmarks.chatRate;
@@ -348,16 +347,16 @@ function populateFormFields(data) {
   (function computeAOVFromInputs() {
     try {
       if (data === dummyData) return;
-      const sessionsForAOV = data && data.lastMonthVisits != null
-        ? Number(data.lastMonthVisits)
+      const sessionsForAOV = data?.results && data.results.lastMonthVisits != null
+        ? Number(data.results.lastMonthVisits)
         : (monthlyTraffic ? toNumberUS(monthlyTraffic.value) : 0);
       const chatPct = avgChatContactRate ? toNumberUS(avgChatContactRate.value) / 100 : 0;
       const prePct  = preSalesInquiries ? toNumberUS(preSalesInquiries.value) / 100 : 0;
       const cvrPct  = baselineConversionRate ? toNumberUS(baselineConversionRate.value) / 100 : 0;
       const ordersForAOV = sessionsForAOV * chatPct * prePct * cvrPct;
-      const revenueForAOV = (data && data.estimatedSales != null)
-        ? (Number(data.estimatedSales) / 100)
-        : (Number(data && data.defaultRevenue) || 0);
+      const revenueForAOV = (data?.results && data.results.estimatedSales != null)
+        ? Number(data.results.estimatedSales)
+        : 0;
       const aovCalc = ordersForAOV > 0 ? (revenueForAOV / ordersForAOV) : 0;
       if (avgOrderValue) setUSValue(avgOrderValue, aovCalc, 2);
     } catch (e) {}
