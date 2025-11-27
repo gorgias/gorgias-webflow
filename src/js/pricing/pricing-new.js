@@ -451,7 +451,7 @@ function initAutomationDropdowns() {
     $pane.find('[data-el="selected-automate-price"]').text(formatPrice(automationPrice)); 
 
     // Update dropdown toggle label to show the clicked option text again
-    $(`[data-el="chosen-automation-${plan}"]`).text($(this).text());
+    $(`[data-el="chosen-automation-${plan}"]`).text(`${formatNumberWithCommas(ticketCount)} automated interactions`);
 
     // Close dropdown safely
     const $toggle = $(this).closest('.w-dropdown').find('.w-dropdown-toggle');
@@ -699,7 +699,7 @@ function updateMonthlyPriceSpans() {
         const percent = selectedAutomationTier[plan];
         const automationTable = { starter: starterAutomation, basic: basicAutomation, pro: proAutomation, advanced: advancedAutomation }[plan];
         const ticketCount = parseInt(automationTable[percent], 10);
-        $(`[data-el="chosen-automation-${plan}"]`).text(`${formatNumberWithCommas(ticketCount)} interactions`);
+        $(`[data-el="chosen-automation-${plan}"]`).text(`${formatNumberWithCommas(ticketCount)} automated interactions`);
       });
 
       updateMonthlyPriceSpans();
