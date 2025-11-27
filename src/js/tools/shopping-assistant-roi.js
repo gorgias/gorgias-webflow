@@ -112,7 +112,24 @@ function clearEmailError() {
   document.querySelectorAll('.roi-email-error').forEach((n) => n.remove());
 }
 function apiHasUsableData(data) {
-  return !!data?.domain_found;
+  // Domain must be explicitly found
+  if (!data || (data.domain_found !== "true" && data.domain_found !== true)) {
+    return false;
+  }
+
+  const results = data.results;
+  if (!results || typeof results !== 'object') return false;
+
+  const avgPriceValid = typeof results.avgPrice === 'number' && results.avgPrice > 0;
+  const estimatedSalesValid = typeof results.estimatedSales === 'number' && results.estimatedSales > 0;
+
+  // BOTH values must be valid for domain to be usable
+  return avgPriceValid && estimatedSalesValid;
+}
+
+// Helper: check if API found the domain
+function apiDomainFound(data) {
+  return data?.domain_found === "true" || data?.domain_found === true;
 }
 
 function computeMetrics(inputs) {
@@ -180,6 +197,15 @@ function extractDomain(email) {
   const domain = email.split('@')[1].toLowerCase().trim();
   console.log('[ROI] Extracted domain:', domain);
   return domain;
+}
+
+const FREE_PROVIDERS = [
+  'gmail.com','yahoo.com','hotmail.com','outlook.com','aol.com','icloud.com',
+  'live.com','msn.com','protonmail.com','pm.me','me.com','yandex.com','gmx.com'
+];
+
+function isFreeProvider(domain) {
+  return FREE_PROVIDERS.includes(domain);
 }
 
 // Lazy-load Chart.js if not present (UMD build, minimal logs)
@@ -355,7 +381,7 @@ function populateFormFields(data) {
       const cvrPct  = baselineConversionRate ? toNumberUS(baselineConversionRate.value) / 100 : 0;
       const ordersForAOV = sessionsForAOV * chatPct * prePct * cvrPct;
       const revenueForAOV = (data?.results && data.results.estimatedSales != null)
-        ? Number(data.results.estimatedSales)
+        ? Number(data.results.estimatedSales) / 100
         : 0;
       const aovCalc = ordersForAOV > 0 ? (revenueForAOV / ordersForAOV) : 0;
       if (avgOrderValue) setUSValue(avgOrderValue, aovCalc, 2);
@@ -406,7 +432,19 @@ window.addEventListener('message', function (event) {
     event.data.eventName === 'onFormReady'
   ) {
     
+    // Live listener to clear errors as soon as user clears the email field
+    const emailLive = document.querySelector('input[type="email"]');
+    if (emailLive) {
+      emailLive.addEventListener('input', () => {
+        if (emailLive.value.trim() === "") clearEmailError();
+      });
+    }
+
 $('.hs-button').off('click.roi').on('click.roi', async function (e) {
+      const emailField = document.querySelector('input[type="email"]');
+      if (emailField && emailField.value.trim() === "") {
+        clearEmailError();
+      }
   e.preventDefault(); // <-- block HubSpot's default submission right away
   clearEmailError();
 
@@ -419,6 +457,10 @@ $('.hs-button').off('click.roi').on('click.roi', async function (e) {
     showEmailError('Please enter a valid work email (company domain).');
     return;
   }
+  if (isFreeProvider(domain)) {
+    showEmailError(`This form does not accept addresses from ${domain}.`);
+    return;
+  }
 
   let data = null;
   try {
@@ -429,7 +471,24 @@ $('.hs-button').off('click.roi').on('click.roi', async function (e) {
     return;
   }
 
+  // Validate domain_found and ensure API matched the submitted domain
+  const apiDomain = data?.query_domain?.toLowerCase?.().trim?.() || null;
+  const matchedDomain = apiDomain === domain;
+
+  // Domain not found in API
+  if (!apiDomainFound(data)) {
+    showEmailError("We couldn’t recognize this domain. Please use your company email.");
+    return;
+  }
+
+  // Domain found but missing usable data
   if (!apiHasUsableData(data)) {
+    showEmailError("Sorry, we don’t have enough data for this domain.");
+    return;
+  }
+
+  // Domain mismatch safety check
+  if (!matchedDomain) {
     showEmailError("We couldn’t recognize this domain. Please use your company email.");
     return;
   }
@@ -488,15 +547,39 @@ $('.hs-button').off('click.roi').on('click.roi', async function (e) {
     emailInput.dispatchEvent(new Event('change', { bubbles: true }));
 
     // Validate before submitting
+    if (!email || email.trim() === "") {
+      clearEmailError();
+      return;
+    }
     const domain = extractDomain(email);
     if (!domain) {
       showEmailError('Please enter a valid work email (company domain).');
       return;
     }
+    if (isFreeProvider(domain)) {
+      showEmailError(`This form does not accept addresses from ${domain}.`);
+      return;
+    }
     const apiData = await fetchROIdata(domain);
-    if (!apiHasUsableData(apiData)) {
+    const apiDomain2 = apiData?.query_domain?.toLowerCase?.().trim?.() || null;
+    const matchedDomain2 = apiDomain2 === domain;
+
+    // Domain not found
+    if (!apiDomainFound(apiData)) {
       showEmailError("We couldn’t recognize this domain. Please use your company email.");
-      return; // do not submit
+      return;
+    }
+
+    // Domain found but missing usable data
+    if (!apiHasUsableData(apiData)) {
+      showEmailError("Sorry, we don’t have enough data for this domain.");
+      return;
+    }
+
+    // Safety: mismatch
+    if (!matchedDomain2) {
+      showEmailError("We couldn’t recognize this domain. Please use your company email.");
+      return;
     }
 
     // Populate now so UI stays consistent after HS submit
