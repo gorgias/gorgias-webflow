@@ -59,89 +59,31 @@ function createBreakdownChart() {
     return;
   }
 
-  // Topic grouping
-  const topicMapping = {
-    presales: ["product", "stock", "discount"],
-    shipping: ["shipping", "order"],
-    returns: ["return", "exchange", "refund"],
-    productIssues: ["feedback"],
-    other: ["other", "subscription"]
-  };
-
-  const groupTotals = {
-    presales: 0,
-    shipping: 0,
-    returns: 0,
-    productIssues: 0,
-    other: 0
-  };
-
-  // Sum values into topic groups
-  for (const [key, val] of Object.entries(intents)) {
-    for (const group in topicMapping) {
-      if (topicMapping[group].includes(key)) {
-        groupTotals[group] += val;
-      }
-    }
-  }
-
-  console.log("[Breakdown] groupTotals:", groupTotals);
-
-  const total =
-    groupTotals.presales +
-    groupTotals.shipping +
-    groupTotals.returns +
-    groupTotals.productIssues +
-    groupTotals.other;
-
-  console.log("[Breakdown] total intents:", total);
-
+  // Compute total across all intents
+  const total = Object.values(intents).reduce((sum, v) => sum + v, 0);
   if (!total || total === 0) {
     console.warn("[Breakdown] total = 0, nothing to draw");
     return;
   }
 
-  const percentages = {
-    presales: (groupTotals.presales / total) * 100,
-    shipping: (groupTotals.shipping / total) * 100,
-    returns: (groupTotals.returns / total) * 100,
-    productIssues: (groupTotals.productIssues / total) * 100,
-    other: (groupTotals.other / total) * 100
-  };
+  // Build dataset dynamically from raw intents
+  const rawLabels = Object.keys(intents);
+  const colors = ["#6f0c86", "#cb55ef", "#f5d4ff", "#faeaff"];
 
-  console.log("[Breakdown] percentages:", percentages);
+  const datasets = rawLabels.map((key, index) => {
+    const pct = (intents[key] / total) * 100;
+    return {
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      data: [pct],
+      backgroundColor: colors[index % colors.length]
+    };
+  });
 
   new Chart(ctx, {
     type: "bar",
     data: {
       labels: ["Top Ticket Topics"],
-      datasets: [
-        {
-          label: "Pre‑Sales Questions",
-          data: [percentages.presales],
-          backgroundColor: "#6f0c86"
-        },
-        {
-          label: "Shipping & Tracking",
-          data: [percentages.shipping],
-          backgroundColor: "#cb55ef"
-        },
-        {
-          label: "Returns & Exchanges",
-          data: [percentages.returns],
-          backgroundColor: "#f5d4ff"
-        },
-        {
-          label: "Product Issues",
-          data: [percentages.productIssues],
-          backgroundColor: "#faeaff"
-        },
-        {
-          label: "Other",
-          data: [percentages.other],
-          backgroundColor: "#cb55ef"
-        }
-      ]
+      datasets: datasets
     },
     options: {
       responsive: true,
