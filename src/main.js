@@ -250,8 +250,8 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js//stacked'+minBase+'.js','body', 1);
     }
 
-    // Page is WIP Customer stories
-    if (path.includes('/wip/customer-stories')){
+    // Page is Customers
+    if (path === '/customers'){
       newScript(scriptBase + '/src/js/customer-stories'+minBase+'.js','body', 1);
     }
 
