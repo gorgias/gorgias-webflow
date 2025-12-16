@@ -259,5 +259,10 @@ Webflow.push(function () {
     if (path.includes('/merchant-ticket-report')){
       newScript(scriptBase + '/src/js/tools/merchant-report'+minBase+'.js','body', 1);
     }
+
+    // Page is /wip/navbar-update
+    if (path.includes('/wip/navbar-update')){
+      newScript(scriptBase + '/src/js/animation/navbar'+minBase+'.js','body', 1);
+    }
 })
 
