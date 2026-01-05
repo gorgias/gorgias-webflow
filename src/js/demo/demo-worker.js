@@ -108,6 +108,12 @@ $(document).ready(function () {
   });
 });
 
+var initGorgiasChatPromise = (window.GorgiasChat) ? window.GorgiasChat.init() : new Promise(function (resolve) { window.addEventListener('gorgias-widget-loaded', function () { resolve();})});
+
+initGorgiasChatPromise.then(function() {
+    GorgiasChat.isOpen() // Will return true or false.
+})
+
 // Open chat widget when clicking on "Talk to sales" CTA
 function chatContactUs(field){
     initGorgiasChatPromise.then(function() {
