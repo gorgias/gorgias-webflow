@@ -6,66 +6,52 @@ const panelLeftSections = document.querySelectorAll(".nav_panel-s-left");
 const panelBottomSections = document.querySelectorAll(".nav_panel-bottom");
 const showcaseCards = document.querySelectorAll(".nav_showcase-card");
 
+// All top-level nav items (including Pricing)
+const navItems = document.querySelectorAll(".nav_nav-item");
+
+// -------------------------------------
+// Accessibility: initial ARIA setup
+// -------------------------------------
+triggers.forEach((trigger) => {
+  trigger.setAttribute("role", "button");
+  trigger.setAttribute("aria-haspopup", "true");
+  trigger.setAttribute("aria-expanded", "false");
+
+  const panelName = trigger.dataset.panel;
+  if (panelName) {
+    trigger.setAttribute("aria-controls", `nav-panel-${panelName}`);
+  }
+});
+
+// -------------------------------------
+// Accessibility: roving tabindex (top-level nav)
+// -------------------------------------
+navItems.forEach((item, index) => {
+  item.setAttribute("tabindex", index === 0 ? "0" : "-1");
+});
+
+panels.forEach((panel) => {
+  const panelName = panel.dataset.panel;
+  if (!panelName) return;
+
+  panel.setAttribute("id", `nav-panel-${panelName}`);
+  panel.setAttribute("role", "region");
+
+  const trigger = document.querySelector(
+    `[data-panel="${panelName}"]`
+  );
+  if (trigger?.id) {
+    panel.setAttribute("aria-labelledby", trigger.id);
+  }
+});
+
 const CLOSE_DELAY = 120; // ms
 let closeTimeout = null;
 
 let isHoveringTrigger = false;
 let isHoveringPanel = false;
 
-/* -------------------------------------
-   CONFIG: known good collapsed height
-------------------------------------- */
-const DEFAULT_COLLAPSED_HEIGHT = 80.3438; // px
-
-let collapsedHeight = DEFAULT_COLLAPSED_HEIGHT;
 let activePanel = null;
-
-/* -------------------------------------
-   Apply collapsed height
-------------------------------------- */
-function applyCollapsedHeight(height) {
-  collapsedHeight = height;
-
-  document.documentElement.style.setProperty(
-    "--nav-collapsed-height",
-    height + "px"
-  );
-
-  navWrapper.style.height = height + "px";
-}
-
-/* -------------------------------------
-   Measure later (safe, optional)
-------------------------------------- */
-function reconcileCollapsedHeight() {
-  if (!navContainer) return;
-
-  const measured = navContainer.offsetHeight;
-
-  // Ignore obviously wrong early values
-  if (measured < 60) return;
-
-  // Only update if meaningfully different
-  if (Math.abs(measured - collapsedHeight) > 1) {
-    applyCollapsedHeight(measured);
-  }
-}
-
-/* -------------------------------------
-   Measure panel height (off-DOM)
-------------------------------------- */
-function measurePanelHeight(panel) {
-  const clone = panel.cloneNode(true);
-  clone.style.position = "absolute";
-  clone.style.visibility = "hidden";
-  clone.style.display = "block";
-  document.body.appendChild(clone);
-
-  const height = clone.offsetHeight;
-  document.body.removeChild(clone);
-
-  return height;
-}
 
 /* -------------------------------------
    Open panel
@@ -83,20 +69,31 @@ function openPanel(panelName) {
   );
   if (!panel) return;
 
-  const expandedHeight =
-    collapsedHeight + measurePanelHeight(panel);
+  // Mark wrapper expanded (CSS controls layout/animation)
+  navWrapper.classList.add("is-expanded");
 
-  navWrapper.style.height = collapsedHeight + "px";
+  // Activate correct panel
+  panels.forEach((p) => p.classList.remove("is-active"));
+  panel.classList.add("is-active");
 
-  requestAnimationFrame(() => {
-    navWrapper.classList.add("is-expanded");
-    navWrapper.style.height = expandedHeight + "px";
+  // Mark trigger active
+  triggers.forEach((t) =>
+    t.closest(".nav_nav-item")?.classList.remove("is-active")
+  );
+  const activeTrigger = [...triggers].find(
+    (t) => t.dataset.panel === panelName
+  );
+  activeTrigger?.closest(".nav_nav-item")?.classList.add("is-active");
 
-    requestAnimationFrame(() => {
-      panels.forEach((p) => p.classList.remove("is-active"));
-      panel.classList.add("is-active");
-    });
-  });
+  // Update aria-expanded states
+  triggers.forEach((t) =>
+    t.setAttribute("aria-expanded", "false")
+  );
+  activeTrigger?.setAttribute("aria-expanded", "true");
+
+  // Sync roving tabindex to active item
+  navItems.forEach((item) => item.setAttribute("tabindex", "-1"));
+  activeTrigger?.setAttribute("tabindex", "0");
 
   activePanel = panelName;
 }
@@ -114,8 +111,19 @@ function closePanels() {
   triggers.forEach((t) =>
     t.closest(".nav_nav-item")?.classList.remove("is-active")
   );
+
   navWrapper.classList.remove("is-expanded");
-  navWrapper.style.height = collapsedHeight + "px";
+
+  // Reset aria-expanded states
+  triggers.forEach((t) =>
+    t.setAttribute("aria-expanded", "false")
+  );
+
+  // Ensure one tabbable item remains
+  const firstItem = navItems[0];
+  navItems.forEach((item) => item.setAttribute("tabindex", "-1"));
+  firstItem?.setAttribute("tabindex", "0");
+
   activePanel = null;
 }
 
@@ -144,19 +152,6 @@ function updateNavScrollState() {
 (function initNav() {
   if (!navWrapper) return;
 
-  // 1. Apply known good height immediately
-  applyCollapsedHeight(DEFAULT_COLLAPSED_HEIGHT);
-
-  // 2. Reconcile after layout settles
-  requestAnimationFrame(() => {
-    requestAnimationFrame(reconcileCollapsedHeight);
-  });
-
-  // 3. Keep in sync later (safe)
-  const ro = new ResizeObserver(reconcileCollapsedHeight);
-  ro.observe(navContainer);
-
-  window.addEventListener("resize", reconcileCollapsedHeight);
   window.addEventListener("scroll", updateNavScrollState);
   updateNavScrollState();
 })();
@@ -192,6 +187,51 @@ triggers.forEach((trigger) => {
   });
 });
 
+// -------------------------------------
+// Keyboard navigation: top-level nav (roving tabindex)
+// -------------------------------------
+navItems.forEach((item) => {
+  item.addEventListener("focus", () => {
+    if (item.dataset.panel) {
+      openPanel(item.dataset.panel);
+    } else {
+      closePanels();
+    }
+  });
+
+  item.addEventListener("keydown", (e) => {
+    const currentIndex = [...navItems].indexOf(item);
+
+    switch (e.key) {
+      case "ArrowRight": {
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % navItems.length;
+        navItems.forEach((i) => i.setAttribute("tabindex", "-1"));
+        navItems[nextIndex].setAttribute("tabindex", "0");
+        navItems[nextIndex].focus();
+        break;
+      }
+
+      case "ArrowLeft": {
+        e.preventDefault();
+        const prevIndex =
+          (currentIndex - 1 + navItems.length) % navItems.length;
+        navItems.forEach((i) => i.setAttribute("tabindex", "-1"));
+        navItems[prevIndex].setAttribute("tabindex", "0");
+        navItems[prevIndex].focus();
+        break;
+      }
+
+      case "Escape": {
+        e.preventDefault();
+        closePanels();
+        item.focus();
+        break;
+      }
+    }
+  });
+});
+
 panels.forEach((panel) => {
   panel.addEventListener("mouseenter", () => {
     isHoveringPanel = true;
@@ -224,3 +264,13 @@ navWrapper.addEventListener("mouseenter", () => {
 });
 
 navWrapper.addEventListener("mouseleave", scheduleCloseIfIdle);
+
+// -------------------------------------
+// Accessibility: close on Escape
+// -------------------------------------
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closePanels();
+    triggers.forEach((t) => t.blur());
+  }
+});
