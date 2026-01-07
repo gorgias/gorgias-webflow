@@ -1,12 +1,23 @@
+/**
+ * Desktop mega-nav interaction model
+ *
+ * - Focus-driven preview: focusing a top-level item opens its panel
+ * - Roving tabindex: arrow keys move focus across top-level items
+ * - Items without panels (e.g. Pricing) act as panel terminators
+ * - Hover mirrors focus behavior for mouse users
+ * - Panels are visual disclosures, not keyboard focus destinations
+ *
+ * This file intentionally avoids height calculations and focus traps.
+ */
+
 const navWrapper = document.querySelector(".nav_wrapper");
-const navContainer = document.querySelector(".nav_container");
 const panels = document.querySelectorAll(".nav_panel");
 const triggers = document.querySelectorAll("[data-panel]");
 const panelLeftSections = document.querySelectorAll(".nav_panel-s-left");
 const panelBottomSections = document.querySelectorAll(".nav_panel-bottom");
 const showcaseCards = document.querySelectorAll(".nav_showcase-card");
 
-// All top-level nav items (including Pricing)
+// Core nav elements
 const navItems = document.querySelectorAll(".nav_nav-item");
 
 // -------------------------------------
@@ -23,9 +34,6 @@ triggers.forEach((trigger) => {
   }
 });
 
-// -------------------------------------
-// Accessibility: roving tabindex (top-level nav)
-// -------------------------------------
 navItems.forEach((item, index) => {
   item.setAttribute("tabindex", index === 0 ? "0" : "-1");
 });
@@ -53,9 +61,14 @@ let isHoveringPanel = false;
 
 let activePanel = null;
 
-/* -------------------------------------
-   Open panel
-------------------------------------- */
+// Remove active state from all top-level nav items
+function clearActiveNavItems() {
+  triggers.forEach((t) =>
+    t.closest(".nav_nav-item")?.classList.remove("is-active")
+  );
+}
+
+// Opens a panel and syncs visual, ARIA, and keyboard state
 function openPanel(panelName) {
   if (closeTimeout) {
     clearTimeout(closeTimeout);
@@ -77,9 +90,7 @@ function openPanel(panelName) {
   panel.classList.add("is-active");
 
   // Mark trigger active
-  triggers.forEach((t) =>
-    t.closest(".nav_nav-item")?.classList.remove("is-active")
-  );
+  clearActiveNavItems();
   const activeTrigger = [...triggers].find(
     (t) => t.dataset.panel === panelName
   );
@@ -98,9 +109,7 @@ function openPanel(panelName) {
   activePanel = panelName;
 }
 
-/* -------------------------------------
-   Close panels
-------------------------------------- */
+// Closes all panels and resets nav to its resting state
 function closePanels() {
   if (closeTimeout) {
     clearTimeout(closeTimeout);
@@ -127,9 +136,7 @@ function closePanels() {
   activePanel = null;
 }
 
-/* -------------------------------------
-   Scroll state
-------------------------------------- */
+// Scroll state
 function updateNavScrollState() {
   const isScrolled = window.scrollY > 100;
 
@@ -146,9 +153,7 @@ function updateNavScrollState() {
   );
 }
 
-/* -------------------------------------
-   Init (no early measuring)
-------------------------------------- */
+// Init (no early measuring)
 (function initNav() {
   if (!navWrapper) return;
 
@@ -156,9 +161,7 @@ function updateNavScrollState() {
   updateNavScrollState();
 })();
 
-/* -------------------------------------
-   Events
-------------------------------------- */
+// Events
 triggers.forEach((trigger) => {
   trigger.addEventListener("mouseenter", (e) => {
     e.preventDefault();
@@ -169,9 +172,7 @@ triggers.forEach((trigger) => {
     const panelName = trigger.dataset.panel;
 
     // Mark nav items active
-    triggers.forEach((t) =>
-      t.closest(".nav_nav-item")?.classList.remove("is-active")
-    );
+    clearActiveNavItems();
     trigger.closest(".nav_nav-item")?.classList.add("is-active");
 
     openPanel(panelName);
@@ -187,9 +188,7 @@ triggers.forEach((trigger) => {
   });
 });
 
-// -------------------------------------
-// Keyboard navigation: top-level nav (roving tabindex)
-// -------------------------------------
+// Keyboard navigation: focus-driven preview with roving tabindex
 navItems.forEach((item) => {
   item.addEventListener("focus", () => {
     if (item.dataset.panel) {
@@ -247,6 +246,7 @@ panels.forEach((panel) => {
   });
 });
 
+// Close panels when neither trigger nor panel is hovered
 function scheduleCloseIfIdle() {
   if (isHoveringTrigger || isHoveringPanel) return;
 
@@ -264,13 +264,3 @@ navWrapper.addEventListener("mouseenter", () => {
 });
 
 navWrapper.addEventListener("mouseleave", scheduleCloseIfIdle);
-
-// -------------------------------------
-// Accessibility: close on Escape
-// -------------------------------------
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    closePanels();
-    triggers.forEach((t) => t.blur());
-  }
-});
