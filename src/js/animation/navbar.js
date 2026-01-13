@@ -290,8 +290,11 @@ Webflow.push(() => {
     const content = trigger.nextElementSibling;
     const arrow = trigger.querySelector('[g-accordion-element="arrow"]');
 
-    trigger.addEventListener("click", () => {
-      console.log("Click trigger:", trigger.textContent.trim());
+    const onToggle = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.log("Toggle trigger:", trigger.textContent.trim());
 
       const wrapper = trigger.closest('[g-accordion-element="item"]');
       const parent = wrapper?.parentElement;
@@ -346,7 +349,13 @@ Webflow.push(() => {
           content.style.maxHeight = content.scrollHeight + "px";
         });
       });
-    });
+    };
+
+    if (window.PointerEvent) {
+      trigger.addEventListener("pointerup", onToggle);
+    } else {
+      trigger.addEventListener("click", onToggle);
+    }
   });
   console.groupEnd();
 });
