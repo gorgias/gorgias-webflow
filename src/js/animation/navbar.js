@@ -221,6 +221,41 @@ if (navWrapper) {
   // Keyboard navigation
   // --------------------
 
+  // Allow ESC to close the mega-nav even when focus is inside a panel.
+  // (Our per-navItem handler only catches ESC when the top-level item itself is focused.)
+  navWrapper.addEventListener(
+    "keydown",
+    e => {
+      if (e.key !== "Escape") return;
+
+      // Only act if focus is currently somewhere inside the desktop nav.
+      if (!navWrapper.contains(document.activeElement)) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Close any open panel(s).
+      closePanels();
+
+      // Remove nav from the keyboard flow entirely
+      navItems.forEach(i => i.setAttribute("tabindex", "-1"));
+
+      // Move focus to the next logical element after the nav
+      // (usually the first focusable element in the page content)
+      const focusAfterNav = navWrapper.nextElementSibling?.querySelector(
+        'a[href], button:not([disabled]), [tabindex="0"]'
+      );
+
+      if (focusAfterNav) {
+        focusAfterNav.focus();
+      } else {
+        // Fallback: blur active element so arrow keys no longer apply
+        document.activeElement?.blur();
+      }
+    },
+    true // capture so ESC works from deep focusable children
+  );
+
   navItems.forEach(item => {
     item.addEventListener("focus", () => {
       item.dataset.panel ? openPanel(item.dataset.panel) : closePanels();
@@ -245,11 +280,7 @@ if (navWrapper) {
         focusFirstLinkInPanel(item.dataset.panel);
       }
 
-      if (e.key === "Escape") {
-        e.preventDefault();
-        closePanels();
-        item.focus();
-      }
+      // Removed per-item Escape handler as per instructions
     });
   });
 }
@@ -265,97 +296,121 @@ Webflow.push(() => {
   console.group("[Mobile Nav Accordion]");
   console.log("Initialized");
 
+
   const triggers = mobileNav.querySelectorAll('[g-accordion-element="trigger"]');
   console.log("Triggers found:", triggers.length);
 
+  // 2) Normalize markup + a11y wiring (and wrap accordion content in a single inner element
+  //    so the CSS grid animation works reliably even if Webflow outputs many direct children).
   triggers.forEach(trigger => {
-    console.log("Setup trigger:", trigger.textContent.trim());
+    const label = trigger.textContent.trim();
+    console.log("Setup trigger:", label);
 
-    const item = trigger.parentElement;
+    const item = trigger.closest(".nav_nav-item") || trigger.parentElement;
     item?.setAttribute("g-accordion-element", "item");
 
     trigger.setAttribute("role", "button");
-    trigger.setAttribute("aria-expanded", "false");
 
     const content = trigger.nextElementSibling;
-    if (content?.getAttribute("g-accordion-element") === "content") {
-      const id = content.id || `mobile-accordion-${Math.random().toString(36).slice(2)}`;
-      content.id = id;
-      content.setAttribute("role", "region");
-      trigger.setAttribute("aria-controls", id);
+    if (!content || content.getAttribute("g-accordion-element") !== "content") {
+      console.warn("No accordion content sibling for trigger:", label);
+      return;
     }
+
+    // Remove any leftover inline height styles from the previous JS-driven implementation.
+    content.style.maxHeight = "";
+
+    // Ensure an inner wrapper exists for the CSS animation.
+    let inner = content.querySelector('[g-accordion-element="inner"]');
+    if (!inner) {
+      inner = document.createElement("div");
+      inner.setAttribute("g-accordion-element", "inner");
+
+      // Move existing children into the inner wrapper.
+      while (content.firstChild) {
+        inner.appendChild(content.firstChild);
+      }
+      content.appendChild(inner);
+    }
+
+    // ARIA wiring
+    const id = content.id || `mobile-accordion-${Math.random().toString(36).slice(2)}`;
+    content.id = id;
+    content.setAttribute("role", "region");
+    trigger.setAttribute("aria-controls", id);
+
+    // Preserve server-rendered state if any, otherwise default closed.
+    const isOpen = trigger.classList.contains("is-active") || content.classList.contains("is-active");
+    trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    content.classList.toggle("is-active", isOpen);
+
+    const arrow = trigger.querySelector('[g-accordion-element="arrow"]');
+    arrow?.classList.toggle("is-active", isOpen);
   });
 
-  triggers.forEach(trigger => {
-    const content = trigger.nextElementSibling;
-    const arrow = trigger.querySelector('[g-accordion-element="arrow"]');
+  // 3) Toggle behavior: use ONE event type (pointerdown) for consistent mobile + desktop behavior.
+  //    (Pointer events are supported on modern iOS; this avoids Webflow click interception issues.)
+  function closeItem(item) {
+    const t = item.querySelector('[g-accordion-element="trigger"]');
+    const c = item.querySelector('[g-accordion-element="content"]');
+    const a = item.querySelector('[g-accordion-element="arrow"]');
 
-    const onToggle = (e) => {
+    t?.classList.remove("is-active");
+    t?.setAttribute("aria-expanded", "false");
+    c?.classList.remove("is-active");
+    a?.classList.remove("is-active");
+  }
+
+  function openItem(item) {
+    const t = item.querySelector('[g-accordion-element="trigger"]');
+    const c = item.querySelector('[g-accordion-element="content"]');
+    const a = item.querySelector('[g-accordion-element="arrow"]');
+
+    t?.classList.add("is-active");
+    t?.setAttribute("aria-expanded", "true");
+    c?.classList.add("is-active");
+    a?.classList.add("is-active");
+  }
+
+  triggers.forEach(trigger => {
+    const label = trigger.textContent.trim();
+
+    trigger.addEventListener("pointerdown", e => {
+      // Prevent Webflow nav from hijacking taps/clicks.
       e.preventDefault();
       e.stopPropagation();
 
-      console.log("Toggle trigger:", trigger.textContent.trim());
+      const item = trigger.closest('[g-accordion-element="item"]');
+      const content = trigger.nextElementSibling;
 
-      const wrapper = trigger.closest('[g-accordion-element="item"]');
-      const parent = wrapper?.parentElement;
-
-      if (parent?.getAttribute("g-accordion-function") === "one-by") {
-        console.log("One-by mode active: closing siblings");
-
-        parent.querySelectorAll('[g-accordion-element="item"]').forEach(item => {
-          if (item === wrapper) return;
-
-          const t = item.querySelector('[g-accordion-element="trigger"]');
-          const c = item.querySelector('[g-accordion-element="content"]');
-          const a = item.querySelector('[g-accordion-element="arrow"]');
-
-          t?.classList.remove("is-active");
-          t?.setAttribute("aria-expanded", "false");
-          c?.classList.remove("is-active");
-          if (c) c.style.maxHeight = "0px";
-          a?.classList.remove("is-active");
-        });
-      }
-
-      const expanded = trigger.classList.toggle("is-active");
-      console.log("Expanded:", expanded);
-
-      trigger.setAttribute("aria-expanded", expanded ? "true" : "false");
-      arrow?.classList.toggle("is-active");
-
-      if (!content) {
-        console.warn("No accordion content found for trigger:", trigger);
+      if (!item || !content || content.getAttribute("g-accordion-element") !== "content") {
+        console.warn("Toggle skipped (missing item/content):", label);
         return;
       }
 
-      if (!expanded) {
-        content.classList.remove("is-active");
-        content.style.maxHeight = "0px";
-        return;
+      const parent = item.parentElement;
+      const oneBy = parent?.getAttribute("g-accordion-function") === "one-by";
+      const isOpen = trigger.classList.contains("is-active");
+
+      console.log("Toggle:", label, "one-by:", oneBy, "currently open:", isOpen);
+
+      // If one-by, close siblings first.
+      if (oneBy) {
+        parent
+          .querySelectorAll('[g-accordion-element="item"]')
+          .forEach(sibling => {
+            if (sibling !== item) closeItem(sibling);
+          });
       }
 
-      content.classList.add("is-active");
-
-      const images = content.querySelectorAll("img");
-      Promise.all(
-        [...images].map(img =>
-          img.complete
-            ? Promise.resolve()
-            : new Promise(res => img.addEventListener("load", res, { once: true }))
-        )
-      ).then(() => {
-        requestAnimationFrame(() => {
-          console.log("Setting content height:", content.scrollHeight);
-          content.style.maxHeight = content.scrollHeight + "px";
-        });
-      });
-    };
-
-    if (window.PointerEvent) {
-      trigger.addEventListener("pointerup", onToggle);
-    } else {
-      trigger.addEventListener("click", onToggle);
-    }
+      // Toggle current item
+      if (isOpen) {
+        closeItem(item);
+      } else {
+        openItem(item);
+      }
+    });
   });
+
   console.groupEnd();
 });
