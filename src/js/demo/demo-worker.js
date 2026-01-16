@@ -271,6 +271,17 @@
     setFieldValue('input[name=demo_timezone]', timezone);
   }
 
+  // Force height on ChiliPiper wrapper
+  function forceChiliHeight() {
+    const cpWrapper = document.querySelector('.wrapper-chilipiper-embed.is-variant');
+    if (cpWrapper) {
+      cpWrapper.style.display = 'block';
+      cpWrapper.style.overflow = 'hidden';
+      cpWrapper.style.setProperty('height', '350px', 'important');
+      cpWrapper.style.setProperty('max-height', '350px', 'important');
+    }
+  }
+
   // Apply UI changes after form submission
   function applyPostSubmitStyles() {
     // Hide element with data-el="hide-after-form"
@@ -279,14 +290,7 @@
       hideEl.style.display = 'none';
     }
 
-    // Force height on ChiliPiper wrapper
-    const cpWrapper = document.querySelector('.wrapper-chilipiper-embed.is-variant');
-    if (cpWrapper) {
-      cpWrapper.style.display = 'block';
-      cpWrapper.style.overflow = 'hidden';
-      cpWrapper.style.setProperty('height', '350px', 'important');
-      cpWrapper.style.setProperty('max-height', '350px', 'important');
-    }
+    forceChiliHeight();
   }
 
   function handleFormSubmitted(eventData) {
@@ -306,12 +310,79 @@
       map: true,
       lead: submittedValues,
       formId: 'hsForm_' + DEMO_FORM_ID,
-      domElement: "#wrapper-chilipiper-embed",
-      onRouting: () => safeTrack("cp_demo_request_routing"),
-      onRouted: () => safeTrack("cp_demo_request_routed"),
+      domElement: ".wrapper-chilipiper-embed.is-variant",
+      onRouting: () => {
+        forceChiliHeight();
+        safeTrack("cp_demo_request_routing");
+      },
+      onRouted: () => {
+        forceChiliHeight();
+        safeTrack("cp_demo_request_routed");
+      },
       onSuccess: () => {
         safeTrack("cp_demo_booked");
         console.log('in success > demo');
+        forceChiliHeight();
+
+        // Hide all elements with data-el="hide-after-form"
+        document.querySelectorAll('[data-el="hide-after-form"]').forEach(el => {
+          el.style.display = 'none';
+        });
+
+        // Show post-demo booked wrapper
+        const postBookedWrapper = document.querySelector('.wrapper-post-demo-booked');
+        if (postBookedWrapper) {
+          postBookedWrapper.classList.remove('is-hidden');
+          postBookedWrapper.style.minWidth = '100%';
+        }
+
+        // Apply post-booking layout styles
+        const formComponent = document.querySelector('.demo_form-component');
+        if (formComponent) {
+          formComponent.style.flexDirection = 'row';
+          formComponent.style.minWidth = '100%';
+          formComponent.style.justifyContent = 'center';
+          formComponent.style.alignSelf = 'center';
+        }
+
+        const formWrapperMaxWidth = document.querySelector('.demo_form-wrapper-max-width');
+        if (formWrapperMaxWidth) {
+          formWrapperMaxWidth.style.display = 'none';
+        }
+
+        const cpWrapper = document.querySelector('.wrapper-chilipiper-embed.is-variant');
+        if (cpWrapper) {
+          cpWrapper.style.minWidth = '100%';
+        }
+
+        // Style the post-booking button
+        const postBookedButton = document.querySelector('.wrapper-post-demo-booked button');
+        if (postBookedButton) {
+          postBookedButton.style.cssText = `
+            display: flex;
+            gap: 0.5rem;
+            border: 0px none;
+            border-radius: var(--border-radius--xsmall-5px);
+            background-color: var(--black);
+            color: var(--primary-white);
+            text-align: center;
+            text-transform: none;
+            white-space: nowrap;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 23rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0.75rem 1.25rem;
+            font-size: 1.125rem;
+            font-weight: 400;
+            line-height: 1;
+            text-decoration: none;
+            transition: all 0.15s;
+          `;
+        }
       },
       onError: () => safeTrack("cp_demo_request_failed"),
       injectRootCss: true
