@@ -12,16 +12,23 @@ Webflow.push(function () {
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/cta-url-parameters'+minBase+'.js','body',1);
     // newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
-    newScript( 'https://gorgias.chilipiper.com/concierge-js/cjs/concierge.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
     // newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/get-started'+minBase+'.js','body',1);
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/global-styles'+minBase+'.css','head');
     newStyle(scriptBase + '/src/css/cookies'+minBase+'.css','body');
-    newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
-    // demo pages
-   newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
+
+    // demo pages - load ChiliPiper only on /demo pages
+    if (path.includes('/demo')) {
+      newScript( 'https://gorgias.chilipiper.com/concierge-js/cjs/concierge.js','body',1);
+      newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
+    }
+
+    // demo pages - load demo script only on /demo pages (exclude /v/demo which uses demo-worker.js)
+    if (path.includes('/demo') && !path.includes('/v/demo')) {
+      newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
+    }
 
     // If page is root then load the following scripts
     if (path === '/') {
