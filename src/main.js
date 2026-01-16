@@ -20,8 +20,10 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/global-styles'+minBase+'.css','head');
     newStyle(scriptBase + '/src/css/cookies'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
-    // demo pages
-   newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
+    // demo pages (exclude /v/demo which uses demo-worker.js)
+    if (!path.includes('/v/demo')) {
+      newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
+    }
 
     // If page is root then load the following scripts
     if (path === '/') {
