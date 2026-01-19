@@ -290,6 +290,12 @@
       hideEl.style.display = 'none';
     }
 
+    // Hide element with data-el="hide-after-form-hs"
+    const hideElHs = document.querySelector('[data-el="hide-after-form-hs"]');
+    if (hideElHs) {
+      hideElHs.style.display = 'none';
+    }
+
     forceChiliHeight();
   }
 
@@ -339,10 +345,21 @@
         // Apply post-booking layout styles
         const formComponent = document.querySelector('.demo_form-component');
         if (formComponent) {
-          formComponent.style.flexDirection = 'row';
+          const isMobileOrTablet = window.innerWidth < 991;
+
+          if (isMobileOrTablet) {
+            // Tablet & mobile
+            formComponent.style.flexDirection = 'column';
+            formComponent.style.gap = '1rem';
+          } else {
+            // Desktop
+            formComponent.style.flexDirection = 'row';
+            formComponent.style.gap = '3rem';
+            formComponent.style.justifyContent = 'center';
+            formComponent.style.alignSelf = 'center';
+          }
+
           formComponent.style.minWidth = '100%';
-          formComponent.style.justifyContent = 'center';
-          formComponent.style.alignSelf = 'center';
         }
 
         const formWrapperMaxWidth = document.querySelector('.demo_form-wrapper-max-width');
@@ -353,35 +370,6 @@
         const cpWrapper = document.querySelector('.wrapper-chilipiper-embed.is-variant');
         if (cpWrapper) {
           cpWrapper.style.minWidth = '100%';
-        }
-
-        // Style the post-booking button
-        const postBookedButton = document.querySelector('.wrapper-post-demo-booked button');
-        if (postBookedButton) {
-          postBookedButton.style.cssText = `
-            display: flex;
-            gap: 0.5rem;
-            border: 0px none;
-            border-radius: var(--border-radius--xsmall-5px);
-            background-color: var(--black);
-            color: var(--primary-white);
-            text-align: center;
-            text-transform: none;
-            white-space: nowrap;
-            cursor: pointer;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 23rem;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 0.75rem 1.25rem;
-            font-size: 1.125rem;
-            font-weight: 400;
-            line-height: 1;
-            text-decoration: none;
-            transition: all 0.15s;
-          `;
         }
       },
       onError: () => safeTrack("cp_demo_request_failed"),
