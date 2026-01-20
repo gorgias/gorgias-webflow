@@ -25,8 +25,8 @@ Webflow.push(function () {
       newStyle(scriptBase + '/src/css/chilipiper'+minBase+'.css','body');
     }
 
-    // demo pages - load demo script only on /demo pages (exclude /v/demo which uses demo-worker.js)
-    if (path.includes('/demo') && !path.includes('/v/demo')) {
+    // demo subpages - load demo.js on pages containing /demo/ (but not /demo itself)
+    if (path.includes('/demo/')) {
       newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     }
 
@@ -221,8 +221,8 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/ebook'+minBase+'.js','body', 1);
     }
 
-    // page is variant demo
-    if (path.includes('/v/demo')){
+    // main demo page only (gorgias.com/demo)
+    if (path === '/demo'){
       newScript(scriptBase + '/src/js/demo/demo-worker'+minBase+'.js','body', 1);
     }
 
