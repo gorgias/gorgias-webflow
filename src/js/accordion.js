@@ -1,118 +1,140 @@
-// Function to inject CSS into the document
-function injectAccordionStyles() {
-  const style = document.createElement("style");
+// Accordion component with smooth animations and accessibility
+(function () {
+  function injectAccordionStyles() {
+    const style = document.createElement("style");
+    style.textContent = `
+      [g-accordion-element="content"] {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-  const css = `
-    [g-accordion-element="content"] {
-      overflow: hidden;
-      width: 100%;
-      height: 0px;
-      transition-property: height, max-height;
-      transition-duration: 250ms, 250ms;
-      transition-timing-function: cubic-bezier(.77, 0, .175, 1), cubic-bezier(.77, 0, .175, 1);
-      will-change: height, max-height;
-    }
+      [g-accordion-element="arrow"] {
+        transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-    [g-accordion-element="content"].is-active {
-      height: 100%;
-      max-height: 150rem;
-      min-height: 1px !important;
-    }
-
-    [g-accordion-element="arrow"] {
-      transition-property: all;
-      transition-duration: 250ms;
-      transition-timing-function: cubic-bezier(.77, 0, .175, 1);
-    }
-
-    [g-accordion-element="arrow"].is-active {
-      transform: rotate(-180deg);
-    }
-  `;
-
-  style.setAttribute("type", "text/css");
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
+      [g-accordion-element="arrow"].is-active {
+        transform: rotate(-180deg);
+      }
+    `;
+    document.head.appendChild(style);
   }
 
-  document.head.appendChild(style);
-}
+  function initAccordion() {
+    injectAccordionStyles();
 
-Webflow.push(function () {
-  injectAccordionStyles();
+    const triggers = document.querySelectorAll('[g-accordion-element="trigger"]');
+    let idCounter = 0;
 
-  const triggers = document.querySelectorAll('[g-accordion-element="trigger"]');
+    triggers.forEach((trigger) => {
+      const parent = trigger.parentElement;
+      const content = trigger.nextElementSibling;
+      const arrow = trigger.querySelector('[g-accordion-element="arrow"]');
+      const isContentValid =
+        content?.getAttribute("g-accordion-element") === "content";
 
-  // ✅ Add g-accordion-element="item" to each trigger's parent
-  triggers.forEach(trigger => {
-    const parent = trigger.parentElement;
-    if (parent && !parent.hasAttribute('g-accordion-element')) {
-      parent.setAttribute('g-accordion-element', 'item');
-    }
-  });
-
-  triggers.forEach(trigger => {
-    const content = trigger.nextElementSibling;
-    const arrow = trigger.querySelector('[g-accordion-element="arrow"]');
-
-    if (trigger.hasAttribute("g-accordion-default")) {
-      trigger.classList.add("is-active");
-      if (content && content.getAttribute('g-accordion-element') === 'content') {
-        content.classList.add("is-active");
-        content.style.maxHeight = content.scrollHeight + "px";
-      }
-      if (arrow) arrow.classList.add("is-active");
-    }
-
-    trigger.addEventListener("click", function () {
-      const wrapper = trigger.closest('[g-accordion-element="item"]');
-      const parent = wrapper?.parentElement;
-
-      // ✅ Close other items if accordion group has g-accordion-function="one-by"
-      if (parent?.getAttribute('g-accordion-function') === 'one-by') {
-        const allItems = parent.querySelectorAll('[g-accordion-element="item"]');
-        allItems.forEach(item => {
-          if (item === wrapper) return;
-
-          const otherTrigger = item.querySelector('[g-accordion-element="trigger"]');
-          const otherContent = item.querySelector('[g-accordion-element="content"]');
-          const otherArrow = item.querySelector('[g-accordion-element="arrow"]');
-
-          otherTrigger?.classList.remove('is-active');
-          otherContent?.classList.remove('is-active');
-          if (otherContent) otherContent.style.maxHeight = '0px';
-          otherArrow?.classList.remove('is-active');
-        });
+      // Set up item wrapper
+      if (parent && !parent.hasAttribute("g-accordion-element")) {
+        parent.setAttribute("g-accordion-element", "item");
       }
 
-      this.classList.toggle("is-active");
-      if (arrow) arrow.classList.toggle("is-active");
+      // Set up accessibility attributes
+      const triggerId = `accordion-trigger-${idCounter}`;
+      const contentId = `accordion-content-${idCounter}`;
+      idCounter++;
 
-      if (!content || content.getAttribute('g-accordion-element') !== 'content') return;
+      trigger.setAttribute("role", "button");
+      trigger.setAttribute("tabindex", "0");
+      trigger.setAttribute("id", triggerId);
+      trigger.setAttribute("aria-expanded", "false");
 
-      const isActive = content.classList.toggle("is-active");
-
-      if (!isActive) {
+      if (isContentValid) {
+        trigger.setAttribute("aria-controls", contentId);
+        content.setAttribute("id", contentId);
+        content.setAttribute("role", "region");
+        content.setAttribute("aria-labelledby", triggerId);
+        // Pre-calculate height for smooth first animation
         content.style.maxHeight = "0px";
-        return;
       }
 
-      const images = content.querySelectorAll("img");
-      const promises = Array.from(images).map(img => {
-        if (img.complete) return Promise.resolve();
-        return new Promise(resolve => img.addEventListener("load", resolve, { once: true }));
+      if (arrow) {
+        arrow.setAttribute("aria-hidden", "true");
+      }
+
+      // Handle default open state
+      if (trigger.hasAttribute("g-accordion-default")) {
+        trigger.classList.add("is-active");
+        trigger.setAttribute("aria-expanded", "true");
+        if (isContentValid) {
+          content.classList.add("is-active");
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+        if (arrow) arrow.classList.add("is-active");
+      }
+
+      // Click handler
+      trigger.addEventListener("click", function () {
+        const wrapper = trigger.closest('[g-accordion-element="item"]');
+        const accordionParent = wrapper?.parentElement;
+        const isOpening = !trigger.classList.contains("is-active");
+
+        // Close others in "one-by" mode
+        if (
+          isOpening &&
+          accordionParent?.getAttribute("g-accordion-function") === "one-by"
+        ) {
+          accordionParent
+            .querySelectorAll('[g-accordion-element="item"]')
+            .forEach((item) => {
+              if (item === wrapper) return;
+              closeItem(item);
+            });
+        }
+
+        // Toggle current item
+        trigger.classList.toggle("is-active");
+        trigger.setAttribute("aria-expanded", isOpening ? "true" : "false");
+        if (arrow) arrow.classList.toggle("is-active");
+
+        if (!isContentValid) return;
+
+        if (isOpening) {
+          content.classList.add("is-active");
+          content.style.maxHeight = content.scrollHeight + "px";
+        } else {
+          content.style.maxHeight = "0px";
+          content.classList.remove("is-active");
+        }
       });
 
-      Promise.all(promises).then(() => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            content.style.maxHeight = content.scrollHeight + "px";
-          });
-        });
+      // Keyboard support
+      trigger.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          trigger.click();
+        }
       });
     });
-  });
-});
+
+    function closeItem(item) {
+      const trigger = item.querySelector('[g-accordion-element="trigger"]');
+      const content = item.querySelector('[g-accordion-element="content"]');
+      const arrow = item.querySelector('[g-accordion-element="arrow"]');
+
+      trigger?.classList.remove("is-active");
+      trigger?.setAttribute("aria-expanded", "false");
+      if (content) {
+        content.style.maxHeight = "0px";
+        content.classList.remove("is-active");
+      }
+      arrow?.classList.remove("is-active");
+    }
+  }
+
+  // Initialize
+  if (typeof Webflow !== "undefined") {
+    Webflow.push(initAccordion);
+  } else {
+    document.addEventListener("DOMContentLoaded", initAccordion);
+  }
+})();
