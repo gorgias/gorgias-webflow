@@ -271,5 +271,10 @@ Webflow.push(function () {
     if (path.includes('/wip/navbar-update')){
       newScript(scriptBase + '/src/js/animation/navbar'+minBase+'.js','body', 1);
     }
+
+    // Trends report pages
+    if (path.includes('trends-report')){
+      newScript(scriptBase + '/src/js/animation/chart-grow'+minBase+'.js','body', 1);
+    }
 })
 
