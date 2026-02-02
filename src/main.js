@@ -278,5 +278,10 @@ Webflow.push(function () {
     if (path.includes('trends-report')){
       newScript(scriptBase + '/src/js/animation/chart-grow'+minBase+'.js','body', 1);
     }
+
+    // Page is /wip/affiliate-program
+    if (path.includes('/wip/affiliate-program')){
+      newScript(scriptBase + '/src/js/tools/affiliate-calculator'+minBase+'.js','body', 1);
+    }
 })
 
