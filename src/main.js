@@ -18,6 +18,7 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/global-styles'+minBase+'.css','head');
     newStyle(scriptBase + '/src/css/cookies'+minBase+'.css','body');
+    newScript(scriptBase + '/src/js/animation/navbar'+minBase+'.js','body', 1);
 
     // demo pages - load ChiliPiper only on /demo pages
     if (path.includes('/demo')) {
@@ -267,9 +268,15 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/tools/merchant-report'+minBase+'.js','body', 1);
     }
 
-    // Page is /wip/navbar-update
-    if (path.includes('/wip/navbar-update')){
-      newScript(scriptBase + '/src/js/animation/navbar'+minBase+'.js','body', 1);
+
+    // Page is /wip/affiliate-program
+    if (path.includes('/wip/affiliate-program')){
+      newScript(scriptBase + '/src/js/tools/affiliate-calculator'+minBase+'.js','body', 1);
+    }
+  
+      // Trends report pages
+    if (path.includes('trends-report')){
+      newScript(scriptBase + '/src/js/animation/chart-grow'+minBase+'.js','body', 1);
     }
 
     // Page is /wip/affiliate-program

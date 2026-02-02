@@ -85,7 +85,7 @@
       const tier = getAffiliateTier(numberReferrals);
 
       // Calculate AI Agent Tickets: HelpdeskTickets * automation rate
-      const aiAgentTickets = HELPDESK_TICKETS_PRO * AUTOMATION_RATE; // 300 * 0.1 = 30
+      const aiAgentTickets = HELPDESK_TICKETS_PRO * AUTOMATION_RATE; // 2000 * 0.3 = 600
 
       // Formula: 3 * (AffiliateTier * ((HelpdeskPricing + AiAgentTickets) * NumberOfReferrals))
       const quarterlyEarnings =
