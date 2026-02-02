@@ -21,11 +21,10 @@
     return { name: 'Coral', multiplier: 0.2 };
   };
 
-  // Fixed assumptions: Basic plan with 20% automation
-  // (50% of customers are on Basic, avg automation rate is 20%)
-  const HELPDESK_PRICING_BASIC = 60;
-  const HELPDESK_TICKETS_BASIC = 300;
-  const AUTOMATION_RATE = 0.2; // 20%
+  // Fixed assumptions: Pro plan with 30% automation
+  const HELPDESK_PRICING_PRO = 360;
+  const HELPDESK_TICKETS_PRO = 2000;
+  const AUTOMATION_RATE = 0.3; // 30%
 
   const affiliateCalculator = () => {
     console.log('[Affiliate Calculator] Initializing...');
@@ -86,11 +85,11 @@
       const tier = getAffiliateTier(numberReferrals);
 
       // Calculate AI Agent Tickets: HelpdeskTickets * automation rate
-      const aiAgentTickets = HELPDESK_TICKETS_BASIC * AUTOMATION_RATE; // 300 * 0.1 = 30
+      const aiAgentTickets = HELPDESK_TICKETS_PRO * AUTOMATION_RATE; // 300 * 0.1 = 30
 
       // Formula: 3 * (AffiliateTier * ((HelpdeskPricing + AiAgentTickets) * NumberOfReferrals))
       const quarterlyEarnings =
-        3 * (tier.multiplier * ((HELPDESK_PRICING_BASIC + aiAgentTickets) * numberReferrals));
+        3 * (tier.multiplier * ((HELPDESK_PRICING_PRO + aiAgentTickets) * numberReferrals));
 
       // Total reward: 8 * AffiliateQuarterlyReward
       const totalEarnings = 8 * quarterlyEarnings;
@@ -98,7 +97,7 @@
       console.log('[Affiliate Calculator] Calculation details:', {
         tier: tier.name,
         tierMultiplier: tier.multiplier,
-        helpdeskPricing: HELPDESK_PRICING_BASIC,
+        helpdeskPricing: HELPDESK_PRICING_PRO,
         aiAgentTickets,
         numberReferrals,
         quarterlyEarnings,
