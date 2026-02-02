@@ -23,7 +23,8 @@
   function initAccordion() {
     injectAccordionStyles();
 
-    const triggers = document.querySelectorAll('[g-accordion-element="trigger"]');
+    // Skip triggers inside mobile nav (handled by navbar.js)
+    const triggers = document.querySelectorAll('[g-accordion-element="trigger"]:not(.nav_wrapper-mobile [g-accordion-element="trigger"])');
     let idCounter = 0;
 
     triggers.forEach((trigger) => {
