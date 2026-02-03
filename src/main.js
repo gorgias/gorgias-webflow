@@ -283,5 +283,10 @@ Webflow.push(function () {
     if (path.includes('/wip/affiliate-program')){
       newScript(scriptBase + '/src/js/tools/affiliate-calculator'+minBase+'.js','body', 1);
     }
+  
+      // Trends report pages
+    if (path.includes('trends-report')){
+      newScript(scriptBase + '/src/js/animation/chart-grow'+minBase+'.js','body', 1);
+    }
 })
 
