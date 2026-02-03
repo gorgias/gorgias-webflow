@@ -3,27 +3,45 @@
   function injectAccordionStyles() {
     const style = document.createElement("style");
     style.textContent = `
-      [g-accordion-element="content"] {
+      [g-accordion-element="content"]:not(nav [g-accordion-element="content"]):not(.nav_wrapper-mobile [g-accordion-element="content"]) {
         overflow: hidden;
         max-height: 0;
         transition: max-height 200ms cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      [g-accordion-element="arrow"] {
+      [g-accordion-element="arrow"]:not(nav [g-accordion-element="arrow"]):not(.nav_wrapper-mobile [g-accordion-element="arrow"]) {
         transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      [g-accordion-element="arrow"].is-active {
+      [g-accordion-element="arrow"].is-active:not(nav [g-accordion-element="arrow"]):not(.nav_wrapper-mobile [g-accordion-element="arrow"]) {
         transform: rotate(-180deg);
       }
     `;
     document.head.appendChild(style);
+    console.log("[Accordion.js] Styles injected (max-height: 0 on all [g-accordion-element='content'])");
   }
 
   function initAccordion() {
     injectAccordionStyles();
 
-    const triggers = document.querySelectorAll('[g-accordion-element="trigger"]');
+    console.group("[Accordion.js]");
+    console.log("initAccordion called");
+
+    // Log all triggers on the page before filtering
+    const allTriggers = document.querySelectorAll('[g-accordion-element="trigger"]');
+    console.log("All triggers on page:", allTriggers.length);
+    allTriggers.forEach((t, i) => {
+      const inNav = !!t.closest("nav");
+      const inMobileNav = !!t.closest(".nav_wrapper-mobile");
+      console.log(`  Trigger ${i}: "${t.textContent.trim()}" | inNav: ${inNav} | inMobileNav: ${inMobileNav} | closest nav:`, t.closest("nav"), "| closest .nav_wrapper-mobile:", t.closest(".nav_wrapper-mobile"));
+    });
+
+    // Skip triggers inside mobile nav (handled by navbar.js)
+    const triggers = document.querySelectorAll('[g-accordion-element="trigger"]:not(nav [g-accordion-element="trigger"]):not(.nav_wrapper-mobile [g-accordion-element="trigger"])');
+    console.log("Filtered triggers (after excluding nav):", triggers.length);
+    triggers.forEach((t, i) => {
+      console.log(`  Kept trigger ${i}: "${t.textContent.trim()}"`);
+    });
     let idCounter = 0;
 
     triggers.forEach((trigger) => {
@@ -74,6 +92,7 @@
 
       // Click handler
       trigger.addEventListener("click", function () {
+        console.log(`[Accordion.js] Click on: "${trigger.textContent.trim()}"`);
         const wrapper = trigger.closest('[g-accordion-element="item"]');
         const accordionParent = wrapper?.parentElement;
         const isOpening = !trigger.classList.contains("is-active");
@@ -115,6 +134,8 @@
         }
       });
     });
+
+    console.groupEnd();
 
     function closeItem(item) {
       const trigger = item.querySelector('[g-accordion-element="trigger"]');
