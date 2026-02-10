@@ -499,7 +499,6 @@ console.log("signup-3.js loaded");
         }
 
         function signupUserFormHandler2() {
-            RECAPTCHA_V3_SITE_KEY = data.recaptcha_v3_site_key;
             const API_INIT_ENDPOINT = "/user/init";
             const initParams = { "anonymous_id": getOrSetAnonymousId() };
             post(
@@ -508,6 +507,7 @@ console.log("signup-3.js loaded");
                 // SUCCESS
                 , function (data) {
                     getOrSetAnonymousId(data.anonymous_id);
+                    RECAPTCHA_V3_SITE_KEY = data.recaptcha_v3_site_key;
                     if (data.errors) { handleErrors2({ responseJSON: data.errors }); }
                     if (data.shopify) {
                         if (!emailField.val() && data.shopify.email) { emailField.val(data.shopify.email); emailVerify("warning"); }
