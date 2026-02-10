@@ -308,6 +308,8 @@ console.log("signup-3.js loaded");
         const userForm = $("form#signup-user-form");
         const userFormWrapper = $("#signup-user-form-wrapper");
         const userFormLoadingWrapper = $("#signup-user-form-loading-wrapper");
+        // Store v3 site key (will be set from init response)
+        let RECAPTCHA_V3_SITE_KEY = "";
 
         let delayTimer = 0;
 
@@ -497,6 +499,7 @@ console.log("signup-3.js loaded");
         }
 
         function signupUserFormHandler2() {
+            RECAPTCHA_V3_SITE_KEY = data.recaptcha_v3_site_key;
             const API_INIT_ENDPOINT = "/user/init";
             const initParams = { "anonymous_id": getOrSetAnonymousId() };
             post(
@@ -678,7 +681,7 @@ console.log("signup-3.js loaded");
                 signupUserFormHandler2();
             });
 
-            userForm.submit(function (event) {
+            userForm.submit(async function (event) {
                 event.preventDefault();
                 event.stopPropagation();
                 signupButton.next("div[id*='-message-container']").empty();
@@ -709,12 +712,27 @@ console.log("signup-3.js loaded");
                     if (navigator.userAgent === DATADOG_BOT_USER_AGENT) {
                         onSubmitUserSignupForm2();
                     } else {
-                        void grecaptcha.execute();
+                        /*void grecaptcha.execute();*/
+                        if (!RECAPTCHA_V3_SITE_KEY) {
+                            console.error("reCAPTCHA v3 site key is missing");
+                            return;
+                        }
+
+                        // v3 only
+                        grecaptcha.ready(async () => {
+                            console.info("Executing reCAPTCHA v3 verification");
+                            const token = await grecaptcha.execute(
+                                RECAPTCHA_V3_SITE_KEY,
+                                { action: "signup" },
+                            );
+                            onSubmitUserSignupForm2(token);
+                        });
                     }
                     return void 0;
                 }
             });
-            window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm2;
+            /*window.onUserSignUpRecaptchaResponse = onSubmitUserSignupForm2; */
+            
 
         }
         window.Webflow = window.Webflow || [];
