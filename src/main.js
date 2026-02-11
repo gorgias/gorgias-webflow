@@ -279,8 +279,8 @@ Webflow.push(function () {
     }
 
 
-    // Page is /wip/affiliate-program
-    if (path.includes('/wip/affiliate-program')){
+    // Page is /affiliate-program
+    if (path.includes('/affiliate-program')){
       newScript(scriptBase + '/src/js/tools/affiliate-calculator'+minBase+'.js','body', 1);
     }
   
@@ -289,14 +289,5 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/animation/chart-grow'+minBase+'.js','body', 1);
     }
 
-    // Page is /wip/affiliate-program
-    if (path.includes('/wip/affiliate-program')){
-      newScript(scriptBase + '/src/js/tools/affiliate-calculator'+minBase+'.js','body', 1);
-    }
-  
-      // Trends report pages
-    if (path.includes('trends-report')){
-      newScript(scriptBase + '/src/js/animation/chart-grow'+minBase+'.js','body', 1);
-    }
 })
 
