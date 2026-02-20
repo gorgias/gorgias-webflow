@@ -41,4 +41,33 @@ window.addEventListener('load', function () {
   });
 
   console.log('[use-cases] Done. Remaining options:', industrySelect.options.length);
+
+  // Step 5: Update demo link for identified (existing) customers
+  // Check multiple signals in order of reliability
+  const getCookie = (name) => { const m = document.cookie.match('(?:^|; )' + name + '=([^;]*)'); return m ? decodeURIComponent(m[1]) : null; };
+
+  const userDataRaw = getCookie('user_data');
+  const userDataDomain = userDataRaw ? (() => { try { return JSON.parse(userDataRaw).domain; } catch (e) { return null; } })() : null;
+  const helpdeskSubdomain = getCookie('gorgias-helpdesk-subdomain');
+  const ajsUserId = getCookie('ajs_user_id');
+  const sessionToken = localStorage.getItem('x-account-manager-session-token');
+
+  console.log('[use-cases] Customer signals:', {
+    userDataDomain,
+    helpdeskSubdomain,
+    ajsUserId,
+    sessionToken: !!sessionToken
+  });
+
+  const isExistingCustomer = !!(userDataDomain || helpdeskSubdomain || ajsUserId || sessionToken);
+  console.log('[use-cases] Is existing customer:', isExistingCustomer);
+
+  const demoLink = document.getElementById('footer-explore');
+  console.log('[use-cases] Demo link element:', demoLink);
+
+  if (demoLink && isExistingCustomer) {
+    console.log('[use-cases] Customer identified — updating demo link from:', demoLink.href);
+    demoLink.href = '/demo/customers/automate';
+    console.log('[use-cases] Demo link updated to:', demoLink.href);
+  }
 });
