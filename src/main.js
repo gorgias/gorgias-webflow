@@ -289,5 +289,9 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/animation/chart-grow'+minBase+'.js','body', 1);
     }
 
+    // Use cases page
+    if (path.includes('/wip/ai-agent-use-cases')){
+      newScript(scriptBase + '/src/js/use-cases'+minBase+'.js','body', 1);
+    }
 })
 
