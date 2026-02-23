@@ -290,7 +290,7 @@ Webflow.push(function () {
     }
 
     // Use cases page
-    if (path.includes('/wip/ai-agent-use-cases')){
+    if (path.includes('/wip/use-cases')){
       newScript(scriptBase + '/src/js/use-cases'+minBase+'.js','body', 1);
     }
 })
