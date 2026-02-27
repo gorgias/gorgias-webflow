@@ -298,6 +298,7 @@ Webflow.push(function () {
     if (path === '/wip/home'){
       newScript(scriptBase + '/src/js/video-modal'+minBase+'.js','body', 1);
       newScript(scriptBase + '/src/js/animation/logo-grid'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/animation/auto-tabs'+minBase+'.js','body', 1);
     }
 })
 
