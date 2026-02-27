@@ -293,5 +293,11 @@ Webflow.push(function () {
     if (path.includes('/use-cases')){
       newScript(scriptBase + '/src/js/use-cases'+minBase+'.js','body', 1);
     }
+
+    // Homepage WIP
+    if (path === '/wip/home'){
+      newScript(scriptBase + '/src/js/video-modal'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/animation/logo-grid'+minBase+'.js','body', 1);
+    }
 })
 
