@@ -1,7 +1,9 @@
 // Auto-cycling Webflow tabs with animated progress bar.
 // Attributes:
-//   [data-auto-tabs="link"] — tab trigger links
-//   [data-auto-tabs="bar"]  — progress bar element inside each link
+//   [data-auto-tabs="link"]     — tab trigger links
+//   [data-auto-tabs="bar"]      — progress bar element inside each link
+//   [data-auto-tabs-link="N"]   — number on each tab link
+//   [data-auto-tabs-img="N"]    — number on each image; active image has no is-inactive class
 
 const initAutoTabs = () => {
   const DURATION     = 6000;
@@ -38,9 +40,17 @@ const initAutoTabs = () => {
     return next || links[0];
   };
 
+  const updateActiveImage = (link) => {
+    const linkNum = link.dataset.autoTabsLink;
+    document.querySelectorAll('[data-auto-tabs-img]').forEach(img => {
+      img.classList.toggle('is-inactive', img.dataset.autoTabsImg !== linkNum);
+    });
+  };
+
   const activateLink = (link) => {
     links.forEach(l => l.classList.remove(ACTIVE_CLASS));
     link.classList.add(ACTIVE_CLASS);
+    updateActiveImage(link);
     if (typeof Webflow !== 'undefined') {
       Webflow.require('tabs').redraw();
     }
@@ -61,6 +71,7 @@ const initAutoTabs = () => {
   links.forEach(link => {
     link.addEventListener('click', () => {
       clearTimeout(tabTimeout);
+      updateActiveImage(link);
       tabLoop(link);
     });
   });
