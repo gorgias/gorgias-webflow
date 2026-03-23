@@ -1,7 +1,9 @@
 // Auto-cycling Webflow tabs with animated progress bar.
 // Attributes:
-//   [data-auto-tabs="link"] — tab trigger links
-//   [data-auto-tabs="bar"]  — progress bar element inside each link
+//   [data-auto-tabs="link"]     — tab trigger links
+//   [data-auto-tabs="bar"]      — progress bar element inside each link
+//   [data-auto-tabs-link="N"]   — number on each tab link
+//   [data-auto-tabs-img="N"]    — number on each image; active image has no is-inactive class
 
 const initAutoTabs = () => {
   const DURATION     = 6000;
@@ -12,17 +14,23 @@ const initAutoTabs = () => {
   const links = [...document.querySelectorAll(SEL_LINK)];
   if (!links.length) return;
 
-  let tabTimeout = null;
+  // Cache bars and images once
+  const bars = links.map(link => link.querySelector(SEL_BAR));
+  const imgs = [...document.querySelectorAll('[data-auto-tabs-img]')];
+
+  let tabTimeout  = null;
+  let activeLink  = null;
 
   const resetBars = () => {
-    document.querySelectorAll(SEL_BAR).forEach(bar => {
+    bars.forEach(bar => {
+      if (!bar) return;
       bar.getAnimations().forEach(a => a.cancel());
       bar.style.height = '0%';
     });
   };
 
   const animateBar = (trigger) => {
-    const bar = trigger.querySelector(SEL_BAR);
+    const bar = bars[links.indexOf(trigger)];
     if (!bar) return;
     bar.animate(
       [{ height: '0%' }, { height: '100%' }],
@@ -31,16 +39,22 @@ const initAutoTabs = () => {
   };
 
   const getNextLink = (current) => {
-    let next = current.nextElementSibling;
-    while (next && !next.matches(SEL_LINK)) {
-      next = next.nextElementSibling;
-    }
-    return next || links[0];
+    const idx = links.indexOf(current);
+    return links[(idx + 1) % links.length];
+  };
+
+  const updateActiveImage = (link) => {
+    const linkNum = link.dataset.autoTabsLink;
+    imgs.forEach(img => {
+      img.classList.toggle('is-inactive', img.dataset.autoTabsImg !== linkNum);
+    });
   };
 
   const activateLink = (link) => {
-    links.forEach(l => l.classList.remove(ACTIVE_CLASS));
+    if (activeLink) activeLink.classList.remove(ACTIVE_CLASS);
     link.classList.add(ACTIVE_CLASS);
+    activeLink = link;
+    updateActiveImage(link);
     if (typeof Webflow !== 'undefined') {
       Webflow.require('tabs').redraw();
     }
@@ -61,19 +75,20 @@ const initAutoTabs = () => {
   links.forEach(link => {
     link.addEventListener('click', () => {
       clearTimeout(tabTimeout);
+      updateActiveImage(link);
       tabLoop(link);
     });
   });
 
   // Only start when the tab list is scrolled into view
-  const initial = document.querySelector(SEL_LINK + '.' + ACTIVE_CLASS) || links[0];
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        tabLoop(initial);
-        observer.disconnect();
-      }
-    });
+  const initial = links.find(l => l.classList.contains(ACTIVE_CLASS)) || links[0];
+  activeLink = initial;
+
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      tabLoop(initial);
+      observer.disconnect();
+    }
   }, { threshold: 0.25 });
 
   observer.observe(links[0].closest('[data-auto-tabs="wrapper"]') || links[0].parentElement);
