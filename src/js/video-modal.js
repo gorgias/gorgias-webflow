@@ -13,12 +13,18 @@ const initVideoModals = () => {
     style.textContent = `
       .cs_video-modal {
         position: fixed; inset: 0;
+        width: 100vw; height: 100vh;
         display: flex; align-items: center; justify-content: center;
         background: rgba(0,0,0,.7);
         opacity: 0; visibility: hidden; pointer-events: none;
         transition: opacity .25s ease;
         z-index: 9999;
-        padding: 0;
+        padding: 1rem;
+      }
+      @media (min-width: 992px) {
+        .cs_video-modal {
+          padding: 20rem;
+        }
       }
       .cs_video-modal.is-open {
         opacity: 1; visibility: visible; pointer-events: auto;
@@ -33,6 +39,7 @@ const initVideoModals = () => {
   ========================== */
 
   const toggleScroll = (disable = false) => {
+    document.documentElement.style.overflow = disable ? 'hidden' : '';
     document.body.style.overflow = disable ? 'hidden' : '';
     console.log('[video-modal] Scroll', disable ? 'locked' : 'restored');
   };
