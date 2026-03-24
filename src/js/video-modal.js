@@ -18,6 +18,7 @@ const initVideoModals = () => {
         opacity: 0; visibility: hidden; pointer-events: none;
         transition: opacity .25s ease;
         z-index: 9999;
+        padding: 0;
       }
       .cs_video-modal.is-open {
         opacity: 1; visibility: visible; pointer-events: auto;
