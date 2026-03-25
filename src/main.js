@@ -134,17 +134,9 @@ Webflow.push(function () {
       newScript(scriptBase + "/src/js/signup-2" + minBase + ".js", "head", 1);
     } 
     
-    else if (path.includes("/get-started-trial")) {
-       // newScript(scriptBase + '/src/js/signup-3'+minBase+'.js','body', 1);
+    else if (path.includes("/get-started-trial") || path.includes("/staging-get-started-trial")) {
        newScript(scriptBase + '/src/js/signup-3'+'.js','body', 1);
     }
-  
-
-    /*
-    else if (path.includes("/get-started-trial")) {
-        newScript(scriptBase + '/src/js/signup-2'+minBase+'.js','body', 1);
-    }
-    */
    
     else if (path.includes("/signup/shopify")) {
         newScript(scriptBase + '/src/js/signup-shopify'+minBase+'.js','head', 1, "module");
