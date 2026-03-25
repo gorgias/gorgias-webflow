@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function() {
 (function () {
   // Parse the current URL and look for the ?debug=gorgias parameter
   const urlParams = new URLSearchParams(window.location.search);
-  const isDebugMode = urlParams.has('debug') && urlParams.get('debug') === 'gorgias';
+  const isDebugMode = urlParams.has('debug') && urlParams.get('debug') === 'gorgias' || window.location.pathname.includes('/wip/');
 
   // Function to disable console.log if not in debug mode (i.e., if on production)
   function handleConsoleLogs() {
