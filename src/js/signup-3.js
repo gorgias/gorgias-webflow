@@ -59,13 +59,20 @@ console.log("signup-3.js loaded");
         return void 0;
     }
 
-    const API_BASE_URL = "https://accounts.gorgias.com/signup";
-    var SESSION_TOKEN_KEY = "x-account-manager-session-token";
+    const path = window.location.pathname;
+    const isStaging = path.includes("/staging-get-started-trial");
+    const API_BASE_URL = isStaging ? "https://accounts.gorgias.xyz/signup" : "https://accounts.gorgias.com/signup";
+    const API_USER_VALIDATION_ENDPOINT = API_BASE_URL + "/user/validation";
+    const API_USER_INIT_ENDPOINT = API_BASE_URL + "/user/init";
+    const API_USER_SUBMIT_ENDPOINT2 = API_BASE_URL + "/user/submit";
+    const API_ACCOUNT_INIT_ENDPOINT = API_BASE_URL + "/account/init";
+
+    const SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
     function post(endpoint, data, success, error2, complete) {
         void $.ajax({
             method: "POST",
-            url: API_BASE_URL + endpoint,
+            url: endpoint,
             data: JSON.stringify(data),
             contentType: "application/json",
             beforeSend: function (jqXHR) {
@@ -110,8 +117,6 @@ console.log("signup-3.js loaded");
             link.attr("href", href.toString());
         });
     }
-
-    var API_USER_VALIDATION_ENDPOINT = "/user/validation";
 
     function validateEmail(email) {
         if (!email || email === "") { return "We need your email to create your account"; }
@@ -499,10 +504,9 @@ console.log("signup-3.js loaded");
         }
 
         function signupUserFormHandler2() {
-            const API_INIT_ENDPOINT = "/user/init";
             const initParams = { "anonymous_id": getOrSetAnonymousId() };
             post(
-                API_INIT_ENDPOINT
+                API_USER_INIT_ENDPOINT
                 , initParams
                 // SUCCESS
                 , function (data) {
@@ -521,10 +525,7 @@ console.log("signup-3.js loaded");
         }
 
         function signupAccountFormHandler3() {
-
-            let API_INIT_ENDPOINT = "/account/init";
-
-            post(API_INIT_ENDPOINT, null,
+            post(API_ACCOUNT_INIT_ENDPOINT, null,
                 // SUCCESS
                 function (response) {
                     /*             
@@ -580,7 +581,6 @@ console.log("signup-3.js loaded");
                 "recaptcha_response": response
             };
 
-            const API_USER_SUBMIT_ENDPOINT2 = "/user/submit";
             onSubmitStart2(userForm, signupButton);
             post(API_USER_SUBMIT_ENDPOINT2, formDataUser,
                 // SUCCESS
