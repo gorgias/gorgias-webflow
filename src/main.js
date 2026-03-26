@@ -11,9 +11,7 @@ Webflow.push(function () {
     const version = splits.length === 2 ? splits[1].split("/")[0] : 'latest';
     const scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@" + version;
 
-    // no need of minification, content is brotli-compressed and the unminified version is already available via jsdelivr CDN
-    // var minBase = isDebug ? "" : ".min";
-    const minBase = "";
+    var minBase = isDebug ? "" : ".min";
 
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/cta-url-parameters'+minBase+'.js','body',1);
