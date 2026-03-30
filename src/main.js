@@ -10,6 +10,7 @@ Webflow.push(function () {
     const splits = url.split("@");
     const version = splits.length === 2 ? splits[1].split("/")[0] : 'latest';
     const scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@" + version;
+    console.log({url, splits, version, scriptBase});
 
     var minBase = isDebug ? "" : ".min";
 

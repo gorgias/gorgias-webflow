@@ -60,6 +60,7 @@ console.log("signup-3.js loaded");
     }
 
     const path = window.location.pathname;
+    console.log({signup3js: path});
     const isStaging = path.includes("/staging-get-started-trial");
     const API_BASE_URL = isStaging ? "https://accounts.gorgias.xyz/signup" : "https://accounts.gorgias.com/signup";
     const API_USER_VALIDATION_ENDPOINT = API_BASE_URL + "/user/validation";
