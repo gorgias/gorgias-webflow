@@ -20,13 +20,13 @@ So as alternative, we built this github repository to centralize all of our cust
 4. In this head, we also have a routing logic that allow us to work on local and test our code releasing (more info in the above section "How to use local repository to develop?")
 
 ### jsDelivr & Deployement
-After every branch merges, it can take take up to 7 days to jsDelivr to update @latest version of files hosted on Github. To avoid this, JsDelivr offers a purge functionnality. That being said, it can still take a few hours.
+After every branch merges, since we use the commit version in the URLs, jsDelivr will automatically fetch and cache the file from Github when asked for the first time (see https://github.com/jsdelivr/jsdelivr#caching). 
 
-So after each branch merge, it requires to execute manually the 2 following steps
-1. Purge the CDN version of the files you've updated (format: https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest/{{path}}/{{file}}.min.ext)
-2. Update the "commitVersion" variable in the head of the website through the webflow admin [here](https://webflow.com/dashboard/sites/gorgiasio/code) with the latest branch version published (and don't forget to publish the website).
-- Here is where you can find the latest branch Version in Github: https://share.getcloudapp.com/7KuzZ8gD. You can also You can also run to command line git branch -v
-- Here is where you have to update the commitVersion in Webflow: https://share.getcloudapp.com/mXuDW6nY
+So after each branch merge, it is required to 
+- manually update the `commitVersion` variable in the "Head Code" section of the webflow admin [here](https://webflow.com/dashboard/sites/gorgiasio/code) with the latest branch version published (e.g. `22a510b`) 
+  - Here is where you can find the latest branch Version in Github: https://share.getcloudapp.com/7KuzZ8gD. You can also You can also run to command line git branch -v
+  - Here is where you have to update the commitVersion in Webflow: https://share.getcloudapp.com/mXuDW6nY
+- and then publish the website (in the same webflow admin page).
 
 
 ### How to use local repository to develop

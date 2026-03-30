@@ -3,10 +3,14 @@ const path = window.location.pathname;
 
 var Webflow = Webflow || [];
 Webflow.push(function () {
-    // var path = window.location.pathname;
     var url = window.location.href;
     var isDebug = url.includes('debug=gorgias');
-    var scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@latest";
+
+    // this main.js file is fetched with GET https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@COMMITHASH/src/main.min.js
+    const splits = url.split("@");
+    const version = splits.length === 2 ? splits[1].split("/")[0] : 'latest';
+    const scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@" + version;
+
     var minBase = isDebug ? "" : ".min";
 
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
