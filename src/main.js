@@ -290,6 +290,11 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/use-cases'+minBase+'.js','body', 1);
     }
 
+    // Product announcement pages
+    if (path.includes('/product-announcement/')){
+      newScript(scriptBase + '/src/js/functionality/feature-number'+minBase+'.js','body', 1);
+    }
+
     // Homepage WIP
     if (path === '/wip/home'){
       newScript(scriptBase + '/src/js/video-modal'+minBase+'.js','body', 1);
