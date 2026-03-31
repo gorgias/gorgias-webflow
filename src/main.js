@@ -295,6 +295,11 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/functionality/feature-number'+minBase+'.js','body', 1);
     }
 
+    // Research template
+    if (path.includes('/research/')){
+      newScript(scriptBase + '/src/js/functionality/toc-list'+minBase+'.js','head', 1);
+    }
+
     // Homepage WIP
     if (path === '/wip/home'){
       newScript(scriptBase + '/src/js/video-modal'+minBase+'.js','body', 1);
