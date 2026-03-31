@@ -73,7 +73,7 @@ console.log("signup-3.js loaded");
     function post(endpoint, data, success, error2, complete) {
         void $.ajax({
             method: "POST",
-            url:  endpoint,
+            url: endpoint,
             data: JSON.stringify(data),
             contentType: "application/json",
             beforeSend: function (jqXHR) {
