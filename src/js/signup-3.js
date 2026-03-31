@@ -66,6 +66,7 @@ console.log("signup-3.js loaded");
     const API_USER_INIT_ENDPOINT = API_BASE_URL + "/user/init";
     const API_USER_SUBMIT_ENDPOINT2 = API_BASE_URL + "/user/submit";
     const API_ACCOUNT_INIT_ENDPOINT = API_BASE_URL + "/account/init";
+    const API_VALIDATION_ENDPOINT = API_BASE_URL + "/account/submit";
 
     const SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
@@ -621,7 +622,6 @@ console.log("signup-3.js loaded");
         }
 
         function onSubmitAccountSignupForm(formData) {
-            const API_VALIDATION_ENDPOINT = "/account/submit";
             post(API_VALIDATION_ENDPOINT, formData,
 
                 // SUCCESS
