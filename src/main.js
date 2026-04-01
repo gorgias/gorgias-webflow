@@ -231,7 +231,7 @@ Webflow.push(function () {
 
     // main demo page only (gorgias.com/demo)
     if (path === '/demo'){
-      newScript(scriptBase + '/src/js/demo/demo-worker'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/demo/demo-worker.js','body', 1);
     }
 
     // page is nav update
