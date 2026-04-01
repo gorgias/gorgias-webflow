@@ -298,6 +298,13 @@ Webflow.push(function () {
     // Research template
     if (path.includes('/research/')){
       newScript(scriptBase + '/src/js/functionality/toc-list'+minBase+'.js','head', 1);
+      newScript(scriptBase + '/src/js/functionality/share-buttons'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/functionality/slider-navigation'+minBase+'.js','body', 1);
+    }
+
+    // Ecom lab page slider-navigation
+    if (path.includes('/ecom-lab')){
+      newScript(scriptBase + '/src/js/functionality/slider-navigation'+minBase+'.js','body', 1);
     }
 
     // Ecom lab teaser countdown
