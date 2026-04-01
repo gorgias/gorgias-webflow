@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+function initSliderNavigation() {
   console.log("[slider-sync] Script loaded");
 
   const pairs = [
@@ -42,4 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   });
-});
+}
+
+initSliderNavigation();
