@@ -300,6 +300,11 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/functionality/toc-list'+minBase+'.js','head', 1);
     }
 
+    // Ecom lab teaser countdown
+    if (path.includes('/ecom-lab-teaser')){
+      newScript(scriptBase + '/src/js/functionality/count-down'+minBase+'.js','body', 1);
+    } 
+
     // Homepage WIP
     if (path === '/wip/home'){
       newScript(scriptBase + '/src/js/video-modal'+minBase+'.js','body', 1);
