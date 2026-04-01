@@ -7,7 +7,8 @@ Webflow.push(function () {
     var isDebug = url.includes('debug=gorgias');
 
     // this main.js file is fetched with GET https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@COMMITHASH/src/main.min.js
-    const splits = url.split("@");
+    const scriptUrl = document.currentScript.src;
+    const splits = scriptUrl.split("@");
     const version = splits.length === 2 ? splits[1].split("/")[0] : 'latest';
     const scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@" + version;
 
