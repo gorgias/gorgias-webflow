@@ -1,5 +1,7 @@
 // scripts belows requires Jquery or are not crucial for website work
 const path = window.location.pathname;
+// Capture currentScript at top level — it's null inside deferred callbacks like Webflow.push()
+const currentScriptUrl = document.currentScript && document.currentScript.src;
 
 var Webflow = Webflow || [];
 Webflow.push(function () {
@@ -7,8 +9,7 @@ Webflow.push(function () {
     var isDebug = url.includes('debug=gorgias');
 
     // this main.js file is fetched with GET https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@COMMITHASH/src/main.min.js
-    const scriptUrl = document.currentScript.src;
-    const splits = scriptUrl.split("@");
+    const splits = (currentScriptUrl || "").split("@");
     const version = splits.length === 2 ? splits[1].split("/")[0] : 'latest';
     const scriptBase = isDebug ? "http://127.0.0.1:5500" : "https://cdn.jsdelivr.net/gh/gorgias/gorgias-webflow@" + version;
 
@@ -231,7 +232,7 @@ Webflow.push(function () {
 
     // main demo page only (gorgias.com/demo)
     if (path === '/demo'){
-      newScript(scriptBase + '/src/js/demo/demo-worker.js','body', 1);
+      newScript(scriptBase + '/src/js/demo/demo-worker'+minBase+'.js','body', 1);
     }
 
     // page is nav update
