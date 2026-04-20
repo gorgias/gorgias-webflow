@@ -314,8 +314,8 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/functionality/count-down'+minBase+'.js','body', 1);
     } 
 
-    // Homepage WIP
-    if (path === '/wip/home'){
+    // Homepage variant
+    if (path === '/v/home'){
       newScript(scriptBase + '/src/js/video-modal'+minBase+'.js','body', 1);
       newScript(scriptBase + '/src/js/animation/logo-grid'+minBase+'.js','body', 1);
       newScript(scriptBase + '/src/js/animation/auto-tabs'+minBase+'.js','body', 1);
