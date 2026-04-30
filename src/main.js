@@ -37,9 +37,11 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     }
 
-    // If page is root then load the following scripts
-    if (path === '/') {
-        newScript(scriptBase + '/src/js/scrolling'+minBase+'.js','body',1);
+    // Homepage scripts
+    if (path === '/'){
+      newScript(scriptBase + '/src/js/video-modal'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/animation/logo-grid'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/animation/auto-tabs'+minBase+'.js','body', 1);
     }
 
 
@@ -313,13 +315,6 @@ Webflow.push(function () {
     if (path.includes('/ecom-lab-teaser')){
       newScript(scriptBase + '/src/js/functionality/count-down'+minBase+'.js','body', 1);
     } 
-
-    // Homepage variant
-    if (path === '/v/home'){
-      newScript(scriptBase + '/src/js/video-modal'+minBase+'.js','body', 1);
-      newScript(scriptBase + '/src/js/animation/logo-grid'+minBase+'.js','body', 1);
-      newScript(scriptBase + '/src/js/animation/auto-tabs'+minBase+'.js','body', 1);
-    }
 
     // ABM landing page
     if (path.includes('/abm-enterprise/')){
