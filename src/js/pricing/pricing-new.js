@@ -309,6 +309,9 @@ function handleBillingChange(cycle) {
 
     automationPrices[plan] = automationPrice;
     updatePlanTotal(plan);
+
+    const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
+    $pane.find('[data-el="selected-automate-price"]').text(formatPrice(automationPrice));
   });
 
   updateMonthlyPriceSpans();
