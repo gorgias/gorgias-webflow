@@ -200,4 +200,58 @@
         }
     });
 
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.getAttribute('data-action') === 'open-gorgias-chat') {
+            var initPromise = (window.GorgiasChat && typeof window.GorgiasChat.init === 'function')
+                ? window.GorgiasChat.init()
+                : new Promise(function(resolve) {
+                    window.addEventListener('gorgias-widget-loaded', resolve);
+                  });
+            initPromise.then(function() {
+                if (!window.GorgiasChat) return;
+                if (typeof window.GorgiasChat.open === 'function') {
+                    window.GorgiasChat.open();
+                }
+                if (typeof window.GorgiasChat.sendMessage === 'function') {
+                    window.GorgiasChat.sendMessage("Hi, I'd like to book a demo");
+                }
+            });
+        }
+    });
+
+    var hsCheckDelay = new URLSearchParams(window.location.search).has('hs_fallback') ? 0 : 3000;
+    setTimeout(function() {
+        var fallbackHTML =
+            '<div class="hs-form-blocked" style="padding:24px 32px;text-align:center;display:flex;flex-direction:column;justify-content:center;row-gap:1rem;">' +
+                '<div style="font-size:1.25rem;font-weight:500;text-align:center;">Trouble loading the form?</div>' +
+                '<div style="text-align:center;">A browser extension may be blocking it. Try disabling your ad blocker for gorgias.com and refreshing the page, or chat with us directly.</div>' +
+                '<a data-action="open-gorgias-chat" class="link-underline text-size-small" style="cursor:pointer;">Chat with us to book a demo</a>' +
+            '</div>';
+
+        var eventFired = false;
+        function showFallback(el) {
+            if (!el || el.querySelector('.hs-form-blocked')) return;
+            el.innerHTML = fallbackHTML;
+            if (!eventFired) {
+                eventFired = true;
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ event: 'hubspot_form_blocked', page_path: window.location.pathname });
+            }
+        }
+
+        // Case A: HubSpot created the .hbspt-form wrapper but form never rendered inside it
+        document.querySelectorAll('.hbspt-form').forEach(function(wrapper) {
+            if (!wrapper.querySelector('form, iframe')) {
+                showFallback(wrapper);
+            }
+        });
+
+        // Case B: embed script blocked entirely — no .hbspt-form wrapper was ever injected
+        document.querySelectorAll('[class*="demo-form-hubspot"]').forEach(function(container) {
+            if (!container.querySelector('form, iframe, .hbspt-form, input')) {
+                showFallback(container);
+            }
+        });
+    }, hsCheckDelay);
+
 })();
