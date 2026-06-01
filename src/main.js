@@ -1,9 +1,11 @@
 // scripts belows requires Jquery or are not crucial for website work
 
 // Stub must be defined before Webflow.push() so it's in place when w-embed scripts run hbspt.forms.create().
-// Overwritten by the real HubSpot library when it loads normally.
+// Guards both cases: hbspt undefined (full block) and hbspt.forms undefined (forms script blocked, tracking script allowed).
 if (!window.hbspt) {
     window.hbspt = { forms: { create: function() {} } };
+} else if (!window.hbspt.forms) {
+    window.hbspt.forms = { create: function() {} };
 }
 
 const path = window.location.pathname;
@@ -266,12 +268,12 @@ Webflow.push(function () {
 
     // AI Agent pages
 
-    if (path.includes('/ai-agent/shopping-assistant') || path.includes('/ai-agent/support-skills')){
+    if (path.startsWith('/ai-agent/shopping-assistant') || path.startsWith('/ai-agent/support-skills')){
       newScript(scriptBase + '/src/js//ai-agent'+minBase+'.js','body', 1);
     }
 
     // AI Agent parent page
-    if (path.includes('/ai-agent')){
+    if (path.startsWith('/ai-agent')){
       newScript(scriptBase + '/src/js//stacked'+minBase+'.js','body', 1);
     }
 
