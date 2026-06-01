@@ -261,7 +261,7 @@
         }
 
         // Case A: HubSpot created the .hbspt-form wrapper but form never rendered inside it
-        // Checking only `form` — a blocked iframe element still exists in the DOM and would mask the failure.
+        // Checking only `form` — a blocked form element still exists in the DOM and would mask the failure.
         document.querySelectorAll('.hbspt-form').forEach(function(wrapper) {
             if (!wrapper.querySelector('form')) {
                 showFallback(wrapper);
