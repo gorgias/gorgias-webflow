@@ -1,4 +1,11 @@
 // scripts belows requires Jquery or are not crucial for website work
+
+// Stub must be defined before Webflow.push() so it's in place when w-embed scripts run hbspt.forms.create().
+// Overwritten by the real HubSpot library when it loads normally.
+if (!window.hbspt) {
+    window.hbspt = { forms: { create: function() {} } };
+}
+
 const path = window.location.pathname;
 // Capture currentScript at top level — it's null inside deferred callbacks like Webflow.push()
 const currentScriptUrl = document.currentScript && document.currentScript.src;
