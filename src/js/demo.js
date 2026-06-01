@@ -61,8 +61,29 @@
             } else {
                 $('input[name=demo_utm_term]').val('').change();
                 $('input[name=cross_sell_utm_term]').val('').change();
+            }
 
-
+            var phoneExtSelect = document.getElementById('phone_ext-' + event.data.id);
+            if (phoneExtSelect) {
+                var maxChars = 8;
+                var originalTexts = new Map();
+                phoneExtSelect.querySelectorAll('option').forEach(function(option) {
+                    originalTexts.set(option.value, option.text);
+                });
+                function truncate(text) {
+                    return text.length > maxChars ? text.substring(0, maxChars) + '…' : text;
+                }
+                function applyTruncation() {
+                    var selected = phoneExtSelect.options[phoneExtSelect.selectedIndex];
+                    if (selected) selected.text = truncate(originalTexts.get(selected.value) || selected.text);
+                }
+                phoneExtSelect.addEventListener('mousedown', function() {
+                    phoneExtSelect.querySelectorAll('option').forEach(function(option) {
+                        option.text = originalTexts.get(option.value) || option.text;
+                    });
+                });
+                phoneExtSelect.addEventListener('change', applyTruncation);
+                applyTruncation();
             }
         }
     });
