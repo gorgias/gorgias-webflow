@@ -70,15 +70,9 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/competitors'+minBase+'.js','body', 1);
     }
 
-    // // pricing page
-    // if (path === '/pricing') {
-    //   newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
-    //   newStyle(scriptBase + '/src/css/pricing'+minBase+'.css','body');
-    // }
-
-     if (path.includes('choose-your-plan')){
-       newScript(scriptBase + '/src/js/pricing'+minBase+'.js','body', 1);
-       newScript(scriptBase + '/src/js/pricing-ui'+minBase+'.js','body', 1);
+    if (path.includes('choose-your-plan')){
+       newScript(scriptBase + '/src/js/choose-your-plan'+minBase+'.js','body', 1);
+       newScript(scriptBase + '/src/js/choose-your-plan-ui'+minBase+'.js','body', 1);
      }
 
     // // pricing page
@@ -251,9 +245,9 @@ Webflow.push(function () {
       newScript(scriptBase + '/src/js/navbar'+minBase+'.js','body', 1);
     }
 
-    // pricing page update
+    // pricing page
     if (path.includes('/pricing')){
-      newScript(scriptBase + '/src/js/pricing/pricing-new'+minBase+'.js','body', 1);
+      newScript(scriptBase + '/src/js/pricing/pricing'+minBase+'.js','body', 1);
     }
 
     // bfcm 2025 ABM pages
