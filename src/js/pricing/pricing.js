@@ -1,1002 +1,408 @@
-/****************************
- *
- * DATA DEFINITIONS
- *
- ****************************/
+var Webflow = Webflow || [];
+Webflow.push(function () {
 
-// Define the helpdesk plans
-const helpdeskPlans = {
-  monthly: [
-    { name: "Starter", tickets_per_month: 50, monthly_cost: 10, cost_per_overage_ticket: 0.4 },
-    { name: "Basic", tickets_per_month: 300, monthly_cost: 60, cost_per_overage_ticket: 0.4 },
-    { name: "Pro", tickets_per_month: 2000, monthly_cost: 360, cost_per_overage_ticket: 0.36 },
-    { name: "Advanced", tickets_per_month: 5000, monthly_cost: 900, cost_per_overage_ticket: 0.36 },
-    { name: "Enterprise", tickets_per_month: 10000, monthly_cost: 1600, cost_per_overage_ticket: 0.32 },
-  ],
-  yearly: [
-    { name: "Starter", tickets_per_month: 50, monthly_cost: 8, cost_per_overage_ticket: 0.4 },
-    { name: "Basic", tickets_per_month: 300, monthly_cost: 50, cost_per_overage_ticket: 0.4 },
-    { name: "Pro", tickets_per_month: 2000, monthly_cost: 300, cost_per_overage_ticket: 0.36 },
-    { name: "Advanced", tickets_per_month: 5000, monthly_cost: 750, cost_per_overage_ticket: 0.36 },
-    { name: "Enterprise", tickets_per_month: 10000, monthly_cost: 1333, cost_per_overage_ticket: 0.32 },
-  ],
-};
+  // State
+  let billingCycle = 'yearly';
+  let currentPlan = 'pro';
+  let toggleState = 'off';
 
-// Define the automate plans
-const automatePlans = {
-  monthly: [
-    { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0, cost_per_overage_interaction: 0 },
-    { name: "Tier 1", interactions_per_month: 30, monthly_cost: 30, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 2", interactions_per_month: 40, monthly_cost: 40, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 3", interactions_per_month: 50, monthly_cost: 50, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 4", interactions_per_month: 60, monthly_cost: 60, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 5", interactions_per_month: 80, monthly_cost: 80, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 6", interactions_per_month: 100, monthly_cost: 100, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 7", interactions_per_month: 120, monthly_cost: 120, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 8", interactions_per_month: 150, monthly_cost: 150, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 9", interactions_per_month: 190, monthly_cost: 190, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 10", interactions_per_month: 230, monthly_cost: 230, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 11", interactions_per_month: 270, monthly_cost: 270, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 12", interactions_per_month: 310, monthly_cost: 310, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 13", interactions_per_month: 360, monthly_cost: 360, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 14", interactions_per_month: 410, monthly_cost: 410, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 15", interactions_per_month: 460, monthly_cost: 460, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 16", interactions_per_month: 530, monthly_cost: 530, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 17", interactions_per_month: 600, monthly_cost: 600, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 18", interactions_per_month: 700, monthly_cost: 700, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 19", interactions_per_month: 800, monthly_cost: 800, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 20", interactions_per_month: 900, monthly_cost: 900, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 21", interactions_per_month: 1000, monthly_cost: 1000, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 22", interactions_per_month: 1125, monthly_cost: 1125, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 23", interactions_per_month: 1250, monthly_cost: 1250, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 24", interactions_per_month: 1375, monthly_cost: 1375, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 25", interactions_per_month: 1500, monthly_cost: 1500, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 26", interactions_per_month: 1750, monthly_cost: 1750, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 27", interactions_per_month: 2000, monthly_cost: 2000, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 28", interactions_per_month: 2500, monthly_cost: 2500, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 29", interactions_per_month: 3000, monthly_cost: 3000, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 30", interactions_per_month: 3500, monthly_cost: 3500, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 31", interactions_per_month: 4000, monthly_cost: 4000, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 32", interactions_per_month: 5000, monthly_cost: 5000, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 33", interactions_per_month: 6000, monthly_cost: 6000, cost_per_overage_interaction: 1.5 },
-  ],
-  yearly: [
-    { name: "Tier 0", interactions_per_month: 0, monthly_cost: 0, cost_per_overage_interaction: 0 },
-    { name: "Tier 1", interactions_per_month: 30, monthly_cost: 27, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 2", interactions_per_month: 40, monthly_cost: 36, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 3", interactions_per_month: 50, monthly_cost: 45, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 4", interactions_per_month: 60, monthly_cost: 54, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 5", interactions_per_month: 80, monthly_cost: 72, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 6", interactions_per_month: 100, monthly_cost: 90, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 7", interactions_per_month: 120, monthly_cost: 108, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 8", interactions_per_month: 150, monthly_cost: 135, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 9", interactions_per_month: 190, monthly_cost: 171, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 10", interactions_per_month: 230, monthly_cost: 207, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 11", interactions_per_month: 270, monthly_cost: 243, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 12", interactions_per_month: 310, monthly_cost: 279, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 13", interactions_per_month: 360, monthly_cost: 324, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 14", interactions_per_month: 410, monthly_cost: 369, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 15", interactions_per_month: 460, monthly_cost: 414, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 16", interactions_per_month: 530, monthly_cost: 477, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 17", interactions_per_month: 600, monthly_cost: 540, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 18", interactions_per_month: 700, monthly_cost: 630, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 19", interactions_per_month: 800, monthly_cost: 720, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 20", interactions_per_month: 900, monthly_cost: 810, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 21", interactions_per_month: 1000, monthly_cost: 900, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 22", interactions_per_month: 1125, monthly_cost: 1012.5, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 23", interactions_per_month: 1250, monthly_cost: 1125, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 24", interactions_per_month: 1375, monthly_cost: 1237.5, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 25", interactions_per_month: 1500, monthly_cost: 1350, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 26", interactions_per_month: 1750, monthly_cost: 1575, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 27", interactions_per_month: 2000, monthly_cost: 1800, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 28", interactions_per_month: 2500, monthly_cost: 2250, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 29", interactions_per_month: 3000, monthly_cost: 2700, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 30", interactions_per_month: 3500, monthly_cost: 3150, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 31", interactions_per_month: 4000, monthly_cost: 3600, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 32", interactions_per_month: 5000, monthly_cost: 4500, cost_per_overage_interaction: 1.5 },
-    { name: "Tier 33", interactions_per_month: 6000, monthly_cost: 5400, cost_per_overage_interaction: 1.5 },
-  ],
-};
+  // DOM elements
+  const $monthly = $('[data-el="monthly"]');
+  const $yearly = $('[data-el="yearly"].pricing-toggle_option');
+  const $cursor = $('.is-toggle-cursor');
+  const $billingInfo = $('[data-el="billing-info"]');
+  const $starterTab = $('[tab-link="starter"]');
+  const $starterText = $('[data-el="starter-text"]');
+  const $toggleButton = $('[data-el="toggle-button"]');
+  const $toggleSwitch = $('[data-el="toggle-switch"]');
+  const $pricingTxt = $('[data-el="total-price-txt"]');
+  const $yearlySaving = $('[data-el="yearly-saving"]');
+  const voicePrice = $('[data-price="voice-price"]');
+  const smsPrice = $('[data-price="sms-price"]');
+  const voiceSelected = $('[data-el="voice-selected"]');
+  const smsSelected = $('[data-el="sms-selected"]');
+  const faqSelected = $('[data-el="faq-selected"]');
 
-// Define the voice tiers
-const voiceTiers = {
-  monthly: [
-    { range: "No Voice Tickets", tier: "Tier 0", price: 0 },
-    { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-    { range: "0-24", tier: "Tier 1", price: 30 },
-    { range: "25-74", tier: "Tier 2", price: 90 },
-    { range: "75-149", tier: "Tier 3", price: 135 },
-    { range: "150-249", tier: "Tier 4", price: 175 },
-    { range: "250-499", tier: "Tier 5", price: 250 },
-    { range: "500-999", tier: "Tier 6", price: 400 },
-    { range: "999+", tier: "Tier 7", price: 0 },
-  ],
-  yearly: [
-    { range: "No Voice Tickets", tier: "Tier 0", price: 0 },
-    { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-    { range: "0-24", tier: "Tier 1", price: 25 },
-    { range: "25-74", tier: "Tier 2", price: 75 },
-    { range: "75-149", tier: "Tier 3", price: 113 },
-    { range: "150-249", tier: "Tier 4", price: 146 },
-    { range: "250-499", tier: "Tier 5", price: 208 },
-    { range: "500-999", tier: "Tier 6", price: 333 },
-    { range: "999+", tier: "Tier 7", price: 0 },
-  ],
-};
+  // Precomputed widths
+  const monthlyWidth = $monthly.outerWidth();
+  const yearlyWidth = $yearly.outerWidth();
 
-// Define the SMS tiers
-const smsTiers = {
-  monthly: [
-    { range: "No SMS Tickets", tier: "Tier 0", price: 0 },
-    { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-    { range: "0-24", tier: "Tier 1", price: 20 },
-    { range: "25-74", tier: "Tier 2", price: 60 },
-    { range: "75-149", tier: "Tier 3", price: 90 },
-    { range: "150-249", tier: "Tier 4", price: 140 },
-    { range: "250-499", tier: "Tier 5", price: 216 },
-    { range: "500-999", tier: "Tier 6", price: 408 },
-    { range: "999+", tier: "Tier 7", price: 0 },
-  ],
-  yearly: [
-    { range: "No SMS Tickets", tier: "Tier 0", price: 0 },
-    { range: "Pay as you go", tier: "Pay as you go", price: 0 },
-    { range: "0-24", tier: "Tier 1", price: 17 },
-    { range: "25-74", tier: "Tier 2", price: 50 },
-    { range: "75-149", tier: "Tier 3", price: 75 },
-    { range: "150-249", tier: "Tier 4", price: 117 },
-    { range: "250-499", tier: "Tier 5", price: 180 },
-    { range: "500-999", tier: "Tier 6", price: 340 },
-    { range: "999+", tier: "Tier 7", price: 0 },
-  ],
-};
+  // Constants
+  const PLANS = ['starter', 'basic', 'pro', 'advanced'];
 
-// Select Voice and SMS selects
-const voiceTicketsSelect = document.querySelector(`[data-target="voice-tickets"]`);
-const smsTicketsSelect = document.querySelector(`[data-target="sms-tickets"]`);
-const voiceSummary = document.querySelector(`[data-summary="voice"]`);
-const smsSummary = document.querySelector(`[data-summary="sms"]`);
-const helpdeskBase = document.querySelector(`[data-summary="helpdesk-base"]`);
-const helpdeskOverages = document.querySelector(`[data-summary="helpdesk-overage"]`);
-let chosenAutomatedTickets = document.querySelector(`[data-el="chosen-automated-tickets"]`);
-let chosenHelpdeskTickets = document.querySelector(`[data-el="chosen-helpdesk-tickets"]`);
-let helpdeskOverageCost = 0;
+  const baseTicketVolumes = {
+    starter: 50,
+    basic: 300,
+    pro: 2000,
+    advanced: 5000
+  };
 
+  const cardPrices = {
+    monthly: { Starter: 10, Basic: 60, Pro: 360, Advanced: 900 },
+    yearly:  { Starter: 10, Basic: 50, Pro: 300, Advanced: 750 }
+  };
 
-/****************************
- *
- * GLOBAL FUNCTIONS
- *
- ****************************/
+  const automationTables = {
+    starter:  { 0:'0', 10:'5',   20:'10',  30:'15',  40:'20',  50:'25',  60:'30', 70:'35', 80:'40', 90:'45', 100:'50' },
+    basic:    { 0:'0', 10:'30',  20:'60',  30:'100', 40:'120', 50:'150' },
+    pro:      { 0:'0', 10:'190', 20:'410', 30:'600', 40:'800', 50:'1000' },
+    advanced: { 0:'0', 10:'530', 20:'1000',30:'1500',40:'2000',50:'2500' }
+  };
 
-// Format figures with comma separator
-function formatNumberWithCommas(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+  let selectedAutomationTier = { starter: 0, basic: 0, pro: 0, advanced: 0 };
+  let automationPrices = { starter: 0, basic: 0, pro: 0, advanced: 0 };
 
-// Support tickets CTA click event
-$(".support-tickets_cta").on("click", function () {
-  const orders = parseInt($(".support-tickets_input").val(), 10);
-  const tickets = Math.round(orders / 15);
-  $(".support-tickets_result-value").text(tickets);
-  $(".support-tickets_result").css("display", "block");
-});
+  const voiceTiers = {
+    monthly: [
+      { range: 'No Voice Tickets', tier: 'Tier 0', price: 0   },
+      { range: '0-24',             tier: 'Tier 1', price: 30  },
+      { range: '25-74',            tier: 'Tier 2', price: 90  },
+      { range: '75-149',           tier: 'Tier 3', price: 135 },
+      { range: '150-249',          tier: 'Tier 4', price: 175 },
+      { range: '250-499',          tier: 'Tier 5', price: 250 },
+      { range: '500-999',          tier: 'Tier 6', price: 400 },
+    ],
+    yearly: [
+      { range: 'No Voice Tickets', tier: 'Tier 0', price: 0   },
+      { range: '0-24',             tier: 'Tier 1', price: 25  },
+      { range: '25-74',            tier: 'Tier 2', price: 75  },
+      { range: '75-149',           tier: 'Tier 3', price: 113 },
+      { range: '150-249',          tier: 'Tier 4', price: 146 },
+      { range: '250-499',          tier: 'Tier 5', price: 208 },
+      { range: '500-999',          tier: 'Tier 6', price: 333 },
+    ],
+  };
 
+  const smsTiers = {
+    monthly: [
+      { range: 'No SMS Tickets', tier: 'Tier 0', price: 0   },
+      { range: '0-24',           tier: 'Tier 1', price: 20  },
+      { range: '25-74',          tier: 'Tier 2', price: 60  },
+      { range: '75-149',         tier: 'Tier 3', price: 90  },
+      { range: '150-249',        tier: 'Tier 4', price: 140 },
+      { range: '250-499',        tier: 'Tier 5', price: 216 },
+      { range: '500-999',        tier: 'Tier 6', price: 408 },
+      { range: '999+',           tier: 'Tier 7', price: 0   },
+    ],
+    yearly: [
+      { range: 'No SMS Tickets', tier: 'Tier 0', price: 0   },
+      { range: '0-24',           tier: 'Tier 1', price: 17  },
+      { range: '25-74',          tier: 'Tier 2', price: 50  },
+      { range: '75-149',         tier: 'Tier 3', price: 75  },
+      { range: '150-249',        tier: 'Tier 4', price: 117 },
+      { range: '250-499',        tier: 'Tier 5', price: 180 },
+      { range: '500-999',        tier: 'Tier 6', price: 340 },
+      { range: '999+',           tier: 'Tier 7', price: 0   },
+    ],
+  };
 
+  // =========================
+  // Helpers
+  // =========================
 
-// Select all elements with the combo classes .is-gradution-nb and .is-invisible
-$(".is-gradution-nb.is-invisible").each(function () {
-  // Remove the text content of each matched element
-  $(this).text("");
-});
-
-
-/****************************
-*
-* STEP 1: Input Number of Tickets by User
-*
-****************************/
-
-// 1A) Linear interpolation for a range
-function linearInterp(t, lowVal, highVal) {
- return lowVal + t * (highVal - lowVal);
-}
-
-// 1B) Map slider fraction (0..1) to ticket values with updated ranges
-function piecewiseValue(fraction) {
- if (fraction < 4 / 48) {
-     // 10 to 50 (5 steps of 10)
-     const t = fraction / (4 / 48);
-     return linearInterp(t, 10, 50);
- } else if (fraction < (4 + 5) / 48) {
-     // 50 to 300 (5 steps of 50)
-     const t = (fraction - 4 / 48) / (5 / 48);
-     return linearInterp(t, 50, 300);
- } else if (fraction < (4 + 5 + 17) / 48) {
-     // 300 to 2000 (17 steps of 100)
-     const t = (fraction - (4 + 5) / 48) / (17 / 48);
-     return linearInterp(t, 300, 2000);
- } else if (fraction < (4 + 5 + 17 + 15) / 48) {
-     // 2000 to 5000 (15 steps of 200)
-     const t = (fraction - (4 + 5 + 17) / 48) / (15 / 48);
-     return linearInterp(t, 2000, 5000);
- } else {
-     // 5000 to 10000 (5 steps of 1000)
-     const t = (fraction - (4 + 5 + 17 + 15) / 48) / (5 / 48);
-     return linearInterp(t, 5000, 10000);
- }
-}
-
-// 1C) Rounding logic for each range
-function piecewiseRound(val) {
- if (val <= 50) {
-     return Math.round(val / 10) * 10; // Steps of 10
- } else if (val <= 300) {
-     return Math.round(val / 50) * 50; // Steps of 50
- } else if (val <= 2000) {
-     return Math.round(val / 100) * 100; // Steps of 100
- } else if (val <= 5000) {
-     return Math.round(val / 200) * 200; // Steps of 200
- } else {
-     return Math.round(val / 1000) * 1000; // Steps of 1000
- }
-}
-
-// 1D) Map ticket count to slider fraction (0..1)
-function piecewisePosition(value) {
- if (value <= 50) {
-     return ((value - 10) / (50 - 10)) * (4 / 48);
- } else if (value <= 300) {
-     return (4 / 48) + ((value - 50) / (300 - 50)) * (5 / 48);
- } else if (value <= 2000) {
-     return (4 + 5) / 48 + ((value - 300) / (2000 - 300)) * (17 / 48);
- } else if (value <= 5000) {
-     return (4 + 5 + 17) / 48 + ((value - 2000) / (5000 - 2000)) * (15 / 48);
- } else {
-     return (4 + 5 + 17 + 15) / 48 + ((value - 5000) / (10000 - 5000)) * (5 / 48);
- }
-}
-
-// 1E) Total steps
-const MAX_STEPS = 48;
-
-// Convert slider position (0..48) => final ticket count
-function sliderPosToTickets(sliderPos) {
- const fraction = sliderPos / MAX_STEPS;
- const rawVal = piecewiseValue(fraction);
- const roundedVal = piecewiseRound(rawVal);
- // Ensure unique values at the highest range
- if (sliderPos === MAX_STEPS - 1) return 9000; 
- if (sliderPos === MAX_STEPS) return 10000;
- return roundedVal;
-}
-
-// Convert ticket count => slider position (0..48)
-function ticketsToSliderPos(value) {
- const fraction = piecewisePosition(value);
- return Math.round(fraction * MAX_STEPS);
-}
-
-// 1F) Log all steps for verification
-function logAllSteps() {
-//  console.log("Logging all steps:");
- for (let i = 0; i <= MAX_STEPS; i++) {
-    //  console.log(`Step ${i}: ${sliderPosToTickets(i)} tickets`);
- }
-}
-
-// 1G) Event listener for slider input
-$("#ticketRange").on("input", function () {
-  const sliderPos = +$(this).val(); // 0..48
-  const val = sliderPosToTickets(sliderPos);
-  $("#value").val(val.toFixed(0));
-  globalTicketNumber = val;
-
-  console.log("Step 1: Number of tickets selected:", globalTicketNumber);
-
-  // Update "I have X tickets"
-  $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
-
-  // Call determinePlan to update plan details
-  determinePlan(globalTicketNumber);
-  updateActivePlanElement()
-  updateLogosAndCTAs();
-});
-
-// 1H) Event listener for typed input
-$("#value").on("change", function () {
-  const typedVal = parseInt($(this).val(), 10) || 0;
-  const clampedVal = Math.max(10, Math.min(typedVal, 10000));
-  const pos = ticketsToSliderPos(clampedVal);
-  $("#ticketRange").val(pos);
-
-  globalTicketNumber = clampedVal;
-  console.log("Step 1: Number of tickets typed:", globalTicketNumber);
-
-  $("#rangeValue").text(formatNumberWithCommas(globalTicketNumber));
-
-  // Call determinePlan to update plan details
-  determinePlan(globalTicketNumber);
-  updateActivePlanElement()
-  updateLogosAndCTAs();
-});
-
-// 1I) Log all steps on initialization and set initial value
-$(document).ready(function () {
-  const initialTickets = 300;
-  const pos = ticketsToSliderPos(initialTickets);
-  $("#ticketRange").val(pos);
-  $("#value").val(initialTickets);
-  $("#rangeValue").text(formatNumberWithCommas(initialTickets));
-
-  globalTicketNumber = initialTickets;
-
-  // Call determinePlan to update plan details
-  determinePlan(globalTicketNumber);
-  updateActivePlanElement()
-  updateLogosAndCTAs();
-
-  logAllSteps(); // Log steps for debugging
-});
-
-
-/****************************
- *
- * STEP 2: Check Billing Cycle
- *
- ****************************/
-
-// Global variable to track the billing cycle
-let globalBillingCycle = "yearly"; // Default to yearly
-
-// Function to switch billing cycle
-function switchBillingCycle(billingCycle) {
-  if (billingCycle === "monthly") {
-    $(".is-monthly").addClass("active");
-    $(".is-yearly").removeClass("active");
-    $(".monthlyPlan").prop("checked", true);
-  } else if (billingCycle === "yearly") {
-    $(".is-yearly").addClass("active");
-    $(".is-monthly").removeClass("active");
-    $(".annualPlan").prop("checked", true);
-  }
-  globalBillingCycle = billingCycle;
-  //console.log("Switched to", billingCycle, "billing cycle");
-  determinePlan(globalTicketNumber);
-  displayAlert();
-}
-
-// Event listener for billing toggle radio buttons
-$(".billing-toggle-radio").on("click", function () {
-  if ($(this).hasClass("is-yearly")) {
-    switchBillingCycle("yearly");
-   // console.log("Step 2: Switched to Yearly billing cycle");
-  } else if ($(this).hasClass("is-monthly")) {
-    switchBillingCycle("monthly");
-   // console.log("Step 2: Switched to Monthly billing cycle");
-  }
-  updatePricesOnBillingCycleChange();
-});
-
-// Function to toggle to monthly billing cycle
-function toggleMonthly() {
-  switchBillingCycle("monthly");
-}
-
-// Function to toggle to yearly billing cycle
-function toggleYearly() {
-  switchBillingCycle("yearly");
-}
-
-// Function to display alerts based on billing cycle and plan
-function displayAlert() {
-  $(".yearly-billing-alert, .monthly-billing-alert, .starter-billing-alert").css("display", "none");
-
-  if (globalBillingCycle === "yearly") {
-    $(".yearly-billing-alert").css("display", "flex");
-    $(".radio-wrap.billing-toggle-radio.is-yearly").removeClass("is-disabled");
-   // console.log("Displaying yearly billing alert");
-  } else if (globalBillingCycle === "monthly" && globalCurrentPlanName === "Starter") {
-    $(".starter-billing-alert").css("display", "flex");
-    $(".radio-wrap.billing-toggle-radio.is-yearly").addClass("is-disabled");
-    //console.log("Displaying starter monthly billing alert");
-  } else if (globalBillingCycle === "monthly" && globalCurrentPlanName !== "Starter") {
-    $(".monthly-billing-alert").css("display", "flex");
-    $(".radio-wrap.billing-toggle-radio.is-yearly").removeClass("is-disabled");
-    //console.log("Displaying monthly billing alert");
-  }
-}
-
-
-/****************************
- *
- * STEP 3: Compare globalTicketNumber to Data Definitions
- *
- ****************************/
-
-// Global variables for current plan
-let globalCurrentPlanName = "";
-let globalCurrentPlanPrice = 0;
-let globalCurrentPlanOverageTickets = 0;
-let globalCurrentPlanOverageCostPerTicket = 0;
-let globalCurrentPlanTicketsPerMonth = 0;
-
-// Function to determine the plan based on # of tickets
-function determinePlan(tickets) {
-  const previousPlanName = globalCurrentPlanName;
-  const plans = helpdeskPlans[globalBillingCycle];
-  let currentPlanIndex = 0;
-  let applicablePlan = plans[currentPlanIndex];
-
-  while (currentPlanIndex < plans.length) {
-    const plan = plans[currentPlanIndex];
-    const overageTickets = tickets - plan.tickets_per_month;
-    const overageCost = overageTickets > 0 ? overageTickets * plan.cost_per_overage_ticket : 0;
-    const planCost = plan.monthly_cost;
-    const totalPrice = planCost + overageCost;
-
-  //   console.log(
-  //     `Checking Plan: ${plan.name}, Base Price: ${planCost}, Overage Tickets: ${overageTickets}, Overage Cost: ${overageCost}, Total Price: ${totalPrice}`
-  //   );
-
-    if (
-      currentPlanIndex < plans.length - 1 &&
-      totalPrice > plans[currentPlanIndex + 1].monthly_cost
-    ) {
-      currentPlanIndex++;
-      applicablePlan = plans[currentPlanIndex];
-    } else {
-      break;
-    }
-
-    if (selectedCardType) {
-      // Extract automationRate from selectedCardType
-      const automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
-      // Calculate automateTickets
-      const automateTickets = Math.round(tickets * (automationRate / 100));
-      // Update chosen prices & recalc summary
-      updateChosenPrices(automateTickets, automationRate);
-      calculateSummary();
-      calculateROISavings();
-    }
+  function formatNumberWithCommas(number) {
+    return Number(number).toLocaleString('en-US');
   }
 
-  globalCurrentPlanName = applicablePlan.name;
-  globalCurrentPlanPrice = applicablePlan.monthly_cost;
-  globalCurrentPlanOverageTickets = tickets - applicablePlan.tickets_per_month;
-  globalCurrentPlanOverageCostPerTicket = applicablePlan.cost_per_overage_ticket;
-  globalCurrentPlanTicketsPerMonth = applicablePlan.tickets_per_month;
-
-  // console.log(
-  //   "Step 3: Selected Plan -",
-  //   globalCurrentPlanName,
-  //   "| Base Price:",
-  //   globalCurrentPlanPrice
-  // );
-
-  $('[data-el="planName"]').text(globalCurrentPlanName);
-
-  if (
-    previousPlanName === "Starter" &&
-    globalCurrentPlanName !== "Starter" &&
-    globalBillingCycle === "monthly"
-  ) {
-   // console.log("Switching from Starter monthly → forcing yearly because new plan is not Starter");
-    toggleYearly();
+  function formatPrice(number) {
+    const n = Number(number);
+    return n % 1 === 0
+      ? n.toLocaleString('en-US')
+      : n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  if (globalCurrentPlanName === "Starter" && globalBillingCycle !== "monthly") {
-    console.log("Switching to monthly because plan is Starter");
-    toggleMonthly();
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  updateOveragesDisplay();
-  calculateAutomatePrices();
-}
-
-// Function to update the overages display
-function updateOveragesDisplay() {
-  const overagesElement = $('[data-el="overages"]');
-  if (globalCurrentPlanOverageTickets > 0) {
-    const overageRate = globalCurrentPlanOverageCostPerTicket.toFixed(2);
-    overagesElement.css("opacity", "1");
-    overagesElement.text(`$${overageRate}/overage helpdesk ticket`);
-  //  console.log(`Overages apply: $${overageRate} per overage ticket`);
-  } else {
-    overagesElement.css("opacity", "0");
-   // console.log("No overages apply");
+  function updateUrlParam(key, value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set(key, value);
+    window.history.replaceState({}, '', url.toString());
+    appendQueryParamsToCtaLinks();
   }
-}
 
-
-
-/****************************
- *
- * STEP 4: Calculate Number of Automated Tickets
- *
- ****************************/
-
-let globalAutomateTickets0 = 0,
-  globalAutomateTickets20 = 0,
-  globalAutomateTickets30 = 0,
-  globalAutomateTickets50 = 0;
-let globalAutomatePrice0 = 0,
-  globalAutomatePrice20 = 0,
-  globalAutomatePrice30 = 0,
-  globalAutomatePrice50 = 0;
-
-  function calculateAutomatePrices() {
-    const percentages = [0, 20, 30, 50];
-    const automatePlansForCycle = automatePlans[globalBillingCycle];
-  
-    percentages.forEach((percentage) => {
-      // 🔁 Use selected ticket count instead of plan ticket quota
-      let automateTickets = Math.round(globalTicketNumber * (percentage / 100));
-      let automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
-  
-      // Store in dynamic variables
-      window[`globalAutomateTickets${percentage}`] = automateTickets;
-      window[`globalAutomatePrice${percentage}`] = automatePrice;
-  
-      if (percentage !== 0) {
-        const automateTicketsFormatted = formatNumberWithCommas(automateTickets);
-        $('[data-el="ticketNumber' + percentage + '"]').text(`${automateTicketsFormatted} automated`);
-      }
+  function appendQueryParamsToCtaLinks() {
+    const currentParams = new URLSearchParams(window.location.search).toString();
+    if (!currentParams) return;
+    $('[href*="/signup"], [href*="/demo"]').each(function () {
+      const $link = $(this);
+      const baseHref = $link.attr('href').split('?')[0];
+      $link.attr('href', `${baseHref}?${currentParams}`);
     });
-  
-    // Still show base helpdesk ticket total from the plan
-    const totalTicketsText = `Includes ${formatNumberWithCommas(globalCurrentPlanTicketsPerMonth)} helpdesk tickets`;
-    $('[data-el="ticketNumber"]').text(totalTicketsText);
-  
-    calculateOptionPrices();
   }
 
-// Helper function to find automate price from ticket count
-function findAutomatePrice(tickets, plans) {
-  let selectedPlan = plans[0];
-  for (let i = 0; i < plans.length; i++) {
-    if (tickets <= plans[i].interactions_per_month) {
-      selectedPlan = plans[i];
-      break;
+  function moveCursor(positionX, width) {
+    $cursor.css({ transform: `translate(${positionX}, -50%)` });
+    setTimeout(() => { $cursor.css({ width }); }, 100);
+  }
+
+  function calcAutomationPrice(plan, ticketCount) {
+    return plan === 'starter'
+      ? ticketCount
+      : ticketCount * (billingCycle === 'yearly' ? 0.9 : 1);
+  }
+
+  // =========================
+  // UI update functions
+  // =========================
+
+  function updateBillingInfoText(cycle) {
+    $billingInfo.text(cycle === 'monthly'
+      ? 'Switch to yearly and get 2 months free'
+      : 'Includes 2 months free on all plans');
+    $pricingTxt.text(cycle === 'monthly' ? 'Total billed monthly' : 'Total billed yearly');
+  }
+
+  function updateStarterText(cycle) {
+    $starterText.text(cycle === 'monthly'
+      ? '50 tickets/mo'
+      : 'Only available for monthly subscription');
+  }
+
+  function toggleStarterTab(cycle) {
+    const isActive = $starterTab.hasClass('w--current') ||
+      $starterTab.find('[g-accordion-element="trigger"]').hasClass('is-active');
+    $starterTab.toggleClass('is-inactive', cycle !== 'monthly');
+    if (cycle !== 'monthly' && isActive) {
+      const $nextTab = $('[tab-link="basic"]');
+      if ($nextTab.length) $nextTab.trigger('click');
     }
   }
-  return selectedPlan.monthly_cost;
-}
 
+  function updatePlanTotal(plan) {
+    const basePrice = cardPrices[billingCycle][capitalize(plan)];
+    const automationPrice = automationPrices[plan] || 0;
+    const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
 
-/****************************
- *
- * STEP 5: Calculate Plan Option Prices
- *
- ****************************/
+    $(`[data-price="${plan}"]`).text(`$${formatPrice(basePrice + automationPrice)}`);
+    $pane.find('[data-el="selected-helpdesk-amount"]').text(formatNumberWithCommas(baseTicketVolumes[plan]));
+    $pane.find('[data-el="selected-helpdesk-price"]').text(formatPrice(basePrice));
+    $pane.find('[data-el="selected-automate-price"]').text(formatPrice(automationPrice));
+  }
 
-function calculateOptionPrices() {
-  const percentages = [0, 20, 30, 50];
+  function updateMonthlyPriceSpans() {
+    ['basic', 'pro', 'advanced'].forEach(plan => {
+      const basePrice = cardPrices['monthly'][capitalize(plan)];
+      const ticketCount = parseInt(automationTables[plan][selectedAutomationTier[plan]], 10);
+      $(`[data-el="monthly-price-${plan}"]`).text(formatPrice(basePrice + ticketCount));
+    });
+  }
 
-  percentages.forEach((percentage) => {
-    const automatePrice = window[`globalAutomatePrice${percentage}`];
-    const optionPrice = globalCurrentPlanPrice + automatePrice;
-    const formattedPrice = formatNumberWithCommas(optionPrice);
-    $('[data-el="helpdeskPrice' + percentage + '"]').text(formattedPrice);
-    console.log(`Option ${percentage}%: ${formattedPrice}`);
+  function recalcAllAutomationPrices() {
+    PLANS.forEach(plan => {
+      const ticketCount = parseInt(automationTables[plan][selectedAutomationTier[plan]], 10);
+      automationPrices[plan] = calcAutomationPrice(plan, ticketCount);
+      updatePlanTotal(plan);
+    });
+  }
+
+  function updateActivePlanElement() {
+    document.querySelectorAll('[g-col-highlight]').forEach(el => {
+      el.classList.toggle('is-active', el.getAttribute('g-col-highlight').toLowerCase() === currentPlan);
+    });
+  }
+
+  function recalculateOpenAccordions() {
+    $('[g-accordion-element="content"].is-active').each(function () {
+      this.style.maxHeight = null;
+      setTimeout(() => { this.style.maxHeight = this.scrollHeight + 'px'; }, 10);
+    });
+  }
+
+  // =========================
+  // Master billing controller
+  // =========================
+
+  function handleBillingChange(cycle) {
+    billingCycle = cycle;
+    sessionStorage.setItem('billingCycle', cycle);
+    updateUrlParam('billingCycle', cycle);
+
+    moveCursor(cycle === 'monthly' ? '0%' : '119%', cycle === 'monthly' ? monthlyWidth : yearlyWidth);
+    $('[data-el="ai-res"]').text(cycle === 'monthly' ? '1.00' : '0.90');
+    updateBillingInfoText(cycle);
+    updateStarterText(cycle);
+    recalcAllAutomationPrices();
+    updateMonthlyPriceSpans();
+
+    // Refresh selected voice tier price
+    const voiceId = $('#voice-addons .addons_dropdown-links.selected')?.attr('id');
+    if (voiceId && voiceId.startsWith('voice-tier-')) {
+      const tier = voiceTiers[billingCycle][parseInt(voiceId.replace('voice-tier-', ''), 10)];
+      if (tier) {
+        voicePrice.text(formatNumberWithCommas(tier.price));
+        const addonValue = `voice-${tier.range}`;
+        sessionStorage.setItem('addonSelected', addonValue);
+        updateUrlParam('addonSelected', addonValue);
+      }
+    }
+
+    // Refresh selected SMS tier price
+    const smsId = $('#sms-addons .addons_dropdown-links.selected')?.attr('id');
+    if (smsId && smsId.startsWith('sms-tier-')) {
+      const tier = smsTiers[billingCycle][parseInt(smsId.replace('sms-tier-', ''), 10)];
+      if (tier) {
+        smsPrice.text(formatNumberWithCommas(tier.price));
+        const addonValue = `sms-${tier.range}`;
+        sessionStorage.setItem('addonSelected', addonValue);
+        updateUrlParam('addonSelected', addonValue);
+      }
+    }
+  }
+
+  // =========================
+  // Dropdown initializers
+  // =========================
+
+  function initAddonDropdowns() {
+    function bindAddonTierClicks(prefix, tiers, $priceEl, $selectedEl) {
+      $(`#${prefix}-addons .addons_dropdown-links`).on('click', function (e) {
+        e.preventDefault();
+        const id = $(this).attr('id');
+        if (!id || !id.startsWith(`${prefix}-tier-`)) return;
+        const tier = tiers[billingCycle][parseInt(id.replace(`${prefix}-tier-`, ''), 10)];
+        if (!tier) return;
+        $priceEl.text(formatPrice(tier.price));
+        $selectedEl.text($(this).text());
+        $(`#${prefix}-addons .addons_dropdown-links`).removeClass('selected');
+        $(this).addClass('selected');
+      });
+    }
+    bindAddonTierClicks('voice', voiceTiers, voicePrice, voiceSelected);
+    bindAddonTierClicks('sms', smsTiers, smsPrice, smsSelected);
+  }
+
+  function initAutomationDropdowns() {
+    $('[data-el^="starter-"], [data-el^="basic-"], [data-el^="pro-"], [data-el^="advanced-"]').on('click', function (e) {
+      e.preventDefault();
+      const [plan, percentStr] = $(this).attr('data-el').split('-');
+      const percent = parseInt(percentStr, 10);
+      if (!automationTables[plan]) return;
+
+      const ticketCount = parseInt(automationTables[plan][percent], 10);
+      const automationPrice = calcAutomationPrice(plan, ticketCount);
+
+      selectedAutomationTier[plan] = percent;
+      automationPrices[plan] = automationPrice;
+      sessionStorage.setItem('automationRate', percent);
+      updateUrlParam('automationRate', percent);
+      updatePlanTotal(plan);
+      updateMonthlyPriceSpans();
+
+      const $pane = $(`.pricing_tab-panes[data-w-tab="${capitalize(plan)}"]`);
+      $pane.find('[data-el="automate-item"]').removeClass('is-inactive');
+      $pane.find('[data-el="selected-automate-amount"]').text(formatNumberWithCommas(ticketCount));
+      $(`[data-el="chosen-automation-${plan}"]`).text(`${formatNumberWithCommas(ticketCount)} automated interactions`);
+
+      const $toggle = $(this).closest('.w-dropdown').find('.w-dropdown-toggle');
+      if ($toggle.hasClass('w--open')) $toggle.trigger('click');
+    });
+  }
+
+  function syncTooltipWithActiveTab() {
+    const observer = new MutationObserver(() => {
+      $('.tooltip-pricing').removeClass('is-active');
+      $('.pricing_tab-panes.w--tab-active .tooltip-pricing').addClass('is-active');
+    });
+    $('.pricing_tab-panes').each(function () {
+      observer.observe(this, { attributes: true, attributeFilter: ['class'] });
+    });
+    $('.tooltip-pricing').removeClass('is-active');
+    $('.pricing_tab-panes.w--tab-active .tooltip-pricing').addClass('is-active');
+  }
+
+  // =========================
+  // Event bindings
+  // =========================
+
+  $('.pricing_tab-links').on('click', function () {
+    const $this = $(this);
+    const planKey = $this.attr('data-w-tab')?.toLowerCase();
+
+    if (planKey && baseTicketVolumes[planKey] && cardPrices[billingCycle][capitalize(planKey)]) {
+      $this.find('[data-el="selected-helpdesk-amount"]').text(formatNumberWithCommas(baseTicketVolumes[planKey]));
+      $this.find('[data-el="selected-helpdesk-price"]').text(formatNumberWithCommas(cardPrices[billingCycle][capitalize(planKey)]));
+    }
+
+    const automateAmount = parseInt($this.find('[data-el="selected-automate-amount"]').text().replace(/\D/g, ''), 10);
+    $this.find('[data-el="automate-item"]').toggleClass('is-inactive', !automateAmount);
+
+    if (planKey) {
+      currentPlan = planKey;
+      updateActivePlanElement();
+      sessionStorage.setItem('planSelected', planKey);
+      updateUrlParam('planSelected', planKey);
+    }
   });
-}
 
+  $toggleButton.on('click', function () {
+    const $this = $(this);
+    $this.toggleClass('is-active');
+    $toggleSwitch.toggleClass('is-active');
+    toggleState = $this.hasClass('is-active') ? 'on' : 'off';
+    $('[data-el="excluded"]').toggleClass('is-hidden', toggleState === 'on');
+    recalculateOpenAccordions();
+  });
 
-/****************************
- *
- * STEP 6: Choosing a Plan
- *
- ****************************/
+  $('.addons_dropdown-links[faq-q]').on('click', function () {
+    const faqKey = $(this).attr('faq-q');
+    if (!faqKey) return;
+    $(`.component_tabs-link[faq-q="${faqKey}"]`).trigger('click');
+    if (faqSelected.length) faqSelected.text($(this).text().trim());
+  });
 
-let selectedCardType = null;
-let isProgrammaticClick = false;
+  $('.pricing_toggle-trigger[tab-link]').on('click', function () {
+    const tabKey = $(this).attr('tab-link');
+    if (tabKey) $(`.pricing_tab-links[tab-link="${tabKey}"]`).trigger('click');
+  });
 
-function updatePlanSelection(selectedCardType) {
- // console.log("Updating plan selection for card type:", selectedCardType);
+  $('[data-el="monthly"], [data-el="yearly"]').on('click', function () {
+    const $clicked = $(this);
+    const target = $clicked.data('el');
+    if ($clicked.hasClass('is-active')) return;
 
-  // Deselect all cards
-  $(".pricing_card").removeClass("is-selected");
-  $(".pricing_card .pricing_automate-pill").removeClass("is-selected");
+    $('[data-el="monthly"], [data-el="yearly"]').removeClass('is-active');
+    $(`[data-el="${target}"]`).addClass('is-active').each(function () {
+      if (this !== $clicked[0]) $(this).trigger('click');
+    });
 
-  // Select this card
-  const selectedCard = $('[data-el="' + selectedCardType + '"]');
-  selectedCard.addClass("is-selected");
-  selectedCard.find(".pricing_automate-pill").addClass("is-selected");
-
-  // Show plan summary, hide no-selection
-  $(".plan_summary-layout").css("display", "flex");
-  $(".plan_no-selection").css("display", "none");
-
-  // Enable code radio
-  $(".code-radio").removeClass("is-inactive");
-
-  // Extract automation rate
-  const automationRate = selectedCardType.replace("pricingCard", "") || "0";
-  $('[data-el="automationRate"]').text(automationRate);
-
-  // Calculate tickets
-  const automateTickets = Math.round(globalTicketNumber * (parseInt(automationRate) / 100));
-  // const helpdeskTickets = globalTicketNumber; // or if you previously subtracted automateTickets
-
-  chosenAutomatedTickets.textContent = formatNumberWithCommas(automateTickets);
-  chosenHelpdeskTickets.textContent = formatNumberWithCommas(globalTicketNumber);
-
-  // Update chosen prices
-  updateChosenPrices(automateTickets, automationRate);
-  calculateSummary();
-  calculateROISavings();
-  updateSummaryDetails();
-}
-
-// Event listener for pricing card clicks
-$('[data-el^="pricingCard"]').on("click", function () {
-  selectedCardType = $(this).attr("data-el");
- // console.log("Selected card type:", selectedCardType);
-
-  updatePlanSelection(selectedCardType);
-
-  // Example scroll only if user click
-  if (!isProgrammaticClick) {
-    $("html, body").animate(
-      { scrollTop: $("#step-3").offset().top },
-      400
-    );
-  //  console.log("User clicked, scrolling to #step-3");
-  } else {
-   // console.log("Programmatic click, skipping scroll");
-  }
-});
-
-
-/****************************
- *
- * STEP 7: Calculating the Summary Total
- *
- ****************************/
-
-let chosenHelpdeskPrice = 0;
-let chosenAutomatePrice = 0;
-let voiceTicketPrice = 0;
-let smsTicketPrice = 0;
-
-function calculateSummary() {
-  if (!chosenHelpdeskPrice || chosenHelpdeskPrice === 0) {
-   // console.warn("No plan has been selected yet.");
-    return;
-  }
-  const summaryTotal = chosenHelpdeskPrice + chosenAutomatePrice + voiceTicketPrice + smsTicketPrice;
-  const formattedTotal = formatNumberWithCommas(summaryTotal.toFixed(0));
-  $('[data-el="summaryTotalPrice"]').text(formattedTotal);
- // console.log("Updated DOM with summary total:", formattedTotal);
-}
-
-
-/****************************
- *
- * STEP 8: Update Active Plan + Addon UI + ROI
- *
- ****************************/
-
-function updateActivePlanElement() {
-  const planElements = document.querySelectorAll("[g-col-highlight]");
-  planElements.forEach((element) => {
-    if (
-      element.getAttribute("g-col-highlight").toLowerCase() ===
-      globalCurrentPlanName.toLowerCase()
-    ) {
-      element.classList.add("is-active");
-    //  console.log("Highlight updated on plan:", globalCurrentPlanName);
+    if (target === 'monthly') {
+      $yearlySaving.css('opacity', 0);
+      setTimeout(() => { $yearlySaving.css('display', 'none'); }, 150);
     } else {
-      element.classList.remove("is-active");
+      $yearlySaving.css({ opacity: 1, display: 'block' });
     }
   });
-}
 
-// ROI calculation
-function calculateROISavings() {
-  const avgTimePerTicketWithoutGorgias = 8.6;
-  const avgTimePerTicketWithGorgias = 6;
-  const avgSupportSalary = 35;
+  // =========================
+  // Init
+  // =========================
 
-  let agentTicketsWithAutomate = globalTicketNumber;
-  const percentage = selectedCardType ? selectedCardType.replace("pricingCard", "") : "0";
-  const automateTickets = window[`globalAutomateTickets${percentage}`] || 0;
-  agentTicketsWithAutomate = globalTicketNumber - automateTickets;
+  function init() {
+    moveCursor('119%', yearlyWidth);
+    updateBillingInfoText('yearly');
+    initAddonDropdowns();
+    initAutomationDropdowns();
+    syncTooltipWithActiveTab();
+    appendQueryParamsToCtaLinks();
 
-  if (isNaN(agentTicketsWithAutomate)) {
-    console.error("Invalid agent ticket number");
-    return;
+    setTimeout(() => {
+      $('[data-el="basic-20"]').trigger('click');
+      $('[data-el="advanced-50"]').trigger('click');
+      $('[data-el="pro-30"]').trigger('click');
+
+      PLANS.forEach(plan => {
+        const ticketCount = parseInt(automationTables[plan][selectedAutomationTier[plan]], 10);
+        $(`[data-el="chosen-automation-${plan}"]`).text(`${formatNumberWithCommas(ticketCount)} automated interactions`);
+      });
+
+      updateMonthlyPriceSpans();
+    }, 50);
+
+    $monthly.on('click', () => handleBillingChange('monthly'));
+    $yearly.on('click', () => handleBillingChange('yearly'));
   }
 
-  const totalSupportTimeWithoutGorgias = (globalTicketNumber * avgTimePerTicketWithoutGorgias) / 60;
-  const totalHumanCostWithoutGorgias = totalSupportTimeWithoutGorgias * avgSupportSalary;
-
-  const totalSupportTimeWithGorgias = (agentTicketsWithAutomate * avgTimePerTicketWithGorgias) / 60;
-  const totalHumanCostWithGorgias = totalSupportTimeWithGorgias * avgSupportSalary;
-
-  const totalGorgiasCost = chosenHelpdeskPrice + chosenAutomatePrice;
-
-  const timeSaved = totalSupportTimeWithoutGorgias - totalSupportTimeWithGorgias;
-  const moneySaved = totalHumanCostWithoutGorgias - (totalHumanCostWithGorgias + totalGorgiasCost);
-
-  const formattedMoneySaved = formatNumberWithCommas(moneySaved.toFixed(0));
-
-  $('[data-target="timeSaved"]').text(timeSaved.toFixed(0));
-  if (moneySaved > 0) {
-    $('[data-target="moneySaved"]').text(formattedMoneySaved);
-  } else {
-    $('[data-target="moneySaved"]').text("");
-  }
-}
-
-// Recalc prices when the billing cycle changes
-function updatePricesOnBillingCycleChange() {
-//  console.log("Billing cycle changed to:", globalBillingCycle);
-
-  determinePlan(globalTicketNumber);
-  calculateAutomatePrices();
-  updateVoiceTicketPrice();
-  updateSmsTicketPrice();
-
-  if (selectedCardType) {
-    const automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
-    const automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
-    updateChosenPrices(automateTickets, automationRate);
-    calculateSummary();
-    calculateROISavings();
-    updateSummaryDetails();
-  }
-}
-
-// Update chosen prices based on selected automation
-function updateChosenPrices(automateTicketsParam, automationRateParam) {
-//  console.log("Updating chosen prices for card:", selectedCardType);
-
-  // Helpdesk overage
-  if (globalCurrentPlanOverageTickets > 0) {
-    helpdeskOverageCost = globalCurrentPlanOverageTickets * globalCurrentPlanOverageCostPerTicket;
-  } else {
-    helpdeskOverageCost = 0;
-  }
-  chosenHelpdeskPrice = globalCurrentPlanPrice + helpdeskOverageCost;
-
-  let automateTickets = automateTicketsParam;
-  let automationRate = automationRateParam;
-
-  if (typeof automateTickets === "undefined" || typeof automationRate === "undefined") {
-    if (selectedCardType) {
-      automationRate = parseInt(selectedCardType.replace("pricingCard", ""), 10) || 0;
-      automateTickets = Math.round(globalTicketNumber * (automationRate / 100));
-    } else {
-      automationRate = 0;
-      automateTickets = 0;
-    }
-  }
-
-  const automatePlansForCycle = automatePlans[globalBillingCycle];
-  const automatePrice = findAutomatePrice(automateTickets, automatePlansForCycle);
-  chosenAutomatePrice = automatePrice;
-
-  // console.log("Chosen Helpdesk Price:", chosenHelpdeskPrice);
-  // console.log("Chosen Automate Price:", chosenAutomatePrice);
-
-  if (automationRate === 0) {
-    $('[data-summary="automate"]').css("display", "none");
-  } else {
-    $('[data-summary="automate"]').css("display", "flex");
-    $('[data-summary="automate"]').removeClass("is-hidden");
-  }
-
-  $('[data-el="chosenHelpdeskPrice"]').text(chosenHelpdeskPrice.toFixed(0));
-  $('[data-el="chosenAutomatePrice"]').text(chosenAutomatePrice.toFixed(0));
-}
-
-// Summaries of base helpdesk & overages
-function updateSummaryDetails() {
-  helpdeskBase.textContent = `${globalCurrentPlanPrice.toFixed(0)}`;
-  if (globalCurrentPlanOverageTickets > 0) {
-    helpdeskOverages.textContent = `${helpdeskOverageCost.toFixed(0)}`;
-    $(".summary_plan-breakdown").css("display", "block");
-  } else {
-    helpdeskOverages.textContent = "0";
-    $(".summary_plan-breakdown").css("display", "none");
-  }
-}
-
-
-/****************************
- *
- * Voice & SMS Addons
- *
- ****************************/
-
-function updateVoiceTicketPrice() {
-  const selectedTier = voiceTicketsSelect?.value;
-  if (!selectedTier) return;
-  const planType = globalBillingCycle;
-  voiceTicketPrice = calculateAddonTicketPrice(selectedTier, planType, voiceTiers);
-  updateAddonUI("voice", selectedTier, voiceTicketPrice);
-}
-
-function updateSmsTicketPrice() {
-  const selectedTier = smsTicketsSelect?.value;
-  if (!selectedTier) return;
-  const planType = globalBillingCycle;
-  smsTicketPrice = calculateAddonTicketPrice(selectedTier, planType, smsTiers);
-  updateAddonUI("sms", selectedTier, smsTicketPrice);
-}
-
-function calculateAddonTicketPrice(selectedTier, planType, tiers) {
-  const selectedPlan = tiers[planType].find((tier) => tier.tier === selectedTier);
-  return selectedPlan ? selectedPlan.price : 0;
-}
-
-function updateAddonUI(addonType, selectedTier, ticketPrice) {
-  const summaryElement = $(`[data-summary="${addonType}"]`);
-  const priceElement = $(`.${addonType}-price`);
-  const payAsYouGoElement = $(`.${addonType}-pay-as-you-go`);
-  const onDemandElement = $(`.${addonType}-on-demand`);
-  const ticketPriceElement = $(`.${addonType}-ticket-price`);
-  const tiers = addonType === "voice" ? voiceTiers[globalBillingCycle] : smsTiers[globalBillingCycle];
-
-  if (["Tier 0", "Pay as you go", "Tier 7"].includes(selectedTier)) {
-    ticketPriceElement.css("display", "none");
-  } else {
-    ticketPriceElement.css("display", "block");
-  }
-
-  if (selectedTier === "Pay as you go") {
-    priceElement.css("display", "none");
-    payAsYouGoElement.css("display", "block");
-    onDemandElement.css("display", "none");
-  } else if (selectedTier === "Tier 7") {
-    priceElement.css("display", "none");
-    payAsYouGoElement.css("display", "none");
-    onDemandElement.css("display", "block");
-  } else {
-    priceElement.css("display", "block");
-    payAsYouGoElement.css("display", "none");
-    onDemandElement.css("display", "none");
-  }
-
-  const selectedPlan = tiers.find((tier) => tier.tier === selectedTier);
-  if (selectedPlan) {
-    $(`[data-el="nb${addonType.charAt(0).toUpperCase() + addonType.slice(1)}Tickets"]`).text(selectedPlan.range);
-  }
-
-  $(`[data-el="${addonType}Price"]`).text(ticketPrice.toFixed(0));
- // console.log(`Updated UI with ${addonType} ticket price: ${ticketPrice}`);
-
-  calculateSummary();
-}
-
-// Event listeners for the dropdown selects
-voiceTicketsSelect?.addEventListener("change", function () {
-  $(voiceSummary).removeClass("is-hidden");
-  updateVoiceTicketPrice();
+  init();
 });
-
-smsTicketsSelect?.addEventListener("change", function () {
-  $(smsSummary).removeClass("is-hidden");
-  updateSmsTicketPrice();
-});
-
-// Hide summaries if Tier 0 is selected
-smsTicketsSelect?.addEventListener("change", function () {
-  if (smsTicketsSelect.value === "Tier 0") {
-    $(smsSummary).addClass("is-hidden");
-  }
-});
-voiceTicketsSelect?.addEventListener("change", function () {
-  if (voiceTicketsSelect.value === "Tier 0") {
-    $(voiceSummary).addClass("is-hidden");
-  }
-});
-
-
-/****************************
- *
- * Remove Items from Summary
- *
- ****************************/
-
-$('[data-summary="helpdesk-remove"]').on("click", function () {
-  $(".plan_summary-layout").css("display", "none");
-  $(".plan_no-selection").css("display", "flex");
-  $(".code-radio").addClass("is-inactive");
-  $(".pricing_card").removeClass("is-selected");
-  $('[data-el="summaryTotalPrice"]').text("0,000");
-  chosenHelpdeskPrice = 0;
-  chosenAutomatePrice = 0;
-});
-
-$('[data-summary="automate-remove"]').on("click", function () {
-  isProgrammaticClick = true;
-  const defaultPricingCard = document.querySelector('[data-el="pricingCard"]');
-  if (defaultPricingCard) {
-   // console.log("Simulating click on default pricing card for 0% automation");
-    defaultPricingCard.click();
-  } else {
-    console.error("No pricing card found for default automation (0%)");
-  }
-  $('[data-summary="automate"]').css("display", "none");
-  setTimeout(() => {
-    isProgrammaticClick = false;
-  }, 0);
-});
-
-function resetAddonPrice(addon) {
-  console.log(`Running resetAddonPrice for: ${addon}`);
-  const addonTicketsDropdown = document.querySelector(`#${addon}-tickets`);
-  if (!addonTicketsDropdown) {
-    console.warn(`❌ No dropdown found for #${addon}-tickets`);
-    return;
-  }
-
-  addonTicketsDropdown.value = "Tier 0";
-  addonTicketsDropdown.dispatchEvent(new Event("change", { bubbles: true }));
-
-  const $summary = $('[data-summary="' + addon + '"]');
-  console.log("Hiding summary element:", $summary.length > 0 ? $summary[0] : "not found");
-  $summary.addClass("is-hidden");
-
-  $(".addons_dropdown-links.w--current").removeClass("w--current");
-
-  if (addon === "voice") updateVoiceTicketPrice();
-  else if (addon === "sms") updateSmsTicketPrice();
-}
-
-// Handle click events on remove buttons
-$('[data-summary="voice-remove"]').on("click", function () {
-  console.log("✅ Voice remove button clicked");
-  resetAddonPrice("voice");
-});
-
-$('[data-summary="sms-remove"]').on("click", function () {
-  resetAddonPrice("sms");
-});
-
-
-/***************************
- *
- * Update UI elements
- *
- **************************/
-
-function updateLogosAndCTAs() {
-  let heroBtnLeft = $('[data-el="switch-btn-left"]');
-  let heroBtnRight = $('[data-el="switch-btn-right"]');
-
-  if (globalCurrentPlanName === "Starter" || globalCurrentPlanName === "Basic") {
-    $(".is-pro-logos").css("display", "flex");
-    $(".is-advanced-logos, .is-enterprise-logos").css("display", "none");
-    $('[data-el="book-demo"]').css("display", "none");
-    $('[data-el="contact-sales"]').css("display", "none");
-    $('[data-el="start-free-trial"]').css("display", "block");
-
-    heroBtnLeft.find("div:first").text("Start Free Trial").end().attr("href", "/signup-2");
-    heroBtnRight.find("div:first").text("Book a Demo").end().attr("href", "/demo");
-
-    $(".pricing_card-wrapper, .pricing-step_banner").css("display", "flex");
-    $(".pricing-step_banner.is-enterprise").css("display", "none");
-  } else if (globalCurrentPlanName === "Advanced" || globalCurrentPlanName === "Pro") {
-    $(".is-advanced-logos").css("display", "flex");
-    $(".is-pro-logos, .is-enterprise-logos").css("display", "none");
-    $('[data-el="book-demo"]').css("display", "block");
-    $('[data-el="contact-sales"]').css("display", "none");
-    $('[data-el="start-free-trial"]').css("display", "none");
-
-    heroBtnLeft.find("div:first").text("Book a Demo").end().attr("href", "/demo");
-    heroBtnRight.find("div:first").text("Start Free Trial").end().attr("href", "/signup-2");
-
-    $(".pricing_card-wrapper, .pricing-step_banner").css("display", "flex");
-    $(".pricing-step_banner.is-enterprise").css("display", "none");
-  } else if (globalCurrentPlanName === "Enterprise") {
-    $(".is-enterprise-logos").css("display", "flex");
-    $(".is-pro-logos, .is-advanced-logos").css("display", "none");
-    $(".pricing_card-wrapper, .pricing-step_banner").css("display", "none");
-    $(".pricing-step_banner.is-enterprise").css("display", "flex");
-    $('[data-el="book-demo"]').css("display", "none");
-    $('[data-el="contact-sales"]').css("display", "block");
-  }
-}
