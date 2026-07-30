@@ -78,9 +78,26 @@ test('launcherCss only paints the launcher button, not its containers', function
   css.split('\n').filter(function (l) { return l.includes('{'); }).forEach(function (l) {
     l.split('{')[0].split(',').forEach(function (sel) {
       var s = sel.trim();
-      if (s) { assert.ok(/button$/.test(s), 'selector is not scoped to the button: ' + s); }
+      if (!s) { return; }
+      // the pill itself, or one of the pill's own paint layers
+      assert.ok(
+        s === '#gorgias-chat-messenger-button' ||
+          s === '#gorgias-chat-messenger-button > div',
+        'selector is not scoped to the button: ' + s
+      );
     });
   });
+});
+
+test('launcherCss clears the widget paint layers stacked over the pill', function () {
+  var css = loadModule().api.launcherCss();
+  var start = css.indexOf('#gorgias-chat-messenger-button > div {');
+  assert.ok(start !== -1, 'no paint-layer rule found');
+  var body = css.slice(start, css.indexOf('}', start));
+  assert.match(body, /background-image:\s*none\s*!important/);
+  assert.match(body, /background-color:\s*transparent\s*!important/);
+  assert.match(body, /backdrop-filter:\s*none\s*!important/);
+  assert.match(body, /filter:\s*none\s*!important/);
 });
 
 test('applyLauncherStyle injects a keyed style element into the iframe document', function () {

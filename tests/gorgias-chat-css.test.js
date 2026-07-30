@@ -10,6 +10,10 @@ function css() {
   return fs.readFileSync(CSS_PATH, 'utf8');
 }
 
+function norm(s) {
+  return s.replace(/\s+/g, ' ').trim();
+}
+
 function rules(text) {
   var stripped = text.replace(/\/\*[\s\S]*?\*\//g, '');
   var out = [];
@@ -55,16 +59,31 @@ test('stylesheet leaves the chat bubble icon untouched', function () {
   assert.ok(!body.includes('color:') || !/[^-]color:/.test(body.replace(/background-color:/g, '')));
 });
 
+var PILL_SELECTORS = ['#chat-button:not(iframe)', '#gorgias-chat-container > button'];
+
 test('stylesheet only paints the launcher pill, not wrappers or containers', function () {
   rules(css()).forEach(function (rule) {
     if (!rule.body.includes('background-image')) { return; }
     rule.selector.split(',').forEach(function (sel) {
       var s = sel.trim();
-      assert.ok(
-        s === '#chat-button:not(iframe)' || s === '#gorgias-chat-container > button',
-        'selector is broader than the launcher pill: ' + s
-      );
+      var isPill = PILL_SELECTORS.indexOf(s) !== -1;
+      // the pill's own paint layers are in scope; anything above the pill is not
+      var isPillLayer = PILL_SELECTORS.some(function (p) { return s === p + ' > div'; });
+      assert.ok(isPill || isPillLayer, 'selector is broader than the launcher pill: ' + s);
     });
+  });
+});
+
+test('stylesheet clears the widget paint layers stacked over the pill', function () {
+  var layerRules = rules(css()).filter(function (rule) {
+    return / > div$/.test(rule.selector.split(',').pop().trim());
+  });
+  assert.ok(layerRules.length > 0, 'no paint-layer rule found');
+  layerRules.forEach(function (rule) {
+    var body = norm(rule.body);
+    assert.match(body, /background-image:\s*none\s*!important/);
+    assert.match(body, /backdrop-filter:\s*none\s*!important/);
+    assert.match(body, /filter:\s*none\s*!important/);
   });
 });
 

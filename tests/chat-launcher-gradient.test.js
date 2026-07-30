@@ -59,8 +59,9 @@ test('the gorgiaschat.js injection is scoped to the launcher pill', () => {
   const start = js.indexOf('CHAT_LAUNCHER_CSS =');
   const rule = norm(js.slice(start, js.indexOf('function findChatLauncherIframe', start)));
 
-  // the only selector is the pill's own id
+  // the only selectors are the pill's own id and the pill's own paint layers
   assert.match(rule, /^CHAT_LAUNCHER_CSS = '#gorgias-chat-messenger-button \{/);
+  assert.match(rule, /'#gorgias-chat-messenger-button > div \{'/);
   assert.ok(!/\bsvg\b/.test(rule));
   assert.ok(!/[^-]color:/.test(rule.replace(/background-color:/g, '')));
   assert.ok(!rule.includes('fill:'));

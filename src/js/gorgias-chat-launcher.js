@@ -9,9 +9,15 @@
 
   function launcherCss() {
     return [
-      '#gorgias-chat-messenger-button, body > button, body > * > button {',
+      '#gorgias-chat-messenger-button {',
       '  background-image: ' + LAUNCHER_GRADIENT + ' !important;',
       '  background-color: transparent !important;',
+      '}',
+      '#gorgias-chat-messenger-button > div {',
+      '  background-image: none !important;',
+      '  background-color: transparent !important;',
+      '  backdrop-filter: none !important;',
+      '  filter: none !important;',
       '}'
     ].join('\n');
   }

@@ -362,3 +362,10 @@ img[src="https://rdcdn.com/rt?aid=22184&e=1&img=1"] {
 #gorgias-chat-messenger-button {
   background: linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%) !important;
 }
+
+#gorgias-chat-messenger-button > div {
+  background-image: none !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}

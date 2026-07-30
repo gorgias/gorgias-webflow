@@ -62,7 +62,14 @@ var CHAT_LAUNCHER_IFRAME_SELECTOR = 'div[data-gorgias-widget="true"] iframe#chat
 var CHAT_LAUNCHER_RETRY_MS = 250;
 var CHAT_LAUNCHER_MAX_ATTEMPTS = 40;
 var CHAT_LAUNCHER_CSS = '#gorgias-chat-messenger-button {' +
-  ' background: linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%) !important;' +
+  ' background-image: linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%) !important;' +
+  ' background-color: transparent !important;' +
+  ' }' +
+  '#gorgias-chat-messenger-button > div {' +
+  ' background-image: none !important;' +
+  ' background-color: transparent !important;' +
+  ' backdrop-filter: none !important;' +
+  ' filter: none !important;' +
   ' }';
 
 function findChatLauncherIframe() {

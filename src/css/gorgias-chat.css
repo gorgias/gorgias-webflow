@@ -2,12 +2,16 @@
    See also src/js/gorgias-chat-launcher.js, which styles the launcher
    when it is rendered inside the #chat-button iframe. */
 
-iframe#chat-button {
-  background: transparent !important;
-}
-
 #chat-button:not(iframe),
 #gorgias-chat-container > button {
   background-image: linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%) !important;
   background-color: transparent !important;
+}
+
+#chat-button:not(iframe) > div,
+#gorgias-chat-container > button > div {
+  background-image: none !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  filter: none !important;
 }
