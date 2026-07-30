@@ -53,3 +53,27 @@ test('launcher gradient injection is idempotent and binds its load listener once
   assert.match(js, /if \(!iframe\.dataset\[CHAT_LAUNCHER_BOUND_FLAG\]\)/);
   assert.match(js, /iframe\.dataset\[CHAT_LAUNCHER_BOUND_FLAG\] = 'true';/);
 });
+
+test('the gorgiaschat.js injection is scoped to the launcher pill', () => {
+  const js = read('src/js/gorgiaschat.js');
+  const start = js.indexOf('CHAT_LAUNCHER_CSS =');
+  const rule = norm(js.slice(start, js.indexOf('function findChatLauncherIframe', start)));
+
+  // the only selector is the pill's own id
+  assert.match(rule, /^CHAT_LAUNCHER_CSS = '#gorgias-chat-messenger-button \{/);
+  assert.ok(!/\bsvg\b/.test(rule));
+  assert.ok(!/[^-]color:/.test(rule.replace(/background-color:/g, '')));
+  assert.ok(!rule.includes('fill:'));
+  assert.ok(!/\bbody\b|\bhtml\b|\[class\*=/.test(rule));
+});
+
+test('the global-styles.css rule is scoped to the launcher pill', () => {
+  const css = read('src/css/global-styles.css');
+  const start = css.indexOf('#gorgias-chat-messenger-button');
+  const rule = norm(css.slice(start, css.indexOf('}', start) + 1));
+
+  assert.match(rule, /^#gorgias-chat-messenger-button \{/);
+  assert.ok(!/\bsvg\b/.test(rule));
+  assert.ok(!rule.includes('fill:'));
+  assert.ok(!/[^-]color:/.test(rule.replace(/background-color:/g, '')));
+});
