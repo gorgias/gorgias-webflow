@@ -48,8 +48,24 @@ test('stylesheet does not paint a background on the launcher iframe itself', fun
   });
 });
 
-test('stylesheet keeps the icon dark for contrast', function () {
-  assert.ok(css().includes('fill: #161616 !important'));
+test('stylesheet leaves the chat bubble icon untouched', function () {
+  var body = css().replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.ok(!/\bsvg\b/.test(body));
+  assert.ok(!body.includes('fill:'));
+  assert.ok(!body.includes('color:') || !/[^-]color:/.test(body.replace(/background-color:/g, '')));
+});
+
+test('stylesheet only paints the launcher pill, not wrappers or containers', function () {
+  rules(css()).forEach(function (rule) {
+    if (!rule.body.includes('background-image')) { return; }
+    rule.selector.split(',').forEach(function (sel) {
+      var s = sel.trim();
+      assert.ok(
+        s === '#chat-button:not(iframe)' || s === '#gorgias-chat-container > button',
+        'selector is broader than the launcher pill: ' + s
+      );
+    });
+  });
 });
 
 test('stylesheet does not override launcher position or size', function () {

@@ -65,10 +65,22 @@ test('launcherCss marks the background declarations !important', function () {
   lines.forEach(function (l) { assert.ok(l.includes('!important'), l); });
 });
 
-test('launcherCss forces dark icon colour for contrast', function () {
+test('launcherCss leaves the chat bubble icon untouched', function () {
   var css = loadModule().api.launcherCss();
-  assert.ok(css.includes('#161616'));
-  assert.match(css, /fill:\s*#161616\s*!important/);
+  assert.ok(!/\bsvg\b/.test(css));
+  assert.ok(!css.includes('fill:'));
+  assert.ok(!/[^-]color:/.test(css.replace(/background-color:/g, '')));
+});
+
+test('launcherCss only paints the launcher button, not its containers', function () {
+  var css = loadModule().api.launcherCss();
+  assert.ok(!/^\s*(html|body)\s*[,{]/m.test(css));
+  css.split('\n').filter(function (l) { return l.includes('{'); }).forEach(function (l) {
+    l.split('{')[0].split(',').forEach(function (sel) {
+      var s = sel.trim();
+      if (s) { assert.ok(/button$/.test(s), 'selector is not scoped to the button: ' + s); }
+    });
+  });
 });
 
 test('applyLauncherStyle injects a keyed style element into the iframe document', function () {

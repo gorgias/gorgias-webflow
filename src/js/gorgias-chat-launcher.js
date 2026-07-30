@@ -9,24 +9,9 @@
 
   function launcherCss() {
     return [
-      'html, body {',
-      '  background: transparent !important;',
-      '}',
-      'body > *,',
-      'button,',
-      '[class*="button"],',
-      '[class*="launcher"],',
-      '[class*="Launcher"],',
-      '[id*="button"] {',
+      'body > button, body > * > button {',
       '  background-image: ' + LAUNCHER_GRADIENT + ' !important;',
       '  background-color: transparent !important;',
-      '}',
-      'svg, svg * {',
-      '  fill: #161616 !important;',
-      '  color: #161616 !important;',
-      '}',
-      'button, [class*="button"], [class*="launcher"] {',
-      '  color: #161616 !important;',
       '}'
     ].join('\n');
   }
