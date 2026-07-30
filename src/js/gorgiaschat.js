@@ -56,8 +56,54 @@ var initGorgiasChatPromise = (window.GorgiasChat) ? window.GorgiasChat.init() : 
   window.addEventListener('gorgias-widget-loaded', function () { resolve();})
 });
 
+var CHAT_LAUNCHER_STYLE_ID = 'gorgias-chat-launcher-gradient';
+var CHAT_LAUNCHER_CSS = '#gorgias-chat-messenger-button {' +
+  ' background: linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%) !important;' +
+  ' }';
+
+function injectChatLauncherStyle(iframe) {
+  var doc = null;
+  try {
+    doc = iframe.contentDocument;
+  } catch (e) {
+    return false;
+  }
+  if (!doc || !doc.head || doc.getElementById(CHAT_LAUNCHER_STYLE_ID)) return false;
+
+  var style = doc.createElement('style');
+  style.setAttribute('id', CHAT_LAUNCHER_STYLE_ID);
+  style.textContent = CHAT_LAUNCHER_CSS;
+  doc.head.appendChild(style);
+  return true;
+}
+
+function styleChatLauncherIframe() {
+  var iframe = document.querySelector('div[data-gorgias-widget="true"] iframe#chat-button') ||
+    document.querySelector('iframe#chat-button');
+  if (!iframe) return false;
+
+  if (injectChatLauncherStyle(iframe)) return true;
+
+  iframe.addEventListener('load', function () {
+    injectChatLauncherStyle(iframe);
+  });
+  return false;
+}
+
+function applyChatLauncherGradient() {
+  if (!/(^|\.)gorgias\.com$/.test(window.location.hostname)) return;
+
+  styleChatLauncherIframe();
+
+  var observer = new MutationObserver(function () {
+    styleChatLauncherIframe();
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+}
+
 initGorgiasChatPromise.then(async () => {
   GorgiasChat.disableAttachments()
+  applyChatLauncherGradient()
 })
 
 /*
