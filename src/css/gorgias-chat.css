@@ -1,0 +1,25 @@
+/* Gorgias chat launcher - brand gradient.
+   The launcher is usually an iframe (#chat-button); its inner button is
+   restyled by src/js/gorgias-chat-launcher.js, which injects a stylesheet
+   into the iframe document. The rules below cover the variant where the
+   launcher is a plain in-page element. */
+
+iframe#chat-button {
+  background: transparent !important;
+}
+
+#chat-button:not(iframe),
+#gorgias-chat-container > button,
+#gorgias-chat-container [class*="launcher"] {
+  background-image: linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%) !important;
+  background-color: transparent !important;
+  color: #161616 !important;
+}
+
+#chat-button:not(iframe) svg,
+#chat-button:not(iframe) svg *,
+#gorgias-chat-container > button svg *,
+#gorgias-chat-container [class*="launcher"] svg * {
+  fill: #161616 !important;
+  color: #161616 !important;
+}

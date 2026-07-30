@@ -1,0 +1,131 @@
+const test = require('node:test');
+const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+
+const SRC = path.join(__dirname, '..', 'src', 'js', 'gorgias-chat-launcher.js');
+const GRADIENT = 'linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%)';
+
+function fakeDoc() {
+  var doc = {
+    head: {
+      children: [],
+      appendChild: function (el) { this.children.push(el); return el; },
+      querySelector: function (sel) {
+        var id = sel.replace('#', '');
+        return this.children.filter(function (c) { return c.id === id; })[0] || null;
+      }
+    },
+    createElement: function (tag) { return { tag: tag, id: '', textContent: '' }; }
+  };
+  doc.querySelector = function (sel) { return doc.head.querySelector(sel); };
+  return doc;
+}
+
+function loadModule(overrides) {
+  var counts = { setInterval: 0, observer: 0 };
+  var doc = {
+    querySelector: function () { return null; },
+    body: { nodeType: 1 },
+    head: fakeDoc().head,
+    createElement: function (tag) { return { tag: tag, id: '', textContent: '' }; },
+    addEventListener: function () {}
+  };
+  Object.assign(doc, overrides || {});
+  var context = {
+    window: { addEventListener: function () {} },
+    document: doc,
+    setTimeout: function () { return 0; },
+    clearTimeout: function () {},
+    setInterval: function () { counts.setInterval++; return counts.setInterval; },
+    clearInterval: function () {},
+    MutationObserver: function () {
+      counts.observer++;
+      this.observe = function () {};
+      this.disconnect = function () {};
+    },
+    console: console
+  };
+  context.window.document = doc;
+  vm.createContext(context);
+  vm.runInContext(fs.readFileSync(SRC, 'utf8'), context, { filename: SRC });
+  return { api: context.window.GorgiasLauncherBrand, win: context.window, doc: doc, counts: counts };
+}
+
+test('launcherCss contains the exact brand gradient', function () {
+  var css = loadModule().api.launcherCss();
+  assert.ok(css.includes(GRADIENT));
+});
+
+test('launcherCss marks the background declarations !important', function () {
+  var css = loadModule().api.launcherCss();
+  var lines = css.split('\n').filter(function (l) { return l.includes('background-image:'); });
+  assert.ok(lines.length > 0);
+  lines.forEach(function (l) { assert.ok(l.includes('!important'), l); });
+});
+
+test('launcherCss forces dark icon colour for contrast', function () {
+  var css = loadModule().api.launcherCss();
+  assert.ok(css.includes('#161616'));
+  assert.match(css, /fill:\s*#161616\s*!important/);
+});
+
+test('applyLauncherStyle injects a keyed style element into the iframe document', function () {
+  var api = loadModule().api;
+  var doc = fakeDoc();
+  assert.strictEqual(api.applyLauncherStyle(doc), true);
+  assert.strictEqual(doc.head.children.length, 1);
+  assert.strictEqual(doc.head.children[0].id, api.STYLE_ID);
+  assert.strictEqual(api.STYLE_ID, 'gorgias-launcher-brand');
+  assert.ok(doc.head.children[0].textContent.includes(GRADIENT));
+});
+
+test('applyLauncherStyle is idempotent', function () {
+  var api = loadModule().api;
+  var doc = fakeDoc();
+  assert.strictEqual(api.applyLauncherStyle(doc), true);
+  assert.strictEqual(api.applyLauncherStyle(doc), false);
+  assert.strictEqual(doc.head.children.length, 1);
+});
+
+test('applyLauncherStyle tolerates a missing document', function () {
+  var api = loadModule().api;
+  assert.strictEqual(api.applyLauncherStyle(null), false);
+  assert.strictEqual(api.applyLauncherStyle({}), false);
+});
+
+test('styleLauncher returns false when the launcher is not in the DOM yet', function () {
+  var mod = loadModule({ body: null, querySelector: function () { return null; } });
+  assert.strictEqual(mod.api.styleLauncher(), false);
+});
+
+test('styleLauncher does not throw when the iframe document is unreachable', function () {
+  var el = {};
+  Object.defineProperty(el, 'contentDocument', {
+    get: function () { throw new Error('cross-origin'); }
+  });
+  var mod = loadModule({ body: null, querySelector: function () { return el; } });
+  assert.strictEqual(mod.api.styleLauncher(), false);
+});
+
+test('styleLauncher injects into the #chat-button iframe document', function () {
+  var inner = fakeDoc();
+  var queried = [];
+  var mod = loadModule({
+    body: null,
+    querySelector: function (sel) { queried.push(sel); return { contentDocument: inner }; }
+  });
+  assert.strictEqual(mod.api.styleLauncher(), true);
+  assert.strictEqual(inner.head.children.length, 1);
+  assert.ok(queried.includes('#chat-button'));
+});
+
+test('start is idempotent', function () {
+  var mod = loadModule();
+  mod.api.start();
+  mod.api.start();
+  assert.strictEqual(mod.win.__gorgiasLauncherBrandInit, true);
+  assert.strictEqual(mod.counts.setInterval, 1);
+  assert.strictEqual(mod.counts.observer, 1);
+});

@@ -33,6 +33,8 @@ Webflow.push(function () {
     newStyle(scriptBase + '/src/css/all'+minBase+'.css','body');
     newStyle(scriptBase + '/src/css/global-styles'+minBase+'.css','head');
     newStyle(scriptBase + '/src/css/cookies'+minBase+'.css','body');
+    newStyle(scriptBase + '/src/css/gorgias-chat'+minBase+'.css','head');
+    newScript(scriptBase + '/src/js/gorgias-chat-launcher'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/animation/navbar'+minBase+'.js','body', 1);
 
     // demo pages - load ChiliPiper only on /demo pages
