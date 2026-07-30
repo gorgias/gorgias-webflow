@@ -57,9 +57,18 @@ var initGorgiasChatPromise = (window.GorgiasChat) ? window.GorgiasChat.init() : 
 });
 
 var CHAT_LAUNCHER_STYLE_ID = 'gorgias-chat-launcher-gradient';
+var CHAT_LAUNCHER_BOUND_FLAG = 'gorgiasLauncherGradientBound';
+var CHAT_LAUNCHER_IFRAME_SELECTOR = 'div[data-gorgias-widget="true"] iframe#chat-button';
+var CHAT_LAUNCHER_RETRY_MS = 250;
+var CHAT_LAUNCHER_MAX_ATTEMPTS = 40;
 var CHAT_LAUNCHER_CSS = '#gorgias-chat-messenger-button {' +
   ' background: linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%) !important;' +
   ' }';
+
+function findChatLauncherIframe() {
+  return document.querySelector(CHAT_LAUNCHER_IFRAME_SELECTOR) ||
+    document.querySelector('iframe#chat-button');
+}
 
 function injectChatLauncherStyle(iframe) {
   var doc = null;
@@ -68,7 +77,8 @@ function injectChatLauncherStyle(iframe) {
   } catch (e) {
     return false;
   }
-  if (!doc || !doc.head || doc.getElementById(CHAT_LAUNCHER_STYLE_ID)) return false;
+  if (!doc || !doc.head) return false;
+  if (doc.getElementById(CHAT_LAUNCHER_STYLE_ID)) return true;
 
   var style = doc.createElement('style');
   style.setAttribute('id', CHAT_LAUNCHER_STYLE_ID);
@@ -78,22 +88,31 @@ function injectChatLauncherStyle(iframe) {
 }
 
 function styleChatLauncherIframe() {
-  var iframe = document.querySelector('div[data-gorgias-widget="true"] iframe#chat-button') ||
-    document.querySelector('iframe#chat-button');
+  var iframe = findChatLauncherIframe();
   if (!iframe) return false;
 
-  if (injectChatLauncherStyle(iframe)) return true;
+  if (!iframe.dataset[CHAT_LAUNCHER_BOUND_FLAG]) {
+    iframe.dataset[CHAT_LAUNCHER_BOUND_FLAG] = 'true';
+    iframe.addEventListener('load', function () {
+      injectChatLauncherStyle(iframe);
+    });
+  }
 
-  iframe.addEventListener('load', function () {
-    injectChatLauncherStyle(iframe);
-  });
-  return false;
+  return injectChatLauncherStyle(iframe);
 }
 
 function applyChatLauncherGradient() {
   if (!/(^|\.)gorgias\.com$/.test(window.location.hostname)) return;
 
-  styleChatLauncherIframe();
+  if (!styleChatLauncherIframe()) {
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts++;
+      if (styleChatLauncherIframe() || attempts >= CHAT_LAUNCHER_MAX_ATTEMPTS) {
+        clearInterval(timer);
+      }
+    }, CHAT_LAUNCHER_RETRY_MS);
+  }
 
   var observer = new MutationObserver(function () {
     styleChatLauncherIframe();
