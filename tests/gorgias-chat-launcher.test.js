@@ -121,6 +121,27 @@ test('styleLauncher injects into the #chat-button iframe document', function () 
   assert.ok(queried.includes('#chat-button'));
 });
 
+test('styleLauncher re-applies the style when the iframe swaps document', function () {
+  var el = { contentDocument: fakeDoc(), listeners: [] };
+  el.addEventListener = function (type, fn) { el.listeners.push({ type: type, fn: fn }); };
+  var mod = loadModule({ body: null, querySelector: function () { return el; } });
+
+  assert.strictEqual(mod.api.styleLauncher(), true);
+  var loadListeners = el.listeners.filter(function (l) { return l.type === 'load'; });
+  assert.strictEqual(loadListeners.length, 1, 'exactly one load listener is bound');
+
+  // the widget replaces about:blank with its real document, losing the style
+  var replaced = fakeDoc();
+  el.contentDocument = replaced;
+  loadListeners[0].fn();
+  assert.strictEqual(replaced.head.children.length, 1);
+  assert.ok(replaced.head.children[0].textContent.includes(GRADIENT));
+
+  // repeated passes over the same element do not stack listeners
+  mod.api.styleLauncher();
+  assert.strictEqual(el.listeners.filter(function (l) { return l.type === 'load'; }).length, 1);
+});
+
 test('start is idempotent', function () {
   var mod = loadModule();
   mod.api.start();

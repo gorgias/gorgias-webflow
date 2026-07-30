@@ -1,8 +1,6 @@
 /* Gorgias chat launcher - brand gradient.
-   The launcher is usually an iframe (#chat-button); its inner button is
-   restyled by src/js/gorgias-chat-launcher.js, which injects a stylesheet
-   into the iframe document. The rules below cover the variant where the
-   launcher is a plain in-page element. */
+   See also src/js/gorgias-chat-launcher.js, which styles the launcher
+   when it is rendered inside the #chat-button iframe. */
 
 iframe#chat-button {
   background: transparent !important;

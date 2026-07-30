@@ -51,6 +51,17 @@
       if (!el) {
         return false;
       }
+      // Re-apply when the iframe navigates to a new document.
+      if (el.addEventListener && !el.__gorgiasLauncherBrandBound) {
+        el.__gorgiasLauncherBrandBound = true;
+        el.addEventListener('load', function () {
+          try {
+            applyLauncherStyle(el.contentDocument);
+          } catch (e) {
+            // iframe document unreachable - nothing to do
+          }
+        });
+      }
       var doc = el.contentDocument;
       if (!doc) {
         return false;
