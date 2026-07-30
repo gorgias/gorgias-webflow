@@ -1,7 +1,7 @@
 // Use this script to apply the brand gradient to the Gorgias chat launcher button.
 
 (function () {
-  var LAUNCHER_GRADIENT = 'linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%)';
+  var LAUNCHER_GRADIENT = 'linear-gradient(120deg, #FFCEBC 0%, #FFD1C2 15%, #E4D9FF 100%)';
   var STYLE_ID = 'gorgias-launcher-brand';
   var LAUNCHER_SELECTOR = '#chat-button';
   var RETRY_MS = 500;

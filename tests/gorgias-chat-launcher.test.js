@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const SRC = path.join(__dirname, '..', 'src', 'js', 'gorgias-chat-launcher.js');
-const GRADIENT = 'linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%)';
+const GRADIENT = 'linear-gradient(120deg, #FFCEBC 0%, #FFD1C2 15%, #E4D9FF 100%)';
 
 function fakeDoc() {
   var doc = {

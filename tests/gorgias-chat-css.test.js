@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const CSS_PATH = path.join(__dirname, '..', 'src', 'css', 'gorgias-chat.css');
-const GRADIENT = 'linear-gradient(120deg, #FFD1C4 0%, #E4D9FF 100%)';
+const GRADIENT = 'linear-gradient(120deg, #FFCEBC 0%, #FFD1C2 15%, #E4D9FF 100%)';
 
 function css() {
   return fs.readFileSync(CSS_PATH, 'utf8');
