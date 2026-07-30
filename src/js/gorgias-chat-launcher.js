@@ -9,7 +9,7 @@
 
   function launcherCss() {
     return [
-      'body > button, body > * > button {',
+      '#gorgias-chat-messenger-button, body > button, body > * > button {',
       '  background-image: ' + LAUNCHER_GRADIENT + ' !important;',
       '  background-color: transparent !important;',
       '}'
