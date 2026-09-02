@@ -318,6 +318,7 @@ console.log("signup-3.js loaded");
         let RECAPTCHA_V3_SITE_KEY = "";
 
         let delayTimer = 0;
+        let isValidating = false;
 
         /* Mirrors the email input value to the fullname input */
         function mirrorEmailToFullname(fullname, email) {
@@ -389,6 +390,11 @@ console.log("signup-3.js loaded");
             }
         }
 
+        function setValidatingState(validating) {
+            isValidating = validating;
+            signupButton.prop("disabled", validating);
+        }
+
         function processSearchParams() {
             const searchParams = processURLSearchParams();
             const sessionEmail = searchParams.get(email_key.toLowerCase());
@@ -417,6 +423,7 @@ console.log("signup-3.js loaded");
             accountDomainLoaderWrapper.removeClass("hidden");
             accountDomainEditLoaderWrapper.removeClass("hidden");
             accountDomainSubdomainString.addClass("skeleton-text");
+            setValidatingState(true);
             validateAccountDomain(domain, (recommendedDomain, error2) => {
                 if (prefilled) {
                     if (!recommendedDomain || recommendedDomain === "") {
@@ -433,6 +440,7 @@ console.log("signup-3.js loaded");
                 accountDomainSubdomainString.removeClass("skeleton-text");
                 const result = error2 ? status : "valid";
                 handleFieldStatus(accountDomainField, result, error2);
+                setValidatingState(false);
                 callback?.(result);
             });
         }
@@ -684,6 +692,12 @@ console.log("signup-3.js loaded");
             userForm.submit(async function (event) {
                 event.preventDefault();
                 event.stopPropagation();
+
+                // Prevent form submission if async validations are in-flight
+                if (isValidating) {
+                    return false;
+                }
+
                 signupButton.next("div[id*='-message-container']").empty();
 
                 // frontend validation for every fields, including empty ones
