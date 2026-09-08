@@ -1,0 +1,15 @@
+{
+  "name": "Gorgias Website",
+  "install": "bash .cursor/install.sh",
+  "terminals": [
+    {
+      "name": "roi-calculators (vite)",
+      "command": "bash .cursor/serve-apps.sh"
+    },
+    {
+      "name": "gorgias-webflow (static)",
+      "command": "bash .cursor/serve-webflow.sh"
+    }
+  ],
+  "ports": [5173, 5500]
+}
