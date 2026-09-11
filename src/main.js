@@ -44,7 +44,7 @@ Webflow.push(function () {
     }
 
     // demo subpages - load demo.js on pages containing /demo/ (but not /demo itself)
-    if (path.includes('/demo/')) {
+    if (path.includes('/demo/') || path.includes('/demo-ads/')) {
       newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     }
 
@@ -240,11 +240,6 @@ Webflow.push(function () {
     // main demo page only (gorgias.com/demo)
     if (path === '/demo'){
       newScript(scriptBase + '/src/js/demo/demo-worker'+minBase+'.js','body', 1);
-    }
-
-    // demo ads pages (gorgias.com/demo-ads/*)
-    if (path.includes('/demo-ads/')){
-      newScript(scriptBase + '/src/js/demo/demo-ads-worker'+minBase+'.js','body', 1);
     }
 
     // page is nav update
