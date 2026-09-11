@@ -3,7 +3,6 @@
 
   // ===== Constants =====
   const DEMO_FORM_ID = '61c128c5-9f98-4093-869b-650b3bd2e80e';
-  const HS_FORM_SELECTOR = '#hsForm_' + DEMO_FORM_ID;
 
   // ===== Utility Functions =====
 
@@ -46,109 +45,7 @@
     el.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
-  // HubSpot form wait helper (deduped + promise-based)
-  const __hsWaiters = new Map();
 
-  function waitForHubspotForm(selector, retries = 20, delay = 300) {
-    if (__hsWaiters.has(selector)) return __hsWaiters.get(selector);
-
-    const promise = new Promise((resolve) => {
-      const attempt = (remaining) => {
-        const el = document.querySelector(selector);
-        if (el) return resolve(el);
-
-        if (remaining <= 0) {
-          console.log("HubSpot form never appeared.");
-          return resolve(null);
-        }
-
-        setTimeout(() => attempt(remaining - 1), delay);
-      };
-
-      attempt(retries);
-    });
-
-    __hsWaiters.set(selector, promise);
-    return promise;
-  }
-
-  // Populate HubSpot form fields from Superform data
-  async function populateHubspotForm(formData) {
-    const hsForm = await waitForHubspotForm(HS_FORM_SELECTOR);
-    if (!hsForm) return;
-
-    const fieldMapping = {
-      email: 'email',
-      company_domain: 'company_domain',
-      demo_ecommerce_platform: 'demo_ecommerce_platform',
-      demo_tickets_volume: 'demo_tickets_volume',
-      demo_annual_sales_range: 'demo_annual_sales_range',
-      '0-1_number_of_agents': 'number_of_agents',
-      '0-1_demo_current_helpdesk': 'demo_current_helpdesk',
-      '0-1_demo_utm_source': 'demo_utm_source',
-      '0-1_demo_utm_medium': 'demo_utm_medium',
-      '0-1_demo_utm_campaign': 'demo_utm_campaign',
-      '0-1_demo_utm_term': 'demo_utm_term',
-      '0-1_demo_timezone': 'demo_timezone',
-      '0-1_demo_lead_product_interest': 'demo_lead_product_interest'
-    };
-
-    for (const [sourceKey, targetName] of Object.entries(fieldMapping)) {
-      let value = formData?.[sourceKey];
-      if (value === undefined || value === null || value === '') continue;
-
-      // Normalize arrays to comma-separated strings (HubSpot multi-select format)
-      if (Array.isArray(value)) {
-        value = value.filter(Boolean).map(v => String(v).trim()).filter(Boolean).join(',').trim();
-        if (!value) continue;
-      } else {
-        value = String(value).trim();
-        if (!value) continue;
-      }
-
-      const input = hsForm.querySelector(`[name="${targetName}"]`);
-      if (!input || input.value === value) continue;
-
-      input.value = value;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-  }
-
-  // ===== Superform Integration =====
-
-  function waitForSuperformAndInit(retries = 10, delay = 300) {
-    if (!window.SuperformAPI || typeof window.SuperformAPI.push !== 'function') {
-      if (retries > 0) {
-        return setTimeout(() => waitForSuperformAndInit(retries - 1, delay), delay);
-      }
-      console.log("SuperformAPI never initialized.");
-      return;
-    }
-
-    window.SuperformAPI.push(({ allForms } = {}) => {
-      console.log("Full Superform objects:", allForms);
-
-      const myForm = Array.isArray(allForms) ? allForms[0] : null;
-      if (!myForm || typeof myForm.onStepChange !== 'function') {
-        console.log("No usable Superform instance found.");
-        return;
-      }
-
-      const formStepData = {};
-      myForm.onStepChange((params) => {
-        Object.assign(formStepData, params.data);
-        console.log("All stored data so far:", formStepData);
-        populateHubspotForm(formStepData);
-      });
-    });
-  }
-
-  // Kick things off (guard against double execution)
-  if (!window.__demoAdsWorkerInit) {
-    window.__demoAdsWorkerInit = true;
-    waitForSuperformAndInit();
-  }
 
   // ===== Gorgias Chat Integration =====
 
