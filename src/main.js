@@ -44,7 +44,7 @@ Webflow.push(function () {
     }
 
     // demo subpages - load demo.js on pages containing /demo/ (but not /demo itself)
-    if (path.includes('/demo/')) {
+    if (path.includes('/demo/') || path.includes('/demo-ads/')) {
       newScript(scriptBase + '/src/js/demo'+minBase+'.js','body',1);
     }
 
