@@ -1,0 +1,276 @@
+(() => {
+  'use strict';
+
+  // ===== Constants =====
+  const DEMO_FORM_ID = '61c128c5-9f98-4093-869b-650b3bd2e80e';
+
+  // ===== Utility Functions =====
+
+  // Safe analytics tracking wrapper
+  function safeTrack(name) {
+    try {
+      if (window.analytics && typeof window.analytics.track === 'function') {
+        window.analytics.track(name);
+      } else {
+        console.warn('analytics.track unavailable:', name);
+      }
+    } catch (e) {}
+  }
+
+  // Parse email to extract full name + domain
+  function parseEmail(email) {
+    if (typeof email !== 'string') return null;
+    const atIndex = email.indexOf('@');
+    if (atIndex === -1) return null;
+
+    const localPart = email.slice(0, atIndex);
+    const domainPart = email.slice(atIndex + 1);
+
+    let fullName = null;
+    if (localPart.includes('.') || localPart.includes('_')) {
+      const parts = localPart.split(/[\._]+/).filter(Boolean);
+      if (parts.length >= 2) {
+        fullName = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+      }
+    }
+    console.log("Parsed email:", { localPart, domainPart, fullName });
+    return { localPart, domainPart, fullName };
+  }
+
+  // Set field value and dispatch change event
+  function setFieldValue(selector, value) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    el.value = value;
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+
+
+  // ===== Gorgias Chat Integration =====
+
+  const initGorgiasChatPromise = (window.GorgiasChat && typeof window.GorgiasChat.init === 'function')
+    ? window.GorgiasChat.init()
+    : new Promise((resolve) => {
+        window.addEventListener('gorgias-widget-loaded', resolve);
+      });
+
+  initGorgiasChatPromise.then(() => {
+    if (window.GorgiasChat && typeof window.GorgiasChat.isOpen === 'function') {
+      window.GorgiasChat.isOpen();
+    }
+  });
+
+  function chatContactUs() {
+    initGorgiasChatPromise.then(() => {
+      if (!window.GorgiasChat) return;
+
+      if (typeof window.GorgiasChat.open === 'function') {
+        window.GorgiasChat.open();
+      }
+
+      const message = "Hi, I'm interested in Gorgias. Can you help me understand if it's a good fit?";
+      if (typeof window.GorgiasChat.sendMessage === 'function') {
+        window.GorgiasChat.sendMessage(message);
+      }
+    });
+  }
+
+  // Bind chat CTA button
+  const chatBtn = document.querySelector('[data-el="open-chat"]');
+  if (chatBtn) {
+    chatBtn.addEventListener('click', () => {
+      console.log("Chat button clicked");
+      chatContactUs();
+    });
+  }
+
+  // ===== DOM Ready Initializations =====
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Mirror email -> target
+    const source = document.querySelector('[data-el="mirror-email"]');
+    const target = document.querySelector('[data-el="mirror-email-target"]');
+
+    if (source && target) {
+      const mirrorEmail = () => { target.value = source.value; };
+      mirrorEmail();
+      source.addEventListener('input', mirrorEmail);
+      source.addEventListener('change', mirrorEmail);
+      source.addEventListener('blur', mirrorEmail);
+    }
+
+    // Hide elements after form submission (delegated event for dynamically injected HS button)
+    document.addEventListener('click', (e) => {
+      if (!e.target.matches('.hs-button.primary.large')) return;
+
+      setTimeout(() => {
+        const el = document.querySelector('[data-el="hide-after-form"]');
+        if (!el) return;
+
+        el.style.opacity = '0';
+        setTimeout(() => { el.style.display = 'none'; }, 200);
+      }, 500);
+    });
+  });
+
+  // ===== ChiliPiper Initialization =====
+
+  function cpQueueMethod(method) {
+    return function() {
+      ChiliPiper[method].q = (ChiliPiper[method].q || []).concat([arguments]);
+    };
+  }
+
+  window.ChiliPiper = window.ChiliPiper ||
+    "submit scheduling showCalendar submit widget bookMeeting".split(" ").reduce((acc, method) => {
+      acc[method] = cpQueueMethod(method);
+      return acc;
+    }, {});
+
+  // ===== HubSpot Form Message Handlers =====
+
+  window.addEventListener("message", (event) => {
+    const { type, eventName, id, data } = event.data;
+
+    // Only handle HubSpot form callbacks for our specific form
+    if (type !== 'hsFormCallback' || id !== DEMO_FORM_ID) return;
+
+    if (eventName === 'onFormReady') {
+      handleFormReady();
+    } else if (eventName === 'onFormSubmitted') {
+      handleFormSubmitted(data);
+    }
+  });
+
+  function handleFormReady() {
+    // Pre-select Reamaze if URL contains it
+    const helpdeskWrapper = document.querySelector('div.hs_demo_current_helpdesk');
+    if (helpdeskWrapper && location.href.includes('reamaze')) {
+      setFieldValue('select[name=demo_current_helpdesk]', 'Reamaze');
+    }
+
+    // Populate UTM and timezone fields
+    const utmFields = [
+      { sessionKey: 'utm_campaign_session', fields: ['demo_utm_campaign', 'cross_sell_utm_campaign'] },
+      { sessionKey: 'utm_source_session', fields: ['demo_utm_source', 'cross_sell_utm_source'] },
+      { sessionKey: 'utm_medium_session', fields: ['demo_utm_medium', 'cross_sell_utm_medium'] },
+      { sessionKey: 'utm_term_session', fields: ['demo_utm_term', 'cross_sell_utm_term'] }
+    ];
+
+    utmFields.forEach(({ sessionKey, fields }) => {
+      const value = sessionStorage.getItem(sessionKey) || '';
+      fields.forEach(field => setFieldValue(`input[name=${field}]`, value));
+    });
+
+    // Set timezone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    setFieldValue('input[name=demo_timezone]', timezone);
+  }
+
+  // Force height on ChiliPiper wrapper
+  function forceChiliHeight() {
+    const cpWrapper = document.querySelector('.wrapper-chilipiper-embed.is-variant');
+    if (cpWrapper) {
+      cpWrapper.style.display = 'block';
+      cpWrapper.style.overflow = 'hidden';
+      cpWrapper.style.setProperty('height', '350px', 'important');
+      cpWrapper.style.setProperty('max-height', '350px', 'important');
+    }
+  }
+
+  // Apply UI changes after form submission
+  function applyPostSubmitStyles() {
+    // Hide element with data-el="hide-after-form"
+    const hideEl = document.querySelector('[data-el="hide-after-form"]');
+    if (hideEl) {
+      hideEl.style.display = 'none';
+    }
+
+    // Hide element with data-el="hide-after-form-hs"
+    const hideElHs = document.querySelector('[data-el="hide-after-form-hs"]');
+    if (hideElHs) {
+      hideElHs.style.display = 'none';
+    }
+
+    forceChiliHeight();
+  }
+
+  function handleFormSubmitted(eventData) {
+    const submittedValues = eventData.submissionValues;
+
+    // Apply post-submission UI changes
+    applyPostSubmitStyles();
+
+    // Convert arrays to semicolon-separated strings
+    for (const key in submittedValues) {
+      if (Array.isArray(submittedValues[key])) {
+        submittedValues[key] = submittedValues[key].toString().replaceAll(",", ";");
+      }
+    }
+
+    ChiliPiper.submit("gorgias", "aug-2026-ticket-based-routing", {
+      map: true,
+      lead: submittedValues,
+      formId: 'hsForm_' + DEMO_FORM_ID,
+      domElement: ".wrapper-chilipiper-embed.is-variant",
+      onRouting: () => {
+        forceChiliHeight();
+        safeTrack("cp_demo_request_routing");
+      },
+      onRouted: () => {
+        forceChiliHeight();
+        safeTrack("cp_demo_request_routed");
+      },
+      onSuccess: () => {
+        safeTrack("cp_demo_booked");
+        console.log('in success > demo ads');
+        forceChiliHeight();
+
+        // Hide all elements with data-el="hide-after-form"
+        document.querySelectorAll('[data-el="hide-after-form"]').forEach(el => {
+          el.style.display = 'none';
+        });
+
+        // Show post-demo booked wrapper
+        const postBookedWrapper = document.querySelector('.wrapper-post-demo-booked');
+        if (postBookedWrapper) {
+          postBookedWrapper.classList.remove('is-hidden');
+          postBookedWrapper.style.minWidth = '100%';
+        }
+
+        // Apply post-booking layout styles
+        const formComponent = document.querySelector('.demo_form-component');
+        if (formComponent) {
+          const isMobileOrTablet = window.innerWidth < 991;
+
+          if (isMobileOrTablet) {
+            // Tablet & mobile
+            formComponent.style.flexDirection = 'column';
+            formComponent.style.gap = '1rem';
+          } else {
+            // Desktop
+            formComponent.style.flexDirection = 'row';
+            formComponent.style.gap = '3rem';
+            formComponent.style.justifyContent = 'center';
+            formComponent.style.alignSelf = 'center';
+          }
+
+          formComponent.style.minWidth = '100%';
+        }
+
+        const formWrapperMaxWidth = document.querySelector('.demo_form-wrapper-max-width');
+        if (formWrapperMaxWidth) {
+          formWrapperMaxWidth.style.display = 'none';
+        }
+
+        const cpWrapper = document.querySelector('.wrapper-chilipiper-embed.is-variant');
+        if (cpWrapper) {
+          cpWrapper.style.minWidth = '100%';
+        }
+      },
+      onError: () => safeTrack("cp_demo_request_failed"),
+      injectRootCss: true
+    });
+  }
+})();
