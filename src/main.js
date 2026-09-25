@@ -26,6 +26,7 @@ Webflow.push(function () {
 
     newScript(scriptBase + '/src/js/autocompletefields'+minBase+'.js','body',1);
     newScript(scriptBase + '/src/js/cta-url-parameters'+minBase+'.js','body',1);
+    newScript(scriptBase + '/src/js/scroll-tracking'+minBase+'.js','body',1);
     // newScript( 'https://js.na.chilipiper.com/marketing.js','body',1);
     newScript(scriptBase + '/src/js/schema'+minBase+'.js','body',1);
     // newScript(scriptBase + '/src/js/experiments'+minBase+'.js','body',1);
