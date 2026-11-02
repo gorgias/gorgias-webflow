@@ -113,8 +113,8 @@ if (navWrapper) {
   // --------------------
 
   function openPanel(panelName) {
-    if (activePanel === panelName) return;
     if (closeTimeout) clearTimeout(closeTimeout);
+    if (activePanel === panelName) return;
 
     const panel = [...panels].find(p => p.dataset.panel === panelName);
     if (!panel) return;
