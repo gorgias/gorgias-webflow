@@ -67,6 +67,7 @@ console.log("signup-3.js loaded");
     const API_USER_SUBMIT_ENDPOINT2 = API_BASE_URL + "/user/submit";
     const API_ACCOUNT_INIT_ENDPOINT = API_BASE_URL + "/account/init";
     const API_VALIDATION_ENDPOINT = API_BASE_URL + "/account/submit";
+    const API_DOMAIN_CHECK_ENDPOINT = API_BASE_URL + "/check-helpdesk-domain";
 
     const SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
@@ -166,7 +167,6 @@ console.log("signup-3.js loaded");
     var FIELD_MESSAGE_SHAKE_DURATION_MS = 300;
     var inputStatusClasses = { error: "field-error", warning: "field-warning", valid: "field-valid" };
     var messageStatusClasses = { error: "message-error", warning: "message-warning", valid: "message-valid" };
-    var API_DOMAIN_VALIDATION_URL = "https://us-central1-gorgias-growth-production.cloudfunctions.net/check_helpdesk_domain";
     var email_key = "email";
     var fullname_key = "fullname";
     var plan_name_key = "plan_name";
@@ -268,28 +268,15 @@ console.log("signup-3.js loaded");
             }
             return;
         }
-        const data = { "account_name_predicted": domain };
-        void $.ajax({
-            method: "POST",
-            url: API_DOMAIN_VALIDATION_URL,
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            crossDomain: true,
-            success: (response) => {
-                const recommendation = response.account_domain;
-                if (response.domain_exist === true || response.domain_exist === "True") {
-                    callback("", "This workspace is not available, try another one");
-                    return;
-                }
-                setCachedDomainMapping(domain, recommendation);
-                if (recommendation !== domain) {
-                    callback(recommendation, `Workspace domain not available. Recommendation: ${recommendation}`);
-                } else {
-                    callback(recommendation);
-                }
-            },
-            error: () => { callback(""); }
-        });
+        post(API_DOMAIN_CHECK_ENDPOINT, { account_domain: domain }, (response) => {
+            const recommendation = response.suggested_domain;
+            setCachedDomainMapping(domain, recommendation);
+            if (recommendation !== domain) {
+                callback(recommendation, `Workspace domain not available. Recommendation: ${recommendation}`);
+            } else {
+                callback(recommendation);
+            }
+        }, () => { callback(""); });
     }
 
     function getSignupFormPage() {
