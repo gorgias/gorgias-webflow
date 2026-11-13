@@ -64,7 +64,6 @@ console.log("signup-3.js loaded");
     const IS_STAGING = window.STAGING === true;
     // v2: no password, account is created only after the user clicks the emailed link.
     const USE_SIGNUP_V2 = window.USE_SIGNUP_V2 === true;
-    console.log("signup-3.js config", { staging: IS_STAGING, v2: USE_SIGNUP_V2 });
     const API_BASE_URL = IS_STAGING ? "https://accounts.gorgias.xyz/signup" : "https://accounts.gorgias.com/signup";
     const API_USER_VALIDATION_ENDPOINT = API_BASE_URL + "/user/validation";
     const API_USER_INIT_ENDPOINT = API_BASE_URL + "/user/init";
