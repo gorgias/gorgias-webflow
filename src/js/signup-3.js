@@ -74,6 +74,14 @@ console.log("signup-3.js loaded");
 
     const SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
+    function storeSessionToken(jqXHR) {
+        const sessionToken = jqXHR && jqXHR.getResponseHeader(SESSION_TOKEN_KEY);
+        if (sessionToken) {
+            window.localStorage.setItem(SESSION_TOKEN_KEY, sessionToken);
+            updateLinksForSession(sessionToken);
+        }
+    }
+
     function post(endpoint, data, success, error2, complete) {
         void $.ajax({
             method: "POST",
@@ -88,13 +96,10 @@ console.log("signup-3.js loaded");
             },
             complete: (jqXHR) => {
                 complete?.(jqXHR);
-                const sessionToken = jqXHR.getResponseHeader(SESSION_TOKEN_KEY);
-                if (sessionToken) {
-                    window.localStorage.setItem(SESSION_TOKEN_KEY, sessionToken);
-                    updateLinksForSession(sessionToken);
-                }
+                storeSessionToken(jqXHR);
             },
-            success: (data2) => { success(data2); },
+            // jQuery runs success before complete: store the new token first, or the next chained call sends the old session.
+            success: (data2, _status, jqXHR) => { storeSessionToken(jqXHR); success(data2); },
             error: error2,
             crossDomain: true,
             crossOrigin: true,
@@ -308,6 +313,26 @@ console.log("signup-3.js loaded");
         const checkEmailAddress = $("#signup-check-email-address");
         // Store v3 site key (will be set from init response)
         let RECAPTCHA_V3_SITE_KEY = "";
+        let recaptchaLoading = null;
+
+        // Webflow pages don't need their own reCAPTCHA tag: the key comes from /user/init, so it always matches the API environment.
+        function loadRecaptcha(siteKey) {
+            if (recaptchaLoading) { return recaptchaLoading; }
+            recaptchaLoading = new Promise(function (resolve, reject) {
+                const src = "https://www.google.com/recaptcha/api.js?render=" + encodeURIComponent(siteKey);
+                let script = document.querySelector('script[src="' + src + '"]');
+                if (script && window.grecaptcha) { resolve(); return; }
+                if (!script) {
+                    script = document.createElement("script");
+                    script.src = src;
+                    script.async = true;
+                    document.head.appendChild(script);
+                }
+                script.addEventListener("load", function () { resolve(); });
+                script.addEventListener("error", function () { recaptchaLoading = null; reject(new Error("reCAPTCHA failed to load")); });
+            });
+            return recaptchaLoading;
+        }
 
         let delayTimer = 0;
         let isValidating = false;
@@ -491,6 +516,10 @@ console.log("signup-3.js loaded");
                         handleFieldStatus(inputField, verifyStatus, errorMsg);
                     }
                 }
+                // Errors not tied to a field (e.g. "Please restart signup.")
+                if (field === "_schema") {
+                    handleFieldStatus(signupButton, verifyStatus, errors.join(" "));
+                }
             }
         }
 
@@ -514,6 +543,7 @@ console.log("signup-3.js loaded");
                 , function (data) {
                     getOrSetAnonymousId(data.anonymous_id);
                     RECAPTCHA_V3_SITE_KEY = data.recaptcha_v3_site_key;
+                    if (RECAPTCHA_V3_SITE_KEY) { loadRecaptcha(RECAPTCHA_V3_SITE_KEY).catch(function (e) { console.error(e); }); }
                     if (data.errors) { handleErrors2({ responseJSON: data.errors }); }
                     if (data.shopify) {
                         if (!emailField.val() && data.shopify.email) { emailField.val(data.shopify.email); emailVerify("warning"); }
@@ -556,6 +586,14 @@ console.log("signup-3.js loaded");
                         formDataAccount["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
                     }
                     onSubmitAccountSignupForm(formDataAccount);
+                }
+                // ERROR
+                , function (response) {
+                    console.error("API ACCOUNT init call failed", response);
+                    handleErrors2(response);
+                    onSubmitEnd2(userForm, signupButton);
+                    userFormLoadingWrapper.hide();
+                    userFormWrapper.show();
                 }
             );
         }
@@ -605,7 +643,6 @@ console.log("signup-3.js loaded");
                     handleErrors2(response2);
                     userFormWrapper.show();
                     userFormLoadingWrapper.hide();
-                    grecaptcha.reset();
                 }
             );
         }
@@ -643,7 +680,6 @@ console.log("signup-3.js loaded");
                     accountDomainText.remove(classValidText);
                     userFormLoadingWrapper.hide();
                     userFormWrapper.show();
-                    grecaptcha.reset();
                 }
             );
         }
@@ -737,13 +773,18 @@ console.log("signup-3.js loaded");
                         }
 
                         // v3 only
-                        grecaptcha.ready(async () => {
-                            console.info("Executing reCAPTCHA v3 verification");
-                            const token = await grecaptcha.execute(
-                                RECAPTCHA_V3_SITE_KEY,
-                                { action: "signup" },
-                            );
-                            onSubmitUserSignupForm2(token);
+                        loadRecaptcha(RECAPTCHA_V3_SITE_KEY).then(function () {
+                            grecaptcha.ready(async () => {
+                                console.info("Executing reCAPTCHA v3 verification");
+                                const token = await grecaptcha.execute(
+                                    RECAPTCHA_V3_SITE_KEY,
+                                    { action: "signup" },
+                                );
+                                onSubmitUserSignupForm2(token);
+                            });
+                        }).catch(function (e) {
+                            console.error(e);
+                            handleFieldStatus(signupButton, "error", "An unexpected error occurred. Please try again.");
                         });
                     }
                     return void 0;
