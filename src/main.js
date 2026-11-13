@@ -148,7 +148,7 @@ Webflow.push(function () {
       newScript(scriptBase + "/src/js/signup-2" + minBase + ".js", "head", 1);
     } 
     
-    else if (path.includes("/get-started-trial") || path.includes("/staging-get-started-trial") || path === "/signup") {
+    else if (path.includes("/get-started-trial") || path.includes("/staging-get-started-trial") || path === "/signup" || path === "/signup-v2") {
        newScript(scriptBase + '/src/js/signup-3'+'.js','body', 1);
     }
    
