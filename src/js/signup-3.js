@@ -74,6 +74,14 @@ console.log("signup-3.js loaded");
 
     const SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
+    function storeSessionToken(jqXHR) {
+        const sessionToken = jqXHR && jqXHR.getResponseHeader(SESSION_TOKEN_KEY);
+        if (sessionToken) {
+            window.localStorage.setItem(SESSION_TOKEN_KEY, sessionToken);
+            updateLinksForSession(sessionToken);
+        }
+    }
+
     function post(endpoint, data, success, error2, complete) {
         void $.ajax({
             method: "POST",
@@ -88,13 +96,10 @@ console.log("signup-3.js loaded");
             },
             complete: (jqXHR) => {
                 complete?.(jqXHR);
-                const sessionToken = jqXHR.getResponseHeader(SESSION_TOKEN_KEY);
-                if (sessionToken) {
-                    window.localStorage.setItem(SESSION_TOKEN_KEY, sessionToken);
-                    updateLinksForSession(sessionToken);
-                }
+                storeSessionToken(jqXHR);
             },
-            success: (data2) => { success(data2); },
+            // jQuery runs success before complete: store the new token first, or the next chained call sends the old session.
+            success: (data2, _status, jqXHR) => { storeSessionToken(jqXHR); success(data2); },
             error: error2,
             crossDomain: true,
             crossOrigin: true,
@@ -511,6 +516,10 @@ console.log("signup-3.js loaded");
                         handleFieldStatus(inputField, verifyStatus, errorMsg);
                     }
                 }
+                // Errors not tied to a field (e.g. "Please restart signup.")
+                if (field === "_schema") {
+                    handleFieldStatus(signupButton, verifyStatus, errors.join(" "));
+                }
             }
         }
 
@@ -577,6 +586,14 @@ console.log("signup-3.js loaded");
                         formDataAccount["account_subscription"] = { helpdesk: "starter-monthly-usd-4" };
                     }
                     onSubmitAccountSignupForm(formDataAccount);
+                }
+                // ERROR
+                , function (response) {
+                    console.error("API ACCOUNT init call failed", response);
+                    handleErrors2(response);
+                    onSubmitEnd2(userForm, signupButton);
+                    userFormLoadingWrapper.hide();
+                    userFormWrapper.show();
                 }
             );
         }
