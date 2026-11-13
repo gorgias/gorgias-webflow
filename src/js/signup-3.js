@@ -59,11 +59,12 @@ console.log("signup-3.js loaded");
         return void 0;
     }
 
-    const path = window.location.pathname;
-    const isStaging = path.includes("/staging-get-started-trial");
-    // v2: no password, account is created only after the user clicks the emailed link. Staging only until cutover.
-    const USE_SIGNUP_V2 = isStaging;
-    const API_BASE_URL = isStaging ? "https://accounts.gorgias.xyz/signup" : "https://accounts.gorgias.com/signup";
+    // Set from Webflow page custom code, e.g. <script>window.STAGING = true; window.USE_SIGNUP_V2 = true;</script>
+    // Unset or anything other than `true` means prod / v1.
+    const IS_STAGING = window.STAGING === true;
+    // v2: no password, account is created only after the user clicks the emailed link.
+    const USE_SIGNUP_V2 = window.USE_SIGNUP_V2 === true;
+    const API_BASE_URL = IS_STAGING ? "https://accounts.gorgias.xyz/signup" : "https://accounts.gorgias.com/signup";
     const API_USER_VALIDATION_ENDPOINT = API_BASE_URL + "/user/validation";
     const API_USER_INIT_ENDPOINT = API_BASE_URL + "/user/init";
     const API_USER_SUBMIT_ENDPOINT2 = API_BASE_URL + (USE_SIGNUP_V2 ? "/v2/user/submit" : "/user/submit");
@@ -282,7 +283,7 @@ console.log("signup-3.js loaded");
     }
 
     function getSignupFormPage() {
-        return window.location?.pathname?.includes("staging") ? "/staging-signup" : "/signup";
+        return IS_STAGING ? "/staging-signup" : "/signup";
     }
 
     function init2() {
