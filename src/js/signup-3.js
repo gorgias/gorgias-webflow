@@ -383,6 +383,8 @@ console.log("signup-3.js loaded");
                     $('<div id = "' + index + '-message-container" class="field-message-container"></div>').insertAfter(value);
                 }
             });
+            // Absolute positioning pins the bottom edge, so a 2-line message under the button grew up over it.
+            $("#signup_button-message-container").css({ position: "static", marginTop: "8px", textAlign: "center" });
         }
 
         function handleFieldStatus(field, status, message) {
@@ -516,8 +518,8 @@ console.log("signup-3.js loaded");
                         handleFieldStatus(inputField, verifyStatus, errorMsg);
                     }
                 }
-                // Errors not tied to a field (e.g. "Please restart signup.")
-                if (field === "_schema") {
+                // Errors not tied to a field (e.g. "Please restart signup."); the "already exists" one is shown on the fields above.
+                if (field === "_schema" && !errorCheck) {
                     handleFieldStatus(signupButton, verifyStatus, errors.join(" "));
                 }
             }
