@@ -61,12 +61,14 @@ console.log("signup-3.js loaded");
 
     const path = window.location.pathname;
     const isStaging = path.includes("/staging-get-started-trial");
+    // v2: no password, account is created only after the user clicks the emailed link. Staging only until cutover.
+    const USE_SIGNUP_V2 = isStaging;
     const API_BASE_URL = isStaging ? "https://accounts.gorgias.xyz/signup" : "https://accounts.gorgias.com/signup";
     const API_USER_VALIDATION_ENDPOINT = API_BASE_URL + "/user/validation";
     const API_USER_INIT_ENDPOINT = API_BASE_URL + "/user/init";
-    const API_USER_SUBMIT_ENDPOINT2 = API_BASE_URL + "/user/submit";
+    const API_USER_SUBMIT_ENDPOINT2 = API_BASE_URL + (USE_SIGNUP_V2 ? "/v2/user/submit" : "/user/submit");
     const API_ACCOUNT_INIT_ENDPOINT = API_BASE_URL + "/account/init";
-    const API_VALIDATION_ENDPOINT = API_BASE_URL + "/account/submit";
+    const API_VALIDATION_ENDPOINT = API_BASE_URL + (USE_SIGNUP_V2 ? "/v2/account/submit" : "/account/submit");
     const API_DOMAIN_CHECK_ENDPOINT = API_BASE_URL + "/check-helpdesk-domain";
 
     const SESSION_TOKEN_KEY = "x-account-manager-session-token";
@@ -301,6 +303,8 @@ console.log("signup-3.js loaded");
         const userForm = $("form#signup-user-form");
         const userFormWrapper = $("#signup-user-form-wrapper");
         const userFormLoadingWrapper = $("#signup-user-form-loading-wrapper");
+        const checkEmailWrapper = $("#signup-check-email-wrapper");
+        const checkEmailAddress = $("#signup-check-email-address");
         // Store v3 site key (will be set from init response)
         let RECAPTCHA_V3_SITE_KEY = "";
 
@@ -398,7 +402,8 @@ console.log("signup-3.js loaded");
             resetFieldStatus(emailField);
             const error2 = validateEmail(emailField.val() || "");
             if (error2) { handleFieldStatus(emailField, status, error2); return; }
-            const userData = { name: fullnameField.val() || "", email: emailField.val() || "", password: passwordField.val() || "" };
+            const userData = { name: fullnameField.val() || "", email: emailField.val() || "" };
+            if (!USE_SIGNUP_V2) { userData.password = passwordField.val() || ""; }
             validateUser(userData, (errors) => {
                 if (errors) { setFieldErrors(errors); }
                 else { handleFieldStatus(emailField, "valid", ""); }
@@ -573,9 +578,9 @@ console.log("signup-3.js loaded");
             const formDataUser = {
                 "email": $.trim(emailField.val() || ""),
                 "name": $.trim(fullnameField.val() || ""),
-                "password": passwordField.val(),
                 "recaptcha_response": response
             };
+            if (!USE_SIGNUP_V2) { formDataUser.password = passwordField.val(); }
 
             onSubmitStart2(userForm, signupButton);
             post(API_USER_SUBMIT_ENDPOINT2, formDataUser,
@@ -622,6 +627,10 @@ console.log("signup-3.js loaded");
                 // SUCCESS
                 function (data) {
                     localStorage.removeItem("account-subdomains-approved");
+                    if (USE_SIGNUP_V2) {
+                        showCheckEmail();
+                        return;
+                    }
                     window.location.href = data.redirect_url;
                 },
 
@@ -638,18 +647,25 @@ console.log("signup-3.js loaded");
             );
         }
 
+        function showCheckEmail() {
+            checkEmailAddress.text($.trim(emailField.val() || ""));
+            userFormLoadingWrapper.hide();
+            userFormWrapper.hide();
+            checkEmailWrapper.removeClass("hidden");
+        }
+
         function onLoad() {
             resetLocalStorageFields();
             enableFields();
-            
+
             mirrorEmailToFullname(fullnameField.val(), emailField.val());
-            generatePassword();
+            if (!USE_SIGNUP_V2) { generatePassword(); }
 
             emailVerify();
             companyDomainVerify();
             accountDomainVerify(null, accountDomainField.val() || "", false);
             fullnameVerify();
-            passwordVerify(); 
+            if (!USE_SIGNUP_V2) { passwordVerify(); }
 
             emailField.on("blur", function () {
                 emailVerify("warning");
@@ -693,12 +709,12 @@ console.log("signup-3.js loaded");
                 companyDomainVerify(status);
                 accountDomainVerify(status, accountDomainField.val() || "", false);
                 fullnameVerify(status);
-                passwordVerify(status); 
+                if (!USE_SIGNUP_V2) { passwordVerify(status); }
 
                 const form = $(this);
                 const fullnameStatus = getFieldStatus(fullname_key);
                 const emailStatus = getFieldStatus(email_key);
-                const passwordStatus = getFieldStatus(password_key);
+                const passwordStatus = USE_SIGNUP_V2 ? "valid" : getFieldStatus(password_key);
                 const accountDomainStatus = getFieldStatus(account_domain_key);
                 const companyDomainStatus = getFieldStatus(company_domain_key);
                 const messaging = "Please check fields with error, then submit";
