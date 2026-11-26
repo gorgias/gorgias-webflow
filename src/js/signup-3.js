@@ -74,6 +74,29 @@ console.log("signup-3.js loaded");
 
     const SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
+    // Cloudflare Worker that guesses the full name from the email (source: workers/signup-name-enrichment).
+    // Can be overridden from Webflow page custom code: <script>window.SIGNUP_NAME_ENRICHMENT_URL = "...";</script>
+    const NAME_ENRICHMENT_ENDPOINT = window.SIGNUP_NAME_ENRICHMENT_URL || "https://signup-name-enrichment.gorgias.workers.dev";
+    // The Worker gives Apollo 2.5s; past this we stop waiting and use the email pattern.
+    const NAME_ENRICHMENT_TIMEOUT_MS = 3500;
+
+    // Same rule as the Worker's fallback: "jane.doe@", "jane_doe@", "jane-doe@" -> "Jane Doe", else "".
+    const NAME_PATTERN_ROLE_WORDS = ["admin", "accounts", "billing", "care", "contact", "customer", "customers", "dev", "help",
+        "hello", "hi", "info", "mail", "marketing", "no", "noreply", "office", "ops", "orders",
+        "reply", "sales", "service", "shop", "store", "support", "team", "test", "web", "webmaster"];
+
+    function nameFromEmailPattern(email) {
+        if (typeof email !== "string") { return ""; }
+        const localPart = email.trim().split("@")[0].split("+")[0];
+        const tokens = localPart.split(/[._-]/);
+        if (tokens.length !== 2) { return ""; }
+        for (const token of tokens) {
+            if (!/^\p{L}{2,}$/u.test(token)) { return ""; }
+            if (NAME_PATTERN_ROLE_WORDS.indexOf(token.toLowerCase()) !== -1) { return ""; }
+        }
+        return tokens.map(function (t) { return t.charAt(0).toLocaleUpperCase() + t.slice(1).toLocaleLowerCase(); }).join(" ");
+    }
+
     function storeSessionToken(jqXHR) {
         const sessionToken = jqXHR && jqXHR.getResponseHeader(SESSION_TOKEN_KEY);
         if (sessionToken) {
@@ -337,11 +360,83 @@ console.log("signup-3.js loaded");
         let delayTimer = 0;
         let isValidating = false;
 
-        /* Mirrors the email input value to the fullname input */
-        function mirrorEmailToFullname(fullname, email) {
-            if (emailField.val()) {
-                fullnameField.val(emailField.val());
+        // Full name enrichment (GRWWEB-197): fill the name from the email, never with the email itself.
+        // nameSource: "" (empty), "enrichment" (we filled it), "provided" (user typed, URL param or Shopify).
+        let nameSource = "";
+        let nameLookupEmail = "";
+        let nameLookupPromise = null;
+
+        function showFullnameField() {
+            fullnameField.removeClass("hidden");
+            fullnameField.parentsUntil(userForm).addBack().each(function () {
+                const el = $(this);
+                el.removeClass("hidden");
+                if (el.css("display") === "none") { el.css("display", "block"); }
+            });
+        }
+
+        function canAutofillName() {
+            return nameSource !== "provided";
+        }
+
+        function setEnrichedName(name) {
+            if (!canAutofillName()) { return; }
+            if (name) {
+                fullnameField.val(name);
+                nameSource = "enrichment";
+                fullnameVerify("warning");
+            } else if (nameSource === "enrichment") {
+                // The email changed and the new one has no name: drop the name we guessed for the old one.
+                fullnameField.val("");
+                nameSource = "";
+                resetFieldStatus(fullnameField);
             }
+        }
+
+        function trackNameEnrichment(source) {
+            try {
+                if (window.analytics && typeof window.analytics.track === "function") {
+                    window.analytics.track("Signup Name Enrichment", { source: source });
+                }
+            } catch (_e) { /* analytics must never break signup */ }
+        }
+
+        function lookupNameFromEmail(email) {
+            email = $.trim(email || "").toLowerCase();
+            if (!email || email === nameLookupEmail || !canAutofillName()) { return nameLookupPromise; }
+            nameLookupEmail = email;
+            const controller = typeof AbortController === "function" ? new AbortController() : null;
+            const timer = window.setTimeout(function () { controller?.abort(); }, NAME_ENRICHMENT_TIMEOUT_MS);
+            const promise = fetch(NAME_ENRICHMENT_ENDPOINT, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email }),
+                signal: controller?.signal
+            })
+                .then(function (response) {
+                    if (!response.ok) { throw new Error("name enrichment HTTP " + response.status); }
+                    return response.json();
+                })
+                .then(function (data) {
+                    return { name: (data && typeof data.name === "string") ? $.trim(data.name) : "", source: (data && data.source) || "none" };
+                })
+                .catch(function (e) {
+                    // Worker down, blocked or slow: same pattern fallback, client side.
+                    console.warn("Name enrichment unavailable, using email pattern", e);
+                    const name = nameFromEmailPattern(email);
+                    return { name: name, source: name ? "pattern_client" : "none" };
+                })
+                .then(function (result) {
+                    window.clearTimeout(timer);
+                    // Ignore the answer if the email changed while we waited.
+                    if (nameLookupEmail === email) {
+                        setEnrichedName(result.name);
+                        trackNameEnrichment(result.source);
+                    }
+                    if (nameLookupPromise === promise) { nameLookupPromise = null; }
+                });
+            nameLookupPromise = promise;
+            return promise;
         }
 
         /* auto populate a randomly generated password that meets the specified criteria. */
@@ -421,7 +516,7 @@ console.log("signup-3.js loaded");
             const sessionPlanName = searchParams.get(plan_name_key.toLowerCase());
             const sessionPlanPeriod = searchParams.get(plan_period_key.toLowerCase());
             if (sessionEmail && emailField.length) { emailField.val(sessionEmail); emailVerify("warning"); }
-            if (sessionFullName && fullnameField.length) { fullnameField.val(sessionFullName); fullnameVerify("warning"); }
+            if (sessionFullName && fullnameField.length) { fullnameField.val(sessionFullName); nameSource = "provided"; fullnameVerify("warning"); }
             if (sessionPlanName) { window.localStorage.setItem(plan_name_key, sessionPlanName); }
             if (sessionPlanPeriod) { window.localStorage.setItem(plan_period_key, sessionPlanPeriod); }
         }
@@ -434,7 +529,10 @@ console.log("signup-3.js loaded");
             if (!USE_SIGNUP_V2) { userData.password = passwordField.val() || ""; }
             validateUser(userData, (errors) => {
                 if (errors) { setFieldErrors(errors); }
-                else { handleFieldStatus(emailField, "valid", ""); }
+                else {
+                    handleFieldStatus(emailField, "valid", "");
+                    lookupNameFromEmail(emailField.val());
+                }
             });
         }
 
@@ -549,7 +647,8 @@ console.log("signup-3.js loaded");
                     if (data.errors) { handleErrors2({ responseJSON: data.errors }); }
                     if (data.shopify) {
                         if (!emailField.val() && data.shopify.email) { emailField.val(data.shopify.email); emailVerify("warning"); }
-                        if (!fullnameField.val() && data.shopify.shop_owner) { fullnameField.val(data.shopify.shop_owner); fullnameVerify("warning"); }
+                        // The Shopify shop owner beats a name we guessed from the email.
+                        if (nameSource !== "provided" && data.shopify.shop_owner) { fullnameField.val(data.shopify.shop_owner); nameSource = "provided"; fullnameVerify("warning"); }
                     }
                     if (typeof window.GORGIAS_INIT_CALLBACK === "function") {
                         window.GORGIAS_INIT_CALLBACK(data);
@@ -697,7 +796,9 @@ console.log("signup-3.js loaded");
             resetLocalStorageFields();
             enableFields();
 
-            mirrorEmailToFullname(fullnameField.val(), emailField.val());
+            showFullnameField();
+            // A name already in the field on load (browser autofill) is the user's, keep it.
+            if ($.trim(fullnameField.val() || "")) { nameSource = "provided"; }
             if (!USE_SIGNUP_V2) { generatePassword(); }
 
             emailVerify();
@@ -718,8 +819,12 @@ console.log("signup-3.js loaded");
 
             accountDomainField.on("blur", function () { accountDomainVerify("warning", $(this).val() || "", false); });
 
+            fullnameField.on("input", function () {
+                nameSource = $.trim(fullnameField.val() || "") ? "provided" : "";
+            });
+            fullnameField.on("blur", function () { fullnameVerify("warning"); });
+
             emailField.keyup(function () {
-                mirrorEmailToFullname(fullnameField.val(), emailField.val());
                 clearTimeout(delayTimer);
                 delayTimer = window.setTimeout(function () { emailVerify("warning"); }, 1e3);
             });
@@ -741,6 +846,12 @@ console.log("signup-3.js loaded");
                 }
 
                 signupButton.next("div[id*='-message-container']").empty();
+
+                // The name lookup is still running: wait for it (it times out on its own) so the name is in before submit.
+                if (nameLookupPromise && !$.trim(fullnameField.val() || "")) {
+                    setValidatingState(true);
+                    try { await nameLookupPromise; } finally { setValidatingState(false); }
+                }
 
                 // frontend validation for every fields, including empty ones
                 let status = "error";
