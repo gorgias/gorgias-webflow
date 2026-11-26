@@ -74,17 +74,17 @@ console.log("signup-3.js loaded");
 
     const SESSION_TOKEN_KEY = "x-account-manager-session-token";
 
-    // Cloudflare Worker that guesses the full name from the email (source: workers/signup-name-enrichment).
+    // Service that suggests a full name from the email.
     // Can be overridden from Webflow page custom code: <script>window.SIGNUP_NAME_ENRICHMENT_URL = "...";</script>
     const NAME_ENRICHMENT_ENDPOINT = window.SIGNUP_NAME_ENRICHMENT_URL || "https://signup-name-enrichment.gorgias.workers.dev";
-    // The Worker gives Turnstile 1.5s and Apollo 2.5s; past this we stop waiting and use the email pattern.
+    // Past this we stop waiting and use the email pattern.
     const NAME_ENRICHMENT_TIMEOUT_MS = 4500;
-    // Cloudflare Turnstile site key (public). The Worker only calls Apollo for a browser with a valid token.
+    // Cloudflare Turnstile site key (public), sent with each name lookup.
     // Can be overridden from Webflow page custom code: <script>window.SIGNUP_TURNSTILE_SITE_KEY = "...";</script>
     const TURNSTILE_SITE_KEY = window.SIGNUP_TURNSTILE_SITE_KEY || "";
     const TURNSTILE_WAIT_MS = 2000;
 
-    // Same rule as the Worker's fallback: "jane.doe@", "jane_doe@", "jane-doe@" -> "Jane Doe", else "".
+    // Fallback when the name service can't answer: "jane.doe@", "jane_doe@", "jane-doe@" -> "Jane Doe", else "".
     const NAME_PATTERN_ROLE_WORDS = ["admin", "accounts", "billing", "care", "contact", "customer", "customers", "dev", "help",
         "hello", "hi", "info", "mail", "marketing", "no", "noreply", "office", "ops", "orders",
         "reply", "sales", "service", "shop", "store", "support", "team", "test", "web", "webmaster"];
@@ -449,7 +449,7 @@ console.log("signup-3.js loaded");
                 return token;
             };
             if (turnstileToken) { return Promise.resolve(take()); }
-            // No token yet: wait a little, then go without (the Worker then answers with the pattern only).
+            // No token yet: wait a little, then go without.
             return new Promise(function (resolve) {
                 const timer = window.setTimeout(function () { resolve(""); }, TURNSTILE_WAIT_MS);
                 turnstileWaiters.push(function () { window.clearTimeout(timer); resolve(take()); });
@@ -479,7 +479,7 @@ console.log("signup-3.js loaded");
                     return { name: (data && typeof data.name === "string") ? $.trim(data.name) : "", source: (data && data.source) || "none" };
                 })
                 .catch(function (e) {
-                    // Worker down, blocked or slow: same pattern fallback, client side.
+                    // Service down, blocked or slow: use the email pattern.
                     console.warn("Name enrichment unavailable, using email pattern", e);
                     const name = nameFromEmailPattern(email);
                     return { name: name, source: name ? "pattern_client" : "none" };
