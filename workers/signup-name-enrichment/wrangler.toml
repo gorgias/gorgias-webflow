@@ -6,14 +6,25 @@ compatibility_date = "2026-11-01"
 enabled = true
 
 [vars]
-# Comma separated. "*.example.com" allows any https subdomain.
+# Comma separated, exact origins only.
 ALLOWED_ORIGINS = "https://www.gorgias.com,https://gorgias.com,https://gorgiasio.webflow.io"
 APOLLO_TIMEOUT_MS = "2500"
+# Max Apollo calls per UTC day, whatever the traffic. Past it, the pattern only.
+APOLLO_DAILY_CAP = "1000"
 
-# 20 lookups per minute per IP. The signup endpoints are a bot target, and each Apollo hit costs a credit.
+# Remembered Apollo answers (hits 180 days, misses 30 days) and the daily Apollo counter.
+# Create with: npx wrangler kv namespace create NAMES, then paste the id here.
+[[kv_namespaces]]
+binding = "NAMES"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# 10 lookups per minute per IP. A person retyping their email needs 2 or 3.
 [[ratelimits]]
 name = "RATE_LIMITER"
 namespace_id = "1971"
-simple = { limit = 20, period = 60 }
+simple = { limit = 10, period = 60 }
 
-# Secret, set with: npx wrangler secret put APOLLO_API_KEY
+# Secrets, set with `npx wrangler secret put <NAME>`:
+#   APOLLO_API_KEY        from GTM Ops
+#   TURNSTILE_SECRET_KEY  from the Turnstile widget (Cloudflare dashboard > Turnstile)
+#   CACHE_KEY_SECRET      any long random string, e.g. `openssl rand -hex 32`

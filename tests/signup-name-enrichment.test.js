@@ -135,7 +135,131 @@ test('worker rejects origins that are not allowed and answers CORS preflight', a
 test('worker rejects an invalid email', async () => {
   const worker = (await loadWorker()).default;
   const res = await worker.fetch(new Request('https://w.dev', {
-    method: 'POST', headers: { Origin: 'https://www.gorgias.com' }, body: JSON.stringify({ email: 'nope' }),
+    method: 'POST', headers: { Origin: 'https://www.gorgias.com', 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'nope' }),
   }), { ALLOWED_ORIGINS: 'https://www.gorgias.com' }, {});
+  assert.strictEqual(res.status, 400);
+});
+
+// --- Full request flow: memory, Turnstile, free emails, daily cap ---
+
+function fakeKV() {
+  const store = new Map();
+  return {
+    store,
+    async get(key, opts) {
+      const v = store.has(key) ? store.get(key).value : null;
+      return v !== null && opts && opts.type === 'json' ? JSON.parse(v) : v;
+    },
+    async put(key, value, opts) { store.set(key, { value, opts }); },
+  };
+}
+
+function setup({ turnstileOk = true, apolloPerson = { first_name: 'Ada', last_name: 'Lovelace' }, cap } = {}) {
+  const calls = { apollo: 0, turnstile: 0 };
+  const env = {
+    ALLOWED_ORIGINS: 'https://www.gorgias.com',
+    APOLLO_API_KEY: 'k',
+    TURNSTILE_SECRET_KEY: 't',
+    CACHE_KEY_SECRET: 's',
+    NAMES: fakeKV(),
+  };
+  if (cap !== undefined) { env.APOLLO_DAILY_CAP = String(cap); }
+  const fetchImpl = async (url) => {
+    if (String(url).includes('turnstile')) {
+      calls.turnstile += 1;
+      return new Response(JSON.stringify({ success: turnstileOk, action: 'signup_name' }));
+    }
+    calls.apollo += 1;
+    return new Response(JSON.stringify({ person: apolloPerson }));
+  };
+  return { env, calls, fetchImpl };
+}
+
+async function call(worker, setupResult, email, token = 'tok') {
+  const pending = [];
+  const res = await worker.fetch(new Request('https://w.dev', {
+    method: 'POST',
+    headers: { Origin: 'https://www.gorgias.com', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, turnstile_token: token }),
+  }), setupResult.env, { waitUntil: (p) => pending.push(p) }, setupResult.fetchImpl);
+  await Promise.all(pending);
+  return { status: res.status, body: await res.json() };
+}
+
+test('free email: no Apollo, no Turnstile, nothing stored', async () => {
+  const worker = (await loadWorker()).default;
+  const s = setup();
+  const r = await call(worker, s, 'jane.doe@gmail.com');
+  assert.deepStrictEqual(r.body, { name: 'Jane Doe', source: 'pattern' });
+  assert.deepStrictEqual(s.calls, { apollo: 0, turnstile: 0 });
+  assert.strictEqual(s.env.NAMES.store.size, 0);
+});
+
+test('failed Turnstile: no Apollo, no memory read, pattern only', async () => {
+  const worker = (await loadWorker()).default;
+  const s = setup({ turnstileOk: false });
+  const r = await call(worker, s, 'ceo@acme.com');
+  assert.deepStrictEqual(r.body, { name: '', source: 'none' });
+  assert.strictEqual(s.calls.apollo, 0);
+  const missing = await call(worker, s, 'ceo@acme.com', '');
+  assert.deepStrictEqual(missing.body, { name: '', source: 'none' });
+});
+
+test('Turnstile fails closed without a secret', async () => {
+  const { verifyTurnstile } = await loadWorker();
+  assert.strictEqual(await verifyTurnstile('tok', '', {}, async () => new Response('{"success":true}')), false);
+});
+
+test('Turnstile token for another action is rejected', async () => {
+  const { verifyTurnstile } = await loadWorker();
+  const ok = await verifyTurnstile('tok', '', { TURNSTILE_SECRET_KEY: 't' },
+    async () => new Response(JSON.stringify({ success: true, action: 'login' })));
+  assert.strictEqual(ok, false);
+});
+
+test('Apollo hit is remembered in KV for 180 days under an HMAC key, then served without Apollo', async () => {
+  const worker = (await loadWorker()).default;
+  const { cacheKeyFor } = await loadWorker();
+  const s = setup();
+  const first = await call(worker, s, 'ceo@acme.com');
+  assert.deepStrictEqual(first.body, { name: 'Ada Lovelace', source: 'apollo' });
+  const key = await cacheKeyFor('ceo@acme.com', s.env);
+  const stored = s.env.NAMES.store.get(key);
+  assert.ok(stored, 'not stored');
+  assert.ok(!key.includes('acme') && !stored.value.includes('acme'), 'email leaked into the store');
+  assert.strictEqual(stored.opts.expirationTtl, 180 * 24 * 60 * 60);
+  const second = await call(worker, s, 'ceo@acme.com');
+  assert.deepStrictEqual(second.body, { name: 'Ada Lovelace', source: 'apollo' });
+  assert.strictEqual(s.calls.apollo, 1);
+});
+
+test('Apollo miss is remembered for 30 days and still gets the pattern', async () => {
+  const worker = (await loadWorker()).default;
+  const s = setup({ apolloPerson: null });
+  await call(worker, s, 'jane.doe@acme.com');
+  const again = await call(worker, s, 'jane.doe@acme.com');
+  assert.deepStrictEqual(again.body, { name: 'Jane Doe', source: 'pattern' });
+  assert.strictEqual(s.calls.apollo, 1);
+  const stored = [...s.env.NAMES.store.entries()].find(([k]) => k.startsWith('name:'))[1];
+  assert.strictEqual(stored.opts.expirationTtl, 30 * 24 * 60 * 60);
+});
+
+test('daily cap stops Apollo calls', async () => {
+  const worker = (await loadWorker()).default;
+  const s = setup({ cap: 1 });
+  await call(worker, s, 'a@acme.com');
+  const r = await call(worker, s, 'jane.doe@other.com');
+  assert.deepStrictEqual(r.body, { name: 'Jane Doe', source: 'pattern' });
+  assert.strictEqual(s.calls.apollo, 1);
+});
+
+test('oversized body is rejected', async () => {
+  const worker = (await loadWorker()).default;
+  const s = setup();
+  const res = await worker.fetch(new Request('https://w.dev', {
+    method: 'POST',
+    headers: { Origin: 'https://www.gorgias.com', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'a@acme.com', pad: 'x'.repeat(5000) }),
+  }), s.env, { waitUntil() {} }, s.fetchImpl);
   assert.strictEqual(res.status, 400);
 });

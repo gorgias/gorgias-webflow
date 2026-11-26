@@ -77,8 +77,12 @@ console.log("signup-3.js loaded");
     // Cloudflare Worker that guesses the full name from the email (source: workers/signup-name-enrichment).
     // Can be overridden from Webflow page custom code: <script>window.SIGNUP_NAME_ENRICHMENT_URL = "...";</script>
     const NAME_ENRICHMENT_ENDPOINT = window.SIGNUP_NAME_ENRICHMENT_URL || "https://signup-name-enrichment.gorgias.workers.dev";
-    // The Worker gives Apollo 2.5s; past this we stop waiting and use the email pattern.
-    const NAME_ENRICHMENT_TIMEOUT_MS = 3500;
+    // The Worker gives Turnstile 1.5s and Apollo 2.5s; past this we stop waiting and use the email pattern.
+    const NAME_ENRICHMENT_TIMEOUT_MS = 4500;
+    // Cloudflare Turnstile site key (public). The Worker only calls Apollo for a browser with a valid token.
+    // Can be overridden from Webflow page custom code: <script>window.SIGNUP_TURNSTILE_SITE_KEY = "...";</script>
+    const TURNSTILE_SITE_KEY = window.SIGNUP_TURNSTILE_SITE_KEY || "";
+    const TURNSTILE_WAIT_MS = 2000;
 
     // Same rule as the Worker's fallback: "jane.doe@", "jane_doe@", "jane-doe@" -> "Jane Doe", else "".
     const NAME_PATTERN_ROLE_WORDS = ["admin", "accounts", "billing", "care", "contact", "customer", "customers", "dev", "help",
@@ -401,18 +405,72 @@ console.log("signup-3.js loaded");
             } catch (_e) { /* analytics must never break signup */ }
         }
 
+        // Invisible Turnstile widget, rendered on load so a token is usually ready before the email is.
+        // Each token is single use: take it, then reset the widget to make the next one.
+        let turnstileWidgetId = null;
+        let turnstileToken = "";
+        let turnstileWaiters = [];
+
+        function onTurnstileToken(token) {
+            turnstileToken = token || "";
+            const waiters = turnstileWaiters;
+            turnstileWaiters = [];
+            waiters.forEach(function (resolve) { resolve(); });
+        }
+
+        function initTurnstile() {
+            if (!TURNSTILE_SITE_KEY) { return; }
+            window.onSignupTurnstileLoad = function () {
+                const container = $('<div id="signup-name-turnstile" style="display:none"></div>').appendTo(userForm);
+                turnstileWidgetId = window.turnstile.render(container[0], {
+                    sitekey: TURNSTILE_SITE_KEY,
+                    action: "signup_name",
+                    appearance: "interaction-only",
+                    callback: onTurnstileToken,
+                    "expired-callback": function () { turnstileToken = ""; },
+                    "error-callback": function () { onTurnstileToken(""); return true; }
+                });
+            };
+            const script = document.createElement("script");
+            script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onSignupTurnstileLoad";
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+
+        function takeTurnstileToken() {
+            if (!TURNSTILE_SITE_KEY) { return Promise.resolve(""); }
+            const take = function () {
+                const token = turnstileToken;
+                turnstileToken = "";
+                if (token && turnstileWidgetId !== null) {
+                    try { window.turnstile.reset(turnstileWidgetId); } catch (_e) { /* next lookup goes without */ }
+                }
+                return token;
+            };
+            if (turnstileToken) { return Promise.resolve(take()); }
+            // No token yet: wait a little, then go without (the Worker then answers with the pattern only).
+            return new Promise(function (resolve) {
+                const timer = window.setTimeout(function () { resolve(""); }, TURNSTILE_WAIT_MS);
+                turnstileWaiters.push(function () { window.clearTimeout(timer); resolve(take()); });
+            });
+        }
+
         function lookupNameFromEmail(email) {
             email = $.trim(email || "").toLowerCase();
             if (!email || email === nameLookupEmail || !canAutofillName()) { return nameLookupPromise; }
             nameLookupEmail = email;
             const controller = typeof AbortController === "function" ? new AbortController() : null;
             const timer = window.setTimeout(function () { controller?.abort(); }, NAME_ENRICHMENT_TIMEOUT_MS);
-            const promise = fetch(NAME_ENRICHMENT_ENDPOINT, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: email }),
-                signal: controller?.signal
-            })
+            const promise = takeTurnstileToken()
+                .then(function (turnstileTokenValue) {
+                    return fetch(NAME_ENRICHMENT_ENDPOINT, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: email, turnstile_token: turnstileTokenValue }),
+                        signal: controller?.signal
+                    });
+                })
                 .then(function (response) {
                     if (!response.ok) { throw new Error("name enrichment HTTP " + response.status); }
                     return response.json();
@@ -797,6 +855,7 @@ console.log("signup-3.js loaded");
             enableFields();
 
             showFullnameField();
+            initTurnstile();
             // A name already in the field on load (browser autofill) is the user's, keep it.
             if ($.trim(fullnameField.val() || "")) { nameSource = "provided"; }
             if (!USE_SIGNUP_V2) { generatePassword(); }
